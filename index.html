@@ -7,14 +7,14 @@
 <meta name="description" content="Kingson Engineering — steelwork specialists in Harare, Zimbabwe. Fiber laser cutting, IBR and corrugated roof sheeting, structural steelworks, steel trusses, balustrades and gates, stainless fabrication and in-house cranage.">
 <meta name="keywords" content="steel fabrication Harare, IBR sheeting Zimbabwe, corrugated roof sheeting Harare, fiber laser cutting Zimbabwe, structural steelworks Harare, portal frame warehouse Zimbabwe, stainless steel fabrication Harare">
 <meta name="geo.region" content="ZW-HA">
-<meta name="geo.placename" content="Tynwald Industrial Park, Harare">
+<meta name="geo.placename" content="No. 1262 Tynwald Industries, Harare">
 <meta name="ICBM" content="-17.8252, 31.0335">
 <meta name="theme-color" content="#0d0e17">
 <link rel="canonical" href="https://kingson-engineering.vercel.app/">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Kingson Engineering — Steelwork Specialists, Harare">
-<meta property="og:description" content="Fiber laser cutting, IBR and corrugated roof sheeting, structural steelworks and in-house cranage in Harare, Zimbabwe.">
+<meta property="og:description" content="Fiber laser cutting, IBR and corrugated roof sheeting, structural steelworks, steel trusses, balustrades and gates, and in-house cranage in Harare, Zimbabwe.">
 <meta property="og:image" content="https://kingson-engineering.vercel.app/structure.jpeg">
 <meta property="og:url" content="https://kingson-engineering.vercel.app/">
 <meta property="og:site_name" content="Kingson Engineering">
@@ -39,13 +39,13 @@
       "telephone": ["+263772262869", "+263242304341"],
       "email": "kingsonnkm@gmail.com",
       "areaServed": [{"@type": "City", "name": "Harare"}, {"@type": "Country", "name": "Zimbabwe"}],
-      "address": {"@type": "PostalAddress", "streetAddress": "Tynwald Industrial Park", "addressLocality": "Harare", "addressRegion": "Harare Province", "addressCountry": "ZW"},
+      "address": {"@type": "PostalAddress", "streetAddress": "No. 1262 Tynwald Industries", "addressLocality": "Harare", "addressRegion": "Harare Province", "addressCountry": "ZW"},
       "openingHoursSpecification": [
         {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "07:30", "closes": "17:00"},
         {"@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "08:00", "closes": "12:30"}
       ],
-      "sameAs": ["https://www.facebook.com/people/Kingson-Engineering/"],
       "geo": {"@type": "GeoCoordinates", "latitude": -17.8252, "longitude": 31.0335},
+      "sameAs": ["https://www.facebook.com/share/18GoTdrLBD/"],
       "knowsAbout": ["IBR roof sheeting", "corrugated roof sheeting", "fiber laser cutting", "DXF nesting", "portal frame erection", "stainless steel fabrication", "steel trusses", "roof steelworks", "balustrades and gates", "structural steelworks", "mobile cranage"],
       "hasOfferCatalog": {
         "@type": "OfferCatalog", "name": "Steelwork services",
@@ -592,6 +592,31 @@ td.c{font-size:12px;color:var(--n-400)}
 .orline::before,.orline::after{content:"";flex:1;height:1px;background:var(--line)}
 .orline span{font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--n-500);white-space:nowrap}
 
+
+/* ═══════════ privacy note ═══════════ */
+.privacy{grid-column:1/-1;margin-top:clamp(22px,3vw,32px);border-top:1px solid var(--line)}
+.privacy-t{width:100%;background:none;border:0;cursor:pointer;text-align:left;color:var(--n-400);
+  padding:18px 0;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  font-family:'Inter',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  transition:color .3s}
+.privacy-t:hover{color:var(--n-200)}
+.privacy-t i{flex:none;width:13px;height:13px;position:relative;transition:transform .45s var(--ease)}
+.privacy-t i::before,.privacy-t i::after{content:"";position:absolute;background:var(--accent);
+  left:50%;top:50%;transform:translate(-50%,-50%)}
+.privacy-t i::before{width:11px;height:1px}
+.privacy-t i::after{width:1px;height:11px}
+.privacy.open .privacy-t{color:var(--n-100)}
+.privacy.open .privacy-t i{transform:rotate(45deg)}
+.privacy-b{max-height:0;overflow:hidden;opacity:0;
+  transition:max-height .6s var(--ease),opacity .45s ease}
+.privacy.open .privacy-b{max-height:900px;opacity:1}
+.privacy-b p{margin:0 0 14px;font-size:13.5px;line-height:1.75;color:var(--n-300);max-width:62ch}
+.privacy-b p:first-child{margin-top:4px}
+.privacy-b b{color:var(--n-100);font-weight:500}
+.privacy-b a{color:var(--accent-300);text-decoration:none}
+.privacy-law{padding-top:12px;border-top:1px solid var(--line);
+  font-size:12px!important;color:var(--n-500)!important;margin-bottom:20px!important}
+
 /* ═══════════ faq ═══════════ */
 .faq{border-top:1px solid var(--line);margin-top:clamp(30px,4vw,50px)}
 .faq-i{border-bottom:1px solid var(--line)}
@@ -615,6 +640,12 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
   text-transform:uppercase;color:#eceaf2}
 .ft .sub{margin-top:8px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--n-400)}
 .ft .right{text-align:right;font-size:11px;color:var(--n-300);line-height:1.9}
+.ft-meta{display:flex;gap:16px;justify-content:flex-end;margin-top:12px;
+  padding-top:12px;border-top:1px solid var(--line)}
+.ft-meta a{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--n-400);text-decoration:none;transition:color .3s}
+.ft-meta a:hover{color:var(--accent-300)}
+@media(max-width:620px){.ft-meta{justify-content:flex-start}}
 @media(max-width:620px){.ft .right{text-align:left}}
 
 @media(prefers-reduced-motion:reduce){
@@ -626,14 +657,14 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 
 <div class="sr">
   <h2>Kingson Engineering — steelwork specialists, Harare, Zimbabwe</h2>
-  <p>Fiber laser cutting, IBR and corrugated roof sheeting, structural steelworks, stainless steel fabrication and mobile cranage across Harare and Zimbabwe. IBR cover width 686 mm, rib 36 mm, pitch 200 mm, gauges 0.47, 0.53 and 0.58 mm. Corrugated cover width 762 mm, crest 17.5 mm, pitch 76 mm. Laser bed 3000 × 1500 mm, mild steel to 20 mm. Balustrades, gates and railings fabricated to order. Workshop at Tynwald Industrial Park, Harare. Contact +263 772 262 869 or kingsonnkm@gmail.com.</p>
+  <p>Fiber laser cutting, IBR and corrugated roof sheeting, structural steelworks, stainless steel fabrication and mobile cranage across Harare and Zimbabwe. IBR cover width 686 mm, rib 36 mm, pitch 200 mm, gauges 0.47, 0.53 and 0.58 mm. Corrugated cover width 762 mm, crest 17.5 mm, pitch 76 mm. Laser bed 3000 × 1500 mm, mild steel to 20 mm. Balustrades, gates and railings fabricated to order. Workshop at No. 1262 Tynwald Industries, Harare. Contact +263 772 262 869 or kingsonnkm@gmail.com.</p>
 </div>
 
 <div class="progressbar" id="progressbar"></div>
 
 <div class="utility">
   <div class="wrap util-in">
-    <span class="util-l">Tynwald Industrial Park, Harare</span>
+    <span class="util-l">No. 1262 Tynwald Industries, Harare</span>
     <span class="util-r">
       <a href="tel:+263772262869">+263 772 262 869</a>
       <a class="util-wa" id="util-wa" target="_blank" rel="noopener">WhatsApp</a>
@@ -678,7 +709,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
   <div class="menu-foot">
     <div class="mf-col">
       <span class="lab">Workshop</span>
-      <p>Tynwald Industrial Park<br>Harare, Zimbabwe</p>
+      <p>No. 1262 Tynwald Industries<br>Harare, Zimbabwe</p>
     </div>
     <div class="mf-col">
       <span class="lab">Direct</span>
@@ -914,6 +945,32 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
           <div class="steps-nav">
             <button class="btn btn-primary" id="submit">Prepare enquiry</button>
           </div>
+
+          <div class="privacy" id="privacy">
+            <button class="privacy-t" id="privacy-t" aria-expanded="false" aria-controls="privacy-b">
+              <span>How we handle what you send us</span>
+              <i></i>
+            </button>
+            <div class="privacy-b" id="privacy-b">
+              <p><b>Who we are.</b> Kingson Trading (Pvt) Ltd, trading as Kingson Engineering,
+                 No. 1262 Tynwald Industries, Harare, Zimbabwe.</p>
+              <p><b>What we collect.</b> Only what you type above &mdash; your name, company, phone
+                 number, site location and the details of the work. Nothing else. This site sets no
+                 cookies, runs no analytics and does not track you.</p>
+              <p><b>Why.</b> To prepare and send you a quotation, and to contact you about it.
+                 Nothing more.</p>
+              <p><b>Where it goes.</b> This form does not store anything. Pressing send opens
+                 WhatsApp or your email with the message written out, and you send it yourself.
+                 It reaches us the same way any message would &mdash; your enquiry stays in that
+                 conversation.</p>
+              <p><b>How long we keep it.</b> Quotations and the enquiries behind them are kept while
+                 the job is live and for our records afterwards. We do not sell, rent or share your
+                 details with anyone.</p>
+              <p><b>Your rights.</b> Ask us what we hold about you, ask us to correct it, or ask us
+                 to delete it &mdash; call <a href="tel:+263772262869">+263 772 262 869</a> or email
+                 <a href="mailto:kingsonnkm@gmail.com">kingsonnkm@gmail.com</a> and we will action it.</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -969,11 +1026,15 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 <footer><div class="wrap ft">
   <div>
     <b>Kingson Engineering</b>
-    <div class="sub">Steel Fabrication · Roofing Sheeting · Structural Steelworks · Stainless Steel</div>
+    <div class="sub">Steel Fabrication · Roof Steelworks · Structural Steelworks · Balustrades & Gates</div>
   </div>
   <div class="right">
     <a href="mailto:kingsonnkm@gmail.com">kingsonnkm@gmail.com</a><br>
-    Tynwald Industrial Park, Harare · <a href="tel:+263772262869">+263 772 262 869</a>
+    No. 1262 Tynwald Industries, Harare · <a href="tel:+263772262869">+263 772 262 869</a>
+    <span class="ft-meta">
+      <a href="https://www.facebook.com/share/18GoTdrLBD/" target="_blank" rel="noopener">Facebook</a>
+      <a href="#enquiry" id="foot-priv">Privacy</a>
+    </span>
   </div>
 </div></footer>
 
@@ -1165,6 +1226,22 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
     if (b) b.setAttribute("aria-expanded", "false");
     if (w) w.setAttribute("aria-hidden", "true");
   }
+  var pv = $("privacy"), pvt = $("privacy-t");
+  if (pv && pvt) {
+    pvt.onclick = function () {
+      var open = pv.classList.toggle("open");
+      pvt.setAttribute("aria-expanded", open ? "true" : "false");
+    };
+  }
+
+  var fp = $("foot-priv");
+  if (fp) fp.onclick = function (e) {
+    e.preventDefault();
+    go("enquiry");
+    if (pv) { pv.classList.add("open"); if (pvt) pvt.setAttribute("aria-expanded", "true"); }
+    setTimeout(function () { if (pv && pv.scrollIntoView) pv.scrollIntoView({behavior:"smooth", block:"center"}); }, 320);
+  };
+
   var mx = $("menu-x");     if (mx) mx.onclick = closeMenu;
   var sc = $("scrim");      if (sc) sc.onclick = closeMenu;
 
