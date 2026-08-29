@@ -179,6 +179,7 @@ nav.main button:hover{color:var(--n-100)}
     backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
     transform:translateY(110%);transition:transform .5s var(--ease)}
   .dock.up{transform:none}
+  .dock.away{transform:translateY(110%)}
   body.menu-open .dock{transform:translateY(110%)}
   .dock-b{display:flex;align-items:center;justify-content:center;gap:8px;
     background:rgba(10,11,17,.92);color:#f3f5fe;border:0;cursor:pointer;text-decoration:none;
@@ -186,7 +187,8 @@ nav.main button:hover{color:var(--n-100)}
   .dock-b:active{background:rgba(145,132,217,.16)}
   .dock-wa{color:var(--accent-300)}
   .dock-q{background:var(--accent);color:#0b0c13;font-weight:500}
-  footer{padding-bottom:calc(clamp(56px,7vw,96px) + 64px + env(safe-area-inset-bottom,0px))}
+  /* dock is ~52px of button plus the home-indicator inset it carries itself */
+  footer{padding-bottom:calc(clamp(48px,6vw,80px) + 52px + env(safe-area-inset-bottom,0px) + 28px)}
 }
 
 /* ═══════════ menu — side drawer, not a takeover ═══════════ */
@@ -658,6 +660,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 <div class="sr">
   <h2>Kingson Engineering — steelwork specialists, Harare, Zimbabwe</h2>
   <p>Fiber laser cutting, IBR and corrugated roof sheeting, structural steelworks, stainless steel fabrication and mobile cranage across Harare and Zimbabwe. IBR cover width 686 mm, rib 36 mm, pitch 200 mm, gauges 0.47, 0.53 and 0.58 mm. Corrugated cover width 762 mm, crest 17.5 mm, pitch 76 mm. Laser bed 3000 × 1500 mm, mild steel to 20 mm. Balustrades, gates and railings fabricated to order. Workshop at No. 1262 Tynwald Industries, Harare. Contact +263 772 262 869 or kingsonnkm@gmail.com.</p>
+  <p>Steel that goes up straight. Braced frames, portal frames and process structures — fabricated on our own floor in Harare and erected with our own crane. Trusses, purlins, sheeting. The whole roof from one supplier — trusses fabricated to your span, purlins set out, sheeting rolled to length and fixed. Steel, cut to the tenth of a millimetre. A DXTECH fiber laser installed in-house — profiling plate and sheet on a 3 m bed with clean, dross-free edges and no secondary finishing. We lift what we build. An in-house mobile crane means erection is not subcontracted — steel arrives on site and goes up on our own programme. Every plate nested before it burns. DXF straight from your drawing office, nested for yield and pierced in sequence. You approve the layout before a single sheet is committed. One floor, drawing to dispatch. Cutting, forming, welding and finishing under a single roof in Harare — fabrication moves between stations without leaving the building. Handed over, not just delivered. Roofs erected, sheeted and finished — fabricated, lifted and fixed by the same company you placed the order with. Warehouses and workshops. Columns, rafters, purlins and sheeting fabricated and erected as one contract — no gap between the steel and the roof.</p>
 </div>
 
 <div class="progressbar" id="progressbar"></div>
@@ -769,14 +772,24 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
     <div class="wrap">
       <span class="lab">Discipline</span>
       <h2 class="hd2">Four capabilities,<br>one accountable floor.</h2>
-      <div class="grid4" id="pillars"></div>
+      <div class="grid4" id="pillars">
+      <div class="pillar"><div class="n">I</div><div class="t">Steel Fabrication</div><p>Plate, section and sheet worked from drawing to finished assembly, welded to procedure and squared before it leaves the floor.</p></div>
+      <div class="pillar"><div class="n">II</div><div class="t">Roofing Sheeting</div><p>IBR, corrugated and custom profiles rolled to length with matched flashings, ridges and barge boards from the same coil.</p></div>
+      <div class="pillar"><div class="n">III</div><div class="t">Structural Steelworks</div><p>Portal frames, mezzanines and platforms designed for the span, fabricated in-house and erected with our own crane.</p></div>
+      <div class="pillar"><div class="n">IV</div><div class="t">Balustrades, Gates &amp; Stainless</div><p>Balustrades, gates and railings in mild or stainless steel — architectural work finished to grain, fabricated on the same floor as the structural steel.</p></div>
+</div>
     </div>
   </section>
 
   <section class="blk"><div class="wrap">
     <span class="lab">Questions</span>
-    <h2 class="hd2" id="faq-h-home"></h2>
-    <div class="faq" id="faq-home"></div>
+    <h2 class="hd2" id="faq-h-home">Steelwork questions, answered plainly.</h2>
+    <div class="faq" id="faq-home">
+      <div class="faq-i on"><button class="faq-q">What does Kingson Engineering do?<span class="pl"></span></button><div class="faq-a"><p>Kingson Engineering is a steelwork specialist based in Harare, Zimbabwe. The company fabricates and erects structural steel, rolls IBR and corrugated roof sheeting, cuts plate and sheet on an in-house DXTECH fiber laser, fabricates stainless steel, and lifts with its own mobile crane.</p></div></div>
+      <div class="faq-i"><button class="faq-q">Where do you work?<span class="pl"></span></button><div class="faq-a"><p>Harare and the surrounding industrial areas as standard, with fabrication delivered and erected nationally across Zimbabwe. Site visits in greater Harare are arranged within two working days of an enquiry.</p></div></div>
+      <div class="faq-i"><button class="faq-q">Do you handle both supply and erection?<span class="pl"></span></button><div class="faq-a"><p>Yes. Roof sheeting can be supplied cut-to-length for your own contractor, or fabricated, delivered and erected by Kingson as a single contract — including the crane, so the lift is not subcontracted.</p></div></div>
+      <div class="faq-i"><button class="faq-q">How do I get a quote?<span class="pl"></span></button><div class="faq-a"><p>Call +263 772 262 869, email kingsonnkm@gmail.com, or use the quote request form on this site. Send drawings if you have them; sheeting can be quoted from roof dimensions and pitch alone.</p></div></div>
+</div>
   </div></section>
 </div>
 
@@ -798,12 +811,21 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 
   <div class="navy">
   <section class="blk"><div class="wrap">
-    <div id="profiles"></div>
+    <div id="profiles">
+    <div class="prof"><div><div class="n">01</div><h3>IBR Sheeting</h3><div class="use">Industrial · Low Pitch</div><p>The default for warehouse and workshop roofs: a deep trapezoidal rib that carries longer purlin spacings and sheds water at shallow pitches.</p></div><div><table><tbody><tr><td class="a">Cover width</td><td class="b">686 mm</td><td class="c">Five ribs per sheet</td></tr><tr><td class="a">Rib height / pitch</td><td class="b">36 mm / 200 mm</td><td class="c">Trapezoidal</td></tr><tr><td class="a">Gauges</td><td class="b">0.47 · 0.53 · 0.58 mm</td><td class="c">Galvanised or pre-painted</td></tr><tr><td class="a">Minimum roof pitch</td><td class="b">5°</td><td class="c">7° with side laps</td></tr><tr><td class="a">Max purlin spacing</td><td class="b">1 800 mm</td><td class="c">0.53 mm, single span</td></tr><tr><td class="a">Sheet length</td><td class="b">Cut to 12 m</td><td class="c">No end laps</td></tr></tbody></table></div></div>
+    <div class="prof"><div><div class="n">02</div><h3>Corrugated Sheeting</h3><div class="use">Domestic · Curved Work</div><p>The sinusoidal profile: lighter, more forgiving over uneven framing, and the only choice where the roof has to be sprung to a radius.</p></div><div><table><tbody><tr><td class="a">Cover width</td><td class="b">762 mm</td><td class="c">10.5 corrugations</td></tr><tr><td class="a">Crest height / pitch</td><td class="b">17.5 mm / 76 mm</td><td class="c">Sinusoidal</td></tr><tr><td class="a">Gauges</td><td class="b">0.4 · 0.47 · 0.53 mm</td><td class="c">Galvanised or Chromadek-type</td></tr><tr><td class="a">Minimum roof pitch</td><td class="b">10°</td><td class="c">12° for exposed sites</td></tr><tr><td class="a">Max purlin spacing</td><td class="b">1 200 mm</td><td class="c">0.47 mm, single span</td></tr><tr><td class="a">Curving</td><td class="b">From 6 m radius</td><td class="c">Sprung curve on site</td></tr></tbody></table></div></div>
+    <div class="prof"><div><div class="n">03</div><h3>Custom &amp; Flashings</h3><div class="use">Bespoke · Finishing</div><p>Where the drawing does not match a catalogue: folded flashings, concealed-fix trays, ridges and closers brake-pressed to your section.</p></div><div><table><tbody><tr><td class="a">Fold length</td><td class="b">Up to 3 000 mm</td><td class="c">Press brake</td></tr><tr><td class="a">Material range</td><td class="b">0.4 – 3.0 mm</td><td class="c">MS · GI · SS · Al</td></tr><tr><td class="a">Standard items</td><td class="b">Ridge · Barge · Valley</td><td class="c">Matched to sheet colour</td></tr><tr><td class="a">Concealed fix</td><td class="b">To specification</td><td class="c">Clip-fix trays on request</td></tr><tr><td class="a">Lead time</td><td class="b">3 – 5 days</td><td class="c">Stock gauge, confirmed order</td></tr></tbody></table></div></div>
+</div>
 
     <div style="margin-top:clamp(46px,6vw,86px)">
       <span class="lab">Fiber Laser — Cutting Envelope</span>
       <h2 class="hd2">What the machine will take.</h2>
-      <table style="margin-top:28px"><tbody id="laser"></tbody></table>
+      <table style="margin-top:28px"><tbody id="laser">
+        <tr><td class="a">Mild steel</td><td class="b">20 mm</td><td class="c">Oxygen</td><td class="c">Square, light oxide</td></tr>
+        <tr><td class="a">Stainless steel</td><td class="b">10 mm</td><td class="c">Nitrogen</td><td class="c">Bright, oxide-free</td></tr>
+        <tr><td class="a">Aluminium</td><td class="b">8 mm</td><td class="c">Nitrogen</td><td class="c">Clean, minimal burr</td></tr>
+        <tr><td class="a">Galvanised sheet</td><td class="b">4 mm</td><td class="c">Nitrogen</td><td class="c">Coating preserved</td></tr>
+</tbody></table>
       <p style="margin:22px 0 0;font-size:12.5px;color:var(--n-400)">
         DXTECH fiber laser · bed 3000 × 1500 mm · positional tolerance ± 0.1 mm · repeatability ± 0.03 mm
       </p>
@@ -813,8 +835,13 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
   </div>
   <section class="blk"><div class="wrap">
     <span class="lab">Questions</span>
-    <h2 class="hd2" id="faq-h-profiles"></h2>
-    <div class="faq" id="faq-profiles"></div>
+    <h2 class="hd2" id="faq-h-profiles">Profile and specification questions.</h2>
+    <div class="faq" id="faq-profiles">
+      <div class="faq-i on"><button class="faq-q">Which is better, IBR or corrugated sheeting?<span class="pl"></span></button><div class="faq-a"><p>Neither is better in the abstract. IBR (686 mm cover, 36 mm rib at 200 mm pitch) suits industrial roofs at pitches from 5° and spans purlins up to 1 800 mm. Corrugated (762 mm cover, 17.5 mm crest at 76 mm pitch) is lighter, needs 10° minimum pitch and closer purlins, and is the profile to use for curved or domestic roofs.</p></div></div>
+      <div class="faq-i"><button class="faq-q">What gauge of IBR should I use?<span class="pl"></span></button><div class="faq-a"><p>0.47 mm for light domestic and garage roofs, 0.53 mm as the industrial default, and 0.58 mm for wide purlin spacings, high wind exposure or roofs that will be walked on regularly.</p></div></div>
+      <div class="faq-i"><button class="faq-q">What is the longest sheet you can roll?<span class="pl"></span></button><div class="faq-a"><p>Sheets are cut to length up to 12 metres, which removes end laps on most single-slope industrial roofs. Longer runs are handled as a designed lap detail.</p></div></div>
+      <div class="faq-i"><button class="faq-q">Can you match existing sheeting and flashings?<span class="pl"></span></button><div class="faq-a"><p>Yes. Flashings, ridges, barge boards and valleys are brake-pressed in-house up to 3 000 mm from the same coil and colour as the sheets, so replacements and extensions match the original roof.</p></div></div>
+</div>
   </div></section>
 </div>
 
@@ -835,7 +862,14 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 
   <div class="navy">
     <section class="blk"><div class="wrap">
-      <div id="steps"></div>
+      <div id="steps">
+      <div class="step"><div class="num">01</div><div><h3>Drawing intake</h3><div class="tag">DXF · DWG · Sketch</div></div><div><p>Send a 1:1 DXF or DWG with closed polylines, or a dimensioned sketch. PDFs and hand drawings are redrawn in-house and returned for confirmation before anything is programmed.</p><div class="out">Output — verified geometry</div></div></div>
+      <div class="step"><div class="num">02</div><div><h3>Engineering check</h3><div class="tag">Manufacturability</div></div><div><p>Every part is checked for kerf allowance, minimum hole diameter against thickness, bend reliefs and the radii our press can actually hold. Problems get flagged here, not on the shop floor.</p><div class="out">Output — mark-up and query list</div></div></div>
+      <div class="step"><div class="num">03</div><div><h3>Nesting for yield</h3><div class="tag">Sheet Utilisation</div></div><div><p>Parts are nested across the 3000 × 1500 bed with common-line cutting where geometry allows, so you pay for the steel in your parts rather than the offcut around them.</p><div class="out">Output — nest layout and yield %</div></div></div>
+      <div class="step"><div class="num">04</div><div><h3>Client sign-off</h3><div class="tag">Approval Gate</div></div><div><p>You receive the nest, the sheet count and the firm price. Nothing is committed to steel until that layout is approved in writing.</p><div class="out">Output — approved cut file</div></div></div>
+      <div class="step"><div class="num">05</div><div><h3>Pre-cut execution</h3><div class="tag">First Pierce</div></div><div><p>Focus, gas and feed set per material. A first-off part is measured against the drawing before the balance of the nest runs.</p><div class="out">Output — first-off inspection</div></div></div>
+      <div class="step"><div class="num">06</div><div><h3>Deburr and dispatch</h3><div class="tag">Finishing</div></div><div><p>Parts are broken out, deburred, counted against the cut list and crated or bundled by assembly — labelled so the fitters are not sorting steel on site.</p><div class="out">Output — labelled, counted delivery</div></div></div>
+</div>
     </div></section>
   </div>
 
@@ -847,8 +881,13 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 
   <section class="blk"><div class="wrap">
     <span class="lab">Questions</span>
-    <h2 class="hd2" id="faq-h-process"></h2>
-    <div class="faq" id="faq-process"></div>
+    <h2 class="hd2" id="faq-h-process">Drawing, nesting and cutting questions.</h2>
+    <div class="faq" id="faq-process">
+      <div class="faq-i on"><button class="faq-q">What file format do you need for laser cutting?<span class="pl"></span></button><div class="faq-a"><p>DXF or DWG at 1:1 with closed polylines is ideal. STEP files are accepted, and PDF or hand-dimensioned drawings are redrawn in-house for a nominal fee and returned for approval before cutting.</p></div></div>
+      <div class="faq-i"><button class="faq-q">What thicknesses can the fiber laser cut?<span class="pl"></span></button><div class="faq-a"><p>Mild steel to 20 mm on oxygen, stainless to 10 mm and aluminium to 8 mm on nitrogen, and galvanised sheet to 4 mm with the coating preserved. Bed size is 3000 × 1500 mm.</p></div></div>
+      <div class="faq-i"><button class="faq-q">How accurate is the cut?<span class="pl"></span></button><div class="faq-a"><p>Positional tolerance is ± 0.1 mm with repeatability around ± 0.03 mm, so parts drop straight into jigged assemblies without re-drilling.</p></div></div>
+      <div class="faq-i"><button class="faq-q">Do I see the nest before you cut?<span class="pl"></span></button><div class="faq-a"><p>Always. The nest layout, sheet count and yield are issued for written approval, and the first-off part is measured against the drawing before the balance of the nest runs.</p></div></div>
+</div>
   </div></section>
 </div>
 
@@ -867,14 +906,31 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 
   <div class="navy">
   <section class="blk"><div class="wrap">
-    <div class="works" id="works"></div>
+    <div class="works" id="works">
+      <button class="work s4 h440"><img src="structure.jpeg" alt="Multi-storey braced steel frame under erection by Kingson Engineering, Harare" loading="lazy" decoding="async"><span class="cap"><span class="tag">Structural Steelworks</span><span class="ti">Multi-Storey Process Structure</span><span class="me">Braced steel frame · Harare</span></span></button>
+      <button class="work s2 h440"><img src="crane.jpeg" alt="Kingson Engineering branded mobile crane" loading="lazy" decoding="async"><span class="cap"><span class="tag">Own Cranage</span><span class="ti">Our Mobile Crane</span><span class="me">Telescopic · In-house erection</span></span></button>
+      <button class="work s3 h380"><img src="warehouse.jpeg" alt="Warehouse roof trusses and purlins by Kingson Engineering" loading="lazy" decoding="async"><span class="cap"><span class="tag">Roof Steelworks</span><span class="ti">Warehouse Roof Steelwork</span><span class="me">Trusses and purlins · Harare</span></span></button>
+      <button class="work s3 h380"><img src="trusses.jpeg" alt="Completed pitched steel roof trusses with sheeting" loading="lazy" decoding="async"><span class="cap"><span class="tag">Roof Steelworks</span><span class="ti">Pitched Roof Trusses</span><span class="me">Fabricated, erected and sheeted</span></span></button>
+      <button class="work s3 h380"><img src="portalframe.jpeg" alt="Steel portal frame warehouse under erection in Harare" loading="lazy" decoding="async"><span class="cap"><span class="tag">Structural Steelworks</span><span class="ti">Portal Frame Erection</span><span class="me">Portal frame · Harare</span></span></button>
+      <button class="work s3 h380"><img src="craneyard.jpeg" alt="Kingson Engineering crane in the yard, Harare" loading="lazy" decoding="async"><span class="cap"><span class="tag">Own Cranage</span><span class="ti">Lifting Fleet, In The Yard</span><span class="me">Ready for site</span></span></button>
+      <button class="work s2 h340"><img src="laser.jpeg" alt="DXTECH fiber laser cutting machine in the Kingson workshop" loading="lazy" decoding="async"><span class="cap"><span class="tag">Laser Cutting</span><span class="ti">Fiber Laser Installation</span><span class="me">DXTECH · 3000 × 1500</span></span></button>
+      <button class="work s2 h340"><img src="gantry.jpeg" alt="Fiber laser gantry and cable chain detail" loading="lazy" decoding="async"><span class="cap"><span class="tag">Plant</span><span class="ti">Gantry and Drive Line</span><span class="me">Servo gantry · Cable chain</span></span></button>
+      <button class="work s2 h340"><img src="nesting.jpeg" alt="Laser control station showing a nested DXF drawing" loading="lazy" decoding="async"><span class="cap"><span class="tag">Engineering</span><span class="ti">Nesting Station</span><span class="me">DXF to cut file</span></span></button>
+      <button class="work s3 h380"><img src="workshop.jpeg" alt="Kingson Engineering fabrication floor in Harare" loading="lazy" decoding="async"><span class="cap"><span class="tag">The Workshop</span><span class="ti">The Harare Floor</span><span class="me">Cut · Form · Weld · Finish</span></span></button>
+      <button class="work s3 h380"><img src="cuttinghead.jpeg" alt="Fiber laser cutting head over steel plate" loading="lazy" decoding="async"><span class="cap"><span class="tag">Detail</span><span class="ti">Cutting Head, Mid-Run</span><span class="me">Assist gas · Auto focus</span></span></button>
+</div>
   </div></section>
   </div>
 
   <section class="blk"><div class="wrap">
     <span class="lab">Questions</span>
-    <h2 class="hd2" id="faq-h-portfolio"></h2>
-    <div class="faq" id="faq-portfolio"></div>
+    <h2 class="hd2" id="faq-h-portfolio">Project and delivery questions.</h2>
+    <div class="faq" id="faq-portfolio">
+      <div class="faq-i on"><button class="faq-q">What size projects do you take on?<span class="pl"></span></button><div class="faq-a"><p>From single-bay workshops and roof replacements up to multi-bay industrial warehouses. Small laser jobs — a handful of brackets or gussets — are cut alongside larger nests to keep the price sensible.</p></div></div>
+      <div class="faq-i"><button class="faq-q">How long does a portal frame warehouse take?<span class="pl"></span></button><div class="faq-a"><p>Typical fabrication and erection for a single-span shed runs six to ten weeks from approved drawings, depending on span, cladding and site access. A firm programme is issued with the tender.</p></div></div>
+      <div class="faq-i"><button class="faq-q">Do you provide the crane for erection?<span class="pl"></span></button><div class="faq-a"><p>Yes. Kingson operates its own telescopic mobile crane, so lifting is scheduled against our own fabrication programme rather than a third party’s availability.</p></div></div>
+      <div class="faq-i"><button class="faq-q">Can you work on live industrial sites?<span class="pl"></span></button><div class="faq-a"><p>Yes — phased erection and roof replacement over operating plant is routine, planned around shutdown windows and safe working access.</p></div></div>
+</div>
   </div></section>
 </div>
 
@@ -995,8 +1051,13 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 
   <section class="blk"><div class="wrap">
     <span class="lab">Questions</span>
-    <h2 class="hd2" id="faq-h-enquiry"></h2>
-    <div class="faq" id="faq-enquiry"></div>
+    <h2 class="hd2" id="faq-h-enquiry">Enquiry and quotation questions.</h2>
+    <div class="faq" id="faq-enquiry">
+      <div class="faq-i on"><button class="faq-q">What information should I send with an enquiry?<span class="pl"></span></button><div class="faq-a"><p>Scope, site location, approximate area in square metres or tonnage, required profile and gauge if known, and a programme date. Drawings in DXF, DWG or PDF speed the quote considerably.</p></div></div>
+      <div class="faq-i"><button class="faq-q">How quickly will I hear back?<span class="pl"></span></button><div class="faq-a"><p>Enquiries are acknowledged the same working day and a written quotation follows within the week for standard sheeting and fabrication packages.</p></div></div>
+      <div class="faq-i"><button class="faq-q">Do you quote fixed prices?<span class="pl"></span></button><div class="faq-a"><p>Sheeting and laser cutting are quoted firm against the approved nest or cut list. Structural packages are quoted firm on drawings, with variations priced before they are executed.</p></div></div>
+      <div class="faq-i"><button class="faq-q">Do you supply outside Harare?<span class="pl"></span></button><div class="faq-a"><p>Yes. Cut-to-length sheeting and fabricated steel are delivered nationally across Zimbabwe, with transport priced per load in the quotation.</p></div></div>
+</div>
   </div></section>
 </div>
 </main>
@@ -1077,12 +1138,6 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
       facts: [["Type","Portal Frame"],["Cladding","IBR Sheeting"],["Delivery","Turnkey"]] }
   ];
 
-  var PILLARS = [
-    ["I","Steel Fabrication","Plate, section and sheet worked from drawing to finished assembly, welded to procedure and squared before it leaves the floor."],
-    ["II","Roofing Sheeting","IBR, corrugated and custom profiles rolled to length with matched flashings, ridges and barge boards from the same coil."],
-    ["III","Structural Steelworks","Portal frames, mezzanines and platforms designed for the span, fabricated in-house and erected with our own crane."],
-    ["IV","Balustrades, Gates & Stainless","Balustrades, gates and railings in mild or stainless steel \u2014 architectural work finished to grain, fabricated on the same floor as the structural steel."]
-  ];
 
   var PROFILES = [
     { n:"01", name:"IBR Sheeting", use:"Industrial \u00b7 Low Pitch",
@@ -1102,35 +1157,8 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
             ["Lead time","3 \u2013 5 days","Stock gauge, confirmed order"]] }
   ];
 
-  var LASER = [
-    ["Mild steel","20 mm","Oxygen","Square, light oxide"],
-    ["Stainless steel","10 mm","Nitrogen","Bright, oxide-free"],
-    ["Aluminium","8 mm","Nitrogen","Clean, minimal burr"],
-    ["Galvanised sheet","4 mm","Nitrogen","Coating preserved"]
-  ];
 
-  var STEPS = [
-    ["01","Drawing intake","DXF \u00b7 DWG \u00b7 Sketch","Send a 1:1 DXF or DWG with closed polylines, or a dimensioned sketch. PDFs and hand drawings are redrawn in-house and returned for confirmation before anything is programmed.","Output \u2014 verified geometry"],
-    ["02","Engineering check","Manufacturability","Every part is checked for kerf allowance, minimum hole diameter against thickness, bend reliefs and the radii our press can actually hold. Problems get flagged here, not on the shop floor.","Output \u2014 mark-up and query list"],
-    ["03","Nesting for yield","Sheet Utilisation","Parts are nested across the 3000 \u00d7 1500 bed with common-line cutting where geometry allows, so you pay for the steel in your parts rather than the offcut around them.","Output \u2014 nest layout and yield %"],
-    ["04","Client sign-off","Approval Gate","You receive the nest, the sheet count and the firm price. Nothing is committed to steel until that layout is approved in writing.","Output \u2014 approved cut file"],
-    ["05","Pre-cut execution","First Pierce","Focus, gas and feed set per material. A first-off part is measured against the drawing before the balance of the nest runs.","Output \u2014 first-off inspection"],
-    ["06","Deburr and dispatch","Finishing","Parts are broken out, deburred, counted against the cut list and crated or bundled by assembly \u2014 labelled so the fitters are not sorting steel on site.","Output \u2014 labelled, counted delivery"]
-  ];
 
-  var WORKS = [
-    { src:"structure.jpeg", tag:"Structural Steelworks", title:"Multi-Storey Process Structure", meta:"Braced steel frame \u00b7 Harare", alt:"Multi-storey braced steel frame under erection by Kingson Engineering, Harare", cls:"s4 h440" },
-    { src:"crane.jpeg", tag:"Own Cranage", title:"Our Mobile Crane", meta:"Telescopic \u00b7 In-house erection", alt:"Kingson Engineering branded mobile crane", cls:"s2 h440" },
-    { src:"warehouse.jpeg", tag:"Roof Steelworks", title:"Warehouse Roof Steelwork", meta:"Trusses and purlins \u00b7 Harare", alt:"Warehouse roof trusses and purlins by Kingson Engineering", cls:"s3 h380" },
-    { src:"trusses.jpeg", tag:"Roof Steelworks", title:"Pitched Roof Trusses", meta:"Fabricated, erected and sheeted", alt:"Completed pitched steel roof trusses with sheeting", cls:"s3 h380" },
-    { src:"portalframe.jpeg", tag:"Structural Steelworks", title:"Portal Frame Erection", meta:"Portal frame \u00b7 Harare", alt:"Steel portal frame warehouse under erection in Harare", cls:"s3 h380" },
-    { src:"craneyard.jpeg", tag:"Own Cranage", title:"Lifting Fleet, In The Yard", meta:"Ready for site", alt:"Kingson Engineering crane in the yard, Harare", cls:"s3 h380" },
-    { src:"laser.jpeg", tag:"Laser Cutting", title:"Fiber Laser Installation", meta:"DXTECH \u00b7 3000 \u00d7 1500", alt:"DXTECH fiber laser cutting machine in the Kingson workshop", cls:"s2 h340" },
-    { src:"gantry.jpeg", tag:"Plant", title:"Gantry and Drive Line", meta:"Servo gantry \u00b7 Cable chain", alt:"Fiber laser gantry and cable chain detail", cls:"s2 h340" },
-    { src:"nesting.jpeg", tag:"Engineering", title:"Nesting Station", meta:"DXF to cut file", alt:"Laser control station showing a nested DXF drawing", cls:"s2 h340" },
-    { src:"workshop.jpeg", tag:"The Workshop", title:"The Harare Floor", meta:"Cut \u00b7 Form \u00b7 Weld \u00b7 Finish", alt:"Kingson Engineering fabrication floor in Harare", cls:"s3 h380" },
-    { src:"cuttinghead.jpeg", tag:"Detail", title:"Cutting Head, Mid-Run", meta:"Assist gas \u00b7 Auto focus", alt:"Fiber laser cutting head over steel plate", cls:"s3 h380" }
-  ];
 
   var FAQ = {
     home: { h:"Steelwork questions, answered plainly.", items:[
@@ -1259,7 +1287,15 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
     var top = h.scrollTop || window.pageYOffset || 0;
     var max = (h.scrollHeight || 0) - (h.clientHeight || 0);
     if (pb) pb.style.width = (max > 0 ? (top / max) * 100 : 0) + "%";
-    if (dock) dock.classList.toggle("up", top > 220);
+    if (dock) {
+      dock.classList.toggle("up", top > 220);
+      // stand down when the footer comes into view so it never sits over the contact details
+      var ft = document.querySelector("footer");
+      if (ft && ft.getBoundingClientRect) {
+        var r = ft.getBoundingClientRect();
+        dock.classList.toggle("away", r.top < (window.innerHeight || 800) - 40);
+      }
+    }
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
@@ -1392,107 +1428,35 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 
   show(0);
 
-  /* ═══ pillars ═══ */
-  var pl = $("pillars");
-  PILLARS.forEach(function (p) {
-    var d = el("div", "pillar");
-    d.appendChild(el("div", "n", p[0]));
-    d.appendChild(el("div", "t", p[1]));
-    d.appendChild(el("p", "", p[2]));
-    pl.appendChild(d);
-  });
-
   /* ═══ profiles ═══ */
-  var pr = $("profiles");
-  PROFILES.forEach(function (p) {
-    var w = el("div", "prof");
-    var L = el("div");
-    L.appendChild(el("div", "n", p.n));
-    L.appendChild(el("h3", "", p.name));
-    L.appendChild(el("div", "use", p.use));
-    L.appendChild(el("p", "", p.blurb));
-    var R = el("div");
-    var tb = el("table"), tby = el("tbody");
-    p.rows.forEach(function (r) {
-      var tr = el("tr");
-      tr.appendChild(el("td", "a", r[0]));
-      tr.appendChild(el("td", "b", r[1]));
-      tr.appendChild(el("td", "c", r[2]));
-      tby.appendChild(tr);
-    });
-    tb.appendChild(tby); R.appendChild(tb);
-    w.appendChild(L); w.appendChild(R);
-    pr.appendChild(w);
-  });
-
-  var lz = $("laser");
-  LASER.forEach(function (r) {
-    var tr = el("tr");
-    tr.appendChild(el("td", "a", r[0]));
-    tr.appendChild(el("td", "b", r[1]));
-    tr.appendChild(el("td", "c", r[2]));
-    tr.appendChild(el("td", "c", r[3]));
-    lz.appendChild(tr);
-  });
-
   /* ═══ steps ═══ */
-  var st = $("steps");
-  STEPS.forEach(function (s) {
-    var d = el("div", "step");
-    d.appendChild(el("div", "num", s[0]));
-    var m = el("div");
-    m.appendChild(el("h3", "", s[1]));
-    m.appendChild(el("div", "tag", s[2]));
-    var r = el("div");
-    r.appendChild(el("p", "", s[3]));
-    r.appendChild(el("div", "out", s[4]));
-    d.appendChild(m); d.appendChild(r);
-    st.appendChild(d);
-  });
-
   /* ═══ portfolio ═══ */
-  var wk = $("works");
-  WORKS.forEach(function (w) {
-    var b = el("button", "work " + w.cls);
-    var im = new Image();
-    im.src = w.src; im.alt = w.alt; im.loading = "lazy"; im.decoding = "async";
-    im.onerror = function () { im.remove(); };
-    b.appendChild(im);
-    var c = el("div", "cap");
-    c.appendChild(el("div", "tag", w.tag));
-    c.appendChild(el("div", "ti", w.title));
-    c.appendChild(el("div", "me", w.meta));
-    b.appendChild(c);
+  // portfolio tiles are in the HTML — just wire the lightbox to them
+  Array.prototype.forEach.call(document.querySelectorAll(".work"), function (b) {
     b.onclick = function () {
-      $("lb-img").src = w.src; $("lb-img").alt = w.alt;
-      $("lb-ti").textContent = w.title;
+      var im = b.querySelector("img");
+      var ti = b.querySelector(".ti");
+      if (im) { $("lb-img").src = im.getAttribute("src"); $("lb-img").alt = im.getAttribute("alt") || ""; }
+      if (ti) $("lb-ti").textContent = ti.textContent;
       $("lb").classList.add("on");
     };
-    wk.appendChild(b);
   });
+
   $("lb-x").onclick = function () { $("lb").classList.remove("on"); };
   $("lb").onclick = function (e) { if (e.target === $("lb")) $("lb").classList.remove("on"); };
   window.addEventListener("keydown", function (e) { if (e.key === "Escape") $("lb").classList.remove("on"); });
 
   /* ═══ faqs ═══ */
-  Object.keys(FAQ).forEach(function (k) {
-    var set = FAQ[k];
-    $("faq-h-" + k).textContent = set.h;
-    var box = $("faq-" + k);
-    set.items.forEach(function (it, n) {
-      var w = el("div", "faq-i" + (n === 0 ? " on" : ""));
-      var q = el("button", "faq-q");
-      q.appendChild(document.createTextNode(it[0]));
-      q.appendChild(el("span", "pl"));
-      var a = el("div", "faq-a");
-      a.appendChild(el("p", "", it[1]));
+  // FAQ copy is in the HTML for crawlers — attach the accordion behaviour to it
+  Array.prototype.forEach.call(document.querySelectorAll(".faq"), function (box) {
+    Array.prototype.forEach.call(box.querySelectorAll(".faq-i"), function (item) {
+      var q = item.querySelector(".faq-q");
+      if (!q) return;
       q.onclick = function () {
-        var open = w.classList.contains("on");
+        var open = item.classList.contains("on");
         Array.prototype.forEach.call(box.children, function (c) { c.classList.remove("on"); });
-        if (!open) w.classList.add("on");
+        if (!open) item.classList.add("on");
       };
-      w.appendChild(q); w.appendChild(a);
-      box.appendChild(w);
     });
   });
 
