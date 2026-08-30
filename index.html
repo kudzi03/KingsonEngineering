@@ -112,6 +112,11 @@ a:hover{color:var(--accent)}
 button{font-family:inherit}
 .wrap{width:100%;max-width:1440px;margin:0 auto;padding:0 var(--pad)}
 section,header,footer,.reel,.reel-grid{max-width:100%}
+.hd,.reel-copy,.reel-main,.vhero-in,.menu-inner{min-width:0;max-width:100%}
+.reel h1,.h2,.hd2,.reel p.body,.vhero-lede{max-width:100%;overflow-wrap:break-word}
+.facts,.works,.rows,.form{max-width:100%}
+.facts > div{min-width:0}
+.facts .v{overflow-wrap:anywhere}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .lab{font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--n-400)}
 .ser{font-family:var(--serif);font-weight:300}
@@ -161,14 +166,14 @@ nav.main button:hover{color:var(--n-100)}
 @media(max-width:760px){.utility{display:none}}
 
 /* monogram — a solid mark, the way a real company signs its site */
-.brand{display:flex;align-items:center;gap:13px}
+.brand{display:flex;flex-direction:row;align-items:center;gap:13px;min-width:0;max-width:100%}
 .mark{flex:none;width:40px;height:40px;border-radius:9px;display:grid;place-items:center;
   background:var(--accent);color:#0b0c13;
   font-family:var(--serif);font-weight:500;font-size:17px;letter-spacing:.06em;
   box-shadow:0 6px 20px rgba(74,131,207,.28);transition:transform .5s var(--ease),box-shadow .5s}
 .brand:hover .mark{transform:translateY(-2px);box-shadow:0 10px 26px rgba(74,131,207,.4)}
-.brand-txt{display:flex;flex-direction:column;gap:5px;text-align:left}
-.brand-sub{font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--n-400)}
+.brand-txt{display:flex;flex-direction:column;gap:5px;text-align:left;min-width:0}
+.brand-sub{font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--n-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ═══════════ thumb dock (phones) ═══════════ */
 .dock{display:none}
@@ -306,7 +311,6 @@ nav.main button:hover{color:var(--n-100)}
 }
 
 @media(max-width:560px){
-  .reel h1{font-size:clamp(40px,11vw,58px);line-height:.96}
   .vhero{min-height:clamp(300px,58vh,420px)}
   .qband{min-height:clamp(260px,42vh,360px)}
   .counter .n{font-size:28px}
@@ -368,8 +372,9 @@ nav.main button:hover{color:var(--n-100)}
   background:linear-gradient(90deg,var(--accent),rgba(74,131,207,0))}
 .reel-kicker{font-size:10px;letter-spacing:.36em;text-transform:uppercase;color:var(--n-200)}
 
-.reel h1{margin:0;overflow-wrap:anywhere;font-family:var(--serif);font-weight:300;
-  font-size:clamp(46px,6.4vw,104px);line-height:.98;letter-spacing:-.015em;color:#f3f2f7;text-wrap:pretty}
+.reel h1{margin:0;overflow-wrap:anywhere;hyphens:auto;font-family:var(--serif);font-weight:300;
+  font-size:clamp(40px,10.5vw,104px);line-height:.97;letter-spacing:-.015em;color:#f3f2f7;
+  text-wrap:balance;max-width:100%}
 .reel p.body{margin:calc(var(--s6) * 1.5) 0 0;max-width:46ch;font-size:15px;
   line-height:1.75;color:var(--n-200);text-wrap:pretty}
 
@@ -503,6 +508,30 @@ nav.main button:hover{color:var(--n-100)}
 .esplit-form{background:linear-gradient(180deg,#1c2338,#161b2c);
   padding:clamp(30px,5vw,64px);display:flex;flex-direction:column;justify-content:center}
 
+
+/* ═══════════ depth: parallax planes, tilt, layered motion ═══════════ */
+.vhero-img,.qband .frame,.esplit-photo .frame{will-change:transform}
+.vhero-img img,.qband img,.esplit-photo img{transform:scale(1.16);will-change:transform}
+.plate img{transform:scale(1.12);will-change:transform}
+
+/* portfolio tiles become physical objects, not rectangles */
+.works{perspective:1400px}
+.work{transform-style:preserve-3d;
+  transition:transform .55s var(--ease),border-color .4s,box-shadow .55s var(--ease)}
+.work:hover{box-shadow:0 34px 70px rgba(0,0,0,.55),0 0 0 1px rgba(74,131,207,.28)}
+.work .cap{transform:translateZ(28px);transition:transform .55s var(--ease)}
+
+/* spec cards lift toward the pointer */
+.facts{perspective:1200px}
+.facts > div{transform-style:preserve-3d}
+
+/* a section arrives rather than appears */
+.vhero-in,.qband blockquote{will-change:transform,opacity}
+
+@media(prefers-reduced-motion:reduce){
+  .vhero-img img,.qband img,.esplit-photo img,.plate img{transform:none!important}
+  .work{transform:none!important}
+}
 /* ═══════════ sections ═══════════ */
 section.blk{padding:clamp(56px,9vw,120px) 0;border-top:1px solid var(--line)}
 h2.hd2{margin:14px 0 0;overflow-wrap:anywhere;font-family:var(--serif);font-weight:300;
@@ -1247,6 +1276,74 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 
   /* ═══ nav + views ═══ */
   var view = "home";
+
+  /* ═══════════ depth engine ═══════════
+     One rAF loop, gated by IntersectionObserver, disabled for reduced motion
+     and on low-core devices. No dependencies, no WebGL, ~1.5 KB. */
+  (function depth(){
+    var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    var weak   = (navigator.hardwareConcurrency || 4) < 4;
+    if (reduce || weak) return;
+
+    var planes = [];
+    function collect(){
+      planes = [];
+      var sel = ".vhero-img img, .qband img, .esplit-photo img, .plate img";
+      Array.prototype.forEach.call(document.querySelectorAll(sel), function(img){
+        var host = img.closest(".vhero-img, .qband, .esplit-photo, .plate") || img.parentNode;
+        planes.push({ img: img, host: host, on: false, depth: host.classList.contains("plate") ? 26 : 34 });
+      });
+      if (!window.IntersectionObserver) { planes.forEach(function(p){ p.on = true; }); return; }
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          planes.forEach(function(p){ if (p.host === e.target) p.on = e.isIntersecting; });
+        });
+      }, { rootMargin: "120px 0px" });
+      planes.forEach(function(p){ io.observe(p.host); });
+    }
+
+    var vh = window.innerHeight || 800, ticking = false;
+    function frame(){
+      ticking = false;
+      for (var i = 0; i < planes.length; i++){
+        var p = planes[i];
+        if (!p.on) continue;
+        var r = p.host.getBoundingClientRect();
+        // -1 entering from below .. +1 leaving at the top
+        var t = ((r.top + r.height / 2) - vh / 2) / (vh / 2 + r.height / 2);
+        if (t < -1.4 || t > 1.4) continue;
+        p.img.style.transform = "scale(1.16) translate3d(0," + (t * p.depth).toFixed(2) + "px,0)";
+      }
+    }
+    function onScroll(){ if (!ticking){ ticking = true; requestAnimationFrame(frame); } }
+
+    collect();
+    frame();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", function(){ vh = window.innerHeight; collect(); frame(); }, { passive: true });
+  })();
+
+  /* ═══════════ pointer tilt — real objects, not rectangles ═══════════ */
+  (function tilt(){
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia && window.matchMedia("(hover: none)").matches) return;   // pointer devices only
+
+    function bind(el, max, lift){
+      el.addEventListener("pointermove", function(e){
+        var r = el.getBoundingClientRect();
+        var rx = (((e.clientY - r.top) / r.height) - .5) * -max;
+        var ry = (((e.clientX - r.left) / r.width) - .5) *  max;
+        el.style.transform = "perspective(1200px) rotateX(" + rx.toFixed(2) +
+          "deg) rotateY(" + ry.toFixed(2) + "deg) translateY(" + lift + "px)";
+      });
+      el.addEventListener("pointerleave", function(){
+        el.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0)";
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll(".work"), function(w){ bind(w, 7, -5); });
+    Array.prototype.forEach.call(document.querySelectorAll(".facts > div"), function(c){ bind(c, 9, -3); });
+  })();
+
   var nav  = $("nav");
   var mnav = $("menu-nav");
   var MENU_BG = { home:"structure.jpeg", profiles:"trusses.jpeg", process:"nesting.jpeg",
