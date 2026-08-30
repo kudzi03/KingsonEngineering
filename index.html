@@ -204,6 +204,14 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;
   transition:background .45s var(--ease),border-color .45s var(--ease),backdrop-filter .45s}
 header.solid{background:rgba(4,6,11,.88);border-bottom-color:var(--line);
   backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%)}
+/* the bar is transparent at the top of every view now, and every view opens on
+   a photograph — which may be a bright tin roof. A veil under the bar keeps the
+   wordmark legible whatever is behind it, and fades out once the bar goes solid. */
+header::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(3,5,9,.78) 0%,rgba(3,5,9,.42) 52%,transparent 100%);
+  transition:opacity .45s var(--ease)}
+header.solid::before{opacity:0}
+.hd{position:relative;z-index:1}
 .hd{display:flex;align-items:center;justify-content:space-between;gap:var(--s6);
   padding:clamp(16px,2vw,22px) 0;flex-wrap:nowrap}
 .brand{display:flex;flex-direction:column;gap:5px;cursor:pointer;background:none;border:0;padding:0;text-align:left}
@@ -378,7 +386,8 @@ nav.main button:focus-visible{outline:2px solid #fff;outline-offset:2px}
     padding-bottom:calc(clamp(16px,3vw,24px) + env(safe-area-inset-bottom,0px))}
   .reel-main{padding-bottom:clamp(18px,4vw,30px)}
   body{font-size:var(--t-2)}
-  .greet-q,.vhero-lede,.kg-lede{font-size:var(--t-2);line-height:1.75}
+  .greet-q,.kg-lede{font-size:var(--t-2);line-height:1.75}
+  .vhero-lede{font-size:var(--t-1);line-height:1.62;max-width:42ch}
   .step p,.prof p,.cred-body p,.two p,.faq-a p{font-size:var(--t-2);line-height:1.8}
   .faq-q{padding:24px 0;min-height:64px}
   .crail-i{padding:26px 0}
@@ -389,7 +398,6 @@ nav.main button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 }
 
 @media(max-width:767.98px){
-  .vhero-img{aspect-ratio:3/2}
   .qband{min-height:clamp(260px,42vh,360px)}
 }
 
@@ -590,36 +598,66 @@ h1.greet em{display:block;font-style:normal;color:rgba(255,255,255,.72)}
 .btn-ghost:hover{border-color:transparent;color:#fff}
 .btn:focus-visible{outline:2px solid var(--accent-300);outline-offset:3px}
 
-/* ═══════════ photographic view heroes ═══════════ */
-.vhero{position:relative;display:grid;grid-template-columns:minmax(0,1fr);
-  background:var(--bg);padding-top:var(--hd);align-items:stretch}
-.vhero-img{position:relative;order:1;overflow:hidden;
-  aspect-ratio:16/10;min-height:0}
-@media(min-width:768px){.vhero-img{aspect-ratio:21/9}}
-/* the .frame wrapper has no height of its own, so the photo was collapsing
-   to its natural ratio and leaving a black gap under it */
+/* ═══════════ photographic view heroes ═══════════
+   ONE hero design at every width. The previous rules built a stacked
+   photo-strip-over-black-box on phones and an unrelated 50/50 split on
+   laptops, so the same page looked like two different sites depending on
+   what you opened it with. Now every view hero is the same object the
+   home hero is: an inset rounded frame, a full-bleed photograph, the copy
+   laid over it on a gradient veil. Only the proportions move. */
+.vhero{position:relative;z-index:0;display:flex;align-items:flex-end;
+  isolation:isolate;overflow:hidden;
+  margin:0 clamp(7px,1vw,14px) clamp(7px,1vw,14px);
+  border-radius:clamp(18px,2.2vw,32px);
+  /* svh so a phone's collapsing URL bar cannot change the hero's height
+     mid-scroll; the px floor keeps it alive if svh is unsupported */
+  min-height:max(26rem,clamp(30rem,72svh,44rem));
+  padding-top:var(--hd);
+  background:linear-gradient(168deg,#1B2434,#0E1420)}
+
+/* the photograph is a backdrop, not a grid cell — it can never collapse to
+   zero height, and it can never leave a black hole if the file 404s */
+.vhero-img{position:absolute;inset:0;z-index:0;overflow:hidden;
+  aspect-ratio:auto;min-height:0;border:0}
 .vhero-img .frame{position:absolute;inset:0}
 .vhero-img img{width:100%;height:100%;object-fit:cover;
-  filter:brightness(1) contrast(1.04) saturate(1.06)}
+  filter:brightness(.82) contrast(1.06) saturate(1.05)}
 
+/* two veils, same language as the home hero: dark from the bottom for the
+   copy, a warm bloom at the top so the steel keeps its light */
+.vhero-scrim{display:block;position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(120% 76% at 78% 18%,rgba(255,148,99,.14) 0%,transparent 58%),
+    linear-gradient(180deg,rgba(3,5,9,.82) 0%,rgba(3,5,9,.34) 22%,rgba(3,5,9,.30) 42%,rgba(3,5,9,.72) 70%,rgba(3,5,9,.95) 100%)}
 @media(min-width:1024px){
-  .vhero{grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);
-    padding-top:0;min-height:clamp(440px,66vh,640px)}
-  .vhero-img{order:2;aspect-ratio:auto;height:100%;border-left:1px solid var(--line)}
+  /* on a wide frame the copy sits left, so the veil leans that way too */
+  .vhero-scrim{background:
+    radial-gradient(120% 76% at 78% 18%,rgba(255,148,99,.13) 0%,transparent 58%),
+    linear-gradient(96deg,rgba(3,5,9,.94) 0%,rgba(3,5,9,.84) 30%,rgba(3,5,9,.40) 58%,rgba(3,5,9,.22) 78%,rgba(3,5,9,.46) 100%),
+    linear-gradient(180deg,rgba(3,5,9,.5) 0%,transparent 30%,rgba(3,5,9,.6) 100%)}
 }
-.vhero-scrim{display:none}
-.vhero-in{position:relative;z-index:3;order:2;width:100%;background:var(--bg);
-  padding-block:clamp(32px,4.4vw,54px) clamp(36px,4.8vw,64px)}
+
+.vhero-in{position:relative;z-index:3;width:100%;background:transparent;
+  padding-block:clamp(28px,4vw,44px) clamp(30px,4.4vh,56px)}
 @media(min-width:1024px){
-  .vhero-in{order:1;display:flex;flex-direction:column;justify-content:center;
-    padding-block:calc(var(--hd) + clamp(26px,3.2vw,48px)) clamp(32px,4vw,56px)}
+  .vhero-in{padding-block:clamp(32px,4vw,52px) clamp(38px,5vh,68px)}
 }
-.vhero-lede{margin:var(--sp-s) 0 0;max-width:48ch;
-  font-size:var(--t-1);line-height:1.72;color:var(--n-300);text-wrap:pretty}
+/* a landscape phone is ~390px tall: a 30rem floor would make the hero taller
+   than the screen it is being read on. Let the copy set the height there. */
+@media(max-height:560px) and (orientation:landscape){
+  .vhero{min-height:0;padding-top:calc(var(--hd) - 1rem)}
+  .vhero-in{padding-block:var(--sp-s) var(--sp-m)}
+  .vhero-in h2.hd2{font-size:var(--t-4)}
+}
+.vhero-in .lab{color:rgba(255,255,255,.86)}
+.vhero-lede{margin:var(--sp-s) 0 0;max-width:52ch;
+  font-size:var(--t-1);line-height:1.7;color:rgba(255,255,255,.9);text-wrap:pretty;
+  text-shadow:0 1px 20px rgba(3,5,9,.7)}
+@media(min-width:1024px){.vhero-lede{max-width:46ch}}
 
 /* flat panel under each section hero — no gradient haze */
 .navy{background:var(--bg)}
-.navy .vhero + *{border-top:1px solid var(--line)}
+.navy .vhero + *{border-top:0}
 .navy .blk{border-top:0}
 
 /* ═══════════ pull-quote over photograph ═══════════ */
@@ -690,7 +728,9 @@ section.blk{padding-block:var(--sp-xl);border-top:1px solid var(--line)}
 h2.hd2{margin:var(--sp-s) 0 0;overflow-wrap:anywhere;font-family:var(--display);font-weight:200;
   font-size:var(--t-4);line-height:1.02;color:#fff;letter-spacing:-.036em;
   text-wrap:balance}
-.vhero-in h2.hd2{font-size:var(--t-4);line-height:1.01;letter-spacing:-.038em;max-width:15ch}
+.vhero-in h2.hd2{font-size:var(--t-5);line-height:1.01;letter-spacing:-.038em;
+  max-width:17ch;text-shadow:0 2px 30px rgba(3,5,9,.6)}
+@media(min-width:1024px){.vhero-in h2.hd2{max-width:14ch}}
 .grid4{display:grid;grid-template-columns:minmax(0,1fr);gap:1px;background:var(--line);
   margin-top:var(--sp-l)}
 @media(min-width:768px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -755,21 +795,50 @@ h2.hd2{margin:var(--sp-s) 0 0;overflow-wrap:anywhere;font-family:var(--display);
   padding:6px 13px;font-size:var(--t--1);color:var(--n-300);
   background:rgba(255,255,255,.06);border:1px solid var(--line)}
 .prof p{margin:var(--s4) 0 0;font-size:var(--t-1);line-height:1.75;color:var(--n-300);max-width:38ch}
+/* ═══════════ spec tables ═══════════
+   table-layout:fixed split every row into equal thirds, then td.b was set
+   to a display size at white-space:nowrap — so "36 mm / 200 mm" simply ran
+   out of its third and printed straight over the note in the next column.
+   Columns are proportioned to what they actually carry, and nothing is
+   forbidden from wrapping. */
 table{width:100%;border-collapse:collapse;table-layout:fixed}
-td{padding:var(--sp-xs) var(--sp-2xs) var(--sp-xs) 0;border-bottom:1px solid var(--line);
+td{padding:var(--sp-xs) var(--sp-s) var(--sp-xs) 0;border-bottom:1px solid var(--line);
   vertical-align:baseline;overflow-wrap:break-word}
-td.a{font-size:var(--t-0);color:var(--n-200)}
+td:last-child{padding-right:0}
+td.a{width:32%;font-size:var(--t-0);color:var(--n-300)}
+td.b{width:40%;font-family:var(--display);font-weight:300;font-size:var(--t-2);
+  letter-spacing:-.02em;color:#fff}
+td.c{width:28%;font-size:var(--t--1);line-height:1.5;color:var(--n-400)}
+/* the laser table runs four columns, not three */
+#laser td.a{width:30%}
+#laser td.b{width:22%}
+#laser td.c{width:24%}
+
+@media(min-width:1280px){
+  td.a{width:28%}
+  td.b{width:40%}
+  td.c{width:32%}
+}
+/* the value is the thing being read, but at display size it crowded the note
+   beside it and wrapped mid-figure. Keep the figures whole instead: break the
+   row between its parts, never inside "36 mm / 200 mm". */
+/* 1024-1279 is the tightest band: .prof has just split into two columns but
+   the shell has not grown yet, so the value column gets the extra room */
+@media(min-width:1024px) and (max-width:1279.98px){
+  td.a{width:30%} td.b{width:46%} td.c{width:24%}
+}
+td.b{word-spacing:-.01em}
+td.b,td.c{text-wrap:pretty}
+
 @media(max-width:767.98px){
   /* a three-column spec row has nowhere to go on a phone — stack it */
   table,tbody,tr,td{display:block;width:100%}
   tr{padding-block:var(--sp-xs);border-bottom:1px solid var(--line)}
-  td{border-bottom:0;padding:0}
+  td,td.a,td.b,td.c,#laser td.a,#laser td.b,#laser td.c{width:100%;border-bottom:0;padding:0}
   td.a{color:var(--n-400)}
-  td.b{margin-top:var(--sp-3xs)}
+  td.b{margin-top:var(--sp-3xs);font-size:var(--t-3)}
+  td.c{margin-top:var(--sp-3xs)}
 }
-td.b{font-family:var(--display);font-weight:300;font-size:var(--t-3);letter-spacing:-.02em;color:#fff;white-space:nowrap}
-td.c{font-size:var(--t--1);color:var(--n-400)}
-@media(max-width:767.98px){td.c{margin-top:var(--sp-3xs)}}
 
 /* ═══════════ process ═══════════ */
 .step{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--sp-s);
@@ -780,7 +849,10 @@ td.c{font-size:var(--t--1);color:var(--n-400)}
 }
 .step .num{font-family:var(--display);font-weight:200;font-size:var(--t-5);line-height:1;
   letter-spacing:-.04em;color:var(--ember)}
-.step h3{margin:0;font-family:var(--display);font-weight:400;font-size:var(--t-4);color:#f0eff5}
+/* this sat at hero size in an 18rem column with body leading, so "Drawing
+   intake" wrapped to two lines a full line-height apart */
+.step h3{margin:0;font-family:var(--display);font-weight:300;font-size:var(--t-3);
+  line-height:1.08;letter-spacing:-.028em;color:#f0eff5;text-wrap:balance}
 .step .tag{display:inline-block;margin-top:11px;border-radius:var(--r-pill);
   padding:6px 13px;font-size:var(--t--1);color:var(--n-300);
   background:rgba(255,255,255,.06);border:1px solid var(--line)}
@@ -1094,7 +1166,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 <!-- ═══════════ PROFILES ═══════════ -->
 <div class="view" id="v-profiles">
   <section class="vhero">
-    <div class="vhero-img"><div class="frame"><img src="portalframe.jpeg" alt="Steel portal frame roof structure" loading="lazy" decoding="async" onerror="this.remove()"></div></div>
+    <div class="vhero-img"><div class="frame"><img src="portalframe.jpeg" alt="Steel portal frame roof structure" loading="lazy" decoding="async"></div></div>
     <div class="vhero-scrim"></div>
     <div class="wrap vhero-in">
       <span class="lab">Profiles &amp; Technical Specifications</span>
@@ -1146,7 +1218,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 <!-- ═══════════ PROCESS ═══════════ -->
 <div class="view" id="v-process">
   <section class="vhero">
-    <div class="vhero-img"><div class="frame"><img src="nesting.jpeg" alt="Laser control station showing a nested drawing" loading="lazy" decoding="async" onerror="this.remove()"></div></div>
+    <div class="vhero-img"><div class="frame"><img src="nesting.jpeg" alt="Laser control station showing a nested drawing" loading="lazy" decoding="async"></div></div>
     <div class="vhero-scrim"></div>
     <div class="wrap vhero-in">
       <span class="lab">Engineering &amp; Nesting Process</span>
@@ -1172,7 +1244,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
   </div>
 
   <section class="qband">
-    <div class="frame"><img src="laser.jpeg" alt="DXTECH fiber laser bed mid-cut" loading="lazy" decoding="async" onerror="this.remove()"></div>
+    <div class="frame"><img src="laser.jpeg" alt="DXTECH fiber laser bed mid-cut" loading="lazy" decoding="async"></div>
     <div class="qband-scrim"></div>
     <div class="wrap"><blockquote>Nothing is committed to steel until the nest is signed off.</blockquote></div>
   </section>
@@ -1192,7 +1264,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 <!-- ═══════════ PORTFOLIO ═══════════ -->
 <div class="view" id="v-portfolio">
   <section class="vhero">
-    <div class="vhero-img"><div class="frame"><img src="workshop.jpeg" alt="Kingson Engineering fabrication floor, Harare" loading="lazy" decoding="async" onerror="this.remove()"></div></div>
+    <div class="vhero-img"><div class="frame"><img src="workshop.jpeg" alt="Kingson Engineering fabrication floor, Harare" loading="lazy" decoding="async"></div></div>
     <div class="vhero-scrim"></div>
     <div class="wrap vhero-in">
       <span class="lab">Portfolio</span>
@@ -1236,7 +1308,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
 <div class="view" id="v-enquiry">
   <section class="esplit">
     <div class="esplit-photo">
-      <div class="frame"><img src="laser.jpeg" alt="DXTECH fiber laser in the Kingson workshop" loading="lazy" decoding="async" onerror="this.remove()"></div>
+      <div class="frame"><img src="laser.jpeg" alt="DXTECH fiber laser in the Kingson workshop" loading="lazy" decoding="async"></div>
       <div class="ov"></div>
       <div class="esplit-copy">
         <span class="lab">Request a Quote</span>
@@ -1506,8 +1578,16 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
     i.loading = "lazy";
     i.decoding = "async";
     // only treat it as a failure if a real path was actually requested —
-    // setting src="" fires an error and would strip the element before it is hydrated
-    i.onerror = function () { if (i.getAttribute("src")) i.remove(); };
+    // setting src="" fires an error and would strip the element before it is
+    // hydrated. One dropped request should not permanently delete a photograph,
+    // so retry once; only then fall back to the frame's own metallic texture.
+    i.onerror = function () {
+      var src = i.getAttribute("src");
+      if (!src) return;
+      if (i.dataset.retried) { i.remove(); return; }
+      i.dataset.retried = "1";
+      setTimeout(function () { i.src = src.split("?")[0] + "?r=" + Date.now(); }, 600);
+    };
     if (src) i.src = src;
     f.appendChild(i);
     return f;
@@ -1651,7 +1731,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
     var h = document.documentElement || document.body;
     if (!h) return;
     var top = h.scrollTop || window.pageYOffset || 0;
-    if (hdr) hdr.classList.toggle("solid", top > 40 || view !== "home");
+    if (hdr) hdr.classList.toggle("solid", top > 40);
     if (dock) {
       dock.classList.toggle("up", top > 220);
       // stand down when the footer comes into view so it never sits over the contact details
@@ -1702,12 +1782,51 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
       });
     });
     window.scrollTo(0, 0);
-    if (hdr) hdr.classList.toggle("solid", id !== "home");
+    if (hdr) hdr.classList.toggle("solid", window.scrollY > 40);
+    wake($("v-" + id));
+    if (location.hash.slice(2) !== id) {
+      history.replaceState(null, "", id === "home" ? location.pathname : "#/" + id);
+    }
     arm();
+  }
+
+  /* A hero photograph is above the fold the moment its view opens, but it was
+     marked loading="lazy" inside a display:none panel — so the frame was
+     painted black and the photo arrived late or, on a dropped request, never.
+     Promote everything in the incoming view to an eager load, and give a
+     failed fetch one retry before falling back to the frame's own texture. */
+  function wake(root) {
+    if (!root) return;
+    Array.prototype.forEach.call(root.querySelectorAll("img"), function (im) {
+      if (im.dataset.woke) return;
+      im.dataset.woke = "1";
+      im.loading = "eager";
+      im.fetchPriority = "high";
+      im.addEventListener("error", function () {
+        var src = im.getAttribute("src");
+        if (!src || im.dataset.retried) return;   // no src yet, or already retried
+        im.dataset.retried = "1";
+        setTimeout(function () {
+          im.src = src.split("?")[0] + "?r=" + Date.now();
+        }, 600);
+      });
+    });
   }
   Array.prototype.forEach.call(document.querySelectorAll("[data-go]"), function (b) {
     b.onclick = function () { go(b.getAttribute("data-go")); };
   });
+
+  /* views had no URL at all, so a link sent from a laptop opened on the home
+     page on a phone and the back button did nothing */
+  function routed() {
+    var id = (location.hash || "").replace(/^#\/?/, "");
+    return VIEWS.some(function (v) { return v.id === id; }) ? id : "home";
+  }
+  window.addEventListener("hashchange", function () {
+    var id = routed();
+    if (id !== view) go(id);
+  });
+  if (routed() !== "home") go(routed()); else wake($("v-home"));
 
   /* ═══ hero ═══ */
   var i = 0, timer = null, t2 = null;
