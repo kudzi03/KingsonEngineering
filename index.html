@@ -722,6 +722,27 @@ h1.greet em{display:block;font-style:normal;color:rgba(255,255,255,.72)}
   .vhero-img img,.qband img,.esplit-photo img,.plate img{transform:none!important}
   .work{transform:none!important}
 }
+/* ═══════════ scroll choreography ═══════════
+   Everything below the hero used to be inert: three keyframes on the page and
+   all of them hero-only, so you scrolled past the service rows, the spec
+   tables, the portfolio and the FAQ and nothing ever arrived. This is the
+   layer that was missing.
+
+   Progressive enhancement, deliberately: .rise is VISIBLE by default. The
+   hidden-then-reveal state only exists under html.anim, a class the script
+   adds after it confirms it can drive the reveal. No script, old browser, or
+   reduced-motion preference => the class is never added and every element
+   renders plainly. Content is never hidden by something that might not run. */
+.rise{opacity:1}
+html.anim .rise{opacity:0;transform:translateY(16px);
+  transition:opacity .72s var(--ease),transform .72s var(--ease);
+  transition-delay:calc(var(--d,0) * 65ms)}
+html.anim .rise.in{opacity:1;transform:none}
+/* belt and braces: even if html.anim is somehow set, this wins */
+@media(prefers-reduced-motion:reduce){
+  html.anim .rise{opacity:1;transform:none;transition:none}
+}
+
 /* ═══════════ sections ═══════════ */
 section.blk{padding-block:var(--sp-xl);border-top:1px solid var(--line)}
 .navy > section.blk:first-child{padding-block-start:var(--sp-l)}
@@ -1610,7 +1631,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
       var sel = ".vhero-img img, .qband img, .esplit-photo img, .plate img";
       Array.prototype.forEach.call(document.querySelectorAll(sel), function(img){
         var host = img.closest(".vhero-img, .qband, .esplit-photo, .plate") || img.parentNode;
-        planes.push({ img: img, host: host, on: false, depth: host.classList.contains("plate") ? 26 : 34 });
+        planes.push({ img: img, host: host, on: false, depth: host.classList.contains("plate") ? 34 : 44 });
       });
       if (!window.IntersectionObserver) { planes.forEach(function(p){ p.on = true; }); return; }
       var io = new IntersectionObserver(function(es){
@@ -1640,6 +1661,77 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
     frame();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", function(){ vh = window.innerHeight; collect(); frame(); }, { passive: true });
+  })();
+
+  /* ═══════════ scroll choreography ═══════════
+     Content arrives as you reach it. One IntersectionObserver for the whole
+     page, each element unobserved the moment it reveals — so this costs
+     nothing after first paint and never re-triggers when you scroll back up. */
+  (function choreography(){
+    if (!window.IntersectionObserver) return;                       // stay visible
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    /* Heroes are excluded on purpose: .vhero / .reel already carry their own
+       entrance, and doubling them reads as a stutter. */
+    var SEL = [
+      "section.blk .lab", "section.blk .hd2",
+      ".pillar", ".svc-row", ".prof", ".step", ".work",
+      ".faq-i", ".crail-i", ".qband blockquote",
+      ".esplit-copy", ".f", ".sent", ".ft-col", ".two"
+    ].join(",");
+
+    var els = Array.prototype.slice.call(document.querySelectorAll(SEL));
+    if (!els.length) return;
+    els.forEach(function(e){ e.classList.add("rise"); });
+
+    /* Stagger within a group so a row of six tiles cascades instead of
+       flashing in as one block. Capped, or the tail of a long list would sit
+       there waiting while you are already reading it. */
+    function stagger(container, sel){
+      Array.prototype.forEach.call(container.querySelectorAll(sel), function(el, i){
+        el.style.setProperty("--d", Math.min(i, 6));
+      });
+    }
+    [["#profiles", ".prof"], ["#steps", ".step"], ["#works", ".work"],
+     [".grid4", ".pillar"], [".svc", ".svc-row"], [".faq", ".faq-i"],
+     [".crail", ".crail-i"], [".ft", ".ft-col"]].forEach(function(pair){
+      Array.prototype.forEach.call(document.querySelectorAll(pair[0]), function(c){
+        stagger(c, pair[1]);
+      });
+    });
+    /* a section's label leads its heading by one beat */
+    Array.prototype.forEach.call(document.querySelectorAll("section.blk"), function(sec){
+      var lab = sec.querySelector(".lab"), h = sec.querySelector(".hd2");
+      if (lab) lab.style.setProperty("--d", 0);
+      if (h) h.style.setProperty("--d", 1);
+    });
+
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        e.target.classList.add("in");
+        io.unobserve(e.target);                 // reveal once, then stop watching
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.01 });
+
+    // only now commit to the hidden state, so a throw above leaves content visible
+    document.documentElement.classList.add("anim");
+    els.forEach(function(e){ io.observe(e); });
+
+    /* A hidden view measures zero and never intersects. Switching to it makes
+       its content real, and the observer fires then — but give the browser a
+       frame to lay it out first so the top of the page is not skipped. */
+    window.addEventListener("kingson:viewchange", function(){
+      requestAnimationFrame(function(){
+        els.forEach(function(e){
+          if (e.classList.contains("in")) return;
+          var r = e.getBoundingClientRect();
+          if (r.height && r.top < window.innerHeight * 0.92 && r.bottom > 0){
+            e.classList.add("in"); io.unobserve(e);
+          }
+        });
+      });
+    });
   })();
 
   /* ═══════════ pointer tilt — real objects, not rectangles ═══════════ */
@@ -1784,6 +1876,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
     window.scrollTo(0, 0);
     if (hdr) hdr.classList.toggle("solid", window.scrollY > 40);
     wake($("v-" + id));
+    try { window.dispatchEvent(new Event("kingson:viewchange")); } catch (e) {}
     if (location.hash.slice(2) !== id) {
       history.replaceState(null, "", id === "home" ? location.pathname : "#/" + id);
     }
