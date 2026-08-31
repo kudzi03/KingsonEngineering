@@ -649,6 +649,18 @@ h1.greet em{display:block;font-style:normal;color:rgba(255,255,255,.72)}
   .vhero-in{padding-block:var(--sp-s) var(--sp-m)}
   .vhero-in h2.hd2{font-size:var(--t-4)}
 }
+/* ═══════════ embers ═══════════
+   A drifting spark field over the hero photograph. The palette already
+   carried --ember (#FF9463) for hot metal; this is what it is for. Painted
+   above the veil so the sparks read as being in the air in front of the
+   steel, but under .vhero-in / .reel-grid so no spark ever crosses a letter
+   at full strength. Injected by script, so no-JS and reduced-motion simply
+   never get a canvas. */
+.embers{position:absolute;inset:0;z-index:2;pointer-events:none;
+  opacity:0;transition:opacity 1.6s var(--ease)}
+.embers.lit{opacity:1}
+@media(prefers-reduced-motion:reduce){.embers{display:none}}
+
 .vhero-in .lab{color:rgba(255,255,255,.86)}
 .vhero-lede{margin:var(--sp-s) 0 0;max-width:52ch;
   font-size:var(--t-1);line-height:1.7;color:rgba(255,255,255,.9);text-wrap:pretty;
@@ -1642,6 +1654,170 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
     window.addEventListener("resize", function(){ vh = window.innerHeight; collect(); frame(); }, { passive: true });
   })();
 
+  /* ═══════════ ember field ═══════════
+     Sparks off hot steel, drifting up the hero. One rAF loop shared by every
+     hero on the page, gated by IntersectionObserver so an off-screen hero
+     costs nothing, and parked entirely while the tab is hidden. Delta-timed,
+     so it runs at the same speed on a 120 Hz phone as on a 60 Hz laptop. */
+  (function embers(){
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if ((navigator.hardwareConcurrency || 4) < 4) return;   // leave weak devices alone
+    if (!document.createElement("canvas").getContext) return;
+
+    /* one radial blob per temperature, drawn once and stamped thereafter —
+       a per-particle gradient would cost more than the effect is worth */
+    function sprite(core, mid){
+      var S = 32, c = document.createElement("canvas"), g = c.getContext("2d");
+      c.width = c.height = S;
+      var grd = g.createRadialGradient(S/2, S/2, 0, S/2, S/2, S/2);
+      grd.addColorStop(0, core);
+      grd.addColorStop(.34, mid);
+      grd.addColorStop(1, "rgba(255,148,99,0)");
+      g.fillStyle = grd; g.fillRect(0, 0, S, S);
+      return c;
+    }
+    var SPRITES = [
+      sprite("rgba(255,244,232,.95)", "rgba(255,176,116,.46)"),  // white-hot
+      sprite("rgba(255,186,132,.92)", "rgba(255,126,64,.40)"),   // ember
+      sprite("rgba(255,152,96,.85)",  "rgba(226,96,42,.34)")     // cooling
+    ];
+
+    /* sparks are soft glows, not type — 2x buys no visible sharpness and
+       doubles the pixels cleared and composited every frame */
+    var DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+    var fields = [];
+
+    function Field(host){
+      var c = document.createElement("canvas");
+      c.className = "embers";
+      c.setAttribute("aria-hidden", "true");
+      host.appendChild(c);
+      this.host = host; this.c = c; this.g = c.getContext("2d");
+      this.p = []; this.on = false; this.w = 0; this.h = 0;
+      this.size();
+      var self = this;
+      requestAnimationFrame(function(){ c.classList.add("lit"); });
+    }
+
+    Field.prototype.size = function(){
+      var r = this.host.getBoundingClientRect();
+      var w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
+      if (w === this.w && h === this.h) return;
+      this.w = w; this.h = h;
+      this.c.width = Math.round(w * DPR); this.c.height = Math.round(h * DPR);
+      this.c.style.width = w + "px"; this.c.style.height = h + "px";
+      this.g.setTransform(DPR, 0, 0, DPR, 0, 0);
+      // density follows area, so a phone does not run a laptop's particle count
+      var want = Math.max(16, Math.min(58, Math.round((w * h) / 19000)));
+      while (this.p.length > want) this.p.pop();
+      while (this.p.length < want) this.p.push(this.spark(true));
+    };
+
+    Field.prototype.spark = function(seed){
+      var h = this.h || 600;
+      // sparks are born low — they rise off the steel, they do not rain down
+      var y = seed ? Math.random() * h : h + 8 + Math.random() * 30;
+      var vy = -(0.22 + Math.random() * 0.62);
+      // lifespan is derived from the climb, not fixed: a fixed span was shorter
+      // than the time to cross the frame, so every spark died near the bottom
+      // and the field collapsed into a row of dots along the lower edge
+      var span = (h / Math.abs(vy)) * (0.55 + Math.random() * 0.5);
+      var risen = Math.max(0, Math.min(1, 1 - y / h));
+      return {
+        x: Math.random() * (this.w || 400),
+        y: y,
+        vy: vy,
+        vx: (Math.random() - 0.5) * 0.16,
+        wob: Math.random() * Math.PI * 2,        // horizontal wander phase
+        wobV: 0.006 + Math.random() * 0.014,
+        r: 0.9 + Math.random() * 2.4,
+        a: 0,
+        peak: 0.46 + Math.random() * 0.54,       // never full white against text
+        // a seeded spark starts mid-life so the first frame is already a field
+        life: seed ? risen * span * 0.95 : 0,
+        span: span,
+        s: SPRITES[(Math.random() * SPRITES.length) | 0]
+      };
+    };
+
+    Field.prototype.step = function(dt){
+      var g = this.g, P = this.p, i, s;
+      g.clearRect(0, 0, this.w, this.h);
+      g.globalCompositeOperation = "lighter";
+      for (i = 0; i < P.length; i++){
+        s = P[i];
+        s.life += dt;
+        s.wob += s.wobV * dt;
+        s.y += s.vy * dt;
+        s.x += (s.vx + Math.sin(s.wob) * 0.22) * dt;
+        // fade in over the first fifth of life, out over the last third
+        var t = s.life / s.span;
+        s.a = t < .2 ? (t / .2) : t > .67 ? Math.max(0, (1 - t) / .33) : 1;
+        // brightness lives in a band across the middle of the frame: dim along
+        // the bottom edge where the headline and lede sit, dim again at the top
+        // under the header, full only in the open air between them
+        var f = Math.min(1, Math.max(0, s.y / this.h));   // 1 bottom, 0 top
+        var climb = 0.22 + 0.78 * Math.sin(Math.PI * (1 - f));
+        if (t >= 1 || s.y < -20){ P[i] = this.spark(false); continue; }
+        var d = s.r * 9;
+        g.globalAlpha = s.a * s.peak * climb;
+        g.drawImage(s.s, s.x - d / 2, s.y - d / 2, d, d);
+      }
+      g.globalAlpha = 1;
+      g.globalCompositeOperation = "source-over";
+    };
+
+    function collect(){
+      fields.forEach(function(f){ if (f.c.parentNode) f.c.parentNode.removeChild(f.c); });
+      fields = [];
+      Array.prototype.forEach.call(document.querySelectorAll(".reel, .vhero"), function(host){
+        fields.push(new Field(host));
+      });
+      if (!window.IntersectionObserver){ fields.forEach(function(f){ f.on = true; }); return; }
+      var io = new IntersectionObserver(function(es){
+        var lit = false;
+        es.forEach(function(e){
+          fields.forEach(function(f){
+            if (f.host !== e.target) return;
+            f.on = e.isIntersecting;
+            if (f.on){ f.size(); lit = true; }   // a view that was hidden measured 0x0
+          });
+        });
+        if (lit) start();
+      }, { rootMargin: "80px 0px" });
+      fields.forEach(function(f){ io.observe(f.host); });
+    }
+
+    var last = 0, running = false;
+    function frame(now){
+      if (document.hidden){ running = false; return; }       // park while backgrounded
+      // normalise to 60fps steps, and swallow the jump after a tab switch
+      var dt = last ? Math.min((now - last) / 16.667, 3) : 1;
+      last = now;
+      var any = false;
+      for (var i = 0; i < fields.length; i++){
+        if (!fields[i].on) continue;
+        any = true;
+        fields[i].step(dt);
+      }
+      running = any;                                   // nothing visible -> stop dead
+      if (running) requestAnimationFrame(frame);
+    }
+    function start(){ if (!running){ running = true; last = 0; requestAnimationFrame(frame); } }
+
+    collect(); start();
+    document.addEventListener("visibilitychange", function(){ if (!document.hidden) start(); });
+    var rt;
+    window.addEventListener("resize", function(){
+      clearTimeout(rt);
+      rt = setTimeout(function(){ fields.forEach(function(f){ f.size(); }); start(); }, 180);
+    }, { passive: true });
+    window.addEventListener("kingson:viewchange", function(){
+      fields.forEach(function(f){ f.size(); });
+      start();
+    });
+  })();
+
   /* ═══════════ pointer tilt — real objects, not rectangles ═══════════ */
   (function tilt(){
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -1784,6 +1960,7 @@ footer{border-top:1px solid var(--line);padding:clamp(36px,5vw,64px) 0 clamp(44p
     window.scrollTo(0, 0);
     if (hdr) hdr.classList.toggle("solid", window.scrollY > 40);
     wake($("v-" + id));
+    try { window.dispatchEvent(new Event("kingson:viewchange")); } catch (e) {}
     if (location.hash.slice(2) !== id) {
       history.replaceState(null, "", id === "home" ? location.pathname : "#/" + id);
     }
