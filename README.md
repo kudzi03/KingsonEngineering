@@ -1,101 +1,225 @@
 # Kingson Engineering
 
-Static website for Kingson Trading (Pvt) Ltd — steelwork specialists, Harare, Zimbabwe.
+Public website for Kingson Trading (Pvt) Ltd, trading as Kingson Engineering —
+steelwork specialists, Harare, Zimbabwe.
 
-No build step, no dependencies, no framework. Plain HTML, CSS and JavaScript in one file.
-Edit `index.html`, push, and Vercel redeploys.
+Static site. No framework, no build step, no npm install, no dependencies.
+Edit, push, Vercel redeploys.
 
-Every file sits at the repository root — there are no folders. This is deliberate: it means
-files can be uploaded through GitHub's web and mobile interface, which cannot create folders.
+---
+
+## Read this first
+
+Two things about this site are deliberate and easy to undo by accident.
+
+**1. Unconfirmed figures are not on the page.**
+The previous version published cover widths, gauges, minimum roof pitches,
+purlin spacings, laser cutting thicknesses, tolerances, lead times and
+quotation turnarounds. The old README recorded that none of it had been
+confirmed by the company — *"A contractor will build to them."*
+
+Every one of those figures is now held in `content.js`, in `PROVISIONAL`, and
+none of it reaches the page. The site states the capability without the number
+and says the figures are issued with the quotation.
+
+When the figures are signed off, open `content.js` and set:
+
+```js
+var SHOW_PROVISIONAL_SPECS = true;
+```
+
+The roofing and laser spec tables then render, and the "issued with the
+quotation" notes step aside for them. Nothing else has to change.
+
+**2. Two images are not Kingson's work.**
+`material-tube` and `material-sheet` are stock material collages. The previous
+site captioned them *"Multi-Storey Process Structure, Harare"* and *"Kingson
+Engineering mobile crane"*, which they are not — one is a grid of steel tube
+stock, the other of sheet and plate. They now appear only in a strip labelled
+**"Material reference — stock imagery, not Kingson project photography"**, are
+kept out of the project grid, and are kept out of `sitemap.xml`. Replace them
+with real photographs when there are some, and delete the strip.
+
+Search the repository for `VERIFY_WITH_KINGSON` for everything else awaiting
+confirmation.
+
+---
+
+## Where to change what
+
+| You want to change | Edit |
+|---|---|
+| Phone, email, address, opening hours, WhatsApp number | `COMPANY` in `content.js` |
+| Enquiry form dropdown options | `ENQUIRY` in `content.js` |
+| Withheld technical figures, and the flag that shows them | `PROVISIONAL` in `content.js` |
+| Anything a visitor reads as a sentence | `index.html` |
+| Colours, type scale, spacing | the token block at the top of `assets/site.css` |
+| The 3D frame in the hero | `assets/steel.js` |
+
+Prose lives in `index.html` on purpose. Text built by JavaScript is rendered by
+Google but not by most AI answer engines, and this site is meant to be found by
+both. `index.html` is one file with one commented section per part of the page.
+
+Contact details appear in the HTML *and* in `content.js`: the HTML carries the
+current values so a crawler running no JavaScript reads the right number, and
+`content.js` overwrites them at runtime so there is one place to edit. Change
+`content.js`; the HTML copy is a fallback.
 
 ---
 
 ## Files
 
-| File | What it is |
-|---|---|
-| `index.html` | The entire site — all five views, styles and scripts |
-| `404.html` | Not-found page, styled to match |
-| `robots.txt` | Crawler rules, including explicit AI-crawler permissions |
-| `sitemap.xml` | One live URL; four future pages are written but commented out |
-| `vercel.json` | Caching and security headers |
-| `IMG_*.jpeg` | The seven workshop photographs |
+```
+index.html            the page — all copy, all markup
+content.js            company details, form options, withheld figures, flags
+404.html              not-found page
+robots.txt            crawler rules, including explicit AI-crawler permissions
+sitemap.xml           one URL; Kingson's own photographs only
+vercel.json           caching and security headers
+
+assets/
+  site.css            the whole visual system
+  site.js             behaviour — reveals, parallax, the stage, the form
+  steel.js            the WebGL portal frame
+  fonts.css           @font-face rules (generated)
+  fonts/*.woff2       self-hosted Archivo, Inter, IBM Plex Mono — 96 KB total
+  img/*.webp          cropped, resized derivatives of the photographs
+  img/manifest.json   source dimensions, written by the image script
+
+tools/
+  fetch-fonts.py      regenerates assets/fonts/ and assets/fonts.css
+  build-images.py     regenerates assets/img/ from the root photographs
+
+*.jpeg                the original photographs, unmodified
+```
+
+The original `.jpeg` files stay at the repository root as the asset library.
+Nothing on the page loads them — the page uses the WebP derivatives in
+`assets/img/` — but they are the masters, and `tools/build-images.py` reads
+them.
+
+---
+
+## Running it locally
+
+The page needs to be served over HTTP, not opened as a `file://` path, or the
+browser will refuse the fonts.
+
+```bash
+python3 -m http.server 8000
+# then open http://localhost:8000
+```
+
+Any static server works — `npx serve`, `php -S localhost:8000`, whatever is
+already installed.
+
+---
+
+## Regenerating assets
+
+Neither script runs at deploy time. Run them by hand when the inputs change and
+commit the output.
+
+**Images** — after adding or replacing a photograph:
+
+```bash
+python3 tools/build-images.py
+```
+
+Reads the `.jpeg` files at the repository root, crops the screenshot letterbox
+off the two that have one, and writes WebP derivatives at 440 / 720 / 1100 px
+plus the native width. Needs `pillow`.
+
+**Fonts** — only if a weight or family changes:
+
+```bash
+python3 tools/fetch-fonts.py
+```
 
 ---
 
 ## Deploying
 
-**First time — connect the repo**
+Framework preset **Other**. No build command, no output directory. Push to the
+branch Vercel is watching and it redeploys.
 
-1. Push this folder to a new GitHub repository
-2. Go to vercel.com → **Add New** → **Project**
-3. Choose **Import Git Repository** and pick the repo
-4. Framework preset: **Other**. Leave build command and output directory empty
-5. **Deploy**
-
-**Every time after that**
-
-Push to `main`. Vercel redeploys automatically, same URL. No dragging, no new project.
-
----
-
-## Changing the domain
-
-The site URL is hard-coded in three places. When you move to `kingson.co.zw`,
-change all three or Google will keep pointing at the old address:
-
-1. `index.html` — the `<link rel="canonical">` and the `og:url` and `og:image` meta tags
-2. `robots.txt` — the `Sitemap:` line at the bottom
-3. `sitemap.xml` — every `<loc>` entry
-
-Find and replace `https://kingson-site-4.vercel.app` with the new address.
-
-**Adding the custom domain:** Vercel → Project → Settings → Domains → Add.
-Then point the domain's DNS at Vercel using the records it shows you.
-
----
-
-## Before this goes on a real domain
-
-Two things must happen, in this order.
-
-**1. Every figure and promise needs sign-off.** The site states, in the company's name:
-quotations inside two working days; company profile, tax clearance, CR6 and CR14 the same
-day; 3–5 day lead times on stock gauges; maximum purlin spacing 1800 mm at 0.53 mm;
-minimum roof pitch 5°; laser envelope to 20 mm mild steel. These are standard
-Southern African profile figures, but they have not been confirmed by the company.
-A contractor will build to them.
-
-**2. Delete the duplicate deployments.** Every extra copy of this site competes with the
-real one in search results. Keep exactly one Vercel project.
-
----
-
-## Still outstanding
-
-- Custom domain and a `@kingson.co.zw` email address in place of the Gmail
-- Google Business Profile with the real workshop street address — for a Harare
-  fabricator this is worth more than the website itself
-- FAQ answers, the laser table and the process steps are currently built by JavaScript.
-  Google renders them; most AI crawlers do not. Moving them into the HTML would make
-  the site visible to answer engines
-- Splitting the five views into real URLs (`/profiles/`, `/process/`, `/portfolio/`,
-  `/enquire/`) so each can rank independently. The commented block in `sitemap.xml`
-  is ready for this
-- Named reference projects, with client permission
-- Company registration and CIFOZ membership numbers printed on the page
+**Caching, and why it is set that way.** `vercel.json` pins fonts for a year
+(`immutable`) because a font file never changes once generated. Images get a
+month with `stale-while-revalidate` rather than a year, because they are named
+by slug and width, not by content hash — replacing a photograph reuses its URL,
+and a year of `immutable` would strand the old one in visitors' caches. HTML,
+CSS and JS must always revalidate: `content.js` carries the business copy and
+the provisional-spec flag, and stale copy is the one thing this site cannot
+afford.
 
 ---
 
 ## How the enquiry form works
 
-There is no server. Submitting builds a formatted message and hands it to WhatsApp or
-to the visitor's email client, pre-filled. **The visitor still has to press send** in that
-app — the site cannot send on their behalf. The confirmation says "Ready to send" rather
-than "Received" for exactly that reason.
+**There is no server, and nothing is stored.**
 
-To make it send server-side later, the options are a form service (Web3Forms, Formspree)
-or a Vercel serverless function with an email provider.
+Submitting composes a formatted message and hands it to WhatsApp or the
+visitor's email client, pre-filled. The visitor still has to press send in that
+app. The confirmation says *"ready to send"* rather than *"received"* for
+exactly that reason, and the file picker says in as many words that nothing is
+uploaded to the website — it lists the drawings so the message names them, and
+the real attachment happens in WhatsApp or the mail client.
+
+To make it send server-side later, `buildPayload()` in `assets/site.js` already
+returns the shape a CRM would want. Set both of these in `content.js`:
+
+```js
+mode: 'endpoint',
+endpoint: 'https://…'
+```
+
+and write the POST. Nothing else on the page has to change. A form service
+(Web3Forms, Formspree) or a Vercel serverless function with an email provider
+both fit.
+
+---
+
+## What happens when things are missing
+
+Nothing on this page depends on everything working.
+
+| If | Then |
+|---|---|
+| JavaScript is off | Full page, all photographs, all copy. No animation. |
+| WebGL is unavailable | The hero is the portal frame photograph, graded to match. It is the default; the canvas replaces it only once a context is confirmed. |
+| A shader fails to compile | Same as above — the scene returns `null` and the photograph stays. |
+| `prefers-reduced-motion` | The steel frame renders once, assembled and lit, and never moves. Every reveal is already visible. Nothing animates. |
+| `IntersectionObserver` is missing | Everything reveals immediately. |
+| The stage scrolls off screen | The render loop stops. |
+| The tab is hidden | The render loop stops. |
+| Small screen | Four bays instead of six, pixel ratio capped at 1.75. |
+
+---
+
+## Still outstanding
+
+- **Confirm the figures in `PROVISIONAL`,** then flip `SHOW_PROVISIONAL_SPECS`.
+- **Confirm everything marked `VERIFY_WITH_KINGSON`** — the workshop address,
+  the opening hours, the map coordinates, and whether the five process stages
+  describe how the company actually runs a job.
+- **Replace the two stock collages** with real photographs of Kingson's own
+  stock, and delete the material-reference strip.
+- Custom domain and a `@kingson.co.zw` address in place of the Gmail. The URL
+  is hard-coded in `index.html` (canonical, `og:url`, `og:image`),
+  `robots.txt` (the `Sitemap:` line) and `sitemap.xml` (every `<loc>` and
+  `<image:loc>`). Find and replace all three together.
+- Google Business Profile with the real workshop street address. For a Harare
+  fabricator this is worth more than the website.
+- Named reference projects, with client permission. The project grid currently
+  publishes no client, value, tonnage or date, because none has been supplied.
+- On mobile the header has no navigation — the fixed action dock carries Call,
+  WhatsApp and Start a project, and the page is scrolled. If the section list
+  is wanted on a phone, that is a menu still to build.
+- Delete the duplicate deployments. Every extra copy of this site competes with
+  the real one in search results. Keep exactly one Vercel project.
+- Optional cleanup: `IMG 5167.jpeg`–`IMG 5174.jpeg`, `KE *.jpeg` and
+  `kingson-flat.zip` are byte-identical duplicates of the canonically named
+  photographs, about 6.7 MB of the repository. Nothing references them.
 
 ---
 

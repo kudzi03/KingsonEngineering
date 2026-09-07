@@ -5,50 +5,87 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Page not found — Kingson Engineering</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d0e17'/%3E%3Crect x='10' y='13' width='44' height='2' fill='%239184d9'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='30' fill='%23f3f2f7' text-anchor='middle' letter-spacing='2'%3EKE%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#06080B">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2306080B'/%3E%3Ctext x='32' y='41' font-family='Helvetica,Arial,sans-serif' font-weight='700' font-size='26' fill='%23F3F6FA' text-anchor='middle' letter-spacing='1'%3EKE%3C/text%3E%3Crect x='19' y='47' width='26' height='3' fill='%23E2673B'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/fonts.css">
 <style>
-  :root{--accent:#9184d9;--accent-300:#d2cefd;--n-300:#cfd3e5;--line:rgba(233,233,237,.10)}
-  *{box-sizing:border-box}
-  body{margin:0;min-height:100svh;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(180deg,#0a0a0a,#111,#050505);color:#f3f5fe;
-    font-family:'Inter',system-ui,sans-serif;font-weight:300;
-    padding:clamp(24px,6vw,80px);-webkit-font-smoothing:antialiased;text-align:left}
-  .box{width:100%;max-width:640px}
-  .lab{font-size:9.5px;letter-spacing:.36em;text-transform:uppercase;color:rgba(255,255,255,.36)}
-  .rule{height:1px;width:56px;background:linear-gradient(90deg,var(--accent),transparent);margin:20px 0 26px}
-  h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;margin:0;
-    font-size:clamp(38px,8vw,76px);line-height:1;letter-spacing:-.02em}
-  p{margin:26px 0 0;max-width:44ch;line-height:1.8;color:var(--n-300);font-size:15.5px}
-  .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:40px}
-  a.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--accent);
-    border-radius:8px;padding:16px 26px;text-decoration:none;color:var(--accent);
-    font-size:10px;letter-spacing:.26em;text-transform:uppercase;transition:.3s}
-  a.btn:hover{background:rgba(145,132,217,.14);color:var(--accent-300)}
-  a.plain{border-color:var(--line);color:#f3f5fe}
-  a.plain:hover{border-color:var(--accent);color:var(--accent-300)}
-  .foot{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
-    font-size:12px;color:rgba(255,255,255,.34);line-height:1.9}
-  .foot a{color:var(--accent-300);text-decoration:none}
+  /* Same tokens as assets/site.css. Kept inline so a 404 renders even if the
+     stylesheet is the thing that went missing. */
+  :root{
+    --ink:#06080B; --fg:#F3F6FA; --fg-2:#A7B2C2; --fg-3:#6B7686; --fg-4:#48525F;
+    --ember:#E2673B; --line:rgba(197,213,236,.13); --line-2:rgba(197,213,236,.24);
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{
+    margin:0; min-height:100svh; display:flex; align-items:center;
+    background:var(--ink); color:var(--fg);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:clamp(.9375rem,.9rem + .18vw,1.0625rem); line-height:1.62;
+    padding:clamp(1.5rem,6vw,5rem); -webkit-font-smoothing:antialiased;
+  }
+  /* the same faint set-out grid as the hero */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background-image:
+      linear-gradient(to right, rgba(197,213,236,.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(197,213,236,.05) 1px, transparent 1px);
+    background-size:clamp(56px,7vw,108px) clamp(56px,7vw,108px);
+    -webkit-mask-image:radial-gradient(90% 70% at 30% 45%,#000,transparent 75%);
+    mask-image:radial-gradient(90% 70% at 30% 45%,#000,transparent 75%);
+  }
+  .box{width:100%; max-width:56rem; margin-inline:auto}
+  .lab{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.75rem;
+    text-transform:uppercase; letter-spacing:.22em; color:var(--fg-2);
+    display:flex; align-items:center; gap:.8rem;
+  }
+  .lab::before{content:""; width:clamp(28px,4vw,58px); height:1px; background:var(--ember)}
+  h1{
+    font-family:Archivo,Inter,system-ui,sans-serif; font-weight:700;
+    font-size:clamp(2.6rem,1.45rem + 5.75vw,6.5rem); letter-spacing:-.038em;
+    line-height:.93; margin:clamp(1.1rem,2.4vh,2rem) 0 0; max-width:13ch;
+  }
+  h1 span{display:block; color:var(--fg-2)}
+  p{margin:clamp(1.4rem,3vh,2.2rem) 0 0; max-width:46ch; color:var(--fg-2); line-height:1.55}
+  .btns{display:flex; flex-wrap:wrap; gap:.85rem; margin-top:clamp(1.8rem,4vh,2.8rem)}
+  .btn{
+    display:inline-flex; align-items:center; gap:.7rem; padding:.95rem 1.6rem;
+    font-size:1rem; font-weight:500; border:1px solid var(--line-2);
+    color:var(--fg); text-decoration:none; transition:background .35s, color .35s, border-color .35s;
+  }
+  .btn:hover{background:var(--fg); color:var(--ink); border-color:var(--fg)}
+  .btn.primary{border-color:var(--ember); background:var(--ember); color:#150803; font-weight:600}
+  .btn.primary:hover{background:var(--fg); border-color:var(--fg); color:var(--ink)}
+  .btn:focus-visible,a:focus-visible{outline:2px solid var(--ember); outline-offset:3px}
+  .foot{
+    margin-top:clamp(2.5rem,6vh,4rem); padding-top:1.2rem; border-top:1px solid var(--line);
+    font-size:.8125rem; color:var(--fg-4);
+    display:flex; flex-wrap:wrap; gap:.6rem 2rem;
+  }
+  .foot a{color:var(--fg-2); text-decoration:none}
+  .foot a:hover{color:var(--ember)}
+  @media (prefers-reduced-motion: reduce){*{transition-duration:.001ms !important}}
 </style>
 </head>
 <body>
-  <div class="box">
-    <span class="lab">Error 404</span>
-    <div class="rule"></div>
-    <h1>That page isn&rsquo;t here.</h1>
-    <p>The link may be out of date. Everything &mdash; profiles, specifications, process and
-       enquiries &mdash; sits on the main page.</p>
+  <main class="box">
+    <p class="lab">Error 404</p>
+    <h1>That page isn't<span>on the drawing.</span></h1>
+    <p>
+      The address you followed does not exist on this site. Everything Kingson Engineering
+      does — structural steelworks, roof steelwork, laser cutting and cranage — is on the
+      one page.
+    </p>
     <div class="btns">
-      <a class="btn" href="/">Back to Kingson</a>
-      <a class="btn plain" href="tel:+263772262869">+263 772 262 869</a>
+      <a class="btn primary" href="/">Back to the site</a>
+      <a class="btn" href="/#start">Start a project</a>
     </div>
     <div class="foot">
-      <strong style="color:#fff;font-weight:400">Kingson Engineering</strong> &mdash; Steelwork Specialists<br>
-      Harare, Zimbabwe &middot; <a href="mailto:kingsonnkm@gmail.com">kingsonnkm@gmail.com</a>
+      <span>Kingson Engineering · Harare, Zimbabwe</span>
+      <a href="tel:+263772262869">+263 772 262 869</a>
+      <a href="mailto:kingsonnkm@gmail.com">kingsonnkm@gmail.com</a>
     </div>
-  </div>
+  </main>
 </body>
 </html>

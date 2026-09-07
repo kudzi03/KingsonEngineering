@@ -1,22 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9"
+<!--
+  One live URL. The site is a single page.
+
+  Image entries list Kingson's own photographs only. The two stock material
+  collages (assets/img/material-tube-*, material-sheet-*) are deliberately
+  absent: they are not Kingson's work and must not be submitted to Google as
+  though they were. See PHOTOGRAPHY in content.js.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://kingson-engineering.vercel.app/</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
-    <image:image><image:loc>https://kingson-engineering.vercel.app/structure.jpeg</image:loc><image:title>Multi-storey steel frame erected by Kingson Engineering, Harare</image:title></image:image>
-    <image:image><image:loc>https://kingson-engineering.vercel.app/warehouse.jpeg</image:loc><image:title>Warehouse roof steelwork and trusses, Harare</image:title></image:image>
-    <image:image><image:loc>https://kingson-engineering.vercel.app/trusses.jpeg</image:loc><image:title>Completed pitched steel roof trusses</image:title></image:image>
-    <image:image><image:loc>https://kingson-engineering.vercel.app/crane.jpeg</image:loc><image:title>Kingson Engineering mobile crane</image:title></image:image>
-    <image:image><image:loc>https://kingson-engineering.vercel.app/laser.jpeg</image:loc><image:title>DXTECH fiber laser, Kingson Engineering workshop</image:title></image:image>
+
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/portal-frame-1320.webp</image:loc>
+      <image:title>Steel portal frame under erection by Kingson Engineering, Harare</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/crane-1320.webp</image:loc>
+      <image:title>Kingson Engineering telescopic mobile crane, Harare</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/roof-trusses-1320.webp</image:loc>
+      <image:title>Long-span steel roof trusses and purlins, Harare</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/roof-frame-1320.webp</image:loc>
+      <image:title>Pitched roof steelwork, sheeted and finished</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-machine-1536.webp</image:loc>
+      <image:title>DXTECH fiber laser in the Kingson Engineering workshop, Harare</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/cutting-head-1350.webp</image:loc>
+      <image:title>Fiber laser cutting head over mild steel plate</image:title>
+    </image:image>
   </url>
-  <!--
-    Activate when the site is split into real pages:
-  <url><loc>https://kingson-engineering.vercel.app/profiles/</loc>  <lastmod>2026-08-29</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://kingson-engineering.vercel.app/process/</loc>   <lastmod>2026-08-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://kingson-engineering.vercel.app/portfolio/</loc> <lastmod>2026-08-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://kingson-engineering.vercel.app/enquire/</loc>   <lastmod>2026-08-29</lastmod><changefreq>yearly</changefreq> <priority>0.9</priority></url>
-  -->
 </urlset>
