@@ -59,6 +59,10 @@ window.SteelFrame = (function () {
             -(z0 * eye[0] + z1 * eye[1] + z2 * eye[2]), 1];
   }
 
+  /* smoothstep — the camera path needs it and steel.js deliberately has no
+     dependency on engine.js */
+  function ease(t) { t = t < 0 ? 0 : t > 1 ? 1 : t; return t * t * (3 - 2 * t); }
+
   function mul(a, b) {
     var o = new Float32Array(16);
     for (var i = 0; i < 4; i++) {
@@ -250,13 +254,28 @@ window.SteelFrame = (function () {
       brace([sg * hs, EAVE, zZ], [0, APEX, zY]);
     }
 
+    /* The clear opening of the near gable, traced anticlockwise from the
+       bottom-left. Scene 2 projects these five points to the screen and
+       reveals the photograph through the resulting portal silhouette — the
+       3D structure literally becomes the frame around the real building. */
+    var cw = 0.30;              // half a column, so the mask sits inside steel
+    var zg = zs[0];             // nearest gable once the camera is on -Z
+    var portal = [
+      [-hs + cw, 0.12,        zg],
+      [-hs + cw, EAVE,        zg],
+      [0,        APEX - 0.72, zg],
+      [ hs - cw, EAVE,        zg],
+      [ hs - cw, 0.12,        zg]
+    ];
+
     return {
       pos:  new Float32Array(b.pos),
       from: new Float32Array(b.from),
       nrm:  new Float32Array(b.nrm),
       seed: new Float32Array(b.seed),
       count: b.pos.length / 3,
-      apex: APEX
+      apex: APEX,
+      portal: portal
     };
   }
 
@@ -419,7 +438,9 @@ window.SteelFrame = (function () {
     var built = 0;                       // intro assembly, 0 -> 1 on load
     var ptx = 0, pty = 0, ptxS = 0, ptyS = 0;
     var running = false, raf = 0, t0 = performance.now();
+    var tPrev = t0;
     var destroyed = false;
+    var lastVP = null;              // last view-projection, for project()
 
     function resize() {
       var r = canvas.getBoundingClientRect();
@@ -438,54 +459,92 @@ window.SteelFrame = (function () {
     function draw(now) {
       var time = (now - t0) / 1000;
 
-      // ease the scroll value so a flicked scrollbar does not snap the frame
-      shownProgress += (progress - shownProgress) * (reduced ? 1 : 0.09);
-      ptxS += (ptx - ptxS) * 0.06;
-      ptyS += (pty - ptyS) * 0.06;
+      /* Smoothing is per SECOND, not per frame.
+
+         A fixed per-frame coefficient means the camera settles in a quarter
+         of a second at 60fps and in several seconds on a weak GPU — and this
+         scene hands off to a photograph masked by the projected geometry, so
+         a camera that lags the scroll puts the mask somewhere the steel is
+         not. Deriving the coefficient from the elapsed time makes the
+         response identical on every device. */
+      var dt = Math.min((now - tPrev) / 1000, 0.1);   // cap after a stall
+      tPrev = now;
+      var kProg = reduced ? 1 : 1 - Math.exp(-dt / 0.075);
+      var kPtr  = 1 - Math.exp(-dt / 0.28);
+
+      shownProgress += (progress - shownProgress) * kProg;
+      ptxS += (ptx - ptxS) * kPtr;
+      ptyS += (pty - ptyS) * kPtr;
 
       var p = shownProgress;
 
-      /* The frame builds itself on load — the hero can never open on an empty
-         canvas — and the scroll then flies the camera round it and takes it
-         apart again:
-           on load    members converge and lock, about 2.6s
-           0.00–0.76  camera swings from three-quarter round to broadside
-           0.76–1.00  it breaks apart and hands over to the photography
+      /* The frame builds itself on load — the hero can never open on an
+         empty canvas — and the scroll then flies the camera round it and
+         finally straight into it:
 
-         Scrolling past before the intro finishes completes the build rather
-         than catching it half-assembled. */
+           on load    members converge and lock, about 2.6s
+           0.00–0.45  a long oblique: length and depth both read
+           0.45–0.75  swings to broadside — the monumental elevation
+           0.75–1.00  swings onto the axis and pushes into the near gable,
+                      until the portal opening is the shape of the viewport
+
+         That last move is the whole point. The gable stops being a picture of
+         a frame and becomes an aperture, and Scene 2 reveals the real
+         photograph through it. Scrolling past before the intro finishes
+         completes the build rather than catching it half-assembled. */
       built = reduced ? 1 : Math.min(1, time / 2.6);
       var intro = built * built * (3 - 2 * built);
-      var assemble = Math.max(intro, Math.min(p / 0.25, 1));
+      var assemble = Math.max(intro, Math.min(p / 0.22, 1));
 
-      var brk = Math.max(0, (p - 0.76) / 0.24);
-      var fade = 1 - Math.max(0, (p - 0.86) / 0.14);
+      // the structure dissolves only after the mask has opened under it
+      var fade = 1 - Math.max(0, (p - 0.88) / 0.12);
 
-      /* Camera. The building is 13 wide and 21 long, so it needs real
-         distance — closer than this and the near frame simply fills the
-         viewport and the structure stops being legible. */
-      var orbit = -0.55 - p * 1.05 + (reduced ? 0 : time * 0.030);
-      var dist  = 33 - assemble * 2 + brk * 14;
-      var eyeY  = 5.0 + p * 3.2 + ptyS * 1.8;
-      var eye = [Math.sin(orbit) * dist + ptxS * 2.2,
+      /* The swing has to FINISH before the handoff starts, or the mask is
+         cut from a gable the camera is still turning towards. Orbit reaches
+         the axis at 0.66 and the push completes at 0.78, which leaves the
+         last fifth of the scene as a held, static, dead-on view of the
+         opening — the beat the photograph arrives in. */
+      var swing = ease(Math.min(p / 0.66, 1));
+      var orbit = -1.15 - swing * 1.99 + (reduced ? 0 : time * 0.018 * (1 - swing));
+
+      var push = Math.max(0, Math.min((p - 0.50) / 0.28, 1));
+      var pushE = 1 - (1 - push) * (1 - push);
+
+      /* Stops at a distance that frames the gable at roughly three quarters
+         of the viewport height. Closer than this and the opening overflows
+         the screen, and there is nothing left for the mask to expand. */
+      var dist = 34 - assemble * 2 - pushE * 6;
+
+      var eyeY = 5.4 + p * 1.0 + ptyS * (1 - pushE) * 1.8;
+      var eye = [Math.sin(orbit) * dist + ptxS * (1 - pushE) * 2.2,
                  eyeY,
                  Math.cos(orbit) * dist];
-      var target = [0, geo.apex * 0.52, 0];
+
+      // the aim slides from the whole building down to the gable opening
+      var target = [0,
+                    geo.apex * 0.52 - pushE * 0.42,
+                    -pushE * 5.2];
 
       var aspect = W / H;
       var proj = perspective(0.62, aspect, 0.5, 90);
       var view = lookAt(eye, target, [0, 1, 0]);
+      lastVP = mul(proj, view);
 
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.uniformMatrix4fv(uVP, false, mul(proj, view));
+      gl.uniformMatrix4fv(uVP, false, lastVP);
       gl.uniform1f(uAssemble, assemble);
-      gl.uniform1f(uBreak, brk);
+      gl.uniform1f(uBreak, 0);
       gl.uniform1f(uFade, Math.max(0, fade));
       gl.uniform3f(uEye, eye[0], eye[1], eye[2]);
-      gl.uniform2f(uFog, dist - 18, dist + 30);
+      gl.uniform2f(uFog, dist - 14, dist + 34);
       // the light band runs the length of the building and returns
       gl.uniform1f(uSweep, reduced ? 2.0 : Math.sin(time * 0.26) * 15.0);
       gl.drawArrays(gl.TRIANGLES, 0, geo.count);
+
+      /* Anything cut from the projected geometry has to be repainted here,
+         with the matrix that was just used — not on the scroll event that
+         set the target, which the camera is still easing towards. */
+      if (api.onFrame) api.onFrame();
     }
 
     function loop(now) {
@@ -494,11 +553,43 @@ window.SteelFrame = (function () {
       raf = requestAnimationFrame(loop);
     }
 
-    return {
+    /* Project a world point into 0..1 canvas space, y downwards, using the
+       matrix from the last drawn frame. Returns null behind the camera.
+
+       lastVP is column-major, so the element at column i row j is m[i*4+j]. */
+    function project(pt) {
+      var m = lastVP;
+      if (!m) return null;
+      var x = m[0] * pt[0] + m[4] * pt[1] + m[8]  * pt[2] + m[12];
+      var y = m[1] * pt[0] + m[5] * pt[1] + m[9]  * pt[2] + m[13];
+      var w = m[3] * pt[0] + m[7] * pt[1] + m[11] * pt[2] + m[15];
+      if (w <= 0.0001) return null;
+      return [(x / w) * 0.5 + 0.5, 0.5 - (y / w) * 0.5];
+    }
+
+    var api = {
       /* Reduced motion still gets the structure — assembled, lit and still,
          just never moving. It is the picture, not the animation, that says
          what the company does. */
       reducedMotion: reduced,
+
+      /* The near gable's clear opening in 0..1 screen space, as five points.
+         Scene 2 turns this into a clip-path polygon so the photograph is
+         revealed through the actual projected geometry rather than through a
+         rectangle that only approximately lines up with it.
+
+         Returns null until the first frame has been drawn, or if any corner
+         falls behind the camera — the caller falls back to a plain rect. */
+      portalPath: function () {
+        if (!lastVP || !geo.portal) return null;
+        var out = [];
+        for (var i = 0; i < geo.portal.length; i++) {
+          var q = project(geo.portal[i]);
+          if (!q) return null;
+          out.push(q);
+        }
+        return out;
+      },
 
       setProgress: function (p) {
         progress = Math.max(0, Math.min(1, p));
@@ -520,7 +611,8 @@ window.SteelFrame = (function () {
         if (running || destroyed) return;
         if (reduced) { this.renderOnce(); return; }
         running = true;
-        if (!built) t0 = performance.now();   // let the intro build play out
+        tPrev = performance.now();
+        if (!built) t0 = tPrev;               // let the intro build play out
         raf = requestAnimationFrame(loop);
       },
 
@@ -537,7 +629,13 @@ window.SteelFrame = (function () {
         gl.deleteProgram(prog); gl.deleteShader(vs); gl.deleteShader(fs);
         var lose = gl.getExtension('WEBGL_lose_context');
         if (lose) lose.loseContext();
-      }
+      },
+
+      /* Assigned by the caller. Called once per drawn frame, after the draw,
+         so portalPath() reflects exactly what is on screen. */
+      onFrame: null
     };
+
+    return api;
   };
 })();

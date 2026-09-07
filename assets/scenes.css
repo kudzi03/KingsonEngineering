@@ -1,0 +1,721 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   scenes.css — the choreography, laid out
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Layout only. Every value that changes with scroll is written by scenes.js
+   as an inline transform or clip-path; nothing here animates on its own.
+
+   The shared shape of a scene:
+
+     .rail        a tall section. Its height is how long the scene plays.
+     .rail-pin    sticky, one viewport tall, overflow hidden. The stage.
+
+   Nothing is inside a centred max-width wrapper. Each scene sets its own
+   composition, and several of them deliberately run off the edge.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* One grade for the photography.
+
+   These are midday site photographs on a near-black page. Dropped in raw they
+   destroy the palette — the sky alone is brighter than anything else on the
+   site. Every scene pushes its images down to sit in the same world, and each
+   pinned stage carries a vignette so the copy always has ground to sit on. */
+:root {
+  --grade:      contrast(1.14) saturate(.60) brightness(.50);
+  --grade-lit:  contrast(1.10) saturate(.72) brightness(.62);
+  --grade-deep: contrast(1.16) saturate(.48) brightness(.36);
+}
+
+/* No content-visibility here on purpose. It would let the browser skip
+   painting off-screen scenes, but every rail is a scrubbed timeline whose
+   height IS its duration — and a placeholder intrinsic size that differs from
+   the real height shifts the scroll position of every scene below it as you
+   travel. Cheap paint is not worth a page that moves under the reader.
+   Off-screen work is skipped in JavaScript instead: the WebGL loop stops, and
+   span() and the reel both bail on anything outside the viewport. */
+.rail { position: relative; }
+
+.rail-pin {
+  position: sticky; top: 0;
+  height: 100svh; min-height: 540px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ink);
+}
+
+/* Scene length. Longer rails give a slower, more deliberate scrub; these are
+   tuned so each move lands rather than races. */
+.rail--gateway { height: 410vh; }
+.rail--bands   { height: 240vh; }
+.rail--strip   { height: 300vh; }
+.rail--laser   { height: 330vh; }
+.rail--crane   { height: 300vh; }
+.rail--reel    { height: 500vh; }   /* recomputed by scenes.js from track width */
+
+/* every full-bleed photograph in every scene */
+.rail-pin img { width: 100%; height: 100%; object-fit: cover; }
+
+/* The shared vignette. Sits above the photography and below every copy layer,
+   which is why scene copy starts at z-index 6. The gateway is excluded — it
+   has its own directional scrim built for the headline sitting bottom-left. */
+.rail:not(.rail--gateway) .rail-pin::after {
+  content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  background:
+    radial-gradient(130% 95% at 50% 40%, transparent 26%, rgba(6,8,11,.62) 100%),
+    linear-gradient(180deg, rgba(6,8,11,.62) 0%, rgba(6,8,11,0) 22%,
+                            rgba(6,8,11,0) 55%, rgba(6,8,11,.90) 100%);
+}
+
+
+/* ═══ SCENE 01 — GATEWAY ════════════════════════════════════════════════════
+   Layers, back to front:
+     1  ambient pool + set-out grid
+     2  the WebGL frame
+     3  the photograph, clipped to the projected portal until it opens
+     4  the projected geometry, held over the photograph for a beat
+     5  scrim
+     6  copy
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rail--gateway .rail-pin::before {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(120% 78% at 50% 8%,  rgba(78,104,150,.16), transparent 62%),
+    radial-gradient(90%  60% at 22% 96%, rgba(226,103,59,.08), transparent 68%);
+}
+
+.gate-grid {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(197,213,236,.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(197,213,236,.055) 1px, transparent 1px);
+  background-size: clamp(56px, 7vw, 108px) clamp(56px, 7vw, 108px);
+  -webkit-mask-image: radial-gradient(100% 72% at 50% 45%, #000 18%, transparent 78%);
+  mask-image: radial-gradient(100% 72% at 50% 45%, #000 18%, transparent 78%);
+}
+
+#steel { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; display: block; }
+
+/* The photograph. Unclipped by default: with no JavaScript, or no WebGL, this
+   is simply the hero image and the scene still reads. scenes.js closes the
+   clip and the scroll opens it through the projected portal. */
+.gate-photo { position: absolute; inset: 0; z-index: 3; }
+.gate-photo-img {
+  filter: var(--grade-lit);
+  transform-origin: 50% 46%;
+}
+
+.gate-lines { position: absolute; inset: 0; z-index: 4; opacity: 0; pointer-events: none; }
+.gate-lines polygon {
+  fill: none;
+  stroke: var(--ember);
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 4px rgba(226,103,59,.5));
+}
+
+.gate-scrim {
+  position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  background:
+    linear-gradient(96deg, rgba(6,8,11,.90) 0%, rgba(6,8,11,.52) 27%, rgba(6,8,11,0) 60%),
+    linear-gradient(180deg, rgba(6,8,11,.62) 0%, rgba(6,8,11,0) 24%, rgba(6,8,11,0) 58%, rgba(6,8,11,.86) 100%);
+}
+
+.gate-hero {
+  position: absolute; z-index: 6;
+  left: var(--gut); bottom: clamp(3.5rem, 9vh, 7rem);
+  width: min(52ch, calc(100% - var(--gut) * 2));
+  will-change: transform, opacity;
+}
+.gate-hero .eyebrow { margin-bottom: clamp(1rem, 2.4vh, 1.9rem); color: var(--fg-2); }
+.gate-hero .mega { max-width: 12ch; }
+.gate-hero .lede { margin-top: clamp(1.2rem, 3vh, 2rem); }
+.gate-hero .acts { margin-top: clamp(1.6rem, 4vh, 2.6rem); }
+
+/* Staged copy over the pinned photograph. Deliberately not stacked in one
+   column — beat one sits high left, beat two low right. */
+.gate-beat { position: absolute; z-index: 6; opacity: 0; will-change: transform, opacity; }
+.gate-beat[data-gate-beat="1"] {
+  left: var(--gut); top: clamp(6rem, 16vh, 11rem);
+  width: min(26ch, calc(100% - var(--gut) * 2));
+}
+.gate-beat[data-gate-beat="2"] {
+  right: var(--gut); bottom: clamp(3.5rem, 9vh, 6.5rem);
+  width: min(40ch, calc(100% - var(--gut) * 2));
+  text-align: right;
+}
+.gate-beat[data-gate-beat="2"] .lede { margin-left: auto; }
+.gate-beat[data-gate-beat="2"] .ticks { justify-content: flex-end; margin-top: 1.4rem; }
+
+.scroll-hint {
+  position: absolute; z-index: 6; bottom: clamp(1.2rem, 3vh, 2.4rem); right: var(--gut);
+  font-family: "IBM Plex Mono", monospace; font-size: .625rem;
+  text-transform: uppercase; letter-spacing: .2em; color: var(--fg-3);
+  display: flex; align-items: center; gap: .6rem;
+}
+.scroll-hint::after {
+  content: ""; width: 1px; height: 34px;
+  background: linear-gradient(var(--fg-3), transparent);
+  animation: drop 2.4s var(--ease) infinite;
+}
+@keyframes drop {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  45%  { transform: scaleY(1); transform-origin: top; }
+  55%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+@media (max-width: 860px) {
+  .rail--gateway { height: 380vh; }
+  .gate-scrim {
+    background: linear-gradient(180deg,
+      rgba(6,8,11,.52) 0%, rgba(6,8,11,.02) 22%, rgba(6,8,11,.34) 44%,
+      rgba(6,8,11,.72) 68%, rgba(6,8,11,.88) 100%);
+  }
+  .gate-beat[data-gate-beat="2"] { text-align: left; }
+  .gate-beat[data-gate-beat="2"] .lede { margin-left: 0; }
+  .gate-beat[data-gate-beat="2"] .ticks { justify-content: flex-start; }
+  .rail-pin { padding-bottom: 0; }
+  .gate-hero { bottom: calc(var(--dock) + 2rem); }
+  /* the staged copy has to clear the action dock too */
+  .gate-beat[data-gate-beat="1"] { top: 5.5rem; }
+  .gate-beat[data-gate-beat="2"] { bottom: calc(var(--dock) + 1.75rem); }
+  .scroll-hint { display: none; }
+}
+
+
+/* ═══ SCENE 02 — LEDGER ═════════════════════════════════════════════════════
+   A chapter card. Full bleed, no centred wrapper, and every row starts
+   further across the page than the one above it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ledger { padding: var(--bay) 0; position: relative; }
+
+/* the lead sits off to the right, against the grain of the list below */
+.ledger-lead {
+  margin: 0 var(--gut) clamp(3rem, 7vw, 6rem) auto;
+  max-width: 46ch; padding-left: var(--gut);
+  color: var(--fg-2); font-size: var(--t-lg); line-height: 1.5;
+  text-align: right;
+}
+@media (max-width: 860px) { .ledger-lead { text-align: left; max-width: none; padding-right: var(--gut); } }
+
+.ledger-row { border-top: 1px solid var(--line); }
+.ledger-row:last-child { border-bottom: 1px solid var(--line); }
+
+.ledger-row a {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: clamp(1rem, 3vw, 3rem);
+  padding: clamp(1.4rem, 3.2vw, 2.8rem) var(--gut);
+  /* the staircase — each row indents one step further */
+  padding-left: calc(var(--gut) + var(--step) * clamp(0px, 3.2vw, 62px));
+  position: relative;
+  transition: padding-left .7s var(--ease), background-color .5s var(--ease);
+}
+.ledger-row a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: var(--ember); transform: scaleX(0); transform-origin: left;
+  transition: transform .7s var(--ease);
+}
+@media (hover: hover) {
+  .ledger-row a:hover { padding-left: calc(var(--gut) + var(--step) * clamp(0px, 3.2vw, 62px) + 1.4rem); }
+  .ledger-row a:hover::after { transform: scaleX(1); }
+  .ledger-row a:hover .ledger-name { color: var(--fg); }
+}
+
+.ledger-n {
+  font-family: "IBM Plex Mono", monospace; font-size: var(--t-xs);
+  color: var(--ember); letter-spacing: .1em;
+}
+.ledger-name {
+  font-family: Archivo, sans-serif; font-weight: 600;
+  font-size: clamp(1.75rem, 1.1rem + 2.9vw, 4.25rem);
+  letter-spacing: -.035em; line-height: 1;
+  color: var(--fg-2);
+  transition: color .45s var(--ease);
+}
+.ledger-mode {
+  font-family: "IBM Plex Mono", monospace; font-size: var(--t-xs);
+  text-transform: uppercase; letter-spacing: .14em; color: var(--fg-4);
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .ledger-row a { grid-template-columns: 2.75rem 1fr; }
+  .ledger-mode { grid-column: 2; margin-top: .5rem; white-space: normal; }
+}
+
+
+/* ═══ SCENE 03 — BANDS ══════════════════════════════════════════════════════
+   The structural photograph in horizontal slices that slide apart in
+   alternate directions. The roof underneath was there the whole time.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bands-under { position: absolute; inset: 0; z-index: 1; }
+.bands-under img { filter: var(--grade-deep); }
+
+.bands-over { position: absolute; inset: 0; z-index: 2; }
+/* the source image is hidden once scenes.js has cloned it into slices */
+.bands-src { position: absolute; inset: 0; }
+.bands-over.built .bands-src { display: none; }
+
+.band { position: absolute; inset: 0; will-change: transform; }
+.band img { filter: var(--grade); }
+
+.bands-copy {
+  position: absolute; z-index: 6;
+  left: var(--gut); bottom: clamp(3rem, 8vh, 6rem);
+  will-change: transform, opacity;
+  text-shadow: 0 2px 40px rgba(6,8,11,.85);
+}
+.bands-copy .eyebrow { margin-bottom: 1.2rem; }
+@media (max-width: 860px) { .rail--bands { height: 200vh; } .bands-copy { bottom: calc(var(--dock) + 1.5rem); } }
+
+
+/* ═══ SCENE 04 — ROOF STRIP ═════════════════════════════════════════════════
+   Z-order is the whole idea: image A, then the word, then image B widening
+   over the top of both. The type is progressively covered by photography.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rail--strip .rail-pin { background: var(--ink); }
+
+.strip { position: absolute; inset: 0; }
+.strip--a { z-index: 1; will-change: transform; }
+.strip--a img { filter: var(--grade-deep); }
+
+.rail--strip .ghost {
+  position: absolute; z-index: 2;
+  left: 50%; top: 42%;
+  transform: translate(-50%, -50%);
+  color: rgba(226,103,59,.13);
+  will-change: transform;
+}
+
+/* clip-path is written by scenes.js; the image inside stays viewport-sized so
+   widening the strip reveals more photograph instead of stretching it */
+.strip--b { z-index: 3; clip-path: inset(0 0 0 100%); will-change: clip-path; }
+.strip-crop { position: absolute; inset: 0; width: 100vw; }
+.strip--b img { filter: var(--grade); }
+.strip--b::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(226,103,59,.22), transparent 14%);
+}
+
+.strip-beats { position: absolute; z-index: 6; left: var(--gut); bottom: clamp(3rem, 8vh, 6rem); }
+.strip-beat {
+  position: absolute; left: 0; bottom: 0; width: min(38ch, 76vw);
+  opacity: 0; will-change: transform, opacity;
+  text-shadow: 0 2px 40px rgba(6,8,11,.9);
+}
+.strip-beat .eyebrow { margin-bottom: .9rem; }
+
+.rail--strip .spec-note {
+  position: absolute; z-index: 6;
+  right: var(--gut); top: clamp(6rem, 15vh, 10rem);
+  width: min(38ch, 62vw);
+  text-align: left;
+}
+@media (max-width: 860px) {
+  .rail--strip { height: 280vh; }
+  .rail--strip .spec-note { display: none; }
+  .strip-beats { bottom: calc(var(--dock) + 1.5rem); }
+}
+
+
+/* ═══ SCENE 05 — LASER ══════════════════════════════════════════════════════
+   Four planes at four depths and four speeds, then a cutting line crosses the
+   screen and the machine is what is behind it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rail--laser .rail-pin { background: #04060A; }
+
+.lz { position: absolute; overflow: hidden; will-change: transform; }
+.lz img { filter: var(--grade); }
+
+/* irregular on purpose — no two panels share an edge or a size */
+.lz--back  { z-index: 1; top: 4%;   left: 30%;  width: 34vw; height: 46vh; }
+.lz--mid   { z-index: 2; top: 26%;  right: 4%;  width: 28vw; height: 52vh; }
+.lz--front { z-index: 3; bottom: 6%; left: 40%;  width: 22vw; height: 32vh; }
+.lz--back img  { filter: var(--grade-deep); }
+.lz--front img { filter: var(--grade-lit); }
+.lz--front { box-shadow: 0 40px 90px -30px rgba(0,0,0,.95); }
+
+/* full-bleed, revealed downward by the beam */
+.lz--reveal { z-index: 4; inset: 0; width: auto; height: auto; clip-path: inset(0 0 100% 0); }
+.lz--reveal img { filter: var(--grade); }
+
+.lz-beam {
+  position: absolute; z-index: 7; left: -5%; right: -5%; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ember) 12%, #FFD9C2 50%, var(--ember) 88%, transparent);
+  box-shadow: 0 0 22px 3px rgba(226,103,59,.55);
+  opacity: 0; will-change: transform, opacity;
+}
+
+.lz-nest {
+  position: absolute; z-index: 6; inset: 14% 7%;
+  width: auto; height: auto; opacity: 0;
+  will-change: opacity;
+}
+.lz-nest .sheet { fill: none; stroke: rgba(197,213,236,.18); stroke-width: 1; }
+.lz-nest .part  { fill: none; stroke: rgba(143,166,196,.20); stroke-width: 1.2; }
+.lz-nest .cut {
+  fill: none; stroke: rgba(226,103,59,.85); stroke-width: 1.6;
+  stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1000; stroke-dashoffset: 1000;
+  filter: drop-shadow(0 0 4px rgba(226,103,59,.6));
+}
+
+.lz-copy {
+  position: absolute; z-index: 8;
+  left: var(--gut); bottom: clamp(3rem, 8vh, 6rem);
+  width: min(32ch, calc(100% - var(--gut) * 2));
+  will-change: transform, opacity;
+  text-shadow: 0 2px 44px rgba(4,6,10,.92);
+}
+.lz-copy .eyebrow { margin-bottom: 1.1rem; }
+/* deliberately smaller than a scene headline elsewhere: this stage already
+   has three photographs competing for the frame */
+.lz-copy .mega { font-size: clamp(1.75rem, 1.05rem + 2.3vw, 3.25rem); line-height: .98; max-width: 15ch; }
+.lz-copy .lede { margin-top: 1.2rem; font-size: var(--t-md); max-width: 34ch; }
+
+.rail--laser .spec-note {
+  position: absolute; z-index: 8; right: var(--gut); top: clamp(6rem, 14vh, 9rem);
+  width: min(34ch, 56vw);
+}
+
+@media (max-width: 860px) {
+  .rail--laser { height: 300vh; }
+  /* the floating composition collapses to two stacked planes — simplified,
+     not broken */
+  .lz--back  { top: 6%;  left: 6%;  width: 62vw; height: 30vh; }
+  .lz--mid   { top: 32%; right: 4%; width: 58vw; height: 30vh; }
+  .lz--front { display: none; }
+  .lz-copy .mega { font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem); }
+  .lz-nest { inset: 22% 5%; }
+  .rail--laser .spec-note { display: none; }
+  .lz-copy { bottom: calc(var(--dock) + 1.5rem); }
+}
+
+
+/* ═══ SCENE 06 — CRANE ══════════════════════════════════════════════════════
+   A slot in a black screen that grows to the full viewport. The headline is
+   behind the photograph and gets covered by it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rail--crane .rail-pin { background: #04060A; }
+
+.rail--crane .ghost {
+  position: absolute; z-index: 1;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  text-align: center; white-space: normal;
+  font-size: clamp(3rem, 1rem + 11vw, 12rem);
+  color: rgba(197,213,236,.20);
+  will-change: transform;
+}
+
+/* Full bleed and clipped to a slot, rather than a narrow element that grows.
+   Clipping is composited and the photograph inside keeps its own geometry, so
+   opening the slot reveals more picture instead of stretching it. */
+.crane-frame {
+  position: absolute; inset: 0; z-index: 2;
+  overflow: hidden;
+  clip-path: inset(0 39% 0 39%);
+  will-change: clip-path;
+}
+.crane-crop { position: absolute; inset: 0; }
+.crane-crop img { will-change: transform; }
+.crane-frame img { filter: var(--grade-lit); }
+.crane-frame::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(4,6,10,.55) 0%, transparent 26%, transparent 58%, rgba(4,6,10,.9) 100%);
+}
+
+.crane-copy {
+  position: absolute; z-index: 6;
+  left: var(--gut); bottom: clamp(3rem, 8vh, 6rem);
+  width: min(38ch, calc(100% - var(--gut) * 2));
+  will-change: transform, opacity;
+  text-shadow: 0 2px 40px rgba(4,6,10,.95);
+}
+.crane-copy .eyebrow { margin-bottom: 1rem; }
+.crane-copy .ticks { margin-top: 1.3rem; }
+
+@media (max-width: 860px) {
+  .rail--crane { height: 280vh; }
+  .crane-frame { clip-path: inset(0 29% 0 29%); }
+  .crane-copy { bottom: calc(var(--dock) + 1.5rem); }
+}
+
+
+/* ═══ SCENE 07 — REEL ═══════════════════════════════════════════════════════
+   Vertical scroll drives horizontal travel. Widths are irregular so it never
+   settles into a row of cards.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rail--reel .rail-pin { background: var(--ink-2); }
+
+.reel-head {
+  position: absolute; z-index: 6; left: var(--gut); top: clamp(5rem, 13vh, 8rem);
+  pointer-events: none;
+}
+.reel-head .eyebrow { margin-bottom: .9rem; }
+.reel-head .big { font-size: clamp(1.5rem, .9rem + 2vw, 2.75rem); max-width: 16ch; }
+
+.reel-track {
+  /* Full height with centred items rather than top:50% — the scene writes
+     only translateX, so the vertical centring has to survive it. */
+  position: absolute; z-index: 2; top: 0; bottom: 0; left: 0;
+  display: flex; align-items: center;
+  gap: clamp(1rem, 2.2vw, 2.6rem);
+  padding-inline: var(--gut);
+  will-change: transform;
+}
+
+.reel-item {
+  flex: none;
+  width: calc(var(--w) * 1vw);
+  height: 70svh;
+  position: relative;
+}
+.reel-crop {
+  position: absolute; inset: 0; overflow: hidden; background: var(--steel);
+  contain: paint;
+}
+/* the image is taller than its crop so it can pan inside it */
+.reel-img {
+  position: absolute; left: 0; top: 0;
+  width: 100%; height: 118%;
+  object-fit: cover;
+  filter: var(--grade-lit);
+  will-change: transform;
+}
+.reel-crop::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 52%, rgba(6,8,11,.9));
+}
+
+.reel-cap {
+  position: absolute; z-index: 2; left: 0; right: 0; bottom: 0;
+  padding: clamp(.9rem, 1.6vw, 1.4rem);
+  display: grid; gap: .2rem;
+}
+.reel-n {
+  font-family: "IBM Plex Mono", monospace; font-size: .625rem;
+  color: var(--ember); letter-spacing: .14em;
+}
+.reel-tag {
+  font-family: "IBM Plex Mono", monospace; font-size: .625rem;
+  text-transform: uppercase; letter-spacing: .16em; color: var(--fg-3);
+}
+.reel-title {
+  font-family: Archivo, sans-serif; font-weight: 600;
+  font-size: var(--t-lg); letter-spacing: -.02em;
+}
+
+.reel-foot {
+  position: absolute; z-index: 6; left: var(--gut); right: var(--gut);
+  bottom: clamp(1.6rem, 4vh, 2.8rem);
+  display: flex; align-items: center; gap: 1.2rem;
+}
+.reel-progress { flex: 1; height: 1px; background: var(--line-2); position: relative; max-width: 30vw; }
+.reel-progress i {
+  position: absolute; inset: 0 auto 0 0; width: 100%;
+  background: var(--ember); transform: scaleX(0); transform-origin: left;
+}
+.reel-note {
+  font-family: "IBM Plex Mono", monospace; font-size: .625rem;
+  text-transform: uppercase; letter-spacing: .13em; color: var(--fg-4);
+}
+
+@media (max-width: 860px) {
+  .reel-item { height: 56svh; }
+  .reel-head { top: 4.5rem; }
+  .reel-head .big { display: none; }
+  /* the note wraps to two lines on a phone and squeezes the bar to nothing */
+  .reel-foot {
+    bottom: calc(var(--dock) + 1rem);
+    flex-direction: column; align-items: stretch; gap: .7rem;
+  }
+  .reel-progress { max-width: none; width: 100%; }
+}
+
+
+/* ═══ MATERIAL REFERENCE ════════════════════════════════════════════════════
+   A thin honest band. These two images are stock collages, not Kingson's
+   work, and the treatment says so: pushed to near-monochrome, small, and
+   labelled above.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.matref { padding: clamp(3rem, 7vw, 6rem) 0 0; }
+.matref-note {
+  padding: 0 var(--gut) .9rem;
+  font-family: "IBM Plex Mono", monospace; font-size: var(--t-xs);
+  text-transform: uppercase; letter-spacing: .13em; color: var(--fg-4);
+  border-bottom: 1px solid var(--line);
+  margin: 0 var(--gut);
+  padding-inline: 0;
+}
+.matref-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 1px; }
+.matref-cell { height: clamp(90px, 14vw, 190px); overflow: hidden; }
+.matref-cell img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(.85) contrast(1.1) brightness(.42);
+}
+
+
+/* ═══ SCENE 08 — PROCESS ════════════════════════════════════════════════════
+   Numerals at display scale with the text hanging off them, each row further
+   across than the last. No card anywhere.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.proc { padding: var(--bay) 0; position: relative; }
+.proc-lead { padding-inline: var(--gut); margin-bottom: clamp(2.5rem, 6vw, 5rem); }
+
+.proc-row {
+  display: grid;
+  /* Named areas, not auto-placement: with three children in a two-column
+     grid the body wrapped onto a second implicit row in column one and
+     forced that column to its own max-content width, which collapsed the
+     name to zero and pushed the row past the viewport. */
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  grid-template-areas: "num name" "num body";
+  align-items: start;
+  gap: 0 clamp(1.25rem, 3vw, 3.5rem);
+  padding: clamp(1.5rem, 3vw, 2.6rem) var(--gut);
+  padding-left: calc(var(--gut) + var(--step) * clamp(0px, 4vw, 84px));
+  border-top: 1px solid var(--line);
+}
+.proc-row:last-child { border-bottom: 1px solid var(--line); }
+
+.proc-n {
+  grid-area: num;
+  font-family: Archivo, sans-serif; font-weight: 700;
+  font-size: clamp(3rem, 1.6rem + 6vw, 9rem);
+  line-height: .78; letter-spacing: -.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(197,213,236,.30);
+  transition: color .6s var(--ease), -webkit-text-stroke-color .6s var(--ease);
+}
+.proc-row.lit .proc-n { color: rgba(226,103,59,.14); -webkit-text-stroke-color: rgba(226,103,59,.55); }
+
+.proc-name {
+  grid-area: name;
+  font-family: Archivo, sans-serif; font-weight: 600;
+  font-size: var(--t-xl); letter-spacing: -.028em; line-height: 1.05;
+}
+.proc-body { grid-area: body; margin-top: .8rem; color: var(--fg-2); font-size: var(--t-sm); max-width: 54ch; }
+
+.proc-note {
+  margin: clamp(2.5rem, 5vw, 4rem) var(--gut) 0 auto;
+  max-width: 52ch; padding-left: var(--gut);
+  color: var(--fg-3); font-size: var(--t-sm); text-align: right;
+}
+@media (max-width: 860px) {
+  .proc-note { text-align: left; padding-left: 0; margin-left: var(--gut); }
+}
+
+
+/* ═══ SCENE 09 — START ══════════════════════════════════════════════════════
+   Deliberately off-grid: the heading runs to the left edge, the form is
+   pushed right and overlaps the column above it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.start { padding: var(--bay) 0; position: relative; }
+.start-head { padding: 0 var(--gut); }
+.start-head .eyebrow { margin-bottom: 1.4rem; white-space: nowrap; }
+/* the measure belongs on the heading, not on the block — putting it on the
+   wrapper squeezed the standfirst into a twenty-character column */
+.start-head .mega { font-size: var(--d-md); max-width: 15ch; }
+.start-head .lede { margin-top: 1.6rem; max-width: 46ch; }
+
+.start-body {
+  display: grid;
+  grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
+  gap: clamp(2rem, 5vw, 6rem);
+  align-items: start;
+  padding: 0 var(--gut);
+  margin-top: clamp(-3rem, -2vw, 0rem);
+}
+@media (max-width: 980px) { .start-body { grid-template-columns: 1fr; margin-top: 2.5rem; } }
+
+.start-side { padding-top: clamp(1rem, 4vw, 4rem); }
+.start-lines { display: grid; border-top: 1px solid var(--line-2); }
+.start-lines a, .start-lines p {
+  padding-block: .95rem; border-bottom: 1px solid var(--line);
+  display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
+  font-size: var(--t-sm); color: var(--fg-2);
+  transition: color .3s var(--ease);
+}
+.start-lines a:hover { color: var(--ember); }
+.start-lines .lbl {
+  font-family: "IBM Plex Mono", monospace; font-size: var(--t-xs);
+  text-transform: uppercase; letter-spacing: .13em; color: var(--fg-4); flex: none;
+}
+.start-lines .val { text-align: right; }
+.start-direct { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin-top: 1.6rem; }
+@media (max-width: 420px) { .start-direct { grid-template-columns: 1fr; } }
+
+
+/* ═══ reveal details ════════════════════════════════════════════════════════
+   Secondary only. The interaction language is the scenes above; these are
+   the small entrances that stop static blocks from arriving dead.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.js .lift { opacity: 0; transform: translateY(22px); }
+.js .lift.in {
+  opacity: 1; transform: none;
+  transition: opacity .9s var(--ease-out), transform 1s var(--ease-out);
+}
+.js .lift.in:nth-child(2) { transition-delay: .06s; }
+.js .lift.in:nth-child(3) { transition-delay: .12s; }
+.js .lift.in:nth-child(4) { transition-delay: .18s; }
+.js .lift.in:nth-child(5) { transition-delay: .24s; }
+
+
+/* ═══ reduced motion ════════════════════════════════════════════════════════
+   Every scene resolves to its end state and the rails collapse to a single
+   screen, so the page becomes a sequence of composed stills rather than a
+   very long scroll that never moves.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .rail--gateway, .rail--bands, .rail--strip,
+  .rail--laser, .rail--crane, .rail--reel { height: auto !important; }
+  .rail-pin { position: relative; height: 100svh; }
+
+  .js .lift { opacity: 1 !important; transform: none !important; }
+
+  .gate-photo { clip-path: none !important; }
+  .gate-hero { opacity: 1 !important; transform: none !important; }
+  .gate-beat { display: none; }
+  .gate-lines { display: none; }
+  #steel { opacity: .35; }
+
+  .band { transform: none !important; }
+  .bands-over { opacity: 0; }
+
+  .strip--b { clip-path: inset(0 0 0 45%) !important; }
+  .strip-beat[data-strip-beat="1"] { opacity: 1 !important; transform: none !important; }
+  .strip-beat[data-strip-beat="2"] { display: none; }
+
+  .lz--reveal { clip-path: none !important; }
+  .lz-beam { display: none; }
+  .lz-nest { opacity: .5 !important; }
+  .lz-nest .cut { stroke-dashoffset: 0 !important; }
+
+  .crane-frame { clip-path: none !important; }
+  .rail--crane .ghost { display: none; }
+
+  /* the reel becomes a scrollable strip the reader controls */
+  .rail--reel .rail-pin { height: auto; padding-block: 4rem; }
+  .reel-head, .reel-foot { position: static; margin: 0 var(--gut) 2rem; }
+  .reel-track {
+    position: static; transform: none !important;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    padding-bottom: 1rem;
+  }
+  .reel-item { scroll-snap-align: center; }
+  .reel-img { transform: none !important; height: 100%; }
+  .reel-cap { transform: none !important; }
+}
