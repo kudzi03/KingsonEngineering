@@ -2,42 +2,43 @@
 <!--
   One live URL. The site is a single page.
 
-  Image entries list Kingson's own photographs only. The two stock material
-  collages (assets/img/material-tube-*, material-sheet-*) are deliberately
-  absent: they are not Kingson's work and must not be submitted to Google as
-  though they were. See PHOTOGRAPHY in content.js.
+  Image entries list Kingson's own photographs only, and their titles describe
+  what is in the picture and nothing else. No city, no client, no project name
+  and no capacity appears here: none of those is owner-verified, and a sitemap
+  submitted to a search engine is a published claim like any other. The
+  publication gate lives in content/company.js.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://kingson-engineering.vercel.app/</loc>
-    <lastmod>2026-09-07</lastmod>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
 
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/portal-frame-1320.webp</image:loc>
-      <image:title>Steel portal frame under erection by Kingson Engineering, Harare</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/crane-1320.webp</image:loc>
-      <image:title>Kingson Engineering telescopic mobile crane, Harare</image:title>
+      <image:title>Steel portal frame under erection</image:title>
     </image:image>
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/roof-trusses-1320.webp</image:loc>
-      <image:title>Long-span steel roof trusses and purlins, Harare</image:title>
+      <image:title>Long-span steel roof trusses and purlins</image:title>
     </image:image>
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/roof-frame-1320.webp</image:loc>
-      <image:title>Pitched roof steelwork, sheeted and finished</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-machine-1536.webp</image:loc>
-      <image:title>DXTECH fiber laser in the Kingson Engineering workshop, Harare</image:title>
+      <image:title>Roof structure seen from inside the building</image:title>
     </image:image>
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/cutting-head-1350.webp</image:loc>
-      <image:title>Fiber laser cutting head over mild steel plate</image:title>
+      <image:title>Fiber laser cutting head over steel plate</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-machine-1536.webp</image:loc>
+      <image:title>Fiber laser cutting machine in the workshop</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/crane-1320.webp</image:loc>
+      <image:title>Telescopic mobile crane in the yard</image:title>
     </image:image>
   </url>
 </urlset>

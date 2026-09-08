@@ -1,47 +1,59 @@
 # Kingson Engineering
 
-Public website for Kingson Trading (Pvt) Ltd, trading as Kingson Engineering —
-steelwork specialists, Harare, Zimbabwe.
+Public website for Kingson Engineering — engineering and fabrication, Zimbabwe.
 
-Static site. No framework, no build step, no npm install, no dependencies.
-Edit, push, Vercel redeploys.
+Static site: plain HTML, CSS and ES modules. No framework, no build step, no
+npm install, no dependencies. Edit, push, Vercel redeploys.
 
 ---
 
 ## Read this first
 
-Two things about this site are deliberate and easy to undo by accident.
+**Nothing unverified is on the page.**
 
-**1. Unconfirmed figures are not on the page.**
-The previous version published cover widths, gauges, minimum roof pitches,
-purlin spacings, laser cutting thicknesses, tolerances, lead times and
-quotation turnarounds. The old README recorded that none of it had been
-confirmed by the company — *"A contractor will build to them."*
+`content/company.js` holds every business value with a `status`:
 
-Every one of those figures is now held in `content.js`, in `PROVISIONAL`, and
-none of it reaches the page. The site states the capability without the number
-and says the figures are issued with the quotation.
+| status | meaning | published? |
+|---|---|---|
+| `user_context` | supplied by the owner in the brief | yes |
+| `observed_photo` | visible in a photograph the owner supplied | yes |
+| `draft` | carried over from an earlier draft, never confirmed | **no** |
+| `owner_verified` | confirmed by Kingson | yes |
 
-When the figures are signed off, open `content.js` and set:
+Only `name` and `sector` are publishable today. The email, phone, WhatsApp
+number, office, address, hours and Facebook page are all `draft`, so they are
+held in the file and never rendered — which is why the enquiry composer offers
+**Copy enquiry** and says the contact details are being confirmed, instead of a
+dead Submit button or an address nobody has checked.
 
-```js
-var SHOW_PROVISIONAL_SPECS = true;
-```
+To publish a contact channel, change its `status` to `owner_verified` in
+`content/company.js`. The handoff buttons, the footer line and the structured
+data pick it up with no other edit.
 
-The roofing and laser spec tables then render, and the "issued with the
-quotation" notes step aside for them. Nothing else has to change.
+The same rule governs the sitemap, robots.txt and the 404 page: no city, no
+client, no project name, no capacity, no lead time, no certification and no
+number that has not been confirmed.
 
-**2. Two images are not Kingson's work.**
-`material-tube` and `material-sheet` are stock material collages. The previous
-site captioned them *"Multi-Storey Process Structure, Harare"* and *"Kingson
-Engineering mobile crane"*, which they are not — one is a grid of steel tube
-stock, the other of sheet and plate. They now appear only in a strip labelled
-**"Material reference — stock imagery, not Kingson project photography"**, are
-kept out of the project grid, and are kept out of `sitemap.xml`. Replace them
-with real photographs when there are some, and delete the strip.
+Run `node tools/check-truth.js` (or the QA script in the treatment notes) to
+assert that nothing gated reaches the rendered page.
 
-Search the repository for `VERIFY_WITH_KINGSON` for everything else awaiting
-confirmation.
+---
+
+## What the page is
+
+Eight scenes. Scenes 1–6 share one native sticky stage; Scenes 7–8 scroll over
+the photograph that stage releases.
+
+| # | Scene | What it is |
+|---|---|---|
+| 1 | The opening | The portal photograph, full bleed, with a modelled steel corner across the right that registers onto the real column and withdraws into it |
+| 2 | Inside the frame | The same photograph held, then the photographed roof direction opens as an aperture |
+| 3 | Under the roof | Two roofs across a hard diagonal, then a loaded edge carries the machine in |
+| 4 | At the edge | The cutting head at macro scale, then the workshop beside it |
+| 5 | In the yard | One crane photograph at two scales, no gutter |
+| 6 | Selected views | Three contiguous full-viewport photographs with one attached dock |
+| 7 | Bring the brief | The released photo wall, and what to send |
+| 8 | Start a conversation | A local composer that hands the message to an app the visitor already has |
 
 ---
 
@@ -49,178 +61,69 @@ confirmation.
 
 | You want to change | Edit |
 |---|---|
-| Phone, email, address, opening hours, WhatsApp number | `COMPANY` in `content.js` |
-| Enquiry form dropdown options | `ENQUIRY` in `content.js` |
-| Withheld technical figures, and the flag that shows them | `PROVISIONAL` in `content.js` |
-| Anything a visitor reads as a sentence | `index.html` |
-| Colours, type scale, spacing | the token block at the top of `assets/site.css` |
-| The 3D frame in the hero | `assets/steel.js` |
-
-Prose lives in `index.html` on purpose. Text built by JavaScript is rendered by
-Google but not by most AI answer engines, and this site is meant to be found by
-both. `index.html` is one file with one commented section per part of the page.
-
-Contact details appear in the HTML *and* in `content.js`: the HTML carries the
-current values so a crawler running no JavaScript reads the right number, and
-`content.js` overwrites them at runtime so there is one place to edit. Change
-`content.js`; the HTML copy is a fallback.
+| Any business value, and whether it may be published | `content/company.js` |
+| Anything a visitor reads as a sentence | `content/copy.js` |
+| Which photographs, their crops and their alt text | `content/assets.js` |
+| Where a scene starts and how long it runs | `experience/scene-map.js` |
+| What a scene looks like at a given progress | `experience/scenes/*.js` |
+| What two neighbouring scenes must agree on | the boundary functions in `experience/scene-map.js` |
+| The one source-to-viewport crop transform | `experience/crops.js` |
+| The modelled corner in Scene 1 | `experience/geometry.js` |
+| The two traced masks | `experience/masks.js` |
+| Colour, type scale, spacing | `styles/tokens.css` |
+| The mobile compositions | `interface/mobile-story.js` + the mobile block in `styles/fallback.css` |
 
 ---
 
-## Files
+## Architecture rules
 
-```
-index.html            the page — all copy, all markup
-content.js            company details, form options, withheld figures, flags
-404.html              not-found page
-robots.txt            crawler rules, including explicit AI-crawler permissions
-sitemap.xml           one URL; Kingson's own photographs only
-vercel.json           caching and security headers
+These are load-bearing. Breaking one produces the class of bug it exists to
+prevent.
 
-assets/
-  site.css            the whole visual system
-  site.js             behaviour — reveals, parallax, the stage, the form
-  steel.js            the WebGL portal frame
-  fonts.css           @font-face rules (generated)
-  fonts/*.woff2       self-hosted Archivo, Inter, IBM Plex Mono — 96 KB total
-  img/*.webp          cropped, resized derivatives of the photographs
-  img/manifest.json   source dimensions, written by the image script
-
-tools/
-  fetch-fonts.py      regenerates assets/fonts/ and assets/fonts.css
-  build-images.py     regenerates assets/img/ from the root photographs
-
-*.jpeg                the original photographs, unmodified
-```
-
-The original `.jpeg` files stay at the repository root as the asset library.
-Nothing on the page loads them — the page uses the WebP derivatives in
-`assets/img/` — but they are the masters, and `tools/build-images.py` reads
-them.
+- **One scroll state source.** `main.js` reads `window.pageYOffset` once per
+  frame. No module binds its own scroll listener, on desktop or on mobile.
+- **One sampler, one writer.** `experience/state.js` turns a scroll position
+  into a complete visual state; `experience/stage.js` writes it. The sampler
+  never touches the DOM; the writer never decides anything.
+- **One crop transform.** `crops.cover()` is the only place a source-to-viewport
+  fit is computed. Photographs, traced masks and the WebGL registration all read
+  the same numbers, which is why the modelled corner lands on the real column at
+  every viewport ratio instead of only the one it was authored at.
+- **Shared boundaries.** Scene N at p=1 and Scene N+1 at p=0 are the same
+  function, stored once in `scene-map.js` and referenced by both neighbours.
+  Neither scene re-derives the other's coordinates.
+- **Planes are pooled by identity.** The crane that ends Scene 5 is the same DOM
+  node and the same decoded bitmap that begins Scene 6.
+- **Mobile is its own state map**, not a scaled desktop: authored edge-to-edge
+  compositions plus two short sticky events. Reduced motion is a third map
+  again, with nothing to scrub.
 
 ---
 
-## Running it locally
+## Photography
 
-The page needs to be served over HTTP, not opened as a `file://` path, or the
-browser will refuse the fonts.
+Six photographs carry the site: `portal-frame`, `roof-trusses`, `roof-frame`,
+`cutting-head`, `laser-machine`, `crane`. All are Kingson's own. `gantry` is
+kept in `content/assets.js` as archive only and is not published.
 
-```bash
-python3 -m http.server 8000
-# then open http://localhost:8000
-```
+Colour is left alone. The sky is blue and white, the ground is red, the
+machinery is yellow, the workshop is brick — there is no global grade, no
+vignette and no colour wash over any photograph.
 
-Any static server works — `npx serve`, `php -S localhost:8000`, whatever is
-already installed.
-
----
-
-## Regenerating assets
-
-Neither script runs at deploy time. Run them by hand when the inputs change and
-commit the output.
-
-**Images** — after adding or replacing a photograph:
-
-```bash
-python3 tools/build-images.py
-```
-
-Reads the `.jpeg` files at the repository root, crops the screenshot letterbox
-off the two that have one, and writes WebP derivatives at 440 / 720 / 1100 px
-plus the native width. Needs `pillow`.
-
-**Fonts** — only if a weight or family changes:
-
-```bash
-python3 tools/fetch-fonts.py
-```
+The delivered derivatives carried a black letterbox band of up to 0.6% at the
+bottom (and 0.2% at the top of `portal-frame`). It has been cropped out, and
+`content/assets.js`, `experience/masks.js` and the traced coordinates carry the
+matching rescale. Do not regenerate the derivatives from the originals without
+re-cropping, or the band will reappear as a blank strip at the edge of a scene.
 
 ---
 
-## Deploying
+## Debug tools
 
-Framework preset **Other**. No build command, no output directory. Push to the
-branch Vercel is watching and it redeploys.
-
-**Caching, and why it is set that way.** `vercel.json` pins fonts for a year
-(`immutable`) because a font file never changes once generated. Images get a
-month with `stale-while-revalidate` rather than a year, because they are named
-by slug and width, not by content hash — replacing a photograph reuses its URL,
-and a year of `immutable` would strand the old one in visitors' caches. HTML,
-CSS and JS must always revalidate: `content.js` carries the business copy and
-the provisional-spec flag, and stale copy is the one thing this site cannot
-afford.
-
----
-
-## How the enquiry form works
-
-**There is no server, and nothing is stored.**
-
-Submitting composes a formatted message and hands it to WhatsApp or the
-visitor's email client, pre-filled. The visitor still has to press send in that
-app. The confirmation says *"ready to send"* rather than *"received"* for
-exactly that reason, and the file picker says in as many words that nothing is
-uploaded to the website — it lists the drawings so the message names them, and
-the real attachment happens in WhatsApp or the mail client.
-
-To make it send server-side later, `buildPayload()` in `assets/site.js` already
-returns the shape a CRM would want. Set both of these in `content.js`:
-
-```js
-mode: 'endpoint',
-endpoint: 'https://…'
-```
-
-and write the POST. Nothing else on the page has to change. A form service
-(Web3Forms, Formspree) or a Vercel serverless function with an email provider
-both fit.
-
----
-
-## What happens when things are missing
-
-Nothing on this page depends on everything working.
-
-| If | Then |
+| URL | What it does |
 |---|---|
-| JavaScript is off | Full page, all photographs, all copy. No animation. |
-| WebGL is unavailable | The hero is the portal frame photograph, graded to match. It is the default; the canvas replaces it only once a context is confirmed. |
-| A shader fails to compile | Same as above — the scene returns `null` and the photograph stays. |
-| `prefers-reduced-motion` | The steel frame renders once, assembled and lit, and never moves. Every reveal is already visible. Nothing animates. |
-| `IntersectionObserver` is missing | Everything reveals immediately. |
-| The stage scrolls off screen | The render loop stops. |
-| The tab is hidden | The render loop stops. |
-| Small screen | Four bays instead of six, pixel ratio capped at 1.75. |
+| `?still=s3-c` | Freezes one named state (`s1-a` … `s6-e`) |
+| `?scene=roof&p=0.42` | Freezes a state by coordinate |
+| `?notype=1` | Draws the photography with no type, for measuring contrast |
 
----
-
-## Still outstanding
-
-- **Confirm the figures in `PROVISIONAL`,** then flip `SHOW_PROVISIONAL_SPECS`.
-- **Confirm everything marked `VERIFY_WITH_KINGSON`** — the workshop address,
-  the opening hours, the map coordinates, and whether the five process stages
-  describe how the company actually runs a job.
-- **Replace the two stock collages** with real photographs of Kingson's own
-  stock, and delete the material-reference strip.
-- Custom domain and a `@kingson.co.zw` address in place of the Gmail. The URL
-  is hard-coded in `index.html` (canonical, `og:url`, `og:image`),
-  `robots.txt` (the `Sitemap:` line) and `sitemap.xml` (every `<loc>` and
-  `<image:loc>`). Find and replace all three together.
-- Google Business Profile with the real workshop street address. For a Harare
-  fabricator this is worth more than the website.
-- Named reference projects, with client permission. The project grid currently
-  publishes no client, value, tonnage or date, because none has been supplied.
-- On mobile the header has no navigation — the fixed action dock carries Call,
-  WhatsApp and Start a project, and the page is scrolled. If the section list
-  is wanted on a phone, that is a menu still to build.
-- Delete the duplicate deployments. Every extra copy of this site competes with
-  the real one in search results. Keep exactly one Vercel project.
-- Optional cleanup: `IMG 5167.jpeg`–`IMG 5174.jpeg`, `KE *.jpeg` and
-  `kingson-flat.zip` are byte-identical duplicates of the canonically named
-  photographs, about 6.7 MB of the repository. Nothing references them.
-
----
-
-Contact — +263 772 262 869 · kingsonnkm@gmail.com
+The same code that animates draws the still, so what you inspect is what ships.

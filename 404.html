@@ -5,87 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Page not found — Kingson Engineering</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#06080B">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2306080B'/%3E%3Ctext x='32' y='41' font-family='Helvetica,Arial,sans-serif' font-weight='700' font-size='26' fill='%23F3F6FA' text-anchor='middle' letter-spacing='1'%3EKE%3C/text%3E%3Crect x='19' y='47' width='26' height='3' fill='%23E2673B'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#111714">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23111714'/%3E%3Ctext x='32' y='42' font-family='Helvetica,Arial,sans-serif' font-weight='800' font-size='27' fill='%23F3F4ED' text-anchor='middle'%3EKE%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/fonts.css">
+<link rel="stylesheet" href="/styles/tokens.css">
 <style>
-  /* Same tokens as assets/site.css. Kept inline so a 404 renders even if the
-     stylesheet is the thing that went missing. */
-  :root{
-    --ink:#06080B; --fg:#F3F6FA; --fg-2:#A7B2C2; --fg-3:#6B7686; --fg-4:#48525F;
-    --ember:#E2673B; --line:rgba(197,213,236,.13); --line-2:rgba(197,213,236,.24);
-    color-scheme:dark;
-  }
-  *,*::before,*::after{box-sizing:border-box}
-  body{
-    margin:0; min-height:100svh; display:flex; align-items:center;
-    background:var(--ink); color:var(--fg);
-    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    font-size:clamp(.9375rem,.9rem + .18vw,1.0625rem); line-height:1.62;
-    padding:clamp(1.5rem,6vw,5rem); -webkit-font-smoothing:antialiased;
-  }
-  /* the same faint set-out grid as the hero */
-  body::before{
-    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
-    background-image:
-      linear-gradient(to right, rgba(197,213,236,.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(197,213,236,.05) 1px, transparent 1px);
-    background-size:clamp(56px,7vw,108px) clamp(56px,7vw,108px);
-    -webkit-mask-image:radial-gradient(90% 70% at 30% 45%,#000,transparent 75%);
-    mask-image:radial-gradient(90% 70% at 30% 45%,#000,transparent 75%);
-  }
-  .box{width:100%; max-width:56rem; margin-inline:auto}
-  .lab{
-    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.75rem;
-    text-transform:uppercase; letter-spacing:.22em; color:var(--fg-2);
-    display:flex; align-items:center; gap:.8rem;
-  }
-  .lab::before{content:""; width:clamp(28px,4vw,58px); height:1px; background:var(--ember)}
-  h1{
-    font-family:Archivo,Inter,system-ui,sans-serif; font-weight:700;
-    font-size:clamp(2.6rem,1.45rem + 5.75vw,6.5rem); letter-spacing:-.038em;
-    line-height:.93; margin:clamp(1.1rem,2.4vh,2rem) 0 0; max-width:13ch;
-  }
-  h1 span{display:block; color:var(--fg-2)}
-  p{margin:clamp(1.4rem,3vh,2.2rem) 0 0; max-width:46ch; color:var(--fg-2); line-height:1.55}
-  .btns{display:flex; flex-wrap:wrap; gap:.85rem; margin-top:clamp(1.8rem,4vh,2.8rem)}
-  .btn{
-    display:inline-flex; align-items:center; gap:.7rem; padding:.95rem 1.6rem;
-    font-size:1rem; font-weight:500; border:1px solid var(--line-2);
-    color:var(--fg); text-decoration:none; transition:background .35s, color .35s, border-color .35s;
-  }
-  .btn:hover{background:var(--fg); color:var(--ink); border-color:var(--fg)}
-  .btn.primary{border-color:var(--ember); background:var(--ember); color:#150803; font-weight:600}
-  .btn.primary:hover{background:var(--fg); border-color:var(--fg); color:var(--ink)}
-  .btn:focus-visible,a:focus-visible{outline:2px solid var(--ember); outline-offset:3px}
-  .foot{
-    margin-top:clamp(2.5rem,6vh,4rem); padding-top:1.2rem; border-top:1px solid var(--line);
-    font-size:.8125rem; color:var(--fg-4);
-    display:flex; flex-wrap:wrap; gap:.6rem 2rem;
-  }
-  .foot a{color:var(--fg-2); text-decoration:none}
-  .foot a:hover{color:var(--ember)}
-  @media (prefers-reduced-motion: reduce){*{transition-duration:.001ms !important}}
+  /* Same identity as the site: the work behind, one compact opaque cluster,
+     chalk on the photograph. No contact details appear here, for the same
+     reason none appear anywhere else — none is owner-verified yet. */
+  body { margin: 0; background: var(--ink); color: var(--chalk);
+         font-family: Inter, system-ui, sans-serif; font-size: var(--t-body); }
+  .nf { position: relative; min-height: 100svh; min-height: 100vh; overflow: hidden; }
+  .nf img { position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; object-position: 54% 47%; }
+  .nf-mark { position: absolute; top: 32px; left: var(--margin);
+             background: var(--ink-90); padding: 10px 16px; line-height: 1.05;
+             text-decoration: none; color: var(--chalk); }
+  .nf-mark b { display: block; font-family: Archivo, sans-serif; font-weight: 800;
+               font-size: 23px; letter-spacing: .01em; }
+  .nf-mark span { display: block; font-size: 10.5px; letter-spacing: .2em; color: var(--chalk-70); }
+  .nf-body { position: absolute; left: var(--margin); bottom: 12vh; max-width: 46ch; }
+  .nf-body h1 { font-family: Archivo, sans-serif; font-weight: 800;
+                font-size: clamp(52px, 7.5vw, 132px); letter-spacing: -.045em;
+                line-height: .90; margin: 0 0 20px; }
+  .nf-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .nf-links a { background: var(--ink-90); color: var(--chalk); padding: 12px 18px;
+                text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+  .nf-links a:hover { background: var(--chalk); color: var(--ink); }
 </style>
 </head>
 <body>
-  <main class="box">
-    <p class="lab">Error 404</p>
-    <h1>That page isn't<span>on the drawing.</span></h1>
-    <p>
-      The address you followed does not exist on this site. Everything Kingson Engineering
-      does — structural steelworks, roof steelwork, laser cutting and cranage — is on the
-      one page.
-    </p>
-    <div class="btns">
-      <a class="btn primary" href="/">Back to the site</a>
-      <a class="btn" href="/#start">Start a project</a>
+<div class="nf">
+  <img src="/assets/img/portal-frame-1320.webp"
+       srcset="/assets/img/portal-frame-720.webp 720w, /assets/img/portal-frame-1100.webp 1100w, /assets/img/portal-frame-1320.webp 1320w"
+       sizes="100vw" width="1320" height="888" decoding="async"
+       alt="A steel portal frame under erection on open ground, with a mobile crane working inside the frame.">
+  <a class="nf-mark" href="/"><b>KINGSON</b><span>ENGINEERING</span></a>
+  <div class="nf-body">
+    <h1>That page<br>isn&rsquo;t here.</h1>
+    <div class="nf-links">
+      <a href="/">The work</a>
+      <a href="/#enquiry">Start an enquiry</a>
     </div>
-    <div class="foot">
-      <span>Kingson Engineering · Harare, Zimbabwe</span>
-      <a href="tel:+263772262869">+263 772 262 869</a>
-      <a href="mailto:kingsonnkm@gmail.com">kingsonnkm@gmail.com</a>
-    </div>
-  </main>
+  </div>
+</div>
 </body>
 </html>
