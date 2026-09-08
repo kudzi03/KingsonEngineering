@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kingson Engineering — engineering &amp; fabrication, Zimbabwe</title>
-<meta name="description" content="Kingson Engineering — engineering and fabrication in Zimbabwe. Structural steel, roof steel, laser cutting and cranage, photographed at work.">
+<title>Kingson Engineering — steel fabrication, roofing &amp; cranage, Harare</title>
+<meta name="description" content="Structural steel, roof steel, laser cutting and mobile crane hire in Harare, Zimbabwe. Send a drawing or a description and we will come back to you.">
 <meta name="theme-color" content="#111714">
 <link rel="canonical" href="https://kingson-engineering.vercel.app/">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Kingson Engineering">
-<meta property="og:description" content="Engineering and fabrication in Zimbabwe. Structural steel, roof steel, laser cutting and cranage.">
+<meta property="og:title" content="Kingson Engineering — steel, roofing &amp; cranage">
+<meta property="og:description" content="Structural steel, roof steel, laser cutting and mobile crane hire in Harare, Zimbabwe.">
 <meta property="og:image" content="https://kingson-engineering.vercel.app/assets/img/portal-frame-1320.webp">
 <meta property="og:url" content="https://kingson-engineering.vercel.app/">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,47 +23,298 @@
       imagesizes="100vw" fetchpriority="high">
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="styles/tokens.css">
-<link rel="stylesheet" href="styles/stage.css">
-<link rel="stylesheet" href="styles/interface.css">
-<link rel="stylesheet" href="styles/fallback.css">
+<link rel="stylesheet" href="styles/site.css">
 
-<!-- Structured data carries only what §15 clears for publication: the company
-     name and the sector context the owner supplied. No address, phone, email,
-     hours, geo pin or service catalogue appears here, because none of those is
-     owner-verified yet. -->
-<script type="application/ld+json">
+<script type="application/ld+json"><!--ld-->
 {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "LocalBusiness",
   "name": "Kingson Engineering",
-  "description": "Engineering and fabrication in Zimbabwe."
+  "legalName": "Kingson Trading (Pvt) Ltd",
+  "description": "Fabrication and erection for builders, farmers and industry across Zimbabwe. Send a drawing or a description — we will come back to you.",
+  "image": "https://kingson-engineering.vercel.app/assets/img/portal-frame-1320.webp",
+  "url": "https://kingson-engineering.vercel.app/",
+  "telephone": "+263 772 262 869",
+  "email": "kingsonnkm@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "No. 1262 Tynwald Industries, Harare",
+    "addressCountry": "ZW"
+  },
+  "sameAs": [
+    "https://www.facebook.com/share/18GoTdrLBD/"
+  ]
 }
-</script>
+<!--/ld--></script>
 </head>
 
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<!-- ═══════════════ NAVIGATION ═══════════════
-     §14. Two compact opaque clusters, no bar across the screen. -->
-<nav class="nav" aria-label="Primary">
-  <a class="nav-cluster" href="#top" aria-label="Kingson Engineering, top of page">
-    <span class="wordmark"><b>KINGSON</b><span>ENGINEERING</span></span>
+<!-- ═══════════════ HEADER ═══════════════
+     Always present, always short. The two things a visitor most often wants —
+     to call, or to send a brief — are in it at every scroll position, so no
+     one has to hunt for them. -->
+<header class="hd">
+  <a class="hd-mark" href="#top" aria-label="Kingson Engineering, top of page">
+    <b>KINGSON</b><span>ENGINEERING</span>
   </a>
-  <div class="nav-cluster">
-    <span class="nav-subject" data-subject hidden></span>
-    <button type="button" data-go="views">Work</button>
-    <button type="button" data-menu-open aria-expanded="false" aria-controls="menu">Menu</button>
-    <a href="#enquiry">Enquire</a>
-  </div>
-</nav>
+  <nav class="hd-nav" aria-label="Primary">
+    <a href="#services">What we do</a>
+    <a href="#work">Work</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="hd-act"><!--headact-->
+<a class="btn" href="tel:+263772262869"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg><span>Call</span></a><a class="btn-ghost" href="#enquiry"><span>Get a price</span></a>
+<!--/headact--></div>
+  <button class="hd-menu" type="button" data-menu-open aria-expanded="false" aria-controls="menu">Menu</button>
+</header>
 
-<div class="menu-scrim" data-menu-scrim></div>
-<div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Sections" inert>
-  <div class="menu-head"><button type="button" class="menu-close" data-menu-close>Close</button></div>
-  <ul class="menu-list" data-menu-list></ul>
+<div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" inert>
+  <button type="button" class="menu-close" data-menu-close aria-label="Close menu">Close</button>
+  <nav class="menu-list" aria-label="Sections">
+    <a href="#services">What we do</a>
+    <a href="#work">Work</a>
+    <a href="#enquiry">Get a price</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="menu-contact"><!--menuact-->
+<a class="btn" href="tel:+263772262869"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg><span>Call +263 772 262 869</span></a><a class="btn-ghost" href="https://wa.me/263772262869" target="_blank" rel="noopener"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.5.1-.6.8-.7 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/></svg><span>WhatsApp</span></a>
+<!--/menuact--></div>
 </div>
 
+<main id="main">
+<span id="top"></span>
+
+<!-- ═══════════════ HERO ═══════════════
+     One screen. It says who this is, what they make, and gives the two
+     actions. Nothing is pinned and nothing is scrubbed: scrolling scrolls. -->
+<section class="hero">
+  <img class="hero-img" src="assets/img/portal-frame-1320.webp"
+       srcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
+       sizes="100vw" width="1320" height="888" fetchpriority="high" decoding="async"
+       alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, with a mobile crane working inside the frame.">
+  <div class="hero-body">
+<!--hero-->
+    <p class="hero-eyebrow">Engineering &amp; fabrication · Harare, Zimbabwe</p>
+    <h1 class="display hero-title">Steel, roofing and cranage.</h1>
+    <p class="hero-lede">Fabrication and erection for builders, farmers and industry across Zimbabwe. Send a drawing or a description — we will come back to you.</p>
+    <div class="hero-act"><a class="btn" href="tel:+263772262869"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg><span>Call +263 772 262 869</span></a><a class="btn-ghost" href="https://wa.me/263772262869" target="_blank" rel="noopener"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.5.1-.6.8-.7 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/></svg><span>WhatsApp</span></a><a class="btn-ghost" href="#enquiry"><span>Get a price</span></a></div>
+<!--/hero-->
+  </div>
+</section>
+
+<!-- ═══════════════ WHAT WE DO ═══════════════
+     Four things, each with the photograph of it and the line that tells you
+     what to send. Scannable in one pass — not a sequence you have to sit
+     through. -->
+<section class="svc" id="services">
+  <div class="sec-head">
+    <h2 class="display"><!--svctitle-->
+What we do
+<!--/svctitle--></h2>
+    <p>Four things, done in our own workshop and on site.</p>
+  </div>
+  <ul class="svc-list" data-services>
+<!--services-->
+    <li class="svc-item" id="structural">
+      <img src="assets/img/portal-frame-1100.webp" srcset="assets/img/portal-frame-440.webp 440w, assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w" sizes="(max-width:900px) 100vw, 50vw"
+           width="1320" height="888" loading="lazy" decoding="async" alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.">
+      <div class="svc-body">
+        <h3>Structural steel</h3>
+        <p>Portal frames, columns, rafters and purlins — fabricated in the workshop and erected on site with our own crane.</p>
+        <p class="svc-ask">Send drawings, or the span, height and bay spacing you need.</p>
+      </div>
+    </li>
+    <li class="svc-item" id="roofing">
+      <img src="assets/img/roof-trusses-1100.webp" srcset="assets/img/roof-trusses-440.webp 440w, assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w" sizes="(max-width:900px) 100vw, 50vw"
+           width="1320" height="792" loading="lazy" decoding="async" alt="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building.">
+      <div class="svc-body">
+        <h3>Roof steel</h3>
+        <p>Trusses, purlins and sheeting for long-span roofs, new build or re-roof.</p>
+        <p class="svc-ask">Send the floor area, the pitch you want, and whether the walls are up.</p>
+      </div>
+    </li>
+    <li class="svc-item" id="cutting">
+      <img src="assets/img/cutting-head-1100.webp" srcset="assets/img/cutting-head-440.webp 440w, assets/img/cutting-head-720.webp 720w, assets/img/cutting-head-1100.webp 1100w, assets/img/cutting-head-1350.webp 1350w" sizes="(max-width:900px) 100vw, 50vw"
+           width="1350" height="1800" loading="lazy" decoding="async" alt="The cutting head of a fiber laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it.">
+      <div class="svc-body">
+        <h3>Laser cutting</h3>
+        <p>Plate and sheet cut on a fiber laser, straight from your file.</p>
+        <p class="svc-ask">Send a DXF or DWG, the material and the thickness.</p>
+      </div>
+    </li>
+    <li class="svc-item" id="cranage">
+      <img src="assets/img/crane-1100.webp" srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w" sizes="(max-width:900px) 100vw, 50vw"
+           width="1320" height="1757" loading="lazy" decoding="async" alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.">
+      <div class="svc-body">
+        <h3>Cranage</h3>
+        <p>Mobile crane hire for lifting and placing steel, on our jobs or yours.</p>
+        <p class="svc-ask">Tell us the load, the site access and the date.</p>
+      </div>
+    </li>
+<!--/services-->
+  </ul>
+</section>
+
+<!-- ═══════════════ WORK ═══════════════ -->
+<section class="work" id="work">
+  <div class="sec-head">
+    <!--worktitle-->
+<h2 class="display">Recent work</h2>
+    <p>Photographs from our own jobs and workshop.</p>
+<!--/worktitle-->
+  </div>
+  <ul class="work-grid" data-work>
+<!--work-->
+    <li><button type="button" data-open="portalFrame">
+      <img src="assets/img/portal-frame-1100.webp" srcset="assets/img/portal-frame-440.webp 440w, assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w" sizes="(max-width:900px) 50vw, 33vw"
+           width="1320" height="888" loading="eager" decoding="async" alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.">
+      <span class="work-cap">Portal frame under erection</span>
+    </button></li>
+    <li><button type="button" data-open="roofTrusses">
+      <img src="assets/img/roof-trusses-1100.webp" srcset="assets/img/roof-trusses-440.webp 440w, assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w" sizes="(max-width:900px) 50vw, 33vw"
+           width="1320" height="792" loading="eager" decoding="async" alt="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building.">
+      <span class="work-cap">Long-span roof trusses and purlins</span>
+    </button></li>
+    <li><button type="button" data-open="roofFrame">
+      <img src="assets/img/roof-frame-1100.webp" srcset="assets/img/roof-frame-440.webp 440w, assets/img/roof-frame-720.webp 720w, assets/img/roof-frame-1100.webp 1100w, assets/img/roof-frame-1320.webp 1320w" sizes="(max-width:900px) 50vw, 33vw"
+           width="1320" height="714" loading="lazy" decoding="async" alt="A white-painted roof structure seen from inside: trusses, purlins and corrugated sheeting with rooflights between the bays.">
+      <span class="work-cap">Roof structure from inside</span>
+    </button></li>
+    <li><button type="button" data-open="cuttingHead">
+      <img src="assets/img/cutting-head-1100.webp" srcset="assets/img/cutting-head-440.webp 440w, assets/img/cutting-head-720.webp 720w, assets/img/cutting-head-1100.webp 1100w, assets/img/cutting-head-1350.webp 1350w" sizes="(max-width:900px) 50vw, 33vw"
+           width="1350" height="1800" loading="lazy" decoding="async" alt="The cutting head of a fiber laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it.">
+      <span class="work-cap">Fiber laser cutting plate</span>
+    </button></li>
+    <li><button type="button" data-open="laserMachine">
+      <img src="assets/img/laser-machine-1100.webp" srcset="assets/img/laser-machine-440.webp 440w, assets/img/laser-machine-720.webp 720w, assets/img/laser-machine-1100.webp 1100w, assets/img/laser-machine-1536.webp 1536w" sizes="(max-width:900px) 50vw, 33vw"
+           width="1536" height="2048" loading="lazy" decoding="async" alt="A fiber laser cutting machine in a workshop, with a brick pier, yellow sheeting and a control screen beside the bed.">
+      <span class="work-cap">The laser in the workshop</span>
+    </button></li>
+    <li><button type="button" data-open="crane">
+      <img src="assets/img/crane-1100.webp" srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w" sizes="(max-width:900px) 50vw, 33vw"
+           width="1320" height="1757" loading="lazy" decoding="async" alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.">
+      <span class="work-cap">Our mobile crane on site</span>
+    </button></li>
+<!--/work-->
+  </ul>
+</section>
+
+<!-- ═══════════════ GET A PRICE ═══════════════ -->
+<section class="enq" id="enquiry">
+  <div class="enq-inner">
+    <div class="sec-head">
+      <!--enqtitle-->
+<h2 class="display">Get a price.</h2>
+      <p>Tell us what you need. Attach a drawing if you have one — or just describe it.</p>
+<!--/enqtitle-->
+    </div>
+
+    <form class="form" data-form novalidate>
+      <div class="error-summary" data-error-summary tabindex="-1" hidden></div>
+
+<!--form-->
+      <div class="field-row">
+        <div class="field">
+          <label for="f-name">Your name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name">
+          <span class="field-error" data-error-for="f-name" hidden></span>
+        </div>
+        <div class="field">
+          <label for="f-contact">Phone or email</label>
+          <input id="f-contact" name="contact" type="text" autocomplete="tel">
+          <span class="field-error" data-error-for="f-contact" hidden></span>
+        </div>
+      </div>
+        <div class="field">
+          <label for="f-scope">What do you need?</label>
+          <input id="f-scope" name="scope" type="text" placeholder="e.g. roof over a 20 × 40 m shed">
+          <span class="field-error" data-error-for="f-scope" hidden></span>
+        </div>
+        <div class="field">
+          <label for="f-description">Describe the job</label>
+          <textarea id="f-description" name="description" rows="4" placeholder="Spans, heights, access, anything already decided."></textarea>
+          <span class="field-error" data-error-for="f-description" hidden></span>
+        </div>
+      <button type="button" class="disclosure" data-disclosure aria-expanded="false" aria-controls="more">Add site and timing</button>
+      <div class="field-row" id="more" data-more hidden>
+        <div class="field">
+          <label for="f-location">Where is the site?</label>
+          <input id="f-location" name="location" type="text">
+          <span class="field-error" data-error-for="f-location" hidden></span>
+        </div>
+        <div class="field">
+          <label for="f-timing">When do you need it?</label>
+          <input id="f-timing" name="timing" type="text">
+          <span class="field-error" data-error-for="f-timing" hidden></span>
+        </div>
+      </div>
+<!--/form-->
+
+      <div class="files">
+        <div class="files-head">
+          <b><!--fileslabel-->
+Drawings or photos
+<!--/fileslabel--></b>
+          <label class="files-choose" for="f-files"><!--fileschoose-->
+Choose files
+<!--/fileschoose--></label>
+        </div>
+        <input id="f-files" type="file" multiple
+               accept=".pdf,.dxf,.dwg,.jpg,.jpeg,.png,.heic,.webp">
+        <p class="files-note"><!--filesnote-->
+Files stay on your device. Attach them to the message you send.
+<!--/filesnote--></p>
+        <ul class="files-list" data-files-list></ul>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn" data-review><!--review-->
+Review my enquiry
+<!--/review--></button>
+      </div>
+    </form>
+
+    <div class="draft" data-draft aria-live="polite">
+      <h3><!--drafttitle-->
+Ready to send.
+<!--/drafttitle--></h3>
+      <div class="draft-body" data-draft-body></div>
+      <div class="draft-actions" data-draft-actions></div>
+      <p class="draft-status" data-draft-status></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<section class="ct" id="contact">
+  <div class="ct-inner">
+    <div class="sec-head">
+    <!--cttitle-->
+<h2 class="display">Talk to us.</h2>
+    <p>Call during working hours, or send a message any time.</p>
+<!--/cttitle-->
+    </div>
+    <ul class="ct-list" data-contact>
+<!--contact-->
+    <li><dl><dt>Mobile</dt><dd><a href="tel:+263772262869">+263 772 262 869</a></dd></dl></li>
+    <li><dl><dt>WhatsApp</dt><dd><a href="https://wa.me/263772262869" target="_blank" rel="noopener">+263 772 262 869</a></dd></dl></li>
+    <li><dl><dt>Office</dt><dd><a href="tel:+263242304341">+263 242 304 341</a></dd></dl></li>
+    <li><dl><dt>Email</dt><dd><a href="mailto:kingsonnkm@gmail.com">kingsonnkm@gmail.com</a></dd></dl></li>
+    <li><dl><dt>Workshop</dt><dd>No. 1262 Tynwald Industries, Harare</dd></dl></li>
+    <li><dl><dt>Open</dt><dd>Mon–Fri 07:30–17:00</dd></dl></li>
+<!--/contact-->
+    </ul>
+  </div>
+</section>
+
+<footer class="ft"><!--foot-->
+<span>Kingson Trading (Pvt) Ltd</span><span>No. 1262 Tynwald Industries, Harare</span><span><a href="https://www.facebook.com/share/18GoTdrLBD/" target="_blank" rel="noopener">Facebook</a></span>
+<!--/foot--></footer>
+</main>
+
+<!-- The photograph viewer, opened from the work grid. -->
 <div class="viewer" data-viewer role="dialog" aria-modal="true" aria-label="Photograph" inert>
   <div class="viewer-head">
     <span class="viewer-caption" data-viewer-caption></span>
@@ -73,185 +324,10 @@
   <div class="viewer-foot"><span data-viewer-alt class="viewer-caption"></span></div>
 </div>
 
-<main id="main">
-<span id="top"></span>
-
-<!-- ═══════════════ THE STAGE · Scenes 1–6, then the natural flow ═══════════
-     One native sticky pin. All six scenes share it; stage.js writes it from a
-     single sampled state. There are no per-scene pins and no scene owns a
-     scroll listener.
-
-     Scenes 7–8 live INSIDE this section on purpose. The pin's sticky range is
-     bounded by the section, so keeping the brief and the enquiry in here means
-     the photo wall Scene 6 releases is still the pinned stage — the same DOM
-     node, the same decoded bitmap, the same crop — while the document scrolls
-     over it. Handing the wall to a second element after the stage would show
-     the same photograph twice for one screen, with a seam between the copies.
-     That is the "no wipe and no jump" the release asks for. -->
-<section class="stage" data-stage aria-label="Kingson Engineering at work">
-  <div class="stage-pin" data-stage-pin>
-    <canvas id="corner" data-corner aria-hidden="true"></canvas>
-    <!-- plane, edge, foreground, curtain and type layers are created by
-         stage.js so that image instances can be pooled by identity and
-         survive every scene boundary. -->
-  </div>
-
-  <!-- 620vh of travel for the six scenes. -->
-  <div class="stage-travel" aria-hidden="true"></div>
-
-<div class="after" data-after>
-  <div class="wall" data-wall aria-hidden="true">
-    <img data-wall-img src="assets/img/portal-frame-1320.webp"
-         srcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
-         sizes="35vw" width="1320" height="888" loading="lazy" decoding="async" alt="">
-  </div>
-
-  <div class="after-body">
-    <section class="brief" id="brief">
-      <h2 class="display brief-title">Bring the<br>brief.</h2>
-      <p class="brief-lede">Tell us what you need to make, cover or lift.</p>
-      <div class="brief-rows">
-        <div class="brief-row"><b>The work</b><span>A description or drawing</span></div>
-        <div class="brief-row"><b>The place</b><span>Location and access</span></div>
-        <div class="brief-row"><b>The questions</b><span>What still needs to be resolved</span></div>
-      </div>
-    </section>
-
-    <section class="enquiry" id="enquiry">
-      <h2 class="display enquiry-title">Start a<br>conversation.</h2>
-
-      <form class="form" data-form novalidate>
-        <div class="error-summary" data-error-summary tabindex="-1" hidden></div>
-
-        <div class="field-row">
-          <div class="field">
-            <label for="f-name">Name</label>
-            <input id="f-name" name="name" type="text" autocomplete="name">
-            <span class="field-error" data-error-for="f-name" hidden></span>
-          </div>
-          <div class="field">
-            <label for="f-contact">Email or phone</label>
-            <input id="f-contact" name="contact" type="text" autocomplete="email">
-            <span class="field-error" data-error-for="f-contact" hidden></span>
-          </div>
-        </div>
-
-        <div class="field wide">
-          <label for="f-scope">Your requirement</label>
-          <input id="f-scope" name="scope" type="text">
-          <span class="field-error" data-error-for="f-scope" hidden></span>
-        </div>
-
-        <div class="field wide">
-          <label for="f-description">Tell us about the work</label>
-          <textarea id="f-description" name="description" rows="4"></textarea>
-        </div>
-
-        <button type="button" class="disclosure" data-disclosure aria-expanded="false" aria-controls="more">
-          Add location or timing
-        </button>
-        <div class="field-row" id="more" data-more hidden>
-          <div class="field">
-            <label for="f-location">Location</label>
-            <input id="f-location" name="location" type="text">
-          </div>
-          <div class="field">
-            <label for="f-timing">When you would like it done</label>
-            <input id="f-timing" name="timing" type="text">
-          </div>
-        </div>
-
-        <!-- A thin ruled row. Nothing is uploaded: the file list is local and
-             the label says so before a file is chosen, not after. -->
-        <div class="files">
-          <div class="files-head">
-            <b>Reference files</b>
-            <label class="files-choose" for="f-files">Choose files</label>
-          </div>
-          <input id="f-files" type="file" multiple
-                 accept=".pdf,.dxf,.dwg,.jpg,.jpeg,.png,.heic,.webp">
-          <p class="files-note">Files stay on this device. Attach them in your email or WhatsApp message.</p>
-          <ul class="files-list" data-files-list></ul>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn" data-review>Review enquiry</button>
-        </div>
-      </form>
-
-      <div class="draft" data-draft aria-live="polite">
-        <h3>Your draft is ready.</h3>
-        <div class="draft-body" data-draft-body></div>
-        <div class="draft-actions" data-draft-actions></div>
-        <p class="draft-status" data-draft-status></p>
-      </div>
-    </section>
-
-    <footer class="site-foot" data-foot>
-      <span>Kingson Engineering</span>
-      <span>Engineering &amp; fabrication · Zimbabwe</span>
-    </footer>
-  </div>
-</div>
-</section>
-
-<!-- ═══════════════ LINEAR RECORD ═══════════════
-     The readable document. It is the page without JavaScript, and it is
-     hidden — not merely visually — once the stage takes over, so no heading
-     is ever duplicated for assistive technology. -->
-<div class="fallback" data-fallback>
-  <section class="fb-scene">
-    <h2>Built around your work.</h2>
-    <p>Engineering &amp; fabrication · Zimbabwe</p>
-    <img src="assets/img/portal-frame-1320.webp"
-         srcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
-         sizes="100vw" width="1320" height="888" decoding="async"
-         alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.">
-  </section>
-
-  <section class="fb-scene">
-    <h2>Structural steel</h2>
-    <img src="assets/img/portal-frame-1100.webp"
-         srcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
-         sizes="100vw" width="1320" height="888" loading="lazy" decoding="async"
-         alt="The same portal frame from inside the building line, showing the bolted eaves connections and the run of columns down the flank.">
-  </section>
-
-  <section class="fb-scene">
-    <h2>Roof steel</h2>
-    <img src="assets/img/roof-trusses-1320.webp"
-         srcset="assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w"
-         sizes="100vw" width="1320" height="792" loading="lazy" decoding="async"
-         alt="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building.">
-    <img src="assets/img/roof-frame-1320.webp"
-         srcset="assets/img/roof-frame-720.webp 720w, assets/img/roof-frame-1100.webp 1100w, assets/img/roof-frame-1320.webp 1320w"
-         sizes="100vw" width="1320" height="714" loading="lazy" decoding="async"
-         alt="A white-painted roof structure seen from inside: trusses, purlins and corrugated sheeting with rooflights between the bays.">
-  </section>
-
-  <section class="fb-scene">
-    <h2>Laser cutting</h2>
-    <img src="assets/img/cutting-head-1100.webp"
-         srcset="assets/img/cutting-head-720.webp 720w, assets/img/cutting-head-1100.webp 1100w, assets/img/cutting-head-1350.webp 1350w"
-         sizes="100vw" width="1350" height="1800" loading="lazy" decoding="async"
-         alt="The cutting head of a fiber laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it.">
-    <img src="assets/img/laser-machine-1100.webp"
-         srcset="assets/img/laser-machine-720.webp 720w, assets/img/laser-machine-1100.webp 1100w, assets/img/laser-machine-1536.webp 1536w"
-         sizes="100vw" width="1536" height="2048" loading="lazy" decoding="async"
-         alt="The whole fiber laser cutting machine standing in a brick workshop, with its control screen, cable chain and bed of cut plate.">
-  </section>
-
-  <section class="fb-scene">
-    <h2>Cranage</h2>
-    <img src="assets/img/crane-1100.webp"
-         srcset="assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
-         sizes="100vw" width="1320" height="1757" loading="lazy" decoding="async"
-         alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.">
-    <p>Send a description or a drawing using the form below. Nothing is uploaded from this page — attach your files to the email or message you send.</p>
-  </section>
-</div>
-
-</main>
+<!-- On a phone, calling is one tap from anywhere on the page. -->
+<div class="bar"><!--baract-->
+<a class="btn" href="tel:+263772262869"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg><span>Call</span></a><a class="btn-ghost" href="https://wa.me/263772262869" target="_blank" rel="noopener"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.5.1-.6.8-.7 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/></svg><span>WhatsApp</span></a>
+<!--/baract--></div>
 
 <script type="module" src="main.js"></script>
 </body>

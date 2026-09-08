@@ -1,0 +1,283 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   styles/site.css — the page
+   ═══════════════════════════════════════════════════════════════════════════
+
+   The photography still carries the site, but it never holds the scroll. There
+   is no pinned stage, no scrubbed sequence and no scroll hijacking anywhere in
+   this file: every section is as tall as its content, and a flick of the wheel
+   moves the page by exactly what the wheel says.
+
+   Ink and chalk from tokens.css. Archivo for display, Inter for everything a
+   customer has to read.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Body copy needs more air than the display-led tokens default gives it. */
+body { line-height: 1.55; }
+
+/* Headings here are read, not looked at, so they open up slightly. */
+.display { letter-spacing: -.035em; line-height: .96; }
+
+/* ── header ─────────────────────────────────────────────────────────────
+   Sticky, thin, and carrying the call action at every scroll position. */
+
+.hd {
+  position: sticky; top: 0; z-index: 120;
+  display: flex; align-items: center; gap: 28px;
+  padding: 14px var(--margin);
+  background: rgba(17, 23, 20, .92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+}
+.hd-mark { text-decoration: none; color: var(--chalk); line-height: 1.02; margin-right: auto; }
+.hd-mark b { display: block; font-family: Archivo, sans-serif; font-weight: 800;
+             font-size: 19px; letter-spacing: .01em; }
+.hd-mark span { display: block; font-size: 9.5px; letter-spacing: .2em; color: var(--chalk-70); }
+
+.hd-nav { display: flex; gap: 26px; }
+.hd-nav a { color: var(--chalk-70); text-decoration: none; font-size: 15px; }
+.hd-nav a:hover { color: var(--chalk); }
+
+.hd-act { display: flex; gap: 8px; }
+.hd-menu { display: none; }
+
+/* ── buttons ─────────────────────────────────────────────────────────── */
+
+.btn, .btn-ghost {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  min-height: 46px; padding: 0 20px;
+  font: inherit; font-weight: 500; font-size: 15px;
+  border: 0; cursor: pointer; text-decoration: none;
+  transition: background 140ms var(--ease-ui), color 140ms var(--ease-ui);
+}
+.btn { background: var(--chalk); color: var(--ink); }
+.btn:hover { background: #fff; }
+.btn-ghost { background: transparent; color: var(--chalk); border: 1px solid var(--rule-2); }
+.btn-ghost:hover { background: rgba(243,244,237,.10); }
+.btn svg, .btn-ghost svg { flex: none; }
+
+/* ── hero ───────────────────────────────────────────────────────────────
+   One screen, capped so it never becomes a wall on a tall monitor, and the
+   copy sits on a gradient that only darkens the bottom third. */
+
+.hero { position: relative; min-height: min(78vh, 660px); display: flex; align-items: flex-end; }
+.hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+            object-position: 54% 47%; }
+/* The scrim is sized to the copy, not to taste. Measured over this
+   photograph, chalk on the raw sky ran at 2.1:1 for the eyebrow and 1.9:1
+   across the worst tenth of the headline — this carries all three lines past
+   4.5:1 while leaving the top of the frame, where the steel is, clear. */
+.hero::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top,
+    rgba(17,23,20,.96) 0%,  rgba(17,23,20,.94) 24%, rgba(17,23,20,.88) 48%,
+    rgba(17,23,20,.66) 68%, rgba(17,23,20,.26) 84%, rgba(17,23,20,0) 100%);
+}
+.hero-body { position: relative; z-index: 1; padding: 0 var(--margin) 48px; max-width: 780px; }
+.hero-eyebrow { margin: 0 0 12px; font-size: 13px; letter-spacing: .16em;
+                text-transform: uppercase; color: var(--chalk-85); font-weight: 500; }
+.hero-title { font-size: clamp(38px, 5.6vw, 76px); margin-bottom: 16px; }
+.hero-lede { margin: 0 0 26px; font-size: clamp(16px, 1.35vw, 19px); color: var(--chalk-85);
+             max-width: 56ch; }
+.hero-act { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ── section furniture ──────────────────────────────────────────────── */
+
+section { padding: clamp(56px, 7vw, 104px) 0; }
+.sec-head { padding: 0 var(--margin); margin-bottom: clamp(28px, 3.4vw, 48px); max-width: 62ch; }
+.sec-head h2 { font-size: clamp(30px, 3.6vw, 50px); margin-bottom: 12px; }
+.sec-head p { margin: 0; color: var(--chalk-70); }
+
+/* ── what we do ─────────────────────────────────────────────────────────
+   A photograph, a sentence, and the line that tells you what to send. Two up
+   on a laptop, one up on a phone. No card chrome — the photograph is the
+   card. */
+
+.svc-list { list-style: none; margin: 0; padding: 0 var(--margin);
+            display: grid; gap: 2px; grid-template-columns: repeat(2, 1fr); }
+.svc-item { position: relative; overflow: hidden; background: #0d1210; }
+.svc-item img { width: 100%; height: clamp(240px, 26vw, 340px); object-fit: cover; }
+.svc-body { padding: 22px 24px 26px; }
+.svc-body h3 { font-family: Archivo, sans-serif; font-weight: 700; font-size: 22px;
+               margin: 0 0 8px; letter-spacing: -.01em; }
+.svc-body p { margin: 0 0 10px; color: var(--chalk-85); }
+.svc-ask { margin: 0; font-size: 14px; color: var(--chalk-70);
+           border-top: 1px solid var(--rule); padding-top: 10px; }
+
+/* ── work ───────────────────────────────────────────────────────────── */
+
+.work-grid { list-style: none; margin: 0; padding: 0 var(--margin);
+             display: grid; gap: 2px; grid-template-columns: repeat(3, 1fr); }
+.work-grid button {
+  display: block; width: 100%; padding: 0; border: 0; cursor: pointer;
+  background: #0d1210; position: relative; color: var(--chalk);
+}
+.work-grid img { width: 100%; height: clamp(190px, 20vw, 280px); object-fit: cover;
+                 transition: opacity 160ms var(--ease-ui); }
+.work-grid button:hover img { opacity: .82; }
+.work-cap { display: block; padding: 12px 14px; font-size: 14px; color: var(--chalk-70);
+            text-align: left; }
+
+/* ── enquiry ────────────────────────────────────────────────────────── */
+
+.enq { background: #0d1210; border-top: 1px solid var(--rule); }
+.enq-inner, .ct-inner { max-width: 880px; margin: 0 auto; }
+.form { padding: 0 var(--margin); display: grid; gap: 20px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.field { display: grid; gap: 7px; }
+.field label { font-size: 14px; color: var(--chalk-70); }
+.field input, .field textarea {
+  font: inherit; color: var(--chalk);
+  background: transparent; border: 0; border-bottom: 1px solid var(--rule-2);
+  padding: 10px 2px; min-height: 46px; border-radius: 0;
+}
+.field textarea { min-height: 112px; resize: vertical; }
+.field input:focus, .field textarea:focus { border-bottom-color: var(--chalk); outline: none; }
+.field input::placeholder, .field textarea::placeholder { color: rgba(243,244,237,.34); }
+.field-error { font-size: 13.5px; color: var(--oxide); }
+[aria-invalid="true"] { border-bottom-color: var(--oxide) !important; }
+
+.error-summary { padding: 14px 16px; border: 1px solid var(--oxide); color: var(--chalk);
+                 font-size: 15px; }
+.disclosure { background: none; border: 0; padding: 0; cursor: pointer; color: var(--chalk-70);
+              font: inherit; font-size: 15px; text-decoration: underline;
+              text-underline-offset: 4px; justify-self: start; }
+.disclosure:hover { color: var(--chalk); }
+
+.files { border-top: 1px solid var(--rule); padding-top: 18px; }
+.files-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.files-head b { font-weight: 500; font-size: 15px; }
+.files-choose { cursor: pointer; border: 1px solid var(--rule-2); padding: 11px 16px;
+                font-size: 14.5px; min-height: 44px; display: inline-flex; align-items: center; }
+.files-choose:hover { background: rgba(243,244,237,.10); }
+#f-files { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.files-note { margin: 10px 0 0; font-size: 13.5px; color: var(--chalk-70); }
+.files-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 1px; }
+.files-list li { display: flex; align-items: center; justify-content: space-between; gap: 14px;
+                 padding: 11px 0; border-top: 1px solid var(--rule); font-size: 14.5px; }
+.files-list button { background: none; border: 0; color: var(--chalk-70); cursor: pointer;
+                     font: inherit; font-size: 14px; text-decoration: underline;
+                     text-underline-offset: 3px; min-height: 44px; }
+.files-list button:hover { color: var(--chalk); }
+
+.form-actions { padding-top: 4px; }
+.draft { padding: 0 var(--margin); margin-top: 30px; display: none; }
+.draft[data-open="true"] { display: block; }
+.draft h3 { font-family: Archivo, sans-serif; font-weight: 700; font-size: 21px; margin: 0 0 14px; }
+.draft-body { white-space: pre-wrap; font-size: 14.5px; line-height: 1.62; color: var(--chalk-85);
+              background: rgba(0,0,0,.28); border: 1px solid var(--rule); padding: 18px 20px;
+              max-height: 320px; overflow: auto; }
+.draft-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.draft-status { margin: 14px 0 0; font-size: 14.5px; color: var(--chalk-70); min-height: 1.4em; }
+
+/* ── contact ────────────────────────────────────────────────────────── */
+
+.ct-list { list-style: none; margin: 0; padding: 0 var(--margin);
+           display: grid; gap: 1px; grid-template-columns: repeat(2, 1fr); }
+.ct-list li { border-top: 1px solid var(--rule); padding: 18px 0; }
+.ct-list dt { font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+              color: var(--chalk-70); margin-bottom: 6px; }
+.ct-list dd { margin: 0; font-size: clamp(17px, 1.5vw, 21px); }
+.ct-list a { color: var(--chalk); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+.ct-list a:hover { border-bottom-color: var(--chalk); }
+
+.ft { padding: 30px var(--margin) 40px; border-top: 1px solid var(--rule);
+      display: flex; flex-wrap: wrap; gap: 8px 26px; font-size: 14px; color: var(--chalk-70); }
+
+/* ── menu (small screens) ───────────────────────────────────────────── */
+
+.menu {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--ink); padding: 20px var(--margin);
+  transform: translateY(-100%); transition: transform 200ms var(--ease-ui);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.menu[data-open="true"] { transform: none; }
+.menu-close { align-self: flex-end; background: none; border: 0; color: var(--chalk);
+              font: inherit; font-size: 16px; cursor: pointer; min-height: 44px; padding: 0 4px; }
+.menu-list { display: grid; gap: 2px; margin-top: 4vh; }
+.menu-list a { font-family: Archivo, sans-serif; font-weight: 700;
+               font-size: clamp(28px, 8vw, 40px); color: var(--chalk); text-decoration: none;
+               padding: 10px 0; letter-spacing: -.02em; }
+.menu-contact { margin-top: auto; display: grid; gap: 10px; padding-bottom: 8px; }
+
+/* ── photograph viewer ──────────────────────────────────────────────── */
+
+.viewer { position: fixed; inset: 0; z-index: 250; background: rgba(9,12,11,.97);
+          display: none; flex-direction: column; }
+.viewer[data-open="true"] { display: flex; }
+.viewer-head, .viewer-foot { display: flex; align-items: center; justify-content: space-between;
+                             gap: 20px; padding: 16px var(--margin); }
+.viewer-head button { background: none; border: 0; color: var(--chalk); font: inherit;
+                      cursor: pointer; min-height: 44px; }
+.viewer-caption { font-size: 14.5px; color: var(--chalk-70); }
+.viewer-body { flex: 1; min-height: 0; display: grid; place-items: center;
+               padding: 0 var(--margin); }
+.viewer-body img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+/* ── the phone action bar ───────────────────────────────────────────────
+   The single highest-value thing on a trades site: call, from anywhere. */
+
+.bar { display: none; }
+
+/* ── small screens ──────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  :root { --margin: 18px; }
+
+  .hd-nav { display: none; }
+  .hd-act { display: none; }
+  .hd-menu { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px;
+             background: none; border: 0; color: var(--chalk); font: inherit; font-size: 16px;
+             cursor: pointer; }
+
+  .hero { min-height: 74svh; min-height: calc(74 * var(--svh, 1vh)); }
+  .hero-body { padding-bottom: 34px; }
+  .hero-act .btn, .hero-act .btn-ghost { flex: 1 1 auto; }
+
+  .svc-list, .ct-list, .field-row { grid-template-columns: 1fr; }
+  /* The gallery stays two up: six photographs stacked one-per-screen turned
+     the page into three screens of scrolling to see six pictures. */
+  .work-grid { grid-template-columns: 1fr 1fr; }
+  .svc-item img { height: 34svh; height: calc(34 * var(--svh, 1vh)); max-height: 300px; }
+  .work-grid img { height: 21svh; height: calc(21 * var(--svh, 1vh)); max-height: 190px; }
+  .work-cap { padding: 9px 10px; font-size: 12.5px; }
+
+  .field input, .field textarea { font-size: 16px; }   /* no zoom on focus */
+
+  /* Every tappable thing gets a 44px target. Measured, not assumed: the
+     wordmark, the disclosure and the contact links were all under it. */
+  .hd-mark { display: inline-flex; flex-direction: column; justify-content: center;
+             min-height: 44px; }
+  .disclosure { min-height: 44px; display: inline-flex; align-items: center; }
+  .ct-list a { display: inline-flex; align-items: center; min-height: 44px; }
+  .ct-list li { padding: 12px 0; }
+  .ft a { display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* room for the bar, so it never covers the last control */
+  main { padding-bottom: 76px; }
+  .bar {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 150;
+    gap: 1px; border-top: 1px solid var(--rule);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .bar a { flex: 1; min-height: 60px; }
+}
+
+@media (max-width: 380px) {
+  .hd-mark b { font-size: 17px; }
+  .hero-act { gap: 8px; }
+}
+
+/* ── reduced motion ─────────────────────────────────────────────────────
+   Nothing here animates on scroll in the first place, so this only has to
+   stop the few interface transitions. */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important; scroll-behavior: auto !important;
+  }
+}

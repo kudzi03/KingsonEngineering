@@ -74,6 +74,16 @@ for (const file of walk(root)) {
   }
 }
 
+/* The served HTML is generated from content/. If it has drifted, everything
+   above was checked against a file the site is not actually shipping. */
+try {
+  const { execFileSync } = await import('node:child_process');
+  execFileSync(process.execPath, [root + 'tools/render.js', '--check'], { stdio: 'pipe' });
+} catch {
+  console.error('FAIL index.html is out of date — run: node tools/render.js');
+  failures++;
+}
+
 if (failures) {
   console.error(`\n${failures} publication-gate violation${failures === 1 ? '' : 's'}.`);
   process.exit(1);

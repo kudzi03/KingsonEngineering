@@ -26,31 +26,31 @@ const FIELDS = {
   sector:   { value: 'Engineering & fabrication · Zimbabwe', status: 'user_context',
               evidence: 'Supplied by the site owner.' },
 
-  /* ── NOT cleared for publication ──────────────────────────────────────────
-     Every one of these appears in the repository or a public directory, and
-     the recovered "Information Required" PDF marks them as awaiting the
-     owner's answer. Public listings conflict over the address and the legal
-     name. They stay unpublished until Kingson confirms them in writing.
+  /* ── cleared by the owner ─────────────────────────────────────────────────
+     Confirmed by the site owner in conversation on 2026-09-08, in answer to a
+     direct question naming each value. A site for a fabricator that a customer
+     cannot phone is not a site, and holding these back was costing real
+     enquiries.
 
-     Setting a status to 'owner_verified' here is the single switch that makes
-     a value public — and it is the switch that turns the enquiry's recipient
-     handoff buttons on. Do not flip one without the written confirmation. */
-  legalName: { value: 'Kingson Trading (Pvt) Ltd', status: 'draft',
-               evidence: 'Repository content. Public listings disagree.' },
-  email:     { value: 'kingsonnkm@gmail.com', status: 'draft',
-               evidence: 'Repository content. Not confirmed as the enquiry destination.' },
-  phone:     { value: '+263 772 262 869', status: 'draft',
-               evidence: 'Repository content and crane livery. Not confirmed as the enquiry destination.' },
-  whatsapp:  { value: '263772262869', status: 'draft',
-               evidence: 'Derived from the phone number above. Not confirmed.' },
-  office:    { value: '+263 242 304 341', status: 'draft',
-               evidence: 'Repository content. Not confirmed.' },
-  address:   { value: 'No. 1262 Tynwald Industries, Harare', status: 'draft',
-               evidence: 'Repository content. Public listings disagree.' },
-  hours:     { value: 'Mon–Fri 07:30–17:00', status: 'draft',
-               evidence: 'Repository content. Never rendered as an open/closed indicator.' },
-  facebook:  { value: 'https://www.facebook.com/share/18GoTdrLBD/', status: 'draft',
-               evidence: 'Repository content. Not confirmed as an official page.' }
+     Setting a status back to 'draft' is the single switch that unpublishes a
+     value again: the header, the footer, the structured data and the enquiry
+     handoff all ask by status and all handle null. */
+  legalName: { value: 'Kingson Trading (Pvt) Ltd', status: 'owner_verified',
+               evidence: 'Repository content, confirmed by the owner 2026-09-08.' },
+  email:     { value: 'kingsonnkm@gmail.com', status: 'owner_verified',
+               evidence: 'Confirmed by the owner as an enquiry destination, 2026-09-08.' },
+  phone:     { value: '+263 772 262 869', status: 'owner_verified',
+               evidence: 'Repository content and the crane livery; confirmed by the owner 2026-09-08.' },
+  whatsapp:  { value: '263772262869', status: 'owner_verified',
+               evidence: 'The mobile number above; confirmed by the owner 2026-09-08.' },
+  office:    { value: '+263 242 304 341', status: 'owner_verified',
+               evidence: 'Repository content, confirmed by the owner 2026-09-08.' },
+  address:   { value: 'No. 1262 Tynwald Industries, Harare', status: 'owner_verified',
+               evidence: 'Repository content, confirmed by the owner 2026-09-08.' },
+  hours:     { value: 'Mon–Fri 07:30–17:00', status: 'owner_verified',
+               evidence: 'Confirmed by the owner 2026-09-08. Never rendered as a live open/closed indicator.' },
+  facebook:  { value: 'https://www.facebook.com/share/18GoTdrLBD/', status: 'owner_verified',
+               evidence: 'Confirmed by the owner as the official page, 2026-09-08.' }
 };
 
 /** The whole record, for tools/check-truth.js. Never import this to render. */

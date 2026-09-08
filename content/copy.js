@@ -1,102 +1,119 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    content/copy.js — every customer-facing string
    ═══════════════════════════════════════════════════════════════════════════
-   No copy is buried in animation code. Scene titles are subject descriptions
-   of what is in the photograph, not service claims: V2 §15 forbids asserting
-   an operating process, a capability or a capacity that is not verified.
+
+   Written for the person who arrived because they need something made, roofed,
+   cut or lifted. They want three things, fast: is this the right company, can
+   it do my job, how do I reach it. Every string below serves one of those.
+
+   The truth rule has not changed. Each capability describes what is visible in
+   Kingson's own photographs plus what a customer may ask for. No capacity, no
+   tolerance, no lead time, no client, no certification, no year founded — none
+   of that has been supplied, and an invitation is not a claim.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-export const OPENING = {
-  title: ['Built around', 'your work.'],   // §6: proposed positioning, not a claim
-  context: 'Engineering & fabrication · Zimbabwe'
+export const HERO = {
+  title: 'Steel, roofing and cranage.',
+  lede: 'Fabrication and erection for builders, farmers and industry across Zimbabwe. Send a drawing or a description — we will come back to you.',
+  eyebrow: 'Engineering & fabrication'
 };
 
-/* Two lines maximum, sentence case, no ghost text (§6). */
-export const SCENE_TITLES = {
-  frame: ['Structural', 'steel'],
-  roof:  ['Roof steel'],
-  cut:   ['Laser', 'cutting'],
-  yard:  ['Cranage']
-};
+/* The four things a customer can actually ask Kingson for. `ask` is the line
+   that tells them what to send. */
+export const CAPABILITIES = [
+  {
+    id: 'structural',
+    asset: 'portalFrame',
+    title: 'Structural steel',
+    body: 'Portal frames, columns, rafters and purlins — fabricated in the workshop and erected on site with our own crane.',
+    ask: 'Send drawings, or the span, height and bay spacing you need.'
+  },
+  {
+    id: 'roofing',
+    asset: 'roofTrusses',
+    title: 'Roof steel',
+    body: 'Trusses, purlins and sheeting for long-span roofs, new build or re-roof.',
+    ask: 'Send the floor area, the pitch you want, and whether the walls are up.'
+  },
+  {
+    id: 'cutting',
+    asset: 'cuttingHead',
+    title: 'Laser cutting',
+    body: 'Plate and sheet cut on a fiber laser, straight from your file.',
+    ask: 'Send a DXF or DWG, the material and the thickness.'
+  },
+  {
+    id: 'cranage',
+    asset: 'crane',
+    title: 'Cranage',
+    body: 'Mobile crane hire for lifting and placing steel, on our jobs or yours.',
+    ask: 'Tell us the load, the site access and the date.'
+  }
+];
 
-/* Small labels under a settled subject. Descriptions of the picture only. */
-export const SCENE_LABELS = {
-  cut:  'Machine detail',
-  yard: 'Discuss access and lifting requirements.'   // an invitation, not a capacity
-};
-
-export const VIEWS = {
-  title: 'Selected views',
-  /* Neutral captions. No project name, client, value, date or location —
-     none has been supplied, and a photograph is not a commission. */
-  panels: [
-    { asset: 'crane',      caption: 'Cranage · photograph' },
-    { asset: 'portalFrame', caption: 'Structural steel · photograph' },
-    { asset: 'roofFrame',  caption: 'Roof structure · photograph' }
-  ]
-};
-
-export const BRIEF = {
-  title: ['Bring the', 'brief.'],
-  lede: 'Tell us what you need to make, cover or lift.',
-  /* Prompts for the customer. Deliberately NOT a description of Kingson's
-     delivery stages — that process is not verified. */
-  rows: [
-    ['The work',      'A description or drawing'],
-    ['The place',     'Location and access'],
-    ['The questions', 'What still needs to be resolved']
-  ]
+export const WORK = {
+  title: 'Recent work',
+  lede: 'Photographs from our own jobs and workshop.',
+  captions: {
+    portalFrame:  'Portal frame under erection',
+    roofTrusses:  'Long-span roof trusses and purlins',
+    roofFrame:    'Roof structure from inside',
+    cuttingHead:  'Fiber laser cutting plate',
+    laserMachine: 'The laser in the workshop',
+    crane:        'Our mobile crane on site'
+  }
 };
 
 export const ENQUIRY = {
-  title: ['Start a', 'conversation.'],
+  title: 'Get a price.',
+  lede: 'Tell us what you need. Attach a drawing if you have one — or just describe it.',
   fields: {
-    name:        'Name',
-    contact:     'Email or phone',
-    scope:       'Your requirement',
-    description: 'Tell us about the work',
-    location:    'Location',
-    timing:      'When you would like it done'
+    name:        'Your name',
+    contact:     'Phone or email',
+    scope:       'What do you need?',
+    description: 'Describe the job',
+    location:    'Where is the site?',
+    timing:      'When do you need it?'
   },
-  disclosure: 'Add location or timing',
+  placeholders: {
+    scope: 'e.g. roof over a 20 × 40 m shed',
+    description: 'Spans, heights, access, anything already decided.'
+  },
+  more: 'Add site and timing',
   files: {
-    label: 'Reference files',
-    note:  'Files stay on this device. Attach them in your email or WhatsApp message.',
+    label: 'Drawings or photos',
     choose: 'Choose files',
+    note: 'Files stay on your device. Attach them to the message you send.',
     remove: 'Remove'
   },
-  review:   'Review enquiry',
-  edit:     'Edit details',
-  draftHead: 'Your draft is ready.',
-  actions: { email: 'Open email', whatsapp: 'Open WhatsApp', copy: 'Copy enquiry' },
-  copied:   'Enquiry copied.',
-  handedOff: 'Complete sending in your email or WhatsApp app.',
-  /* Shown instead of dead handoff buttons when no recipient is verified.
-     This is honest staging behaviour, not a launch-ready substitute. */
-  noRecipient: 'Contact details are being confirmed. Copy your enquiry and send it once they are published.',
+  actions: {
+    review: 'Review my enquiry',
+    whatsapp: 'Send on WhatsApp',
+    email: 'Send by email',
+    copy: 'Copy the text'
+  },
+  draftTitle: 'Ready to send.',
+  edit: 'Edit',
+  copied: 'Copied. Paste it wherever you like.',
+  handedOff: 'Your message is open in the app — press send there.',
   errors: {
-    name:    'Add a name so we know who to reply to.',
-    contact: 'Add an email address or a phone number.',
-    scope:   'Say briefly what the work is.',
-    summary: 'Check the highlighted fields.'
+    name:    'We need a name to reply to.',
+    contact: 'A phone number or an email address, so we can come back to you.',
+    scope:   'A line about what you need.',
+    summary: 'A few things are missing.'
+  }
+};
+
+export const CONTACT = {
+  title: 'Talk to us.',
+  lede: 'Call during working hours, or send a message any time.',
+  labels: {
+    phone: 'Mobile', office: 'Office', email: 'Email',
+    whatsapp: 'WhatsApp', address: 'Workshop', hours: 'Open'
   }
 };
 
 export const NAV = {
-  wordmark: ['KINGSON', 'ENGINEERING'],
-  links: [
-    { id: 'work',    label: 'Work' },
-    { id: 'menu',    label: 'Menu' },
-    { id: 'enquire', label: 'Enquire' }
-  ],
-  menu: [
-    { id: 'frame', label: 'Structural steel' },
-    { id: 'roof',  label: 'Roof steel' },
-    { id: 'cut',   label: 'Laser cutting' },
-    { id: 'yard',  label: 'Cranage' },
-    { id: 'views', label: 'Selected views' },
-    { id: 'enquiry', label: 'Enquiry' }
-  ],
-  close: 'Close',
-  viewPhotograph: 'View photograph'
+  work: 'Work', services: 'What we do', contact: 'Contact',
+  call: 'Call', whatsapp: 'WhatsApp', enquire: 'Get a price'
 };

@@ -144,34 +144,38 @@ export function mountEnquiry() {
     draftActions.innerHTML = '';
     draftStatus.textContent = '';
 
-    const copy = button(ENQUIRY.actions.copy, 'btn', async () => {
-      try { await navigator.clipboard.writeText(message); }
-      catch { fallbackCopy(message); }
-      draftStatus.textContent = ENQUIRY.copied;   // copied — not sent
-    });
-    draftActions.appendChild(copy);
-
+    /* Order matters. WhatsApp first because it is the channel most customers
+       here already have open, then email, then copy for anyone who wants
+       neither. Nothing is sent from this page: each of these hands the message
+       to an app the visitor already has, and the wording says so. */
     if (hasVerifiedRecipient()) {
       const r = recipients();
-      if (r.email) {
-        const subject = `Enquiry — ${p.name}`;
-        const href = `mailto:${r.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-        draftActions.appendChild(link(ENQUIRY.actions.email, href));
-      }
       if (r.whatsapp) {
-        /* Long content falls back to Copy rather than a silently truncated URL. */
         const url = `https://wa.me/${r.whatsapp}?text=${encodeURIComponent(message)}`;
         if (url.length < 1800) draftActions.appendChild(link(ENQUIRY.actions.whatsapp, url, true));
       }
-      draftStatus.textContent = ENQUIRY.handedOff;
-    } else {
+      if (r.email) {
+        const subject = `Enquiry — ${p.scope || p.name}`;
+        const href = `mailto:${r.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+        draftActions.appendChild(link(ENQUIRY.actions.email, href));
+      }
+    }
+
+    draftActions.appendChild(button(ENQUIRY.actions.copy, 'btn-ghost', async () => {
+      try { await navigator.clipboard.writeText(message); }
+      catch { fallbackCopy(message); }
+      draftStatus.textContent = ENQUIRY.copied;   // copied — not sent
+    }));
+
+    if (!hasVerifiedRecipient()) {
       const gate = document.createElement('p');
       gate.className = 'draft-gate';
-      gate.textContent = ENQUIRY.noRecipient;
+      gate.textContent = ENQUIRY.noRecipient
+        || 'Contact details are being confirmed. Copy your enquiry and send it once they are published.';
       draftActions.appendChild(gate);
     }
 
-    draftActions.appendChild(button(ENQUIRY.edit, 'btn-quiet', () => {
+    draftActions.appendChild(button(ENQUIRY.edit, 'btn-ghost', () => {
       draft.dataset.open = 'false';
       form.querySelector('#f-name').focus();
     }));
@@ -179,7 +183,7 @@ export function mountEnquiry() {
 
   function button(label, cls, fn) {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = cls === 'btn' ? 'btn' : 'btn btn-quiet';
+    b.type = 'button'; b.className = cls === 'btn' ? 'btn' : 'btn-ghost';
     b.textContent = label;
     b.addEventListener('click', fn);
     return b;

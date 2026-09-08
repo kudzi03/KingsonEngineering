@@ -9,7 +9,7 @@
 
 import { ASSETS, src } from '../content/assets.js';
 
-export function mountViewer({ onOpen, onClose }) {
+export function mountViewer({ onOpen, onClose } = {}) {
   const dialog = document.querySelector('[data-viewer]');
   const img = dialog.querySelector('[data-viewer-img]');
   const caption = dialog.querySelector('[data-viewer-caption]');
@@ -27,6 +27,7 @@ export function mountViewer({ onOpen, onClose }) {
     altOut.textContent = a.alt;
     dialog.dataset.open = 'true';
     dialog.removeAttribute('inert');
+    document.body.style.overflow = 'hidden';
     onOpen && onOpen();
     closeBtn.focus();
   }
@@ -36,6 +37,7 @@ export function mountViewer({ onOpen, onClose }) {
     dialog.dataset.open = 'false';
     dialog.setAttribute('inert', '');
     img.removeAttribute('src');
+    document.body.style.overflow = '';
     onClose && onClose();
     if (restoreTo && restoreTo.focus) restoreTo.focus();
     restoreTo = null;

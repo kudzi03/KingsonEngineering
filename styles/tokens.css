@@ -15,10 +15,12 @@
   --ink-72: rgba(17, 23, 20, .72);
   --chalk-70: rgba(243, 244, 237, .70);
   --chalk-40: rgba(243, 244, 237, .40);
-  --rule: rgba(243, 244, 237, .22);
+  --rule:   rgba(243, 244, 237, .14);   /* hairline between rows            */
+  --rule-2: rgba(243, 244, 237, .30);   /* an edge you are meant to notice   */
+  --chalk-85: rgba(243, 244, 237, .85);
 
   /* §7 — the stage is the viewport; 4vw margin, no centred container */
-  --margin: 4vw;
+  --margin: clamp(18px, 4vw, 56px);
 
   /* §6 — display sizes. Archivo 800, ordinary width, never synthetic. */
   --t-opening: clamp(88px, 9.2vw, 176px);
