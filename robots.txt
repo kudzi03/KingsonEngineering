@@ -1,13 +1,12 @@
 # robots.txt — Kingson Engineering
-# Steelwork specialists, Harare, Zimbabwe
+# Engineering & fabrication, Zimbabwe
 
 User-agent: *
 Allow: /
 
 # ── AI answer engines ──────────────────────────────────────────────
-# Explicitly allowed. When someone asks an assistant "who does fiber
-# laser cutting in Harare", these are the crawlers that decide whether
-# Kingson is in the answer. Remove a block below to opt that one out.
+# Explicitly allowed: these are the crawlers that decide whether Kingson
+# appears in an assistant's answer. Remove a block below to opt that one out.
 User-agent: GPTBot
 Allow: /
 

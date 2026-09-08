@@ -19,9 +19,11 @@ UA = ('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
 
 # (family, Google query, local basename, weight range used on the site, stretch)
 FAMILIES = [
-    ('Archivo',       'Archivo:wght@500;600;700', 'archivo',  '500 700', '100%'),
-    ('Inter',         'Inter:wght@400;500',       'inter',    '400 500', None),
-    ('IBM Plex Mono', 'IBM+Plex+Mono:wght@400',   'plexmono', '400',     None),
+    # V2 uses Archivo 800 for display and Inter 400/500 for body and interface.
+    # IBM Plex Mono is deliberately absent: the treatment removes it from all
+    # customer-facing typography.
+    ('Archivo', 'Archivo:wght@600;700;800', 'archivo', '600 800', '100%'),
+    ('Inter',   'Inter:wght@400;500',       'inter',   '400 500', None),
 ]
 
 OUT_DIR = 'assets/fonts'

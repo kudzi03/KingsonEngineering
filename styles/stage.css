@@ -1,0 +1,178 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   styles/stage.css — the sticky photographic stage
+   ═══════════════════════════════════════════════════════════════════════════
+   Layout only. Every value that changes with scroll is written by stage.js.
+   Photographs carry no filter: V2 §4 keeps the sky blue-white, the earth
+   rust, the workshop yellow and brick, and the painted steel its real colour.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.stage {
+  position: relative;
+  /* Height is the pin plus the travel plus everything Scenes 7-8 need, so the
+     pin stays stuck for the whole of it. */
+}
+
+.stage-pin {
+  position: sticky; top: 0;
+  height: 100svh; height: calc(100 * var(--svh, 1vh));
+  overflow: hidden;
+  background: var(--ink);
+  isolation: isolate;
+}
+
+.stage-planes, .stage-fg, .stage-type { position: absolute; inset: 0; }
+.stage-planes { z-index: 1; }
+.stage-fg     { z-index: 30; pointer-events: none; }
+.stage-type   { z-index: 40; pointer-events: none; }
+
+/* ── photographic planes ─────────────────────────────────────────────────
+   A plane is a field with a hard edge. It never has a border, a shadow, a
+   radius or a gutter: §7 says images touch at a hard seam. */
+.plane {
+  position: absolute;
+  overflow: hidden;
+  will-change: clip-path;
+  background: var(--ink);
+}
+.plane > img {
+  position: absolute; left: 0; top: 0;
+  max-width: none;
+  will-change: transform;
+}
+
+/* the traced foreground, layered above the type it may occlude */
+.fg { position: absolute; overflow: hidden; }
+.fg > img { position: absolute; left: 0; top: 0; max-width: none; }
+
+/* ── the loaded edge ─────────────────────────────────────────────────────
+   A member with thickness and direction, not a rule. Matte graphite, the same
+   material value the WebGL corner uses. No stroke, no glow, no trail. */
+.stage-edge {
+  position: absolute; left: 0; top: 0; z-index: 25;
+  background: #14181A;
+  opacity: 0;
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* near-black field that follows the final photo wall in */
+.stage-curtain {
+  position: absolute; top: 0; bottom: 0; z-index: 28;
+  background: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── stage typography ─────────────────────────────────────────────────────
+   Chalk over photography with no scrim, no gradient and no veil. It is legible
+   because it is placed against the picture's darker mass — §7 calls that
+   subject anchoring, and it is the reason a title can sit at an odd column. */
+.stage-title, .stage-brief {
+  position: absolute;
+  font-family: Archivo, Inter, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -.045em;
+  line-height: .90;
+  color: var(--chalk);
+  margin: 0;
+}
+.stage-title span, .stage-brief span { display: block; }
+.stage-brief { letter-spacing: -.04em; line-height: .94; }
+
+/* The context caption carries the same compact opaque backing the navigation
+   clusters use (§14). Measured on the opening frame, chalk at this size sits
+   at 1.6–2.3:1 against sunlit rust soil at every vertical position on the
+   left of that photograph — there is no placement that fixes it, and a
+   gradient across the picture is forbidden. So it takes the device the page
+   has already established for small type over photography, and reads at the
+   same contrast as the wordmark beside it. */
+.stage-label {
+  position: absolute;
+  font-size: var(--t-ui);
+  line-height: 1.35;
+  color: var(--chalk);
+  background: var(--ink-90);
+  padding: 7px 13px;
+  max-width: 42ch;
+}
+
+/* ── selected-views dock ──────────────────────────────────────────────────
+   One opaque near-black dock carrying caption AND controls, attached to the
+   active image. §10 forbids arrows floating at arbitrary corners. */
+
+.dock {
+  position: absolute; z-index: 45;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  height: 64px; padding: 0 20px;
+  background: var(--ink);
+  color: var(--chalk);
+  font-size: var(--t-ui);
+  pointer-events: auto;
+}
+.dock-caption { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dock-controls { display: flex; gap: 4px; flex: none; }
+.dock-controls [data-view] {
+  width: auto; padding: 0 14px; white-space: nowrap;
+  border-left: 1px solid rgba(243,244,237,.18); margin-left: 4px;
+}
+.dock-controls button {
+  width: 40px; height: 40px;
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--chalk);
+  display: grid; place-items: center;
+  transition: background 140ms var(--ease-ui);
+}
+.dock-controls button:hover { background: rgba(243,244,237,.12); }
+.dock-controls button[disabled] { opacity: .35; cursor: default; }
+
+/* ── WebGL ────────────────────────────────────────────────────────────────
+   Transparent over the real image. There is never a black canvas covering the
+   photograph: if the context fails the element simply carries nothing. */
+#corner {
+  position: absolute; inset: 0; z-index: 20;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* ── natural flow after the stage ───────────────────────────────────────
+   The stage's last pinned frame IS the first frame of this section: Scene 6
+   releases a 35vw portal band on the left and a near-black field on the
+   right, and that is exactly what Scene 7 opens with. So this block is pulled
+   up over the stage's final viewport rather than following it — otherwise the
+   pin scrolls away while this scrolls in and the wall is briefly shown twice,
+   with a seam between the two copies. One overlap, no wipe, no jump. */
+
+.stage-travel { height: calc(620 * var(--svh, 1vh)); }
+
+/* Scenes 7-8 scroll over the pinned stage. The block itself is transparent so
+   the released photograph and its ink field show through on the left; the text
+   column carries its own ground so type never sits on a photograph. */
+.after { position: relative; z-index: 2; }
+.after-body { background: var(--ink); }
+
+/* The wall is the pinned stage on desktop, so the document copy of it is only
+   for the states where the stage does not run. */
+@media (min-width: 900px) { .wall { display: none; } }
+
+.wall {
+  position: sticky; top: 0;
+  float: left;
+  width: 35vw;
+  height: 100svh; height: calc(100 * var(--svh, 1vh));
+  overflow: hidden;
+  background: var(--ink);
+}
+/* Not registered to anything — this is a document image, not a stage plane —
+   so it may use the browser's own cover rather than crops.cover(). */
+.wall img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: 42% 50%;
+}
+
+.after-body {
+  margin-left: 35vw;
+  padding: 0 var(--margin) 0 6vw;
+  min-height: 100svh;
+}

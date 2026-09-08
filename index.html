@@ -3,821 +3,256 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kingson Engineering — Steelwork Specialists, Harare, Zimbabwe</title>
-<meta name="description" content="Kingson Engineering — steelwork specialists in Harare, Zimbabwe. Structural steel, roof steelwork and trusses, fiber laser cutting, stainless fabrication and in-house mobile cranage. Fabricated and erected by one company.">
-<meta name="theme-color" content="#06080B">
-<meta name="geo.region" content="ZW-HA">
-<meta name="geo.placename" content="Harare">
+<title>Kingson Engineering — engineering &amp; fabrication, Zimbabwe</title>
+<meta name="description" content="Kingson Engineering — engineering and fabrication in Zimbabwe. Structural steel, roof steel, laser cutting and cranage, photographed at work.">
+<meta name="theme-color" content="#111714">
 <link rel="canonical" href="https://kingson-engineering.vercel.app/">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Kingson Engineering — Steelwork Specialists, Harare">
-<meta property="og:description" content="Structural steel, roof steelwork, fiber laser cutting and in-house cranage in Harare, Zimbabwe. Fabricated on our own floor, erected on our own crane.">
-<!-- og:image is now the real portal frame, not the stock material collage the
-     previous site used. Any change here must point at genuine Kingson work. -->
+<meta property="og:title" content="Kingson Engineering">
+<meta property="og:description" content="Engineering and fabrication in Zimbabwe. Structural steel, roof steel, laser cutting and cranage.">
 <meta property="og:image" content="https://kingson-engineering.vercel.app/assets/img/portal-frame-1320.webp">
 <meta property="og:url" content="https://kingson-engineering.vercel.app/">
-<meta property="og:site_name" content="Kingson Engineering">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2306080B'/%3E%3Ctext x='32' y='41' font-family='Helvetica,Arial,sans-serif' font-weight='700' font-size='26' fill='%23F3F6FA' text-anchor='middle' letter-spacing='1'%3EKE%3C/text%3E%3Crect x='19' y='47' width='26' height='3' fill='%23E2673B'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23111714'/%3E%3Ctext x='32' y='42' font-family='Helvetica,Arial,sans-serif' font-weight='800' font-size='27' fill='%23F3F4ED' text-anchor='middle'%3EKE%3C/text%3E%3C/svg%3E">
 
-<!-- Fonts are self-hosted (see tools/fetch-fonts.py): no third-party request,
-     and the page renders the same whether or not Google is reachable. -->
 <link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="assets/img/portal-frame-1320.webp"
+      imagesrcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
+      imagesizes="100vw" fetchpriority="high">
 <link rel="stylesheet" href="assets/fonts.css">
-<link rel="stylesheet" href="assets/site.css">
-<link rel="stylesheet" href="assets/scenes.css">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/stage.css">
+<link rel="stylesheet" href="styles/interface.css">
+<link rel="stylesheet" href="styles/fallback.css">
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     Structured data.
-     Every unverified figure that used to live here has been removed: the FAQ
-     entries quoting cutting thicknesses, purlin spacings, roof pitches, lead
-     times and quotation turnarounds are gone. What remains is what the
-     photographs and the scope of work support.
-     VERIFY_WITH_KINGSON — address, coordinates and opening hours below were
-     carried over from the previous site unconfirmed. They also live in
-     content.js; change both together.
-     ══════════════════════════════════════════════════════════════════════════ -->
+<!-- Structured data carries only what §15 clears for publication: the company
+     name and the sector context the owner supplied. No address, phone, email,
+     hours, geo pin or service catalogue appears here, because none of those is
+     owner-verified yet. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": ["LocalBusiness", "GeneralContractor"],
-      "@id": "#kingson",
-      "name": "Kingson Engineering",
-      "legalName": "Kingson Trading (Pvt) Ltd",
-      "description": "Steelwork specialists in Harare, Zimbabwe: structural steelworks, roof steelwork and trusses, fiber laser cutting, stainless and general fabrication, and in-house mobile cranage.",
-      "slogan": "Steelwork Specialists",
-      "telephone": ["+263772262869", "+263242304341"],
-      "email": "kingsonnkm@gmail.com",
-      "areaServed": [{"@type": "City", "name": "Harare"}, {"@type": "Country", "name": "Zimbabwe"}],
-      "address": {"@type": "PostalAddress", "streetAddress": "No. 1262 Tynwald Industries", "addressLocality": "Harare", "addressRegion": "Harare Province", "addressCountry": "ZW"},
-      "geo": {"@type": "GeoCoordinates", "latitude": -17.8252, "longitude": 31.0335},
-      "openingHoursSpecification": [
-        {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "07:30", "closes": "17:00"},
-        {"@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "08:00", "closes": "12:30"}
-      ],
-      "sameAs": ["https://www.facebook.com/share/18GoTdrLBD/"],
-      "knowsAbout": ["structural steelworks", "portal frame erection", "steel trusses", "roof steelworks", "roof sheeting", "fiber laser cutting", "DXF nesting", "stainless steel fabrication", "balustrades and gates", "mobile cranage"],
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog", "name": "Steelwork services",
-        "itemListElement": [
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Structural steelworks and portal frame erection"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Roof steelwork, trusses and sheeting"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Fiber laser cutting and profiling"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Stainless steel and general fabrication"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Mobile cranage and site lifting"}}
-        ]
-      }
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {"@type":"Question","name":"What does Kingson Engineering do?","acceptedAnswer":{"@type":"Answer","text":"Kingson Engineering is a steelwork specialist in Harare, Zimbabwe. The company fabricates and erects structural steel, builds and sheets roofs, cuts plate and sheet on an in-house DXTECH fiber laser, fabricates stainless and general steelwork, and lifts with its own mobile crane."}},
-        {"@type":"Question","name":"Does Kingson handle both supply and erection?","acceptedAnswer":{"@type":"Answer","text":"Yes. Steel and sheeting can be supplied for your own contractor, or fabricated, delivered and erected by Kingson as a single contract — including the crane, so the lift is not subcontracted."}},
-        {"@type":"Question","name":"Where does Kingson Engineering work?","acceptedAnswer":{"@type":"Answer","text":"Harare and the surrounding industrial areas as standard, with fabrication delivered and erected elsewhere in Zimbabwe. Transport is priced per load in the quotation."}},
-        {"@type":"Question","name":"What file format is needed for laser cutting?","acceptedAnswer":{"@type":"Answer","text":"DXF or DWG at 1:1 with closed polylines is ideal. STEP files are accepted, and PDF or hand-dimensioned drawings are redrawn in-house and returned for approval before anything is cut."}},
-        {"@type":"Question","name":"Do you see the nest before Kingson cuts?","acceptedAnswer":{"@type":"Answer","text":"Always. The nest layout, the sheet count and the price are issued for written approval, and a first-off part is measured against the drawing before the balance of the nest runs."}}
-      ]
-    }
-  ]
+  "@type": "Organization",
+  "name": "Kingson Engineering",
+  "description": "Engineering and fabrication in Zimbabwe."
 }
 </script>
 </head>
-<body>
 
+<body>
 <a class="skip" href="#main">Skip to content</a>
 
-<!-- Plain-text summary for crawlers and screen readers that never reaches the
-     visual layout. Contains no figure that has not been confirmed. -->
-<div class="sr-only">
-  <h2>Kingson Engineering — steelwork specialists, Harare, Zimbabwe</h2>
-  <p>Structural steelworks, portal frames, roof steelwork and trusses, roof sheeting,
-     fiber laser cutting on an in-house DXTECH machine, stainless and general fabrication,
-     balustrades and gates, and mobile cranage. Fabricated on our own floor in Harare and
-     erected with our own crane. Contact +263 772 262 869 or kingsonnkm@gmail.com.</p>
-</div>
-
-
-<!-- ═══════════════ CHROME ═══════════════ -->
-<header class="hdr">
-  <a class="brand" href="#top" aria-label="Kingson Engineering, home">
-    <span class="brand-mark" aria-hidden="true">KE</span>
-    <span class="brand-txt">
-      <span class="brand-name" data-k="name">Kingson Engineering</span>
-      <span class="brand-sub">Steelwork Specialists</span>
-    </span>
+<!-- ═══════════════ NAVIGATION ═══════════════
+     §14. Two compact opaque clusters, no bar across the screen. -->
+<nav class="nav" aria-label="Primary">
+  <a class="nav-cluster" href="#top" aria-label="Kingson Engineering, top of page">
+    <span class="wordmark"><b>KINGSON</b><span>ENGINEERING</span></span>
   </a>
-  <span class="status" data-status><i aria-hidden="true"></i><span data-status-text>Workshop</span></span>
-  <nav class="nav" aria-label="Sections">
-    <a href="#capabilities">Capabilities</a>
-    <a href="#roofing">Roofing</a>
-    <a href="#laser">Laser</a>
-    <a href="#work">Work</a>
-    <a href="#start">Contact</a>
-  </nav>
-  <a class="hdr-cta" href="#start">Start a project</a>
-</header>
+  <div class="nav-cluster">
+    <span class="nav-subject" data-subject hidden></span>
+    <button type="button" data-go="views">Work</button>
+    <button type="button" data-menu-open aria-expanded="false" aria-controls="menu">Menu</button>
+    <a href="#enquiry">Enquire</a>
+  </div>
+</nav>
 
-<!-- Scene counter. Tracks the narrative rather than the scroll bar, so the
-     page reads as a sequence of numbered scenes. -->
-<div class="hud" aria-hidden="true">
-  <span class="hud-n" data-hud-n>01</span>
-  <span class="hud-rule"><i data-hud-bar></i></span>
-  <span class="hud-label" data-hud-label>Steel assembly</span>
+<div class="menu-scrim" data-menu-scrim></div>
+<div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Sections" inert>
+  <div class="menu-head"><button type="button" class="menu-close" data-menu-close>Close</button></div>
+  <ul class="menu-list" data-menu-list></ul>
 </div>
 
+<div class="viewer" data-viewer role="dialog" aria-modal="true" aria-label="Photograph" inert>
+  <div class="viewer-head">
+    <span class="viewer-caption" data-viewer-caption></span>
+    <button type="button" data-viewer-close>Close</button>
+  </div>
+  <div class="viewer-body"><img data-viewer-img alt=""></div>
+  <div class="viewer-foot"><span data-viewer-alt class="viewer-caption"></span></div>
+</div>
 
 <main id="main">
 <span id="top"></span>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SCENE 01 — GATEWAY
-     The WebGL portal frame, then the camera turns onto the axis and pushes
-     into the near gable until its clear opening is the shape of the screen.
-     The real photograph is revealed through that projected opening, the
-     geometry lingers over it as drawing lines, and the photograph then holds
-     pinned while the copy stages.
+<!-- ═══════════════ THE STAGE · Scenes 1–6, then the natural flow ═══════════
+     One native sticky pin. All six scenes share it; stage.js writes it from a
+     single sampled state. There are no per-scene pins and no scene owns a
+     scroll listener.
 
-     Model becomes reality in one continuous move. There is no fade-out and no
-     new section — the same pin carries both.
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="rail rail--gateway" id="gateway" aria-label="Kingson Engineering">
-  <div class="rail-pin">
+     Scenes 7–8 live INSIDE this section on purpose. The pin's sticky range is
+     bounded by the section, so keeping the brief and the enquiry in here means
+     the photo wall Scene 6 releases is still the pinned stage — the same DOM
+     node, the same decoded bitmap, the same crop — while the document scrolls
+     over it. Handing the wall to a second element after the stage would show
+     the same photograph twice for one screen, with a seam between the copies.
+     That is the "no wipe and no jump" the release asks for. -->
+<section class="stage" data-stage aria-label="Kingson Engineering at work">
+  <div class="stage-pin" data-stage-pin>
+    <canvas id="corner" data-corner aria-hidden="true"></canvas>
+    <!-- plane, edge, foreground, curtain and type layers are created by
+         stage.js so that image instances can be pooled by identity and
+         survive every scene boundary. -->
+  </div>
 
-    <div class="gate-grid" aria-hidden="true"></div>
-    <canvas id="steel" aria-hidden="true"></canvas>
+  <!-- 620vh of travel for the six scenes. -->
+  <div class="stage-travel" aria-hidden="true"></div>
 
-    <!-- The photograph. Visible and unclipped by default — with no JavaScript
-         or no WebGL this is simply the hero image. JavaScript clips it shut
-         and the scroll opens it through the projected portal. -->
-    <div class="gate-photo" data-gate-photo>
-      <img class="gate-photo-img" src="assets/img/portal-frame-1100.webp"
-         srcset="assets/img/portal-frame-440.webp 440w, assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
-         sizes="100vw" width="1320" height="891"
-         fetchpriority="high" decoding="async"
-         alt="Steel portal frame under erection on site, columns, rafters and purlins in place, with the Kingson mobile crane working the far bay">
-    </div>
+<div class="after" data-after>
+  <div class="wall" data-wall aria-hidden="true">
+    <img data-wall-img src="assets/img/portal-frame-1320.webp"
+         srcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
+         sizes="35vw" width="1320" height="888" loading="lazy" decoding="async" alt="">
+  </div>
 
-    <!-- the projected structure, held for a beat over the photograph -->
-    <svg class="gate-lines" data-gate-lines viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-      <polygon data-gate-poly points=""></polygon>
-    </svg>
-
-    <div class="gate-scrim" aria-hidden="true"></div>
-
-    <div class="gate-hero" data-gate-hero>
-      <p class="eyebrow">Harare · Zimbabwe</p>
-      <h1 class="mega mega--hero">
-        <span>Built in steel.</span>
-        <span class="dim">Erected on our own crane.</span>
-      </h1>
-      <p class="lede">
-        Structural steel, roof steelwork, laser cutting and lifting — one floor in Harare,
-        one contract, one company accountable for the whole job.
-      </p>
-      <div class="acts">
-        <a class="btn btn-primary" href="#start"><span>Start a project</span>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7"/></svg></a>
-        <a class="btn" href="#work"><span>See the work</span></a>
+  <div class="after-body">
+    <section class="brief" id="brief">
+      <h2 class="display brief-title">Bring the<br>brief.</h2>
+      <p class="brief-lede">Tell us what you need to make, cover or lift.</p>
+      <div class="brief-rows">
+        <div class="brief-row"><b>The work</b><span>A description or drawing</span></div>
+        <div class="brief-row"><b>The place</b><span>Location and access</span></div>
+        <div class="brief-row"><b>The questions</b><span>What still needs to be resolved</span></div>
       </div>
-    </div>
+    </section>
 
-    <!-- staged copy over the pinned photograph -->
-    <div class="gate-beat" data-gate-beat="1">
-      <p class="eyebrow">01 — Structural Steelworks</p>
-      <h2 class="big">Steel that goes up straight.</h2>
-    </div>
-    <div class="gate-beat" data-gate-beat="2">
-      <p class="lede">
-        Columns, rafters, bracing and purlins fabricated on our floor in Harare, delivered
-        as a marked package, and erected by the same company that made them.
-      </p>
-      <ul class="ticks">
-        <li>Portal frames</li><li>Process structures</li><li>Mezzanines</li><li>Erection</li>
-      </ul>
-    </div>
+    <section class="enquiry" id="enquiry">
+      <h2 class="display enquiry-title">Start a<br>conversation.</h2>
 
-    <p class="scroll-hint" aria-hidden="true">Scroll</p>
-  </div>
-</section>
+      <form class="form" data-form novalidate>
+        <div class="error-summary" data-error-summary tabindex="-1" hidden></div>
 
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SCENE 02 — LEDGER
-     A chapter card, not a card grid. Full bleed, no centred wrapper, rows
-     stepping across the page so the left edge never repeats.
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="ledger" id="capabilities">
-  <p class="ledger-lead">
-    Cutting, forming, welding and finishing under one roof in Harare — and the crane
-    that puts the steel up belongs to the same company that made it.
-  </p>
-  <ol class="ledger-list">
-    <li class="ledger-row" style="--step:0"><a href="#gateway">
-      <span class="ledger-n">01</span><span class="ledger-name">Structural Steelworks</span>
-      <span class="ledger-mode">Fabricate · Erect</span></a></li>
-    <li class="ledger-row" style="--step:1"><a href="#roofing">
-      <span class="ledger-n">02</span><span class="ledger-name">Roof Steelworks</span>
-      <span class="ledger-mode">Trusses · Purlins · Sheeting</span></a></li>
-    <li class="ledger-row" style="--step:2"><a href="#laser">
-      <span class="ledger-n">03</span><span class="ledger-name">Precision Laser Cutting</span>
-      <span class="ledger-mode">DXF · Nest · Cut</span></a></li>
-    <li class="ledger-row" style="--step:3"><a href="#start">
-      <span class="ledger-n">04</span><span class="ledger-name">Stainless &amp; General</span>
-      <span class="ledger-mode">Architectural · Finished</span></a></li>
-    <li class="ledger-row" style="--step:4"><a href="#cranage">
-      <span class="ledger-n">05</span><span class="ledger-name">Mobile Cranage</span>
-      <span class="ledger-mode">In-house lifting</span></a></li>
-  </ol>
-</section>
-
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SCENE 03 — BANDS
-     The structural photograph is cut into horizontal bands that slide apart in
-     alternate directions, and the roof beneath is what was behind them all
-     along. Steel geometry becoming roof geometry as a mask, not a crossfade.
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="rail rail--bands" id="bands" aria-label="Roof steelworks">
-  <div class="rail-pin">
-    <div class="bands-under">
-      <img src="assets/img/roof-trusses-1100.webp"
-         srcset="assets/img/roof-trusses-440.webp 440w, assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w"
-         sizes="100vw" width="1320" height="792"
-         loading="lazy" decoding="async"
-         alt="Long-span steel roof trusses and purlins carrying corrugated sheeting over an industrial building">
-    </div>
-
-    <!-- scenes.js clones this into N bands, each clipped to its own slice -->
-    <div class="bands-over" data-bands>
-      <img class="bands-src" src="assets/img/portal-frame-1100.webp"
-         srcset="assets/img/portal-frame-440.webp 440w, assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
-         sizes="100vw" width="1320" height="891"
-         loading="lazy" decoding="async"
-         alt="">
-    </div>
-
-    <div class="bands-copy" data-bands-copy>
-      <p class="eyebrow">02 — Roof Steelworks</p>
-      <h2 class="mega">Trusses,<br>purlins,<br>sheeting.</h2>
-    </div>
-  </div>
-</section>
-
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SCENE 04 — ROOF STRIP
-     Pinned. The second roof enters as a narrow vertical strip on the right,
-     widens until it owns the frame, and the copy changes underneath it. The
-     word behind the images is cropped by the viewport on purpose.
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="rail rail--strip" id="roofing" aria-label="The whole roof from one supplier">
-  <div class="rail-pin">
-    <h2 class="ghost" data-strip-ghost aria-hidden="true">SPAN</h2>
-
-    <figure class="strip strip--a" data-strip-a>
-      <img src="assets/img/roof-trusses-1100.webp"
-         srcset="assets/img/roof-trusses-440.webp 440w, assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w"
-         sizes="100vw" width="1320" height="792"
-         loading="lazy" decoding="async"
-         alt="Long-span steel roof trusses over an industrial floor">
-    </figure>
-
-    <figure class="strip strip--b" data-strip-b>
-      <div class="strip-crop">
-        <img src="assets/img/roof-frame-1100.webp"
-           srcset="assets/img/roof-frame-440.webp 440w, assets/img/roof-frame-720.webp 720w, assets/img/roof-frame-1100.webp 1100w, assets/img/roof-frame-1320.webp 1320w"
-           sizes="100vw" width="1320" height="714"
-           loading="lazy" decoding="async"
-           alt="Completed pitched roof steelwork inside a building: trusses, purlins and corrugated sheeting">
-      </div>
-    </figure>
-
-    <div class="strip-beats">
-      <div class="strip-beat" data-strip-beat="1">
-        <p class="eyebrow">Fabricated to your span</p>
-        <p class="lede">A roof is not three orders from three suppliers.</p>
-      </div>
-      <div class="strip-beat" data-strip-beat="2">
-        <p class="eyebrow">Rolled from one coil</p>
-        <p class="lede">Ridge, barge and valley match the roof rather than approximate it.</p>
-      </div>
-    </div>
-
-    <p class="spec-note">
-      Cover widths, gauges, minimum roof pitch and purlin spacing are issued in writing with
-      the quotation, against your roof and its exposure.
-    </p>
-  </div>
-</section>
-
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SCENE 05 — LASER
-     Four photographs on four depth planes moving at four speeds, and a cutting
-     line that crosses the screen and becomes the mask that reveals the machine
-     itself. The nest geometry draws over the top.
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="rail rail--laser" id="laser" aria-label="Precision laser cutting">
-  <div class="rail-pin">
-
-    <div class="lz lz--back" data-lz="back">
-      <img src="assets/img/nesting-station-1100.webp"
-         srcset="assets/img/nesting-station-440.webp 440w, assets/img/nesting-station-720.webp 720w, assets/img/nesting-station-1100.webp 1100w, assets/img/nesting-station-1350.webp 1350w"
-         sizes="60vw" width="1350" height="1800"
-         loading="lazy" decoding="async"
-         alt="Laser control station showing a part programme on screen beside the machine bed">
-    </div>
-    <div class="lz lz--mid" data-lz="mid">
-      <img src="assets/img/gantry-1100.webp"
-         srcset="assets/img/gantry-440.webp 440w, assets/img/gantry-720.webp 720w, assets/img/gantry-1100.webp 1100w, assets/img/gantry-1350.webp 1350w"
-         sizes="46vw" width="1350" height="1800"
-         loading="lazy" decoding="async"
-         alt="Fiber laser gantry and cable chain travelling over the slat bed">
-    </div>
-    <div class="lz lz--front" data-lz="front">
-      <img src="assets/img/cutting-head-1100.webp"
-         srcset="assets/img/cutting-head-440.webp 440w, assets/img/cutting-head-720.webp 720w, assets/img/cutting-head-1100.webp 1100w, assets/img/cutting-head-1350.webp 1350w"
-         sizes="40vw" width="1350" height="1800"
-         loading="lazy" decoding="async"
-         alt="Fiber laser cutting head positioned over mild steel plate, mid-programme">
-    </div>
-
-    <!-- revealed by the cutting line as it crosses -->
-    <div class="lz lz--reveal" data-lz-reveal>
-      <img src="assets/img/laser-machine-1100.webp"
-         srcset="assets/img/laser-machine-440.webp 440w, assets/img/laser-machine-720.webp 720w, assets/img/laser-machine-1100.webp 1100w, assets/img/laser-machine-1536.webp 1536w"
-         sizes="100vw" width="1536" height="2048"
-         loading="lazy" decoding="async"
-         alt="DXTECH fiber laser cutting machine installed in the Kingson workshop in Harare">
-    </div>
-    <div class="lz-beam" data-lz-beam aria-hidden="true"></div>
-
-    <svg class="lz-nest" data-lz-nest viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <rect class="sheet" x="20" y="20" width="1160" height="560"></rect>
-      <g class="part">
-        <path d="M80 80 H380 V260 H80 Z"></path>
-        <path d="M420 80 H700 L420 300 Z"></path>
-        <path d="M740 80 H1120 V150 H820 V240 H740 Z"></path>
-        <path d="M80 300 H300 V520 H80 Z"></path>
-        <path d="M620 340 H900 L960 460 L680 520 Z"></path>
-        <circle cx="450" cy="420" r="80"></circle>
-        <circle cx="450" cy="420" r="26"></circle>
-        <circle cx="1050" cy="300" r="46"></circle>
-        <circle cx="1050" cy="440" r="46"></circle>
-      </g>
-      <path class="cut" pathLength="1000" data-lz-cut d="M80 80 H380 V260 H80 Z M420 80 H700 L420 300 Z M740 80 H1120 V150 H820 V240 H740 Z M80 300 H300 V520 H80 Z M450 394 A26 26 0 1 1 449.9 394 Z M450 340 A80 80 0 1 1 449.9 340 Z M620 340 H900 L960 460 L680 520 Z M1050 254 A46 46 0 1 1 1049.9 254 Z M1050 394 A46 46 0 1 1 1049.9 394 Z"></path>
-    </svg>
-
-    <div class="lz-copy" data-lz-copy>
-      <p class="eyebrow">03 — Precision Laser Cutting</p>
-      <h2 class="mega">Nothing is committed to steel until you have signed the nest.</h2>
-      <p class="lede">
-        A DXTECH fiber laser, installed in our own workshop rather than bought as capacity
-        from somebody else. Your DXF is nested for yield and issued back for approval.
-      </p>
-    </div>
-
-    <p class="spec-note">
-      DXTECH fiber laser, installed in the Harare workshop. Material range, thickness and
-      tolerance are confirmed against your drawing when the nest is issued.
-    </p>
-  </div>
-</section>
-
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SCENE 06 — CRANE
-     Opens as a narrow slot in the middle of a black screen and grows to fill
-     the viewport. The headline sits behind the photograph and is progressively
-     covered by it; the copy travels the other way. The scene is about scale,
-     so scale is the only thing that moves.
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="rail rail--crane" id="cranage" aria-label="Mobile cranage">
-  <div class="rail-pin">
-    <h2 class="ghost ghost--crane" data-crane-type aria-hidden="true">We lift<br>what we build.</h2>
-    <h2 class="sr-only">We lift what we build.</h2>
-
-    <figure class="crane-frame" data-crane-frame>
-      <div class="crane-crop">
-        <img src="assets/img/crane-1100.webp"
-           srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
-           sizes="100vw" width="1320" height="1768"
-           loading="lazy" decoding="async"
-           alt="The Kingson Engineering telescopic mobile crane with its boom raised, standing in the yard in Harare">
-      </div>
-    </figure>
-
-    <div class="crane-copy" data-crane-copy>
-      <p class="eyebrow">04 — Mobile Cranage</p>
-      <p class="lede">
-        The crane is ours. Erection is scheduled against our own fabrication programme
-        rather than a hire company's diary.
-      </p>
-      <ul class="ticks">
-        <li>Telescopic mobile</li><li>Not subcontracted</li><li>Our own programme</li>
-      </ul>
-      <!-- VERIFY_WITH_KINGSON — no lifting capacity, boom length, make, model or
-           year is stated anywhere. Do not add one without the crane's plate. -->
-    </div>
-  </div>
-</section>
-
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SCENE 07 — REEL
-     Vertical scroll drives horizontal travel. Full-height frames of irregular
-     width, each panning inside its own crop at its own rate, so the reel never
-     reads as a row of equal cards.
-
-     No client, value, date or location appears — none has been supplied. The
-     labels are category names only.
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="rail rail--reel" id="work" aria-label="Selected work">
-  <div class="rail-pin">
-    <div class="reel-head">
-      <p class="eyebrow">05 — Selected work</p>
-      <h2 class="big">The floor, the plant, the work.</h2>
-    </div>
-
-    <div class="reel-track" data-reel-track>
-      <figure class="reel-item" style="--w:72">
-        <div class="reel-crop">
-          <img class="reel-img" src="assets/img/portal-frame-1100.webp"
-             srcset="assets/img/portal-frame-440.webp 440w, assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
-             sizes="72vw" width="1320" height="891"
-             loading="lazy" decoding="async"
-             alt="Steel portal frame under erection, columns and rafters in place">
-        </div>
-        <figcaption class="reel-cap">
-          <span class="reel-n">01</span>
-          <span class="reel-tag">Structural Steel</span>
-          <span class="reel-title">Portal Frame Erection</span>
-        </figcaption>
-      </figure>
-
-      <figure class="reel-item" style="--w:34">
-        <div class="reel-crop">
-          <img class="reel-img" src="assets/img/crane-1100.webp"
-             srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
-             sizes="34vw" width="1320" height="1768"
-             loading="lazy" decoding="async"
-             alt="The Kingson Engineering telescopic mobile crane, boom raised, in the yard">
-        </div>
-        <figcaption class="reel-cap">
-          <span class="reel-n">02</span>
-          <span class="reel-tag">Crane Operations</span>
-          <span class="reel-title">Lifting On Our Own Programme</span>
-        </figcaption>
-      </figure>
-
-      <figure class="reel-item" style="--w:58">
-        <div class="reel-crop">
-          <img class="reel-img" src="assets/img/roof-trusses-1100.webp"
-             srcset="assets/img/roof-trusses-440.webp 440w, assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w"
-             sizes="58vw" width="1320" height="792"
-             loading="lazy" decoding="async"
-             alt="Long-span steel roof trusses and purlins carrying sheeting">
-        </div>
-        <figcaption class="reel-cap">
-          <span class="reel-n">03</span>
-          <span class="reel-tag">Roofing Project</span>
-          <span class="reel-title">Long-Span Roof Trusses</span>
-        </figcaption>
-      </figure>
-
-      <figure class="reel-item" style="--w:44">
-        <div class="reel-crop">
-          <img class="reel-img" src="assets/img/laser-machine-1100.webp"
-             srcset="assets/img/laser-machine-440.webp 440w, assets/img/laser-machine-720.webp 720w, assets/img/laser-machine-1100.webp 1100w, assets/img/laser-machine-1536.webp 1536w"
-             sizes="44vw" width="1536" height="2048"
-             loading="lazy" decoding="async"
-             alt="DXTECH fiber laser installed in the Kingson workshop">
-        </div>
-        <figcaption class="reel-cap">
-          <span class="reel-n">04</span>
-          <span class="reel-tag">Workshop Production</span>
-          <span class="reel-title">The Fiber Laser</span>
-        </figcaption>
-      </figure>
-
-      <figure class="reel-item" style="--w:66">
-        <div class="reel-crop">
-          <img class="reel-img" src="assets/img/roof-frame-1100.webp"
-             srcset="assets/img/roof-frame-440.webp 440w, assets/img/roof-frame-720.webp 720w, assets/img/roof-frame-1100.webp 1100w, assets/img/roof-frame-1320.webp 1320w"
-             sizes="66vw" width="1320" height="714"
-             loading="lazy" decoding="async"
-             alt="Pitched roof steelwork seen from inside, sheeted and finished">
-        </div>
-        <figcaption class="reel-cap">
-          <span class="reel-n">05</span>
-          <span class="reel-tag">Steel Erection</span>
-          <span class="reel-title">Pitched Roof Steelwork</span>
-        </figcaption>
-      </figure>
-
-      <figure class="reel-item" style="--w:38">
-        <div class="reel-crop">
-          <img class="reel-img" src="assets/img/cutting-head-1100.webp"
-             srcset="assets/img/cutting-head-440.webp 440w, assets/img/cutting-head-720.webp 720w, assets/img/cutting-head-1100.webp 1100w, assets/img/cutting-head-1350.webp 1350w"
-             sizes="38vw" width="1350" height="1800"
-             loading="lazy" decoding="async"
-             alt="Fiber laser cutting head over mild steel plate">
-        </div>
-        <figcaption class="reel-cap">
-          <span class="reel-n">06</span>
-          <span class="reel-tag">Fabrication Work</span>
-          <span class="reel-title">Cutting Head, Mid-Run</span>
-        </figcaption>
-      </figure>
-
-      <figure class="reel-item" style="--w:50">
-        <div class="reel-crop">
-          <img class="reel-img" src="assets/img/gantry-1100.webp"
-             srcset="assets/img/gantry-440.webp 440w, assets/img/gantry-720.webp 720w, assets/img/gantry-1100.webp 1100w, assets/img/gantry-1350.webp 1350w"
-             sizes="50vw" width="1350" height="1800"
-             loading="lazy" decoding="async"
-             alt="Fiber laser gantry and cable chain over the slat bed">
-        </div>
-        <figcaption class="reel-cap">
-          <span class="reel-n">07</span>
-          <span class="reel-tag">Workshop Production</span>
-          <span class="reel-title">Gantry And Drive Line</span>
-        </figcaption>
-      </figure>
-
-      <figure class="reel-item" style="--w:40">
-        <div class="reel-crop">
-          <img class="reel-img" src="assets/img/nesting-station-1100.webp"
-             srcset="assets/img/nesting-station-440.webp 440w, assets/img/nesting-station-720.webp 720w, assets/img/nesting-station-1100.webp 1100w, assets/img/nesting-station-1350.webp 1350w"
-             sizes="40vw" width="1350" height="1800"
-             loading="lazy" decoding="async"
-             alt="Laser control station showing a part programme on screen">
-        </div>
-        <figcaption class="reel-cap">
-          <span class="reel-n">08</span>
-          <span class="reel-tag">Fabrication Work</span>
-          <span class="reel-title">Nesting Station</span>
-        </figcaption>
-      </figure>
-
-      <figure class="reel-item" style="--w:62">
-        <div class="reel-crop">
-          <img class="reel-img" src="assets/img/laser-floor-1100.webp"
-             srcset="assets/img/laser-floor-440.webp 440w, assets/img/laser-floor-720.webp 720w, assets/img/laser-floor-1100.webp 1100w, assets/img/laser-floor-1350.webp 1350w"
-             sizes="62vw" width="1350" height="1800"
-             loading="lazy" decoding="async"
-             alt="The Kingson fabrication floor in Harare">
-        </div>
-        <figcaption class="reel-cap">
-          <span class="reel-n">09</span>
-          <span class="reel-tag">Workshop Production</span>
-          <span class="reel-title">The Harare Floor</span>
-        </figcaption>
-      </figure>
-    </div>
-
-    <div class="reel-foot">
-      <span class="reel-progress"><i data-reel-bar></i></span>
-      <span class="reel-note">Project names, clients and values are not published here.</span>
-    </div>
-  </div>
-</section>
-
-
-<!-- Material reference — a thin, quiet, honest band. NOT project photography.
-     VERIFY_WITH_KINGSON — replace with photographs of Kingson's own stock and
-     delete this band. -->
-<section class="matref" aria-label="Material reference">
-  <p class="matref-note">Material reference — stock imagery, not Kingson project photography</p>
-  <div class="matref-strip" data-matref>
-    <div class="matref-cell"><img src="assets/img/material-tube-1100.webp"
-         srcset="assets/img/material-tube-440.webp 440w, assets/img/material-tube-720.webp 720w, assets/img/material-tube-1100.webp 1100w, assets/img/material-tube-1320.webp 1320w"
-         sizes="50vw" width="1320" height="1319"
-         loading="lazy" decoding="async"
-         alt="Reference image: stacked round tube and hollow steel section"></div>
-    <div class="matref-cell"><img src="assets/img/material-sheet-1100.webp"
-         srcset="assets/img/material-sheet-440.webp 440w, assets/img/material-sheet-720.webp 720w, assets/img/material-sheet-1100.webp 1100w, assets/img/material-sheet-1298.webp 1298w"
-         sizes="50vw" width="1298" height="750"
-         loading="lazy" decoding="async"
-         alt="Reference image: stacked steel sheet, plate and coil"></div>
-  </div>
-</section>
-
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SCENE 08 — PROCESS
-     Numerals at display scale with the text hanging off them, each row
-     stepping further across the page. No card ever appears.
-
-     No duration, response time or programme figure — every one the previous
-     site published was unconfirmed. See PROVISIONAL.promises in content.js.
-     VERIFY_WITH_KINGSON — confirm these five stages describe how the company
-     actually runs a job.
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="proc" id="process" aria-label="How we work">
-  <p class="eyebrow proc-lead">06 — How we work</p>
-  <ol class="proc-list">
-    <li class="proc-row" style="--step:0"><span class="proc-n" aria-hidden="true">01</span>
-      <h3 class="proc-name">Enquiry</h3>
-      <p class="proc-body">A call, a WhatsApp, a roof plan, or a photograph of the sketch off the site board. It reaches the same person either way.</p></li>
-    <li class="proc-row" style="--step:1"><span class="proc-n" aria-hidden="true">02</span>
-      <h3 class="proc-name">Scope &amp; drawings</h3>
-      <p class="proc-body">We work out what is actually being asked for — span, profile, access, who is doing what — and come back with the questions before the price.</p></li>
-    <li class="proc-row" style="--step:2"><span class="proc-n" aria-hidden="true">03</span>
-      <h3 class="proc-name">Estimating</h3>
-      <p class="proc-body">A written quotation against a defined scope, so variations are visible rather than discovered.</p></li>
-    <li class="proc-row" style="--step:3"><span class="proc-n" aria-hidden="true">04</span>
-      <h3 class="proc-name">Fabrication</h3>
-      <p class="proc-body">Cut, formed, welded and finished on our own floor in Harare, marked up against the assembly drawings.</p></li>
-    <li class="proc-row" style="--step:4"><span class="proc-n" aria-hidden="true">05</span>
-      <h3 class="proc-name">Delivery &amp; erection</h3>
-      <p class="proc-body">Delivered and, where the contract includes it, erected on our own crane and handed over complete.</p></li>
-  </ol>
-  <p class="proc-note">
-    No stage promises a date. Programme is agreed against your job and written into the
-    quotation — a shed on a cleared site and a roof over a running plant are not the same
-    piece of work.
-  </p>
-</section>
-
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     SCENE 09 — START A PROJECT
-
-     SUBMISSION IS NOT SERVER-SIDE. The form composes a message and hands it to
-     WhatsApp or the visitor's mail client; they press send there. Nothing is
-     stored and no database is faked — which is why the confirmation says
-     "ready to send" and never "received". See assets/site.js.
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="start" id="start">
-  <div class="start-head">
-    <p class="eyebrow">07 — Start a project</p>
-    <h2 class="mega">One conversation,<br>one accountable quote.</h2>
-    <p class="lede">
-      Send a roof plan, a section, a DXF, or a photograph of the sketch off the site board.
-      Whichever you use, it reaches the same person.
-    </p>
-  </div>
-
-  <div class="start-body">
-    <aside class="start-side">
-      <div class="start-lines">
-        <a data-href="tel-mobile" href="tel:+263772262869"><span class="lbl">Mobile</span><span class="val" data-k="mobile">+263 772 262 869</span></a>
-        <a data-href="tel-office" href="tel:+263242304341"><span class="lbl">Office</span><span class="val" data-k="office">+263 242 304 341</span></a>
-        <a data-href="mail" href="mailto:kingsonnkm@gmail.com"><span class="lbl">Email</span><span class="val" data-k="email">kingsonnkm@gmail.com</span></a>
-        <!-- VERIFY_WITH_KINGSON — workshop address -->
-        <p><span class="lbl">Workshop</span><span class="val"><span data-k="address">No. 1262 Tynwald Industries</span>, <span data-k="city">Harare</span></span></p>
-      </div>
-      <div class="start-direct">
-        <a class="btn" data-href="wa" href="https://wa.me/263772262869" target="_blank" rel="noopener"><span>WhatsApp</span></a>
-        <a class="btn" data-href="mail" href="mailto:kingsonnkm@gmail.com"><span>Email</span></a>
-      </div>
-    </aside>
-
-    <div class="start-form">
-      <form id="enquiry-form" novalidate>
-        <div class="form-grid">
-          <div class="field"><label for="f-name">Name <span class="req" aria-hidden="true">*</span></label>
-            <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Your name"></div>
-          <div class="field"><label for="f-company">Company</label>
-            <input id="f-company" name="company" type="text" autocomplete="organization" placeholder="Optional"></div>
-          <div class="field"><label for="f-phone">Phone / WhatsApp</label>
-            <input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+263 …"></div>
-          <div class="field"><label for="f-email">Email</label>
-            <input id="f-email" name="email" type="email" autocomplete="email" placeholder="you@company.co.zw"></div>
-          <div class="field"><label for="f-scope">What is the work <span class="req" aria-hidden="true">*</span></label>
-            <select id="f-scope" name="scope" required><option>Select a scope</option></select></div>
-          <div class="field"><label for="f-location">Site location</label>
-            <input id="f-location" name="location" type="text" placeholder="Suburb, town or city"></div>
-          <div class="field"><label for="f-timing">Timing</label>
-            <select id="f-timing" name="timing"><option>Select timing</option></select></div>
-          <div class="field"><label id="pref-label">Preferred contact</label>
-            <div class="seg" id="f-pref" role="group" aria-labelledby="pref-label"></div></div>
-          <div class="field wide"><label for="f-brief">Brief</label>
-            <textarea id="f-brief" name="brief" rows="4" placeholder="Span, area, profile, access, what is already on site — whatever you know."></textarea></div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-name">Name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name">
+            <span class="field-error" data-error-for="f-name" hidden></span>
+          </div>
+          <div class="field">
+            <label for="f-contact">Email or phone</label>
+            <input id="f-contact" name="contact" type="text" autocomplete="email">
+            <span class="field-error" data-error-for="f-contact" hidden></span>
+          </div>
         </div>
 
-        <!-- A file picker, not an uploader. It lists the drawings so the composed
-             message names them; the attachment happens in WhatsApp or the mail
-             client. Nothing is sent to this website. -->
-        <div class="drop">
-          <span class="drop-h">Drawings</span>
-          <label class="drop-btn" for="f-files">Choose files</label>
-          <input id="f-files" type="file" multiple accept=".dxf,.dwg,.pdf,.step,.stp,.jpg,.jpeg,.png,.heic">
-          <ul class="file-list"></ul>
-          <p class="drop-note">Drag files here or choose them and they will be named in your
-            message. Attach them in WhatsApp or email when it opens — nothing is uploaded to
-            this website.</p>
+        <div class="field wide">
+          <label for="f-scope">Your requirement</label>
+          <input id="f-scope" name="scope" type="text">
+          <span class="field-error" data-error-for="f-scope" hidden></span>
         </div>
 
-        <div class="form-foot">
-          <button class="btn btn-primary" type="submit"><span>Prepare enquiry</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7"/></svg></button>
-          <p class="form-err" role="alert"></p>
+        <div class="field wide">
+          <label for="f-description">Tell us about the work</label>
+          <textarea id="f-description" name="description" rows="4"></textarea>
+        </div>
+
+        <button type="button" class="disclosure" data-disclosure aria-expanded="false" aria-controls="more">
+          Add location or timing
+        </button>
+        <div class="field-row" id="more" data-more hidden>
+          <div class="field">
+            <label for="f-location">Location</label>
+            <input id="f-location" name="location" type="text">
+          </div>
+          <div class="field">
+            <label for="f-timing">When you would like it done</label>
+            <input id="f-timing" name="timing" type="text">
+          </div>
+        </div>
+
+        <!-- A thin ruled row. Nothing is uploaded: the file list is local and
+             the label says so before a file is chosen, not after. -->
+        <div class="files">
+          <div class="files-head">
+            <b>Reference files</b>
+            <label class="files-choose" for="f-files">Choose files</label>
+          </div>
+          <input id="f-files" type="file" multiple
+                 accept=".pdf,.dxf,.dwg,.jpg,.jpeg,.png,.heic,.webp">
+          <p class="files-note">Files stay on this device. Attach them in your email or WhatsApp message.</p>
+          <ul class="files-list" data-files-list></ul>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn" data-review>Review enquiry</button>
         </div>
       </form>
 
-      <div class="ready" aria-live="polite">
-        <h3 class="ready-h">Your enquiry is ready to send.</h3>
-        <p class="ready-p">This site cannot send on your behalf. Choose WhatsApp or email below
-          and press send there — the message is already written out.</p>
-        <pre class="ready-pre"></pre>
-        <div class="ready-acts">
-          <a class="btn btn-primary" id="send-wa" href="#" target="_blank" rel="noopener"><span>Send on WhatsApp</span></a>
-          <a class="btn" id="send-mail" href="#"><span>Send by email</span></a>
-          <button class="btn" type="button" id="form-restart"><span>Start again</span></button>
-        </div>
+      <div class="draft" data-draft aria-live="polite">
+        <h3>Your draft is ready.</h3>
+        <div class="draft-body" data-draft-body></div>
+        <div class="draft-actions" data-draft-actions></div>
+        <p class="draft-status" data-draft-status></p>
       </div>
+    </section>
 
-      <details class="privacy">
-        <summary>How we handle what you send us</summary>
-        <div class="privacy-body">
-          <p><b>Who we are.</b> <span data-k="legal">Kingson Trading (Pvt) Ltd</span>, trading as
-            <span data-k="name">Kingson Engineering</span>, <span data-k="address">No. 1262 Tynwald Industries</span>,
-            <span data-k="city">Harare</span>, Zimbabwe.</p>
-          <p><b>What we collect.</b> Only what you type above. This site sets no cookies, runs no
-            analytics and does not track you.</p>
-          <p><b>Where it goes.</b> This form stores nothing. Pressing send opens WhatsApp or your
-            email with the message written out, and you send it yourself.</p>
-          <p><b>Your rights.</b> Ask us what we hold, ask us to correct it, or ask us to delete it —
-            call <span data-k="mobile">+263 772 262 869</span> or email
-            <span data-k="email">kingsonnkm@gmail.com</span>.</p>
-        </div>
-      </details>
-    </div>
+    <footer class="site-foot" data-foot>
+      <span>Kingson Engineering</span>
+      <span>Engineering &amp; fabrication · Zimbabwe</span>
+    </footer>
   </div>
+</div>
 </section>
 
+<!-- ═══════════════ LINEAR RECORD ═══════════════
+     The readable document. It is the page without JavaScript, and it is
+     hidden — not merely visually — once the stage takes over, so no heading
+     is ever duplicated for assistive technology. -->
+<div class="fallback" data-fallback>
+  <section class="fb-scene">
+    <h2>Built around your work.</h2>
+    <p>Engineering &amp; fabrication · Zimbabwe</p>
+    <img src="assets/img/portal-frame-1320.webp"
+         srcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
+         sizes="100vw" width="1320" height="888" decoding="async"
+         alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.">
+  </section>
 
-<!-- Questions. Deliberately quiet and documentary — it sits after the work,
-     reads as reference, and carries no figure that has not been confirmed. -->
-<section class="qa" id="faq">
-  <p class="eyebrow">Questions</p>
-  <div class="faq">
-    <div class="faq-i on"><button class="faq-q" type="button" aria-expanded="true">What does Kingson Engineering do?</button>
-      <div class="faq-a"><div><p>Kingson Engineering is a steelwork specialist in Harare, Zimbabwe. The company fabricates and erects structural steel, builds and sheets roofs, cuts plate and sheet on an in-house DXTECH fiber laser, fabricates stainless and general steelwork, and lifts with its own mobile crane.</p></div></div></div>
-    <div class="faq-i"><button class="faq-q" type="button" aria-expanded="false">Do you handle both supply and erection?</button>
-      <div class="faq-a"><div><p>Yes. Steel and sheeting can be supplied for your own contractor, or fabricated, delivered and erected by Kingson as a single contract — including the crane, so the lift is not subcontracted.</p></div></div></div>
-    <div class="faq-i"><button class="faq-q" type="button" aria-expanded="false">Where do you work?</button>
-      <div class="faq-a"><div><p>Harare and the surrounding industrial areas as standard, with fabrication delivered and erected elsewhere in Zimbabwe. Transport is priced per load in the quotation.</p></div></div></div>
-    <div class="faq-i"><button class="faq-q" type="button" aria-expanded="false">What file format do you need for laser cutting?</button>
-      <div class="faq-a"><div><p>DXF or DWG at 1:1 with closed polylines is ideal. STEP files are accepted, and PDF or hand-dimensioned drawings are redrawn in-house and returned for approval before anything is cut.</p></div></div></div>
-    <div class="faq-i"><button class="faq-q" type="button" aria-expanded="false">Do I see the nest before you cut?</button>
-      <div class="faq-a"><div><p>Always. The nest layout, the sheet count and the price are issued for written approval, and a first-off part is measured against the drawing before the balance of the nest runs.</p></div></div></div>
-    <div class="faq-i"><button class="faq-q" type="button" aria-expanded="false">How do I get a quote?</button>
-      <div class="faq-a"><div><p>Call or WhatsApp <span data-k="mobile">+263 772 262 869</span>, email <span data-k="email">kingsonnkm@gmail.com</span>, or use the form on this page. Send drawings if you have them.</p></div></div></div>
-  </div>
-</section>
+  <section class="fb-scene">
+    <h2>Structural steel</h2>
+    <img src="assets/img/portal-frame-1100.webp"
+         srcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
+         sizes="100vw" width="1320" height="888" loading="lazy" decoding="async"
+         alt="The same portal frame from inside the building line, showing the bolted eaves connections and the run of columns down the flank.">
+  </section>
+
+  <section class="fb-scene">
+    <h2>Roof steel</h2>
+    <img src="assets/img/roof-trusses-1320.webp"
+         srcset="assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w"
+         sizes="100vw" width="1320" height="792" loading="lazy" decoding="async"
+         alt="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building.">
+    <img src="assets/img/roof-frame-1320.webp"
+         srcset="assets/img/roof-frame-720.webp 720w, assets/img/roof-frame-1100.webp 1100w, assets/img/roof-frame-1320.webp 1320w"
+         sizes="100vw" width="1320" height="714" loading="lazy" decoding="async"
+         alt="A white-painted roof structure seen from inside: trusses, purlins and corrugated sheeting with rooflights between the bays.">
+  </section>
+
+  <section class="fb-scene">
+    <h2>Laser cutting</h2>
+    <img src="assets/img/cutting-head-1100.webp"
+         srcset="assets/img/cutting-head-720.webp 720w, assets/img/cutting-head-1100.webp 1100w, assets/img/cutting-head-1350.webp 1350w"
+         sizes="100vw" width="1350" height="1800" loading="lazy" decoding="async"
+         alt="The cutting head of a fiber laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it.">
+    <img src="assets/img/laser-machine-1100.webp"
+         srcset="assets/img/laser-machine-720.webp 720w, assets/img/laser-machine-1100.webp 1100w, assets/img/laser-machine-1536.webp 1536w"
+         sizes="100vw" width="1536" height="2048" loading="lazy" decoding="async"
+         alt="The whole fiber laser cutting machine standing in a brick workshop, with its control screen, cable chain and bed of cut plate.">
+  </section>
+
+  <section class="fb-scene">
+    <h2>Cranage</h2>
+    <img src="assets/img/crane-1100.webp"
+         srcset="assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
+         sizes="100vw" width="1320" height="1757" loading="lazy" decoding="async"
+         alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.">
+    <p>Send a description or a drawing using the form below. Nothing is uploaded from this page — attach your files to the email or message you send.</p>
+  </section>
+</div>
 
 </main>
 
-
-<footer class="foot">
-  <p class="foot-wordmark">Kingson<br>Engineering</p>
-  <div class="foot-cols">
-    <div class="foot-col">
-      <h3>Contact</h3>
-      <a data-href="tel-mobile" href="tel:+263772262869"><span data-k="mobile">+263 772 262 869</span></a>
-      <a data-href="tel-office" href="tel:+263242304341"><span data-k="office">+263 242 304 341</span></a>
-      <a data-href="mail" href="mailto:kingsonnkm@gmail.com"><span data-k="email">kingsonnkm@gmail.com</span></a>
-      <a data-href="facebook" href="https://www.facebook.com/share/18GoTdrLBD/" target="_blank" rel="noopener">Facebook</a>
-    </div>
-    <div class="foot-col">
-      <h3>Workshop</h3>
-      <!-- VERIFY_WITH_KINGSON — address and trading hours -->
-      <p><span data-k="address">No. 1262 Tynwald Industries</span></p>
-      <p><span data-k="city">Harare</span>, Zimbabwe</p>
-      <p>Mon – Fri · 07:30 – 17:00</p>
-      <p>Saturday · 08:00 – 12:30</p>
-    </div>
-    <div class="foot-col">
-      <h3>Scope</h3>
-      <p>Structural steelworks</p><p>Roof steelworks</p><p>Laser cutting</p>
-      <p>Stainless fabrication</p><p>Mobile cranage</p>
-    </div>
-  </div>
-  <div class="foot-bot">
-    <span><span data-k="legal">Kingson Trading (Pvt) Ltd</span> trading as <span data-k="name">Kingson Engineering</span></span>
-    <span>Harare, Zimbabwe</span>
-  </div>
-</footer>
-
-
-<div class="dock" aria-label="Quick contact">
-  <a data-href="tel-mobile" href="tel:+263772262869">Call</a>
-  <a data-href="wa" href="https://wa.me/263772262869" target="_blank" rel="noopener">WhatsApp</a>
-  <a class="primary" href="#start">Start a project</a>
-</div>
-
-<script src="content.js" defer></script>
-<script src="assets/engine.js" defer></script>
-<script src="assets/steel.js" defer></script>
-<script src="assets/scenes.js" defer></script>
-<script src="assets/site.js" defer></script>
+<script type="module" src="main.js"></script>
 </body>
 </html>
