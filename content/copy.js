@@ -12,6 +12,15 @@
    of that has been supplied, and an invitation is not a claim.
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* Small centred eyebrows above each section heading, as in the reference. */
+export const EYEBROWS = {
+  services: 'What we make',
+  process:  'How it works',
+  work:     'Recent work',
+  enquiry:  'Get a price',
+  contact:  'Talk to us'
+};
+
 export const HERO = {
   title: 'Steel, roofing and cranage.',
   lede: 'Fabrication and erection for builders, farmers and industry across Zimbabwe. Send a drawing or a description — we will come back to you.',
@@ -50,6 +59,22 @@ export const CAPABILITIES = [
     ask: 'Tell us the load, the site access and the date.'
   }
 ];
+
+/* Three steps, all of them customer-side or already established elsewhere on
+   this page. No turnaround, no lead time, no capacity: the site does not
+   promise a date, because no date has been confirmed. */
+export const PROCESS = {
+  title: 'Three steps to a price.',
+  lede: 'No drawings? A photo and a few dimensions is enough to start.',
+  steps: [
+    { n: '01', title: 'Send what you have',
+      body: 'A drawing, a sketch, a photograph, or a description. Spans, heights and site access if you know them.' },
+    { n: '02', title: 'We come back to you',
+      body: 'We price the work and tell you anything else we need to know before starting.' },
+    { n: '03', title: 'We make it and put it up',
+      body: 'Fabricated in our own workshop, delivered and erected on site with our own crane.' }
+  ]
+};
 
 export const WORK = {
   title: 'Recent work',

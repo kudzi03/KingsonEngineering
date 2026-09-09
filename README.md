@@ -8,14 +8,29 @@ step to serve. Edit, push, Vercel redeploys.
 
 ---
 
+## Design source
+
+The visual system comes from the reference build the owner supplied
+(`pastel-pixie-lab.lovable.app`) — a light Tailwind/shadcn theme. Taken from
+it: white page with `#fafafa` cards, `#0a0a0a` text, `#e4e4e7` borders, 0.75–1.5rem
+corners, pill buttons, centred dot-eyebrow section headers, and a dark hero and
+footer bookending a light body. `styles/tokens.css` carries the values.
+
+Deliberately **not** taken from it: the awards wall, the team "wanted posters",
+the polaroids-on-a-washing-line and the film-strip device. Those are storytelling
+for a film company — there is no data behind them here, and inventing awards or
+staff would break the truth rules below. The accent is Kingson's own oxide
+(`#B4442A`) rather than the reference's flat red.
+
 ## What this is
 
-One page, five sections, about five screens on a laptop:
+One page, six sections, about seven screens on a laptop:
 
 | | |
 |---|---|
-| **Hero** | Who this is, what they make, and three actions: call, WhatsApp, get a price |
-| **What we do** | The four things a customer can ask for, each with the photograph of it and the line that says what to send |
+| **Hero** | Who this is, what they make, and three actions: get a price, call, WhatsApp |
+| **What we make** | The four things a customer can ask for, each with the photograph of it and the line that says what to send |
+| **How it works** | Three steps to a price. Customer-side only — no date is promised, because none has been confirmed |
 | **Recent work** | Six photographs from Kingson's own jobs, click to view full size |
 | **Get a price** | A form that composes a message and hands it to WhatsApp or email |
 | **Talk to us** | Every contact channel, as a working link |

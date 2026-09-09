@@ -23,7 +23,7 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { HERO, CAPABILITIES, WORK, ENQUIRY, CONTACT, NAV } from '../content/copy.js';
+import { HERO, CAPABILITIES, PROCESS, WORK, ENQUIRY, CONTACT, NAV, EYEBROWS } from '../content/copy.js';
 import { ASSETS, src, srcset } from '../content/assets.js';
 import { publish, context } from '../content/company.js';
 
@@ -56,10 +56,22 @@ function enqBtn(ghost) {
 
 const city = publish('address') ? publish('address').split(',').pop().trim() + ', ' : '';
 
+/* A centred section header: dot eyebrow, heading, one line of lede. */
+const head = (key, title, lede) =>
+  `    <p class="eyebrow">${esc(EYEBROWS[key])}</p>\n` +
+  `    <h2 class="display">${esc(title)}</h2>\n` +
+  (lede ? `    <p>${esc(lede)}</p>` : '');
+
+const steps = PROCESS.steps.map((st) => `    <li class="step">
+      <span class="step-n">${esc(st.n)}</span>
+      <h3>${esc(st.title)}</h3>
+      <p>${esc(st.body)}</p>
+    </li>`).join('\n');
+
 const hero = `    <p class="hero-eyebrow">${esc(HERO.eyebrow)} · ${esc(city)}Zimbabwe</p>
     <h1 class="display hero-title">${esc(HERO.title)}</h1>
     <p class="hero-lede">${esc(HERO.lede)}</p>
-    <div class="hero-act">${callBtn()}${waBtn(true)}${enqBtn(true)}</div>`;
+    <div class="hero-act">${enqBtn()}${callBtn(NAV.call, true)}${waBtn(true)}</div>`;
 
 const services = CAPABILITIES.map((c) => {
   const a = ASSETS[c.asset];
@@ -139,14 +151,15 @@ ${field('timing', 'timing')}
 
 const BLOCKS = {
   hero, services, work, contact, form,
-  headact: callBtn(NAV.call) + enqBtn(true),
-  baract: callBtn(NAV.call) + waBtn(true),
-  menuact: callBtn() + waBtn(true),
-  foot, ld,
-  svctitle: 'What we do',
-  worktitle: `<h2 class="display">${esc(WORK.title)}</h2>\n    <p>${esc(WORK.lede)}</p>`,
-  enqtitle: `<h2 class="display">${esc(ENQUIRY.title)}</h2>\n      <p>${esc(ENQUIRY.lede)}</p>`,
-  cttitle: `<h2 class="display">${esc(CONTACT.title)}</h2>\n    <p>${esc(CONTACT.lede)}</p>`,
+  headact: callBtn(NAV.call, true) + enqBtn(),
+  baract: callBtn(NAV.call, true) + waBtn(true),
+  menuact: enqBtn() + callBtn(NAV.call + ' ' + publish('phone'), true) + waBtn(true),
+  foot, ld, steps,
+  svchead:  head('services', 'What we make', 'Four things, done in our own workshop and on site.'),
+  prochead: head('process', PROCESS.title, PROCESS.lede),
+  workhead: head('work', WORK.title, WORK.lede),
+  enqhead:  head('enquiry', ENQUIRY.title, ENQUIRY.lede),
+  cthead:   head('contact', CONTACT.title, CONTACT.lede),
   review: esc(ENQUIRY.actions.review),
   fileslabel: esc(ENQUIRY.files.label),
   fileschoose: esc(ENQUIRY.files.choose),

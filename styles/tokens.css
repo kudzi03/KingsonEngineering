@@ -1,76 +1,111 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   styles/tokens.css — palette and type
+   styles/tokens.css — the design system
    ═══════════════════════════════════════════════════════════════════════════
-   V2 §4 and §6. Three colours and two typefaces. There is no beige ground, no
-   persistent dark filter over photography, and no monospace anywhere a
-   customer can see it.
+
+   Values taken from the reference build the owner supplied
+   (pastel-pixie-lab.lovable.app): a light Tailwind/shadcn theme — white page,
+   near-black text, soft grey cards, 1rem corners, pill buttons, and a dark
+   hero and footer bookending the light body.
+
+   The accent is the one departure. The reference uses a flat red; this uses
+   the oxide already in Kingson's palette, warmed to the same confidence. It
+   is hot-steel colour, it belongs to this business, and it clears 4.5:1 on
+   white for its own text.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --ink:   #111714;   /* near-black: interface fields, nav backing, curtain  */
-  --chalk: #F3F4ED;   /* display and interface type over photography         */
-  --oxide: #AA482F;   /* focus and error emphasis ONLY — never decoration    */
+  /* ── ground ─────────────────────────────────────────────────────────── */
+  --bg:          #ffffff;   /* the page                                    */
+  --bg-soft:     #fafafa;   /* alternating section, card fill              */
+  --bg-dark:     #0f1211;   /* hero, footer, contact                       */
+  --bg-dark-2:   #1a1e1c;   /* a card on the dark ground                   */
 
-  --ink-90: rgba(17, 23, 20, .90);
-  --ink-72: rgba(17, 23, 20, .72);
-  --chalk-70: rgba(243, 244, 237, .70);
-  --chalk-40: rgba(243, 244, 237, .40);
-  --rule:   rgba(243, 244, 237, .14);   /* hairline between rows            */
-  --rule-2: rgba(243, 244, 237, .30);   /* an edge you are meant to notice   */
-  --chalk-85: rgba(243, 244, 237, .85);
+  /* ── ink ────────────────────────────────────────────────────────────── */
+  --fg:          #0a0a0a;
+  --fg-muted:    #57575e;   /* body copy beside a heading: 6.6:1 on white  */
+  --fg-faint:    #71717a;   /* captions, labels: 4.8:1 on white            */
+  --fg-on-dark:  #fafafa;
+  --fg-on-dark-muted: rgba(250, 250, 250, .72);
 
-  /* §7 — the stage is the viewport; 4vw margin, no centred container */
-  --margin: clamp(18px, 4vw, 56px);
+  /* ── lines ──────────────────────────────────────────────────────────── */
+  --line:        #e4e4e7;
+  --line-strong: #d4d4d8;
+  --line-dark:   #27272a;
 
-  /* §6 — display sizes. Archivo 800, ordinary width, never synthetic. */
-  --t-opening: clamp(88px, 9.2vw, 176px);
-  --t-scene:   clamp(72px, 7.5vw, 144px);
-  --t-work:    clamp(56px, 5vw, 96px);
-  --t-process: clamp(56px, 5.4vw, 104px);
+  /* ── accent ─────────────────────────────────────────────────────────── */
+  --accent:       #B4442A;   /* 5.1:1 on white                              */
+  --accent-hover: #97371F;
+  --accent-soft:  #FBEDE9;
+  --accent-on:    #ffffff;
 
-  --t-body:    18px;
-  --t-ui:      14px;
+  /* the three dots the reference uses beside its eyebrows */
+  --dot-a: #2563eb;
+  --dot-b: #059669;
+  --dot-c: #7c3aed;
 
-  --ease-ui: cubic-bezier(.22, 1, .36, 1);
+  /* ── shape ──────────────────────────────────────────────────────────── */
+  --r-sm: .5rem;
+  --r:    .75rem;
+  --r-lg: 1rem;
+  --r-xl: 1.5rem;
+  --pill: 9999px;
+
+  --shadow-sm: 0 1px 2px rgba(9, 9, 11, .05);
+  --shadow:    0 4px 6px -1px rgba(9, 9, 11, .07), 0 2px 4px -2px rgba(9, 9, 11, .05);
+  --shadow-lg: 0 10px 15px -3px rgba(9, 9, 11, .08), 0 4px 6px -4px rgba(9, 9, 11, .05);
+
+  /* ── measure ────────────────────────────────────────────────────────── */
+  --margin: clamp(20px, 5vw, 64px);
+  --page:   1200px;
+  --ease:   cubic-bezier(.22, 1, .36, 1);
+
+  /* ── type ───────────────────────────────────────────────────────────── */
+  --t-body:  16px;
+  --t-lede:  clamp(17px, 1.25vw, 19px);
+  --t-h1:    clamp(40px, 5.4vw, 76px);
+  --t-h2:    clamp(32px, 3.9vw, 56px);
+  --t-h3:    clamp(19px, 1.5vw, 22px);
+  --t-ui:    15px;
+  --t-small: 13.5px;
 }
-
-@media (min-width: 1800px) { :root { --t-body: 20px; } }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 92px;      /* the sticky header */
+}
 
 body {
   margin: 0;
-  background: var(--ink);
-  color: var(--chalk);
+  background: var(--bg);
+  color: var(--fg);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: var(--t-body);
-  font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: clip;
 }
 
-img { display: block; border-style: none; max-width: 100%; }
+img { display: block; max-width: 100%; border-style: none; }
 button, input, select, textarea { font: inherit; color: inherit; }
-p, h1, h2, h3, h4, figure, ul, ol, li { margin: 0; padding: 0; list-style: none; }
+p, h1, h2, h3, h4, figure, ul, ol, li, dl, dd { margin: 0; padding: 0; list-style: none; }
 a { color: inherit; text-decoration: none; }
 
-/* §13 — 2px chalk with 2px offset on dark, ink on light. */
-:focus-visible { outline: 2px solid var(--chalk); outline-offset: 2px; }
-.on-light :focus-visible { outline-color: var(--ink); }
-
-::selection { background: var(--oxide); color: var(--chalk); }
-
+/* Headings are Archivo at 700 — the reference's bold system sans, with better
+   letterfit. Not the -.045em display tracking the previous build used. */
 .display {
   font-family: Archivo, Inter, system-ui, sans-serif;
-  font-weight: 800;
-  letter-spacing: -.045em;
-  line-height: .90;
+  font-weight: 700;
+  letter-spacing: -.028em;
+  line-height: 1.05;
   text-wrap: balance;
 }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.on-dark :focus-visible { outline-color: var(--fg-on-dark); }
+::selection { background: var(--accent); color: #fff; }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -78,13 +113,18 @@ a { color: inherit; text-decoration: none; }
 }
 
 .skip {
-  position: fixed; top: 0; left: 0; z-index: 300;
-  padding: 12px 18px; background: var(--chalk); color: var(--ink);
-  font-weight: 500; transform: translateY(-110%);
+  position: fixed; top: 10px; left: 10px; z-index: 300;
+  padding: 12px 20px; background: var(--fg); color: #fff;
+  border-radius: var(--r); font-weight: 500; transform: translateY(-160%);
 }
 .skip:focus { transform: none; }
 
-/* A class that sets `display` beats the user agent's own [hidden] rule, so
-   any element hidden by the `hidden` attribute would come back the moment it
-   is given a layout class. Say it once, here, rather than per component. */
 [hidden] { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
