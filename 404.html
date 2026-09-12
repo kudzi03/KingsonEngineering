@@ -5,49 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Page not found — Kingson Engineering</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#111714">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23111714'/%3E%3Ctext x='32' y='42' font-family='Helvetica,Arial,sans-serif' font-weight='800' font-size='27' fill='%23F3F4ED' text-anchor='middle'%3EKE%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0f1211">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f1211'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-weight='700' font-size='30' fill='%23E21E25' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/fonts.css">
 <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/site.css">
 <style>
-  /* Same identity as the site: the work behind, one compact opaque cluster,
-     chalk on the photograph. No contact details appear here, for the same
-     reason none appear anywhere else — none is owner-verified yet. */
-  body { margin: 0; background: var(--ink); color: var(--chalk);
-         font-family: Inter, system-ui, sans-serif; font-size: var(--t-body); }
-  .nf { position: relative; min-height: 100svh; min-height: 100vh; overflow: hidden; }
-  .nf img { position: absolute; inset: 0; width: 100%; height: 100%;
-            object-fit: cover; object-position: 54% 47%; }
-  .nf-mark { position: absolute; top: 32px; left: var(--margin);
-             background: var(--ink-90); padding: 10px 16px; line-height: 1.05;
-             text-decoration: none; color: var(--chalk); }
-  .nf-mark b { display: block; font-family: Archivo, sans-serif; font-weight: 800;
-               font-size: 23px; letter-spacing: .01em; }
-  .nf-mark span { display: block; font-size: 10.5px; letter-spacing: .2em; color: var(--chalk-70); }
-  .nf-body { position: absolute; left: var(--margin); bottom: 12vh; max-width: 46ch; }
-  .nf-body h1 { font-family: Archivo, sans-serif; font-weight: 800;
-                font-size: clamp(52px, 7.5vw, 132px); letter-spacing: -.045em;
-                line-height: .90; margin: 0 0 20px; }
-  .nf-links { display: flex; gap: 10px; flex-wrap: wrap; }
-  .nf-links a { background: var(--ink-90); color: var(--chalk); padding: 12px 18px;
-                text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
-  .nf-links a:hover { background: var(--chalk); color: var(--ink); }
+  /* The site's own hero, reused: same tokens, same scrim, same buttons. The
+     previous version of this file styled itself against tokens that no longer
+     exist, so it rendered with no colour at all. Nothing is redefined here
+     that styles/site.css already defines. */
+  .hero { min-height: 100svh; min-height: 100vh; }
+  /* The scrim is bottom-weighted, so the top of the frame is bright sky and the
+     reversed mark in the logo disappears into a cloud. The plaque fixes that
+     wherever the photograph happens to be light. */
+  .nf-mark {
+    position: absolute; z-index: 2; top: clamp(20px, 4vw, 36px); left: var(--margin);
+    display: inline-flex; padding: 12px 16px; border-radius: var(--r);
+    background: rgba(15, 18, 17, .82); backdrop-filter: blur(6px);
+  }
+  .nf-mark img { width: auto; height: 46px; }
+  .nf-code { font-size: var(--t-small); font-weight: 500; color: var(--fg-on-dark-muted);
+             letter-spacing: .14em; text-transform: uppercase; margin-bottom: 16px; }
 </style>
 </head>
 <body>
-<div class="nf">
-  <img src="/assets/img/portal-frame-1320.webp"
+<section class="hero">
+  <img class="hero-img" src="/assets/img/portal-frame-1320.webp"
        srcset="/assets/img/portal-frame-720.webp 720w, /assets/img/portal-frame-1100.webp 1100w, /assets/img/portal-frame-1320.webp 1320w"
        sizes="100vw" width="1320" height="888" decoding="async"
        alt="A steel portal frame under erection on open ground, with a mobile crane working inside the frame.">
-  <a class="nf-mark" href="/"><b>KINGSON</b><span>ENGINEERING</span></a>
-  <div class="nf-body">
-    <h1>That page<br>isn&rsquo;t here.</h1>
-    <div class="nf-links">
-      <a href="/">The work</a>
-      <a href="/#enquiry">Start an enquiry</a>
+  <a class="nf-mark" href="/" aria-label="Kingson Engineering, home">
+    <img src="/assets/brand/kingson-logo-reverse-560.png"
+         srcset="/assets/brand/kingson-logo-reverse-320.png 320w, /assets/brand/kingson-logo-reverse-560.png 560w"
+         sizes="152px" width="560" height="229"
+         alt="Kingson Engineering — Steelwork Specialists" decoding="async">
+  </a>
+  <div class="hero-in"><div class="hero-body">
+    <p class="nf-code">Error 404</p>
+    <h1 class="display hero-title">That page isn&rsquo;t here.</h1>
+    <p class="hero-lede">The rest of the site is. What we make, the confirmed
+      specifications, and the form that sends us your brief are all one page away.</p>
+    <div class="hero-act">
+      <a class="btn" href="/#enquiry"><span>Get a price</span></a>
+      <a class="btn-ghost" href="/#services"><span>What we do</span></a>
+      <a class="btn-ghost" href="/#contact"><span>Contact</span></a>
     </div>
-  </div>
-</div>
+  </div></div>
+</section>
 </body>
 </html>

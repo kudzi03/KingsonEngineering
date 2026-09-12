@@ -1,5 +1,5 @@
 # robots.txt — Kingson Engineering
-# Engineering & fabrication, Zimbabwe
+# Steelwork specialists — Tynwald Industries, Harare, Zimbabwe
 
 User-agent: *
 Allow: /

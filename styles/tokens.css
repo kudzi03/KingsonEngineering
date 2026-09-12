@@ -2,15 +2,14 @@
    styles/tokens.css — the design system
    ═══════════════════════════════════════════════════════════════════════════
 
-   Values taken from the reference build the owner supplied
+   Structure from the reference build the owner supplied
    (pastel-pixie-lab.lovable.app): a light Tailwind/shadcn theme — white page,
    near-black text, soft grey cards, 1rem corners, pill buttons, and a dark
    hero and footer bookending the light body.
 
-   The accent is the one departure. The reference uses a flat red; this uses
-   the oxide already in Kingson's palette, warmed to the same confidence. It
-   is hot-steel colour, it belongs to this business, and it clears 4.5:1 on
-   white for its own text.
+   Colour from Kingson's own logo. The reference's flat red is replaced by the
+   red in the wordmark and the green in the tagline, both sampled from the
+   supplied artwork.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -32,16 +31,42 @@
   --line-strong: #d4d4d8;
   --line-dark:   #27272a;
 
-  /* ── accent ─────────────────────────────────────────────────────────── */
-  --accent:       #B4442A;   /* 5.1:1 on white                              */
-  --accent-hover: #97371F;
-  --accent-soft:  #FBEDE9;
-  --accent-on:    #ffffff;
+  /* ── brand ──────────────────────────────────────────────────────────────
+     Measured off the logo artwork Kingson supplied, not invented. The red is
+     a fortunate mid-tone: it clears 4.72:1 both as text on white and as the
+     ground under white text, so the actual brand colour can carry the buttons
+     instead of an approximation of it. The darker step is for small text,
+     where more headroom is worth having.
+     Green is the tagline colour and stays a secondary signal — it marks what
+     Kingson has confirmed, and nothing else. */
+  --red:       #E21E25;   /* brand · buttons, the mark          4.72:1 both ways */
+  --red-ink:   #C4181E;   /* small text and links               6.01:1 on white  */
+  --red-hover: #B8161C;
+  --red-soft:  #FDEAEA;
+  --red-on:    #ffffff;
 
-  /* the three dots the reference uses beside its eyebrows */
-  --dot-a: #2563eb;
-  --dot-b: #059669;
-  --dot-c: #7c3aed;
+  /* The brand red is 3.57:1 on the dark card — fine for a 46px figure, not for
+     a 12px label. This is the same hue and saturation lifted in lightness until
+     it clears 4.5:1 on both dark grounds. Measured, not eyeballed. */
+  --red-on-dark: #E84D52; /* red as small text on dark      4.50:1 on #1a1e1c   */
+
+  --green:     #039647;   /* brand tagline                                      */
+  --green-ink: #02803C;   /* green as text                      5.05:1 on white  */
+  --green-soft:#E8F5EC;
+
+  --mark:      #2B2A28;   /* the drawn mark in the logo                          */
+
+  /* kept as aliases so component CSS reads by role, not by colour */
+  --accent:       var(--red);
+  --accent-hover: var(--red-hover);
+  --accent-ink:   var(--red-ink);
+  --accent-soft:  var(--red-soft);
+  --accent-on:    var(--red-on);
+  --accent-on-dark: var(--red-on-dark);
+
+  /* the eyebrow dots */
+  --dot-a: var(--red);
+  --dot-b: var(--green);
 
   /* ── shape ──────────────────────────────────────────────────────────── */
   --r-sm: .5rem;

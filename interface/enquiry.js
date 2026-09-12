@@ -2,112 +2,89 @@
    interface/enquiry.js — a truthful local composer
    ═══════════════════════════════════════════════════════════════════════════
 
-   V2 §10 Scene 8 and §15.
+   Nothing here sends anything. The form validates locally, composes the
+   message an estimator would want to receive, and hands it to an app the
+   visitor already has. There is no upload, no persistence, no "sent", no
+   ticket number.
 
-   Nothing here sends anything. The form validates locally, composes a message,
-   and offers to hand it to an app the visitor already has. There is no upload,
-   no persistence, no "sent", no ticket number and no response-time claim.
-
-   File contents are never read, encoded or transmitted — only the names are
-   listed, so the message can say which drawings the visitor means to attach.
+   There is deliberately no file input. A static page cannot upload a drawing,
+   and a picker that only collects filenames reads like an upload to the person
+   using it. The form says which formats to attach to the message instead.
 
    RECIPIENT GATING: the handoff buttons exist only when company.js reports a
-   verified recipient. Until Kingson confirms where enquiries should go, the
-   honest state is Copy enquiry plus a plain explanation — not a dead Submit.
+   verified recipient. If that ever stops being true, the honest state is
+   "copy your enquiry" plus a plain explanation — not a dead Send button.
+
+   When the enquiry pipeline in ARCHITECTURE.md is built, this module gains one
+   more action — POST to /api/enquiry — and the WhatsApp and mail handoffs stay
+   exactly as they are. It does not gain a fake one in the meantime.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { ENQUIRY } from '../content/copy.js';
 import { hasVerifiedRecipient, recipients } from '../content/company.js';
 
-const MAX_FILES = 12;   // a readability limit, not an upload allowance
+/* Field id → the label the composed message uses. Order is the message's
+   order, which is the order an estimator reads in. */
+const LINES = [
+  ['name',        'Name'],
+  ['company',     'Company'],
+  ['contact',     'Phone or email'],
+  ['service',     'Needs'],
+  ['location',    'Site'],
+  ['drawings',    'Drawings']
+];
+
+const REQUIRED = ['name', 'contact', 'service'];
 
 export function mountEnquiry() {
   const form = document.querySelector('[data-form]');
   if (!form) return;
 
   const summary = form.querySelector('[data-error-summary]');
-  const fileInput = form.querySelector('#f-files');
-  const fileList = form.querySelector('[data-files-list]');
-  const disclosure = form.querySelector('[data-disclosure]');
-  const more = form.querySelector('[data-more]');
   const draft = document.querySelector('[data-draft]');
   const draftBody = draft.querySelector('[data-draft-body]');
   const draftActions = draft.querySelector('[data-draft-actions]');
   const draftStatus = draft.querySelector('[data-draft-status]');
 
-  /* In-memory only, for this page session. No localStorage of personal data. */
-  let files = [];
+  const field = (id) => form.querySelector('#f-' + id);
+  const val = (id) => (field(id)?.value || '').trim();
 
-  disclosure.addEventListener('click', () => {
-    const open = disclosure.getAttribute('aria-expanded') === 'true';
-    disclosure.setAttribute('aria-expanded', String(!open));
-    more.hidden = open;
+  /* Clear a field's error the moment the visitor fixes it, rather than making
+     them submit again to find out. */
+  REQUIRED.forEach((id) => {
+    const el = field(id);
+    if (!el) return;
+    const ev = el.tagName === 'SELECT' ? 'change' : 'input';
+    el.addEventListener(ev, () => { if (el.value.trim()) setError(id, null); });
   });
-
-  fileInput.addEventListener('change', () => {
-    Array.from(fileInput.files).forEach((f) => {
-      if (files.length >= MAX_FILES) return;
-      if (files.some((x) => x.name === f.name && x.size === f.size)) return;
-      files.push(f);
-    });
-    fileInput.value = '';
-    renderFiles();
-  });
-
-  function renderFiles() {
-    fileList.innerHTML = '';
-    files.forEach((f, i) => {
-      const li = document.createElement('li');
-      const name = document.createElement('span');
-      name.textContent = `${f.name} · ${Math.max(1, Math.round(f.size / 1024))} KB`;
-      const rm = document.createElement('button');
-      rm.type = 'button';
-      rm.textContent = ENQUIRY.files.remove;
-      rm.setAttribute('aria-label', `${ENQUIRY.files.remove} ${f.name}`);
-      rm.addEventListener('click', () => { files.splice(i, 1); renderFiles(); });
-      li.append(name, rm);
-      fileList.appendChild(li);
-    });
-  }
-
-  const val = (id) => (form.querySelector('#' + id)?.value || '').trim();
 
   function setError(id, message) {
-    const input = form.querySelector('#' + id);
-    const out = form.querySelector(`[data-error-for="${id}"]`);
+    const input = field(id);
+    const out = form.querySelector(`[data-error-for="f-${id}"]`);
     if (!input || !out) return;
     if (message) {
       input.setAttribute('aria-invalid', 'true');
-      input.setAttribute('aria-describedby', out.id || (out.id = id + '-err'));
-      out.textContent = message; out.hidden = false;
+      input.setAttribute('aria-describedby', out.id || (out.id = `f-${id}-err`));
+      out.textContent = message;
+      out.hidden = false;
     } else {
       input.removeAttribute('aria-invalid');
-      out.textContent = ''; out.hidden = true;
+      out.textContent = '';
+      out.hidden = true;
     }
   }
 
   function payload() {
-    return {
-      name: val('f-name'), contact: val('f-contact'), scope: val('f-scope'),
-      description: val('f-description'), location: val('f-location'),
-      timing: val('f-timing'),
-      attachments: files.map((f) => f.name)
-    };
+    const p = {};
+    for (const [id] of LINES) p[id] = val(id);
+    p.description = val('description');
+    return p;
   }
 
   function compose(p) {
     const L = ['Kingson Engineering — enquiry', ''];
-    const line = (k, v) => { if (v) L.push(`${k}: ${v}`); };
-    line('Name', p.name);
-    line('Email or phone', p.contact);
-    line('Requirement', p.scope);
-    line('Location', p.location);
-    line('Timing', p.timing);
+    for (const [id, key] of LINES) if (p[id]) L.push(`${key}: ${p[id]}`);
     if (p.description) L.push('', p.description);
-    if (p.attachments.length) {
-      L.push('', `Reference files to attach (${p.attachments.length}):`);
-      p.attachments.forEach((n) => L.push(`  ${n}`));
-    }
     return L.join('\n');
   }
 
@@ -115,19 +92,19 @@ export function mountEnquiry() {
     e.preventDefault();
     const p = payload();
 
-    const errors = [];
-    if (!p.name) { setError('f-name', ENQUIRY.errors.name); errors.push('f-name'); }
-    else setError('f-name', null);
-    if (!p.contact) { setError('f-contact', ENQUIRY.errors.contact); errors.push('f-contact'); }
-    else setError('f-contact', null);
-    if (!p.scope) { setError('f-scope', ENQUIRY.errors.scope); errors.push('f-scope'); }
-    else setError('f-scope', null);
+    const missing = [];
+    for (const id of REQUIRED) {
+      if (p[id]) setError(id, null);
+      else { setError(id, ENQUIRY.errors[id]); missing.push(id); }
+    }
 
-    if (errors.length) {
-      /* Every entered value is preserved; the summary takes focus. */
+    if (missing.length) {
+      /* Every entered value is preserved. The summary takes focus so a screen
+         reader announces the problem, and the first bad field is scrolled to. */
       summary.textContent = ENQUIRY.errors.summary;
       summary.hidden = false;
       summary.focus();
+      field(missing[0])?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       draft.dataset.open = 'false';
       return;
     }
@@ -140,28 +117,36 @@ export function mountEnquiry() {
     draft.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 
+  /* Kingson gave a second address for drawings and technical detail. If the
+     visitor says they have a CAD file, the mail handoff goes there. */
+  const drawingsAttached = (p) => /^Yes/i.test(p.drawings || '');
+
   function buildActions(message, p) {
     draftActions.innerHTML = '';
     draftStatus.textContent = '';
 
-    /* Order matters. WhatsApp first because it is the channel most customers
-       here already have open, then email, then copy for anyone who wants
-       neither. Nothing is sent from this page: each of these hands the message
-       to an app the visitor already has, and the wording says so. */
+    /* Order matters. WhatsApp first, because it is the channel most customers
+       here already have open; then mail; then copy, for anyone who wants
+       neither. Each of these hands the message to an app the visitor already
+       has, and the wording says so. */
     if (hasVerifiedRecipient()) {
       const r = recipients();
       if (r.whatsapp) {
         const url = `https://wa.me/${r.whatsapp}?text=${encodeURIComponent(message)}`;
+        /* Long URLs are silently truncated by some WhatsApp clients, which
+           would deliver half an enquiry. Below the limit or not at all. */
         if (url.length < 1800) draftActions.appendChild(link(ENQUIRY.actions.whatsapp, url, true));
       }
       if (r.email) {
-        const subject = `Enquiry — ${p.scope || p.name}`;
-        const href = `mailto:${r.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+        const subject = `Enquiry — ${p.service || p.name}`;
+        const to = drawingsAttached(p) && r.emailTechnical ? r.emailTechnical : r.email;
+        const href = `mailto:${to}?subject=${encodeURIComponent(subject)}` +
+                     `&body=${encodeURIComponent(message)}`;
         draftActions.appendChild(link(ENQUIRY.actions.email, href));
       }
     }
 
-    draftActions.appendChild(button(ENQUIRY.actions.copy, 'btn-ghost', async () => {
+    draftActions.appendChild(button(ENQUIRY.actions.copy, async () => {
       try { await navigator.clipboard.writeText(message); }
       catch { fallbackCopy(message); }
       draftStatus.textContent = ENQUIRY.copied;   // copied — not sent
@@ -170,20 +155,20 @@ export function mountEnquiry() {
     if (!hasVerifiedRecipient()) {
       const gate = document.createElement('p');
       gate.className = 'draft-gate';
-      gate.textContent = ENQUIRY.noRecipient
-        || 'Contact details are being confirmed. Copy your enquiry and send it once they are published.';
+      gate.textContent = ENQUIRY.noRecipient;
       draftActions.appendChild(gate);
     }
 
-    draftActions.appendChild(button(ENQUIRY.edit, 'btn-ghost', () => {
+    draftActions.appendChild(button(ENQUIRY.edit, () => {
       draft.dataset.open = 'false';
-      form.querySelector('#f-name').focus();
+      field('name')?.focus();
     }));
   }
 
-  function button(label, cls, fn) {
+  function button(label, fn) {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = cls === 'btn' ? 'btn' : 'btn-ghost';
+    b.type = 'button';
+    b.className = 'btn-ghost';
     b.textContent = label;
     b.addEventListener('click', fn);
     return b;
@@ -191,7 +176,9 @@ export function mountEnquiry() {
 
   function link(label, href, external) {
     const a = document.createElement('a');
-    a.className = 'btn'; a.href = href; a.textContent = label;
+    a.className = 'btn';
+    a.href = href;
+    a.textContent = label;
     if (external) { a.target = '_blank'; a.rel = 'noopener'; }
     a.addEventListener('click', () => { draftStatus.textContent = ENQUIRY.handedOff; });
     return a;
@@ -199,9 +186,11 @@ export function mountEnquiry() {
 
   function fallbackCopy(text) {
     const ta = document.createElement('textarea');
-    ta.value = text; ta.setAttribute('readonly', '');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
     ta.style.cssText = 'position:fixed;top:-1000px';
-    document.body.appendChild(ta); ta.select();
+    document.body.appendChild(ta);
+    ta.select();
     try { document.execCommand('copy'); } catch { /* nothing to claim */ }
     document.body.removeChild(ta);
   }

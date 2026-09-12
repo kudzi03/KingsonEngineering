@@ -1,18 +1,21 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   content/assets.js — source identities, crop anchors, alt text, status
+   content/assets.js — the photographs, described
    ═══════════════════════════════════════════════════════════════════════════
 
-   The V2 asset map (§5) expressed as data. Focal anchors are normalised source
-   coordinates: the point the cover transform keeps in frame when the viewport
-   ratio does not match the photograph's.
+   Nine photographs. Every one was supplied by Kingson and shows Kingson's own
+   workshop, plant or site work. `focal` is a normalised source coordinate: the
+   point a `cover` crop keeps in frame when the container's ratio does not
+   match the photograph's.
 
-   `alt` describes what is visible. It never asserts ownership, a client, a
-   project or a capability — §15 forbids turning a photograph into a claim.
+   `alt` describes what is visible and nothing else. It never names a client,
+   a project, a capability or a capacity — a photograph is evidence of itself,
+   not of a claim. Where a machine's own badge is legible in the frame, the alt
+   text says so, because that is what the picture shows.
 
-   Two photographs in the repository are deliberately absent from the homepage:
-   `structure.jpeg` and `crane.jpeg` are stock-style collages, and the second
-   has a filename that invites confusion with `craneyard.jpeg`. `nesting.jpeg`
-   is absent because a monitor does not evidence a customer approval process.
+   Two files in the repository are deliberately absent from this map:
+   `structure.jpeg` and `crane.jpeg` are stock-style collages, not Kingson's
+   work, and publishing them as Kingson's would be the exact thing
+   SOURCE_OF_TRUTH.md §H rules out.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 const V = (slug, widths) => widths.map((w) => `assets/img/${slug}-${w}.webp ${w}w`).join(', ');
@@ -20,7 +23,7 @@ const V = (slug, widths) => widths.map((w) => `assets/img/${slug}-${w}.webp ${w}
 export const ASSETS = {
   portalFrame: {
     slug: 'portal-frame', w: 1320, h: 888, widths: [440, 720, 1100, 1320],
-    focal: [0.54, 0.4705],
+    focal: [0.54, 0.47],
     alt: 'A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.',
     status: 'observed_photo'
   },
@@ -38,7 +41,9 @@ export const ASSETS = {
   },
   cuttingHead: {
     slug: 'cutting-head', w: 1350, h: 1800, widths: [440, 720, 1100, 1350],
-    focal: [0.64, 0.63],
+    /* A wide crop centred lower than this loses the head itself and shows
+       only bare plate and slats. Measured against the 16:9 service card. */
+    focal: [0.60, 0.45],
     alt: 'The cutting head of a fiber laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it.',
     status: 'observed_photo'
   },
@@ -48,24 +53,29 @@ export const ASSETS = {
     alt: 'A fiber laser cutting machine in a workshop, with a brick pier, yellow sheeting and a control screen beside the bed.',
     status: 'observed_photo'
   },
-  crane: {
-    slug: 'crane', w: 1320, h: 1757, widths: [440, 720, 1100, 1320],
-    /* The portrait source is the reason Scene 5 is a dual-scale composition.
-       `window` trims the empty upper sky so the body and boom carry the frame;
-       `detail` is the larger crop of the SAME photograph used on the right. */
-    focal: [0.50, 0.6038],
-    window: [0, 0.2214, 1, 1],
-    detail: { focal: [0.62, 0.5233], zoom: 1.85 },
-    alt: 'A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.',
+  laserFloor: {
+    slug: 'laser-floor', w: 1350, h: 1800, widths: [440, 720, 1100, 1350],
+    focal: [0.45, 0.52],
+    alt: 'The whole fiber laser on the workshop floor, badged DXTECH LASER: enclosed bed with cutting slats, cable chain along the side, swing-arm control screen and an extraction duct, with a brick pier and timber pallets beside it.',
     status: 'observed_photo'
   },
-
-  /* Archive only: reachable from the image viewer, never a scene of its own. */
+  nestingStation: {
+    slug: 'nesting-station', w: 1350, h: 1800, widths: [440, 720, 1100, 1350],
+    focal: [0.45, 0.48],
+    alt: 'The laser control station: an upright monitor showing a nested cutting path on screen, keyboard, mouse and emergency stop on the machine shelf, with the slatted bed and the DXTECH cutting head behind it.',
+    status: 'observed_photo'
+  },
   gantry: {
     slug: 'gantry', w: 1350, h: 1794, widths: [440, 720, 1100, 1350],
-    focal: [0.50, 0.50],
-    alt: 'The gantry and cable chain of a fiber laser travelling over the machine bed, with a brick workshop wall behind.',
-    status: 'observed_photo', archiveOnly: true
+    focal: [0.46, 0.55],
+    alt: 'The laser gantry carriage seen side-on, cable chain arching over it, travelling above a slatted bed loaded with steel plate, with a brick wall and workshop sheeting behind.',
+    status: 'observed_photo'
+  },
+  crane: {
+    slug: 'crane', w: 1320, h: 1757, widths: [440, 720, 1100, 1320],
+    focal: [0.50, 0.60],
+    alt: 'A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.',
+    status: 'observed_photo'
   }
 };
 
@@ -74,7 +84,7 @@ export function srcset(key) {
   return V(a.slug, a.widths);
 }
 
-/** Largest variant — the default `src` and the image-viewer original. */
+/** The variant at or just above `width`; the largest when no width is given. */
 export function src(key, width) {
   const a = ASSETS[key];
   const w = width
@@ -88,8 +98,24 @@ export function ratio(key) {
   return a.w / a.h;
 }
 
-/* Which photographs the page needs at all, in the order the scroll reaches
-   them. loading.js walks this to decode one scene ahead. */
-export const SEQUENCE = [
-  'portalFrame', 'roofTrusses', 'roofFrame', 'cuttingHead', 'laserMachine', 'crane'
+/** `object-position` for a cover crop, from the focal anchor. */
+export function position(key) {
+  const [x, y] = ASSETS[key].focal;
+  return `${(x * 100).toFixed(1)}% ${(y * 100).toFixed(1)}%`;
+}
+
+/* The gallery, in the order it reads: site work, then the workshop, then the
+   crane. The first tile spans two columns — it is the strongest photograph and
+   a uniform grid of eight equal squares reads like a template.
+
+   `roofFrame` is absent on purpose: it is the wide photograph carrying the
+   full-width band above the specifications, so every photograph Kingson
+   supplied appears exactly once on the page. */
+export const GALLERY = [
+  'portalFrame', 'roofTrusses',
+  'laserFloor', 'cuttingHead', 'nestingStation',
+  'gantry', 'laserMachine', 'crane'
 ];
+
+/** The one wide photograph, used full-bleed rather than as a tile. */
+export const BAND_IMAGE = 'roofFrame';
