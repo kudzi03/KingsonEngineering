@@ -16,13 +16,16 @@
 
 .wrap { max-width: var(--page); margin: 0 auto; padding: 0 var(--margin); }
 
-section { padding: clamp(60px, 7.5vw, 112px) 0; }
+section { padding: clamp(56px, 6.4vw, 96px) 0; }
 .sec-alt  { background: var(--bg-soft); }
 .sec-dark { background: var(--bg-dark); color: var(--fg-on-dark); }
 
 .sec-head { text-align: center; max-width: 700px; margin: 0 auto clamp(38px, 4.6vw, 64px); }
 .eyebrow {
-  display: inline-flex; align-items: center; gap: 9px;
+  /* `align-self: start` because an inline-flex element is blockified when it
+     becomes a flex item, and in the workshop's flex column it stretched to
+     476px — leaving its trailing dot sitting in the middle of the block. */
+  display: inline-flex; align-self: start; align-items: center; gap: 9px;
   font-size: var(--t-small); font-weight: 500; color: var(--fg-faint);
   margin-bottom: 16px; text-transform: none;
 }
@@ -102,8 +105,45 @@ section { padding: clamp(60px, 7.5vw, 112px) 0; }
     rgba(10, 12, 11, .95) 0%,  rgba(10, 12, 11, .92) 26%, rgba(10, 12, 11, .84) 48%,
     rgba(10, 12, 11, .58) 68%, rgba(10, 12, 11, .20) 85%, rgba(10, 12, 11, 0) 100%);
 }
+/* The assembly canvas sits over the photograph and under every word of the
+   hero. It removes itself when it has finished. */
+.hero-assembly {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%; pointer-events: none;
+}
+/* The scrim is at FULL strength by default, so the hero copy keeps its
+   contrast with JavaScript off, broken, or still loading. It is dimmed only
+   while the canvas is actually erecting steel and painting its own dark
+   ground, and restored the moment that hands over. Enhancement removes the
+   scrim for a beat; it never depends on script to put it there. */
+.hero::after { transition: opacity 900ms var(--ease); }
+/* Not near-zero. The scrim is bottom-weighted, so most of its weight sits
+   exactly where the copy sits; the steel is brightest up top where there is no
+   text. At .2 the hero lede measured 2.22:1 over lit steel. This is the value
+   that keeps every hero string above AA while the steel still reads — see the
+   pixel probe in the commit that introduced it. */
+.hero.hero-erecting::after { opacity: .62; }
+
+/* A local dark field under the copy, active only while the steel is erecting.
+   Measured: over the brightest lit flange the hero lede came out at 3.32:1
+   with the global scrim alone. Dulling the WHOLE frame to fix that would
+   throw away the thing the scene exists for, so the protection is local —
+   strong at the lower left where every hero string sits, gone by mid-frame
+   where the steel wants to be bright. 0.25 is the alpha the probe says clears
+   AA with headroom; the gradient carries more than that at the corner. */
+.hero-plate {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  opacity: 0; transition: opacity 700ms var(--ease);
+  background:
+    linear-gradient(to top, rgba(10, 12, 11, .62) 0%, rgba(10, 12, 11, .34) 34%,
+                    rgba(10, 12, 11, 0) 62%),
+    linear-gradient(to right, rgba(10, 12, 11, .55) 0%, rgba(10, 12, 11, .22) 42%,
+                    rgba(10, 12, 11, 0) 68%);
+}
+.hero.hero-erecting .hero-plate { opacity: 1; }
+
 .hero-in {
-  position: relative; z-index: 1; width: 100%;
+  position: relative; z-index: 3; width: 100%;
   max-width: var(--page); margin: 0 auto;
   padding: clamp(72px, 9vw, 120px) var(--margin) clamp(44px, 5.5vw, 68px);
 }
@@ -139,95 +179,264 @@ section { padding: clamp(60px, 7.5vw, 112px) 0; }
            color: var(--accent-on-dark); font-weight: 600; }
 .strip-v { font-size: 15px; color: var(--fg-on-dark); line-height: 1.45; }
 
-/* ── what we make ───────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   CAPABILITY CHAPTERS
+   ═══════════════════════════════════════════════════════════════════════════
+   Five compositions, deliberately NOT one template. The card grid this
+   replaced gave a full-bleed structure photograph, a pair of to-scale
+   drawings and a 25-tonne crane the same 340px box, and the page read as a
+   catalogue. Each chapter below decides its own ground, its own media and its
+   own proportions.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-.svc-list { display: grid; gap: 22px; grid-template-columns: repeat(3, 1fr); }
-.svc-item {
-  display: flex; flex-direction: column;
-  background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg);
-  overflow: hidden; box-shadow: var(--shadow-sm);
-  transition: box-shadow 180ms var(--ease), transform 180ms var(--ease);
-}
-.svc-item:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-.svc-media { height: clamp(180px, 16vw, 216px); background: var(--bg-soft); }
-.svc-media img { width: 100%; height: 100%; object-fit: cover; }
-.svc-body { padding: 24px 26px 26px; display: flex; flex-direction: column; flex: 1; }
-.svc-body h3 { font-family: Archivo, sans-serif; font-weight: 700;
-               font-size: var(--t-h3); letter-spacing: -.012em; margin-bottom: 10px; }
-.svc-lede { color: var(--fg-muted); margin-bottom: 18px; }
+.ch { position: relative; overflow: hidden; }
+.ch-light { background: var(--bg); --plate-cover: var(--bg); }
+.ch-dark  { background: var(--bg-dark); color: var(--fg-on-dark);
+            --plate-cover: var(--bg-dark); }
 
-/* The confirmed figures for each service, tight enough to scan. */
-.svc-facts { display: grid; gap: 0; margin-bottom: 18px; }
-.svc-facts > div {
-  display: flex; justify-content: space-between; gap: 16px;
-  padding: 8px 0; border-top: 1px solid var(--line);
-  font-size: var(--t-small);
+/* The chapter mark: a number, a rule, and one word. Same object every time,
+   so the sequence is legible even though the compositions differ. */
+.ch-mark {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 22px;
+  font-size: var(--t-small); font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase;
 }
-.svc-facts dt { color: var(--fg-faint); }
-.svc-facts dd { color: var(--fg); font-weight: 500; text-align: right; }
+.ch-n { color: var(--accent); font-variant-numeric: tabular-nums; }
+.ch-dark .ch-n { color: var(--accent-on-dark); }
+.ch-name { color: var(--fg-faint); }
+.ch-dark .ch-name { color: var(--fg-on-dark-muted); }
+.ch-mark::after {
+  content: ""; flex: 1; height: 1px; background: var(--line);
+}
+.ch-dark .ch-mark::after { background: var(--line-dark); }
 
-/* The line that tells you what to send. It is an instruction, not an error,
-   so it is set in the body ink with a red marker rather than in red text. */
-.svc-ask {
-  margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line);
-  font-size: var(--t-small); color: var(--fg); font-weight: 500;
-  display: flex; gap: 9px;
-}
-.svc-ask::before {
-  content: ""; flex: none; width: 3px; margin-top: 3px; border-radius: var(--pill);
-  background: var(--accent); align-self: stretch;
-}
+.ch-copy { max-width: 44ch; }
+.ch-title { font-size: var(--t-h2); margin-bottom: 18px; }
+.ch-lede { font-size: var(--t-lede); color: var(--fg-muted); margin-bottom: 28px; }
+.ch-dark .ch-lede { color: var(--fg-on-dark-muted); }
 
-/* The two services Kingson supplied no photograph of. Instead of a borrowed
-   picture they get the one confirmed figure a buyer of that work asks about,
-   set at the size the photograph would have occupied — so the card is the same
-   height as its neighbours and the absence reads as a decision. */
-.svc-plain { background: var(--accent-soft); border-color: rgba(226, 30, 37, .22); }
-.svc-plate {
-  display: flex; flex-direction: column; align-items: flex-start;
-  justify-content: center; gap: 4px; padding: 0 26px;
-  background: var(--accent-soft);
-  border-bottom: 1px solid rgba(226, 30, 37, .22);
+/* ── the large figure ─────────────────────────────────────────────────────────
+   Only where the capability earned one. Tabular numerals so a tolerance does
+   not wobble, and the unit set smaller than the number it qualifies. */
+.ch-big {
+  font-family: Archivo, sans-serif; font-weight: 700;
+  font-size: clamp(52px, 7.6vw, 116px); line-height: .92;
+  letter-spacing: -.04em; font-variant-numeric: tabular-nums;
+  color: var(--accent); margin-bottom: 10px;
 }
-.svc-plate b {
-  font-family: Archivo, sans-serif; font-weight: 700; color: var(--accent);
-  font-size: clamp(34px, 3.4vw, 46px); letter-spacing: -.03em; line-height: 1;
+.ch-dark .ch-big { color: var(--accent-on-dark); }
+.ch-big b { font-weight: 700; font-size: .48em; letter-spacing: -.01em; }
+.ch-big-label {
+  font-size: var(--t-small); color: var(--fg-faint); margin-bottom: 28px;
+}
+.ch-dark .ch-big-label { color: var(--fg-on-dark-muted); }
+
+/* ── the figures rail ─────────────────────────────────────────────────────── */
+.ch-figures { display: grid; margin-bottom: 26px; }
+.ch-figures > div {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 20px; padding: 11px 0; border-top: 1px solid var(--line);
+  font-size: var(--t-ui);
+}
+.ch-dark .ch-figures > div { border-top-color: var(--line-dark); }
+.ch-figures dt { color: var(--fg-muted); }
+.ch-dark .ch-figures dt { color: var(--fg-on-dark-muted); }
+.ch-figures dd { font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
+
+.ch-ask {
+  display: flex; gap: 11px; font-size: var(--t-ui); font-weight: 500;
+  padding-top: 18px; border-top: 1px solid var(--line);
+}
+.ch-dark .ch-ask { border-top-color: var(--line-dark); }
+.ch-ask::before {
+  content: ""; flex: none; width: 3px; align-self: stretch; margin-top: 3px;
+  border-radius: var(--pill); background: var(--accent);
+}
+.ch-dark .ch-ask::before { background: var(--accent-on-dark); }
+
+/* ── 01 · full bleed ────────────────────────────────────────────────────────── */
+
+.ch-bleed { display: flex; align-items: flex-end; min-height: min(92vh, 860px); padding: 0; }
+.ch-bleed-img { position: absolute; inset: 0; }
+.ch-bleed-img img { width: 100%; height: 100%; object-fit: cover; }
+/* One gradient, weighted to the lower left where the copy is. Two stacked
+   gradients multiplied out to near-opaque and buried the photograph — which is
+   the opposite of the point of a full-bleed chapter. */
+/* Two layers with different jobs. The horizontal one is a masthead field
+   bleeding off the left edge — dense where the copy is, gone by mid-frame, so
+   the photograph keeps its brightness across most of the viewport. The
+   vertical one only grounds the bottom edge. Measured against the rendered
+   pixels: the roof in this photograph runs to rgb(255,255,253) in the
+   rooflights, and white copy needs the field to be genuinely opaque. */
+/* Only a light grounding at the bottom edge. The copy no longer relies on
+   this: two passes of scrim-strengthening both failed the pixel probe, because
+   this photograph is a white-painted roof with rooflights in it and runs to
+   rgb(255,255,253). A scrim heavy enough to carry white type over that is
+   heavy enough to destroy the photograph — so the type gets its own field
+   instead, and the picture is left bright. */
+.ch-bleed::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(8, 10, 9, .55) 0%,
+                              rgba(8, 10, 9, .14) 34%, rgba(8, 10, 9, 0) 62%);
+}
+.ch-over { position: relative; z-index: 1; padding-block: clamp(56px, 7vw, 96px); }
+
+/* A masthead block, not a card: it runs off the left edge of the viewport and
+   its text still lines up with the page gutter, so it reads as architecture
+   sitting on the photograph rather than a panel floating over it. */
+/* The width has to allow for the breakout padding, which is ~184px at 1440.
+   `width: 56ch` measured the whole box, so the text column came out at about
+   264px and the heading broke over four lines. */
+.ch-bleed .ch-copy {
+  max-width: none; width: min(100%, 860px);
+  background: rgba(8, 10, 9, .93);
+  margin-left: calc(50% - 50vw);
+  padding: clamp(30px, 3.4vw, 52px) clamp(30px, 3.4vw, 52px)
+           clamp(30px, 3.4vw, 52px) calc(50vw - 50% + var(--margin));
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  border-top: 3px solid var(--accent);
+}
+.ch-bleed .ch-ask { border-bottom: 0; }
+
+/* ── 02 / 04 / 05 · split ───────────────────────────────────────────────────── */
+
+.ch-sections, .ch-folds, .ch-plate { padding: clamp(64px, 8vw, 120px) 0; }
+.ch-split {
+  display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(34px, 5vw, 76px); align-items: center;
+}
+/* The drawings ARE the content of these two chapters, not an illustration
+   beside it, so they get the larger share. */
+.ch-sections .ch-split, .ch-folds .ch-split {
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+}
+.ch-split-wide { grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr); }
+.ch-split .ch-copy { max-width: 46ch; }
+
+/* ── drawn geometry — the engineering-drawing register ─────────────────────── */
+
+.ch-draw { display: grid; gap: clamp(26px, 3.2vw, 44px); }
+.pf-fig { display: grid; gap: 8px; }
+.pf-fig figcaption {
+  font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--fg-faint); font-weight: 600;
+}
+.pf { width: 100%; height: auto; overflow: visible; }
+.pf-line {
+  fill: none; stroke: var(--fg); stroke-width: 6;
+  stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke;
+}
+.ch-dark .pf-line { stroke: var(--fg-on-dark); }
+.pf-datum {
+  fill: none; stroke: var(--line-strong); stroke-width: 1;
+  stroke-dasharray: 14 8; vector-effect: non-scaling-stroke;
+}
+.pf-dim path {
+  fill: none; stroke: var(--accent); stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+.pf-dim text {
+  fill: var(--accent-ink); font-family: Inter, sans-serif; font-size: 24px;
+  font-weight: 500; text-anchor: middle;
   font-variant-numeric: tabular-nums;
 }
-.svc-plate span { font-size: var(--t-small); color: var(--accent-ink); }
-.svc-plain .svc-facts > div,
-.svc-plain .svc-ask { border-top-color: rgba(226, 30, 37, .22); }
-.svc-plain .svc-facts dt { color: var(--accent-ink); }
+.pf-note { font-size: var(--t-small); color: var(--fg-faint); max-width: 52ch; }
 
-/* ── the full-width photograph ──────────────────────────────────────────── */
-
-.band {
-  position: relative; overflow: hidden; padding: 0;
-  min-height: min(62vh, 560px); display: flex; align-items: flex-end;
-  background: var(--bg-dark); color: var(--fg-on-dark);
+.pf-folds {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(18px, 2.6vw, 38px);
+  padding: clamp(22px, 2.6vw, 36px) clamp(20px, 2.4vw, 34px);
+  background: var(--bg-soft); border: 1px solid var(--line);
+  border-radius: var(--r-lg);
 }
-.band-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.band::after {
-  content: ""; position: absolute; inset: 0;
+.ch-folds .pf-folds { background: #fff; }
+.pf-fold { display: grid; gap: 10px; }
+.pf-fold svg { width: 100%; height: auto; min-height: clamp(96px, 11vw, 152px); }
+.pf-fold figcaption {
+  font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--fg-faint); font-weight: 600;
+}
+
+.ch-aside { border-radius: var(--r-lg); overflow: hidden; }
+.ch-aside img { width: 100%; height: clamp(240px, 28vw, 420px); object-fit: cover; }
+/* The drawings are the subject of this chapter; the photograph supports them,
+   so it goes first and the sections read as the detail drawn off it. */
+.ch-draw { grid-auto-flow: row; }
+.ch-sections .ch-draw > .ch-aside { order: -1; }
+
+/* ── 03 · the laser strip ─────────────────────────────────────────────────────
+   Four 3:4 photographs stood upright. A portrait source cropped into a 16:9
+   band shows 41% of its frame; upright and side by side the whole frame is
+   used, and the row reads as a machine bed rather than as four thumbnails. */
+
+.ch-cut { padding: clamp(64px, 8vw, 110px) 0 0; }
+/* The head is a two-column split so the tolerance sits BESIDE the prose
+   rather than under it, where it read as just another paragraph. */
+.ch-cut-head {
+  padding-bottom: clamp(34px, 4vw, 56px);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(30px, 5vw, 72px); align-items: end;
+}
+.ch-cut-data { max-width: 40ch; }
+.ch-cut-data .ch-big { margin-top: -.1em; }
+
+/* Every rule here is scoped to the list, not to the section. */
+.ch-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; padding: 0 clamp(10px, 1.4vw, 18px) clamp(10px, 1.4vw, 18px);
+}
+.ch-strip > li { position: relative; overflow: hidden; border-radius: var(--r); }
+html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
+.ch-strip > li img {
+  width: 100%; height: clamp(360px, 54vh, 640px); object-fit: cover; display: block;
+}
+/* The caption's own field. Probed against the brightest pixels in these
+   photographs — the laser's white casing runs to rgb(255,255,255) — where a
+   scrim needs to hold 0.58 for white 13.5px type to clear AA. The old
+   gradient reached about 0.35 where the glyphs actually sit, so it failed by
+   a wide margin while looking fine. */
+.ch-strip > li span:not(.zoom-cue) {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 16px 13px;
+  font-size: var(--t-small); color: var(--fg-on-dark);
   background: linear-gradient(to top,
-    rgba(10, 12, 11, .93) 0%, rgba(10, 12, 11, .78) 38%,
-    rgba(10, 12, 11, .38) 70%, rgba(10, 12, 11, .05) 100%);
+    rgba(8, 10, 9, .96) 0%, rgba(8, 10, 9, .94) 62%,
+    rgba(8, 10, 9, .62) 84%, rgba(8, 10, 9, 0) 100%);
 }
-.band-in {
-  position: relative; z-index: 1; max-width: var(--page); width: 100%;
-  margin: 0 auto; padding: 0 var(--margin) clamp(44px, 5.5vw, 68px);
+
+/* ── 05 · the crane plate ────────────────────────────────────────────────────
+   The one photograph that has to communicate physical capability. It is a 3:4
+   source, so it is given its full height rather than a letterbox crop. */
+
+.ch-tall { border-radius: var(--r-lg); overflow: hidden; align-self: stretch; }
+.ch-tall img {
+  width: 100%; height: 100%; min-height: clamp(400px, 62vh, 720px);
+  object-fit: cover; display: block;
 }
-.band-in h2 { font-size: var(--t-h2); max-width: 22ch; margin-bottom: 14px; }
-.band-in p { font-size: var(--t-lede); color: var(--fg-on-dark-muted);
-             max-width: 54ch; margin-bottom: 22px; }
-.band-link {
-  display: inline-flex; align-items: center; gap: 9px; min-height: 44px;
-  font-size: var(--t-ui); font-weight: 500; color: var(--fg-on-dark);
-  border-bottom: 1px solid rgba(250, 250, 250, .4);
+
+/* ── the workshop ───────────────────────────────────────────────────────────── */
+
+.ws { padding: 0; }
+.ws .ws-img, .ws .ws-copy { min-width: 0; }
+.ws {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
 }
-.band-link:hover { border-bottom-color: var(--fg-on-dark); }
-.band-link svg { transition: transform 160ms var(--ease); }
-.band-link:hover svg { transform: translateX(3px); }
+.ws-img { overflow: hidden; }
+.ws-img img { width: 100%; height: 100%; min-height: clamp(360px, 58vh, 680px); object-fit: cover; }
+.ws-copy {
+  padding: clamp(48px, 6vw, 92px) clamp(24px, 5vw, 76px);
+  display: flex; flex-direction: column; justify-content: center;
+  max-width: 620px;
+}
+.ws-place {
+  font-family: Archivo, sans-serif; font-weight: 700; line-height: 1.02;
+  font-size: clamp(26px, 3vw, 42px); letter-spacing: -.03em; margin-bottom: 16px;
+}
+.ws-place b { display: block; color: var(--accent); font-weight: 700; }
+.ws-copy h2 { font-size: clamp(26px, 2.6vw, 38px); margin-bottom: 14px; }
+.ws-lede { color: var(--fg-muted); margin-bottom: 26px; }
+.ws-figures { margin-bottom: 26px; }
+.ws-act { display: flex; flex-wrap: wrap; gap: 12px; }
 
 /* ── specifications ─────────────────────────────────────────────────────────
    Native <details>. They work with JavaScript off, and every figure is in the
@@ -266,24 +475,65 @@ section { padding: clamp(60px, 7.5vw, 112px) 0; }
 .spec-rows dd { font-weight: 500; text-align: right;
                 font-variant-numeric: tabular-nums; }
 
-/* ── work (dark) ────────────────────────────────────────────────────────────
-   Eight photographs. The first spans two columns: it is the strongest of them,
-   and eight equal squares read like a stock grid. */
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROOF — site work, at size
+   ═══════════════════════════════════════════════════════════════════════════
+   Three bands, each close to a full viewport. The eight-tile grid this
+   replaced showed the same photographs at 232px, after every one of them had
+   already appeared large in a chapter: length without information.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-.work-grid { display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); }
-.work-wide { grid-column: span 2; }
-.work-grid button {
-  display: block; width: 100%; height: 100%; padding: 0; text-align: left;
-  cursor: pointer; background: var(--bg-dark-2); color: inherit;
-  border: 1px solid var(--line-dark); border-radius: var(--r-lg); overflow: hidden;
-  transition: border-color 180ms var(--ease), transform 180ms var(--ease);
+.pr { padding: clamp(64px, 8vw, 112px) 0 0; }
+.pr-bands { display: grid; }
+.pr-band { position: relative; }
+.pr-band .zoom { height: clamp(340px, 62vh, 700px); }
+.pr-band img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pr-band figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0; pointer-events: none;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px;
+  padding: clamp(44px, 6vw, 84px) var(--margin) clamp(20px, 2.4vw, 34px);
+  background: linear-gradient(to top,
+    rgba(8, 10, 9, .94) 0%, rgba(8, 10, 9, .88) 44%,
+    rgba(8, 10, 9, .5) 74%, rgba(8, 10, 9, 0) 100%);
 }
-.work-grid button:hover { border-color: rgba(250, 250, 250, .42); transform: translateY(-2px); }
-.work-grid img { width: 100%; height: clamp(168px, 17vw, 232px); object-fit: cover; }
-.work-wide img { height: clamp(168px, 17vw, 232px); }
-.work-cap { display: block; padding: 14px 18px 16px; font-size: var(--t-small);
-            color: var(--fg-on-dark-muted); }
-.work-grid button:hover .work-cap { color: var(--fg-on-dark); }
+.pr-band figcaption b {
+  font-family: Archivo, sans-serif; font-weight: 700;
+  font-size: clamp(21px, 2.2vw, 31px); letter-spacing: -.02em;
+  color: var(--fg-on-dark);
+}
+.pr-band figcaption span {
+  font-size: var(--t-ui); color: var(--fg-on-dark-muted);
+}
+/* A hairline between bands so three photographs do not run into one another. */
+.pr-band + .pr-band { border-top: 1px solid var(--line-dark); }
+
+.pr-cases:empty { display: none; }
+.pr-cases { padding-top: clamp(48px, 6vw, 88px); display: grid; gap: 28px; }
+
+/* ── the zoom control ─────────────────────────────────────────────────────────
+   Every photograph on the page is cropped to its composition, so the whole
+   frame has to stay reachable from wherever it appears. A real <button>, so it
+   is focusable and announced; the cue only appears on hover or focus. */
+
+.zoom {
+  display: block; width: 100%; height: 100%; padding: 0; border: 0;
+  background: none; color: inherit; cursor: zoom-in; position: relative;
+  font: inherit; text-align: inherit;
+}
+/* Deliberately NO rules on `.zoom > img`. Each container already states how
+   tall its photograph is, and those rules are descendant selectors that still
+   match through this wrapper. A `height: 100%` here silently beat all of them
+   on equal specificity and collapsed every photograph to its intrinsic size. */
+.zoom-cue {
+  position: absolute; top: 12px; right: 12px; z-index: 4;
+  width: 34px; height: 34px; border-radius: var(--pill);
+  display: grid; place-items: center;
+  background: rgba(8, 10, 9, .72); color: #fff;
+  opacity: 0; transform: scale(.9);
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+}
+.zoom:hover .zoom-cue, .zoom:focus-visible .zoom-cue { opacity: 1; transform: none; }
+@media (hover: none) { .zoom-cue { opacity: .82; transform: none; } }
 
 /* ── how it works ───────────────────────────────────────────────────────────
    Five commitments, so not five equal cards: a rail, read top to bottom, which
@@ -318,7 +568,26 @@ section { padding: clamp(60px, 7.5vw, 112px) 0; }
 }
 .proc-close p { color: var(--fg-muted); flex: 1 1 260px; }
 
-/* ── enquiry ────────────────────────────────────────────────────────────── */
+/* ── enquiry ──────────────────────────────────────────────────────────────────
+   The closing act. The hero opened on a frame being erected; this is the same
+   photograph, dimmed right down, with the form standing on it — so the page
+   ends where it began and the last screen is not a form on flat grey.
+
+   The card itself stays opaque and light. Every input, label, placeholder and
+   error message keeps exactly the contrast it was measured at; nothing about
+   the form's legibility depends on the photograph behind it. */
+
+.enq { position: relative; overflow: hidden; }
+.enq-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 54% 42%; opacity: .3;
+}
+.enq::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(8, 10, 9, .78) 0%,
+                              rgba(8, 10, 9, .58) 45%, rgba(8, 10, 9, .86) 100%);
+}
+.enq > .wrap { position: relative; z-index: 1; }
 
 .enq-card {
   max-width: 860px; margin: 0 auto;
@@ -471,14 +740,52 @@ section { padding: clamp(60px, 7.5vw, 112px) 0; }
 /* ── medium screens ─────────────────────────────────────────────────────── */
 
 @media (max-width: 1100px) {
-  .svc-list { grid-template-columns: repeat(2, 1fr); }
   .strip-in { grid-template-columns: repeat(2, 1fr); }
   .strip-in li:nth-child(3) { border-left: 0; padding-left: 0; }
   .strip-in li:nth-child(-n+2) { border-bottom: 1px solid var(--line-dark); }
 }
 
+/* ── tablet and below: the chapters stack ────────────────────────────────────
+   Deliberate, not a fallback. A two-column chapter at 390px gives the copy a
+   100px column and crushes the drawings; the phone composition is a single
+   column where the PORTRAIT photographs finally get to be full width, which
+   is the format they were shot in. */
+
 @media (max-width: 900px) {
   .hd-nav { gap: 20px; }
+
+  .ch-split, .ch-split-wide,
+  .ch-sections .ch-split, .ch-folds .ch-split,
+  .ch-cut-head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 44px); align-items: start;
+  }
+  .ch-copy, .ch-cut-data { max-width: 62ch; }
+
+  /* Four portrait plates as a 2x2 block rather than four slivers. */
+  .ch-strip { grid-template-columns: repeat(2, 1fr); }
+  .ch-strip > li img { height: clamp(240px, 38vh, 340px); }
+
+  /* The dimension annotations come OFF the drawing here rather than being
+     scaled up to stay legible. SVG text is sized in user units, so making it
+     readable in a 350px-wide 968-unit viewBox pushed every label over its
+     leader line and off the edge. Below 900px the drawing does the one thing
+     it does well at this size — show the shape and the relative scale of the
+     two profiles — and every figure it was annotating is stated in the rows
+     directly beneath it, in real type.
+
+     Nothing is lost: `Rib height` and `Crest height` are in the chapter's own
+     figures list, so the numbers are on screen either way. */
+  .pf-dim { display: none; }
+  .pf { margin-bottom: -18px; }
+
+  .ws { grid-template-columns: minmax(0, 1fr); }
+  .ws-img img { min-height: clamp(280px, 44vh, 420px); }
+  .ws-copy { max-width: none; }
+
+  .ch-tall img { min-height: clamp(320px, 52vh, 520px); }
+  .ch-bleed { min-height: 0; }
+  .ch-bleed .ch-copy { width: 100%; }
 }
 
 /* ── small screens ──────────────────────────────────────────────────────── */
@@ -503,10 +810,13 @@ section { padding: clamp(60px, 7.5vw, 112px) 0; }
   .hero { min-height: 80svh; min-height: calc(80 * var(--svh, 1vh)); }
   /* Lighter at the top than the desktop scrim: the copy block is taller here
      and the full-strength gradient buried the photograph entirely. */
+  /* The copy block is taller here, so the mid-band has to carry more than it
+     does on desktop — the eyebrow measured 2.96:1 when this fell away at 56%.
+     The very top stays open so the photograph still announces itself. */
   .hero::after {
     background: linear-gradient(to top,
-      rgba(10, 12, 11, .95) 0%,  rgba(10, 12, 11, .90) 34%, rgba(10, 12, 11, .74) 56%,
-      rgba(10, 12, 11, .40) 74%, rgba(10, 12, 11, .10) 90%, rgba(10, 12, 11, 0) 100%);
+      rgba(10, 12, 11, .95) 0%,  rgba(10, 12, 11, .92) 38%, rgba(10, 12, 11, .86) 62%,
+      rgba(10, 12, 11, .62) 80%, rgba(10, 12, 11, .22) 93%, rgba(10, 12, 11, .06) 100%);
   }
   /* The price CTA takes its own row; call and WhatsApp share the next one. */
   .hero-act { gap: 10px; }
@@ -519,19 +829,28 @@ section { padding: clamp(60px, 7.5vw, 112px) 0; }
   .strip-in li:first-child { border-top: 0; }
   .strip-in li:nth-child(-n+2) { border-bottom: 0; }
 
-  .svc-list { grid-template-columns: 1fr; }
-  .svc-media { height: 46svh; height: calc(46 * var(--svh, 1vh)); max-height: 300px; }
-  .svc-plate { height: auto; min-height: 0; padding: 26px 20px; }
   .proc-close { padding-left: 0; }
   .proc-close .btn { width: 100%; }
 
   .band { min-height: 64svh; min-height: calc(64 * var(--svh, 1vh)); }
 
-  .work-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .work-wide { grid-column: span 2; }
-  .work-grid img { height: 26svh; height: calc(26 * var(--svh, 1vh)); max-height: 210px; }
-  .work-wide img { height: 34svh; height: calc(34 * var(--svh, 1vh)); max-height: 280px; }
-  .work-cap { padding: 11px 13px 13px; font-size: 12.5px; }
+  .pr-band .zoom { height: 48svh; height: calc(48 * var(--svh, 1vh)); max-height: 440px; }
+  .pr-band figcaption { padding-top: clamp(32px, 9vw, 56px); }
+  .pr-band figcaption b { font-size: 20px; }
+
+  /* One column of plates on a phone: two 170px tiles lose the machine. */
+  .ch-strip { grid-template-columns: 1fr; gap: 8px; }
+  .ch-strip > li img { height: 54svh; height: calc(54 * var(--svh, 1vh)); max-height: 460px; }
+
+  .pf-folds { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 18px 14px; }
+  .pf-fold figcaption { font-size: 10.5px; letter-spacing: .1em; }
+
+  .ch-big { font-size: clamp(44px, 13vw, 64px); }
+  .ch-mark { margin-bottom: 16px; }
+  .ch-figures > div { flex-direction: column; gap: 2px; padding: 10px 0; }
+  .ch-figures dd { text-align: left; }
+  .ch-bleed .ch-copy { border-radius: 0; }
+  .enq-bg { opacity: .22; }
 
   .step { gap: 16px; padding-bottom: 24px; }
   .step:not(:last-child)::before { left: 20px; top: 46px; }
@@ -575,6 +894,5 @@ section { padding: clamp(60px, 7.5vw, 112px) 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .band-link:hover svg { transform: none; }
-  .svc-item:hover, .work-grid button:hover { transform: none; }
+  .ch-aside:hover, .zoom:hover { transform: none; }
 }

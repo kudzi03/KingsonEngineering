@@ -21,10 +21,19 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f1211'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-weight='700' font-size='30' fill='%23E21E25' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="assets/brand/kingson-logo-320.png">
 
+<!-- Both faces, not just the display one. The body font arriving after first
+     paint reflowed the hero copy and was the entire measured CLS (0.021 on a
+     phone): the h1 and lede are set in these two, so neither can be late. -->
 <link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="assets/img/portal-frame-1320.webp"
       imagesrcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
       imagesizes="100vw" fetchpriority="high">
+<!-- The hero's height is in `svh`, and `var(--svh)` is set from innerHeight so
+     a phone's address bar collapsing mid-scroll cannot resize it under the
+     reader. Setting it here, before first paint, rather than in main.js: from
+     main.js it arrived after layout and cost a measured 0.021 CLS on mobile. -->
+<script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')</script>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="styles/tokens.css">
 <link rel="stylesheet" href="styles/site.css">
@@ -39,7 +48,7 @@
       "name": "Kingson Engineering",
       "legalName": "Kingson Trading (Pvt) Ltd",
       "slogan": "Steelwork Specialists",
-      "description": "Fabrication and erection from our own workshop in Tynwald, with our own crane. Send drawings or a description — enquiries are acknowledged the same working day.",
+      "description": "Structural steel, roofing, fiber laser cutting and cranage — fabricated in our own workshop and erected with our own crane. Send drawings or a description; enquiries are acknowledged the same working day.",
       "url": "https://kingson-engineering.vercel.app/",
       "image": "https://kingson-engineering.vercel.app/assets/img/portal-frame-1320.webp",
       "logo": "https://kingson-engineering.vercel.app/assets/brand/kingson-logo-560.png",
@@ -385,10 +394,11 @@
        srcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
        sizes="100vw" width="1320" height="888" fetchpriority="high" decoding="async"
        alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.">
+  <div class="hero-plate" aria-hidden="true"></div>
   <div class="hero-in"><div class="hero-body"><!--hero-->
-    <p class="hero-eyebrow">Steelwork specialists · Harare</p>
-    <h1 class="display hero-title">Structural steel, roofing and cranage.</h1>
-    <p class="hero-lede">Fabrication and erection from our own workshop in Tynwald, with our own crane. Send drawings or a description — enquiries are acknowledged the same working day.</p>
+    <p class="hero-eyebrow">Steelwork specialists · Tynwald, Harare</p>
+    <h1 class="display hero-title">Steelwork. Built here.</h1>
+    <p class="hero-lede">Structural steel, roofing, fiber laser cutting and cranage — fabricated in our own workshop and erected with our own crane. Send drawings or a description; enquiries are acknowledged the same working day.</p>
     <div class="hero-act"><a class="btn" href="#enquiry"><span>Get a price</span></a><a class="btn-ghost" href="tel:+263772262869"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg><span>Call</span></a><a class="btn-ghost" href="https://wa.me/263772262869" target="_blank" rel="noopener"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.5.1-.6.8-.7 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/></svg><span>WhatsApp</span></a></div>
 <!--/hero--></div></div>
 </section>
@@ -399,134 +409,262 @@
     <li><span class="strip-k">Enquiries</span><span class="strip-v">Acknowledged the same working day</span></li>
 <!--/strip--></ul></div>
 
-<!-- ═══════════════ WHAT WE DO ═══════════════
-     Six services, because six is what Kingson confirmed. Four carry a
-     photograph of the work; two do not, because no photograph of that work
-     exists — those two are set in type rather than given a borrowed picture. -->
-<section class="svc" id="services">
-  <div class="wrap">
-    <div class="sec-head"><!--svchead-->
-    <p class="eyebrow">Six services</p>
-    <h2 class="display">What we make.</h2>
-    <p>Six things, in our own workshop and on site.</p>
-<!--/svchead--></div>
-    <ul class="svc-list"><!--services-->
-    <li class="svc-item" id="structural">
-      <div class="svc-media">
-        <img src="assets/img/portal-frame-720.webp" srcset="assets/img/portal-frame-440.webp 440w, assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
-             sizes="(max-width:760px) 100vw, (max-width:1100px) 50vw, 33vw"
-             width="1320" height="888" loading="lazy" decoding="async"
-             style="object-position:54.0% 47.0%" alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.">
-      </div>
-      <div class="svc-body">
-        <h3>Structural steelwork</h3>
-        <p class="svc-lede">Portal frames, columns, rafters and purlins — fabricated in the workshop and erected on site with our own crane.</p>
-        <dl class="svc-facts">
-          <div><dt>Programme</dt><dd>six to ten weeks</dd></div>
-          <div><dt>Erection</dt><dd>Harare and nationally</dd></div>
-        </dl>
-        <p class="svc-ask">Send drawings, or the span, height and bay spacing.</p>
-      </div>
-    </li>
-    <li class="svc-item" id="roofing">
-      <div class="svc-media">
-        <img src="assets/img/roof-trusses-720.webp" srcset="assets/img/roof-trusses-440.webp 440w, assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w"
-             sizes="(max-width:760px) 100vw, (max-width:1100px) 50vw, 33vw"
-             width="1320" height="792" loading="lazy" decoding="async"
-             style="object-position:54.0% 42.0%" alt="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building.">
-      </div>
-      <div class="svc-body">
-        <h3>Roof steelwork and trusses</h3>
-        <p class="svc-lede">Trusses, purlins and sheeting for long-span roofs, new build or re-roof. IBR and corrugated profiles, galvanised or pre-painted.</p>
-        <dl class="svc-facts">
-          <div><dt>IBR cover</dt><dd>686 mm, five ribs</dd></div>
-          <div><dt>Corrugated cover</dt><dd>762 mm, 10.5 corrugations</dd></div>
-        </dl>
-        <p class="svc-ask">Send the floor area, the pitch you want, and whether the walls are up.</p>
-      </div>
-    </li>
-    <li class="svc-item" id="cutting">
-      <div class="svc-media">
-        <img src="assets/img/laser-floor-720.webp" srcset="assets/img/laser-floor-440.webp 440w, assets/img/laser-floor-720.webp 720w, assets/img/laser-floor-1100.webp 1100w, assets/img/laser-floor-1350.webp 1350w"
-             sizes="(max-width:760px) 100vw, (max-width:1100px) 50vw, 33vw"
-             width="1350" height="1800" loading="lazy" decoding="async"
-             style="object-position:45.0% 52.0%" alt="The whole fiber laser on the workshop floor, badged DXTECH LASER: enclosed bed with cutting slats, cable chain along the side, swing-arm control screen and an extraction duct, with a brick pier and timber pallets beside it.">
-      </div>
-      <div class="svc-body">
-        <h3>Fiber laser cutting</h3>
-        <p class="svc-lede">Plate and sheet cut on a DXTECH fiber laser, straight from your file. Mild steel, stainless, aluminium and galvanised sheet.</p>
-        <dl class="svc-facts">
-          <div><dt>Bed size</dt><dd>3 000 × 1 500 mm</dd></div>
-          <div><dt>Mild steel</dt><dd>to 20 mm</dd></div>
-        </dl>
-        <p class="svc-ask">Send a DXF, DWG, STEP or PDF with the material and thickness.</p>
-      </div>
-    </li>
-    <li class="svc-item svc-plain" id="balustrades">
-      <div class="svc-media svc-plate">
-        <b>3 000 mm</b>
-        <span>maximum fold length</span>
-      </div>
-      <div class="svc-body">
-        <h3>Balustrades and gates</h3>
-        <p class="svc-lede">Balustrading, handrails and gates, fabricated to your opening and finish.</p>
-        <dl class="svc-facts">
-          <div><dt>Material</dt><dd>0.4 – 3.0 mm sheet</dd></div>
-          <div><dt>Also in</dt><dd>galvanised, stainless, aluminium</dd></div>
-        </dl>
-        <p class="svc-ask">Send the opening dimensions and a photograph of the site, or a sketch.</p>
-      </div>
-    </li>
-    <li class="svc-item svc-plain" id="stainless">
-      <div class="svc-media svc-plate">
-        <b>10 mm</b>
-        <span>stainless, cut on nitrogen</span>
-      </div>
-      <div class="svc-body">
-        <h3>Stainless fabrication</h3>
-        <p class="svc-lede">Stainless sheet and section work — cut, folded and fabricated to drawing.</p>
-        <dl class="svc-facts">
-          <div><dt>Laser bed</dt><dd>3 000 × 1 500 mm</dd></div>
-          <div><dt>Folding</dt><dd>to 3 000 mm</dd></div>
-        </dl>
-        <p class="svc-ask">Send a drawing with the grade and thickness you need.</p>
-      </div>
-    </li>
-    <li class="svc-item" id="cranage">
-      <div class="svc-media">
-        <img src="assets/img/crane-720.webp" srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
-             sizes="(max-width:760px) 100vw, (max-width:1100px) 50vw, 33vw"
-             width="1320" height="1757" loading="lazy" decoding="async"
-             style="object-position:50.0% 60.0%" alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.">
-      </div>
-      <div class="svc-body">
-        <h3>Mobile cranage</h3>
-        <p class="svc-lede">Our 25-tonne telescopic mobile crane, for lifting and placing steel — on our jobs or yours.</p>
-        <dl class="svc-facts">
-          <div><dt>Capacity</dt><dd>25 tonnes</dd></div>
-          <div><dt>Area</dt><dd>Harare and nationally</dd></div>
-        </dl>
-        <p class="svc-ask">Tell us the load, the site access and the date.</p>
-      </div>
-    </li>
-<!--/services-->
-    </ul>
-  </div>
-</section>
+<!-- ═══════════════ CAPABILITY CHAPTERS ═══════════════
+     Five compositions covering the six confirmed services. Each decides its
+     own ground, its own media, and whether it has earned a large figure.
+     Generated — see content/chapters.js and tools/render.js. -->
+<!--chapters-->
+  <section class="ch ch-bleed ch-dark on-dark" id="structure" aria-labelledby="ch-structure-h">
+    <div class="ch-bleed-img" data-reveal="settle">
+      <button type="button" class="zoom" data-open="roofFrame"
+              aria-label="A white-painted roof structure seen from inside: trusses, purlins and corrugated sheeting with rooflights between the bays. Select to view full size."><img src="assets/img/roof-frame-1320.webp" srcset="assets/img/roof-frame-440.webp 440w, assets/img/roof-frame-720.webp 720w, assets/img/roof-frame-1100.webp 1100w, assets/img/roof-frame-1320.webp 1320w"
+             sizes="100vw" width="1320" height="714"
+             loading="lazy" decoding="async"
+             style="object-position:50.0% 35.0%" alt="A white-painted roof structure seen from inside: trusses, purlins and corrugated sheeting with rooflights between the bays."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+    </div>
+    <div class="wrap ch-over">
+      <div class="ch-copy" id="ch-structure-h">
+      <p class="ch-mark"><span class="ch-n">01</span><span class="ch-name">Structure</span></p>
+      <h2 class="display ch-title" data-reveal="rise"><span>Frames that carry the building.</span></h2>
+      <p class="ch-lede">Portal frames, columns, rafters and purlins — set out, fabricated in the workshop, and erected on site with our own crane.</p>
 
-<!-- ═══════════════ A FULL-WIDTH PHOTOGRAPH ═══════════════
-     The page's one wide image. It carries the roofing numbers straight into
-     the specifications below it. -->
-<section class="band on-dark" aria-labelledby="band-h"><!--band-->
-  <img class="band-img" src="assets/img/roof-frame-1320.webp" srcset="assets/img/roof-frame-440.webp 440w, assets/img/roof-frame-720.webp 720w, assets/img/roof-frame-1100.webp 1100w, assets/img/roof-frame-1320.webp 1320w"
-       sizes="100vw" width="1320" height="714" loading="lazy" decoding="async"
-       style="object-position:50.0% 35.0%" alt="A white-painted roof structure seen from inside: trusses, purlins and corrugated sheeting with rooflights between the bays.">
-  <div class="band-in">
-    <h2 class="display" id="band-h">Cut to 12 m, in the profile you asked for.</h2>
-    <p>IBR at 686 mm cover over five ribs. Corrugated at 762 mm over 10.5 corrugations. Galvanised or pre-painted, off the same order.</p>
-    <a class="band-link" href="#specs">See every confirmed figure<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-  </div>
-<!--/band-->
+      <dl class="ch-figures">
+        <div><dt>Portal frame programme</dt><dd>six to ten weeks</dd></div>
+        <div><dt>Erection</dt><dd>Harare and nationally</dd></div>
+      </dl>
+      <p class="ch-ask">Send drawings, or the span, height and bay spacing.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch ch-sections ch-light" id="form" aria-labelledby="ch-form-h">
+    <div class="wrap ch-split">
+      <div class="ch-copy" id="ch-form-h">
+      <p class="ch-mark"><span class="ch-n">02</span><span class="ch-name">Form</span></p>
+      <h2 class="display ch-title" data-reveal="rise"><span>Two profiles, cut to your roof.</span></h2>
+      <p class="ch-lede">Trusses, purlins and sheeting for long-span roofs, new build or re-roof. IBR and corrugated, galvanised or pre-painted, cut to length before it leaves the workshop.</p>
+      <p class="ch-big" data-reveal="rise"><span>12 <b>M</b></span></p>
+      <p class="ch-big-label">maximum sheet length</p>
+      <dl class="ch-figures">
+        <div><dt>IBR cover</dt><dd>686 mm, five ribs</dd></div>
+        <div><dt>IBR rib height</dt><dd>36 mm</dd></div>
+        <div><dt>Corrugated cover</dt><dd>762 mm, 10.5 corrugations</dd></div>
+        <div><dt>Corrugated crest</dt><dd>17.5 mm at 76 mm pitch</dd></div>
+        <div><dt>Minimum pitch, IBR</dt><dd>5°; 7° with side laps</dd></div>
+        <div><dt>Minimum pitch, corrugated</dt><dd>10°; 12° exposed</dd></div>
+      </dl>
+      <p class="ch-ask">Send the floor area, the pitch you want, and whether the walls are up.</p>
+      </div>
+      <div class="ch-draw">
+        <figure class="pf-fig" data-reveal="draw">
+          <figcaption>IBR</figcaption>
+          <svg class="pf" viewBox="0 0 968 196" role="img"
+     aria-label="Section through IBR sheeting: five ribs 36 mm high across a 686 mm cover width."
+     preserveAspectRatio="xMidYMid meet">
+      <path class="pf-datum" data-draw-fade d="M0 92L968 92"/>
+      <path class="pf-line" data-draw-path d="M0 92 L81.2 92 L94.2 56 L124.2 56 L137.2 92 L218.4 92 L231.4 56 L261.4 56 L274.4 92 L355.6 92 L368.6 56 L398.6 56 L411.6 92 L492.8 92 L505.8 56 L535.8 56 L548.8 92 L630 92 L643 56 L673 56 L686 92"/>
+      <g class="pf-dim" data-draw-fade>
+        <path d="M0 122L0 138"/>
+        <path d="M686 122L686 138"/>
+        <path d="M0 130L686 130"/>
+        <text x="343" y="116">686 mm cover</text>
+      </g>
+      <g class="pf-dim" data-draw-fade>
+        <path d="M274.4 172L274.4 188"/>
+        <path d="M411.6 172L411.6 188"/>
+        <path d="M274.4 180L411.6 180"/>
+        <text x="343" y="166">5 ribs</text>
+      </g>
+      <g class="pf-dim" data-draw-fade>
+        <path d="M709 92L723 92"/>
+        <path d="M709 56L723 56"/>
+        <path d="M716 92L716 56"/>
+        <text x="728" y="81" text-anchor="start">36 mm</text>
+      </g>
+    </svg>
+        </figure>
+        <figure class="pf-fig" data-reveal="draw">
+          <figcaption>Corrugated</figcaption>
+          <svg class="pf" viewBox="0 0 968 196" role="img"
+     aria-label="Section through corrugated sheeting: 10.5 corrugations at 76 mm pitch and 17.5 mm crest height across a 762 mm cover width."
+     preserveAspectRatio="xMidYMid meet">
+      <path class="pf-datum" data-draw-fade d="M0 92L968 92"/>
+      <path class="pf-line" data-draw-path d="M0 92 L2 91.88 L4 91.53 L6 90.95 L8 90.15 L10 89.18 L12 88.04 L14 86.76 L16 85.4 L18 83.97 L20 82.53 L22 81.1 L24 79.74 L26 78.46 L28 77.32 L30 76.35 L32 75.55 L34 74.97 L36 74.62 L38 74.5 L40 74.62 L42 74.97 L44 75.55 L46 76.35 L48 77.32 L50 78.46 L52 79.74 L54 81.1 L56 82.53 L58 83.97 L60 85.4 L62 86.76 L64 88.04 L66 89.18 L68 90.15 L70 90.95 L72 91.53 L74 91.88 L76 92 L78 91.88 L80 91.53 L82 90.95 L84 90.15 L86 89.18 L88 88.04 L90 86.76 L92 85.4 L94 83.97 L96 82.53 L98 81.1 L100 79.74 L102 78.46 L104 77.32 L106 76.35 L108 75.55 L110 74.97 L112 74.62 L114 74.5 L116 74.62 L118 74.97 L120 75.55 L122 76.35 L124 77.32 L126 78.46 L128 79.74 L130 81.1 L132 82.53 L134 83.97 L136 85.4 L138 86.76 L140 88.04 L142 89.18 L144 90.15 L146 90.95 L148 91.53 L150 91.88 L152 92 L154 91.88 L156 91.53 L158 90.95 L160 90.15 L162 89.18 L164 88.04 L166 86.76 L168 85.4 L170 83.97 L172 82.53 L174 81.1 L176 79.74 L178 78.46 L180 77.32 L182 76.35 L184 75.55 L186 74.97 L188 74.62 L190 74.5 L192 74.62 L194 74.97 L196 75.55 L198 76.35 L200 77.32 L202 78.46 L204 79.74 L206 81.1 L208 82.53 L210 83.97 L212 85.4 L214 86.76 L216 88.04 L218 89.18 L220 90.15 L222 90.95 L224 91.53 L226 91.88 L228 92 L230 91.88 L232 91.53 L234 90.95 L236 90.15 L238 89.18 L240 88.04 L242 86.76 L244 85.4 L246 83.97 L248 82.53 L250 81.1 L252 79.74 L254 78.46 L256 77.32 L258 76.35 L260 75.55 L262 74.97 L264 74.62 L266 74.5 L268 74.62 L270 74.97 L272 75.55 L274 76.35 L276 77.32 L278 78.46 L280 79.74 L282 81.1 L284 82.53 L286 83.97 L288 85.4 L290 86.76 L292 88.04 L294 89.18 L296 90.15 L298 90.95 L300 91.53 L302 91.88 L304 92 L306 91.88 L308 91.53 L310 90.95 L312 90.15 L314 89.18 L316 88.04 L318 86.76 L320 85.4 L322 83.97 L324 82.53 L326 81.1 L328 79.74 L330 78.46 L332 77.32 L334 76.35 L336 75.55 L338 74.97 L340 74.62 L342 74.5 L344 74.62 L346 74.97 L348 75.55 L350 76.35 L352 77.32 L354 78.46 L356 79.74 L358 81.1 L360 82.53 L362 83.97 L364 85.4 L366 86.76 L368 88.04 L370 89.18 L372 90.15 L374 90.95 L376 91.53 L378 91.88 L380 92 L382 91.88 L384 91.53 L386 90.95 L388 90.15 L390 89.18 L392 88.04 L394 86.76 L396 85.4 L398 83.97 L400 82.53 L402 81.1 L404 79.74 L406 78.46 L408 77.32 L410 76.35 L412 75.55 L414 74.97 L416 74.62 L418 74.5 L420 74.62 L422 74.97 L424 75.55 L426 76.35 L428 77.32 L430 78.46 L432 79.74 L434 81.1 L436 82.53 L438 83.97 L440 85.4 L442 86.76 L444 88.04 L446 89.18 L448 90.15 L450 90.95 L452 91.53 L454 91.88 L456 92 L458 91.88 L460 91.53 L462 90.95 L464 90.15 L466 89.18 L468 88.04 L470 86.76 L472 85.4 L474 83.97 L476 82.53 L478 81.1 L480 79.74 L482 78.46 L484 77.32 L486 76.35 L488 75.55 L490 74.97 L492 74.62 L494 74.5 L496 74.62 L498 74.97 L500 75.55 L502 76.35 L504 77.32 L506 78.46 L508 79.74 L510 81.1 L512 82.53 L514 83.97 L516 85.4 L518 86.76 L520 88.04 L522 89.18 L524 90.15 L526 90.95 L528 91.53 L530 91.88 L532 92 L534 91.88 L536 91.53 L538 90.95 L540 90.15 L542 89.18 L544 88.04 L546 86.76 L548 85.4 L550 83.97 L552 82.53 L554 81.1 L556 79.74 L558 78.46 L560 77.32 L562 76.35 L564 75.55 L566 74.97 L568 74.62 L570 74.5 L572 74.62 L574 74.97 L576 75.55 L578 76.35 L580 77.32 L582 78.46 L584 79.74 L586 81.1 L588 82.53 L590 83.97 L592 85.4 L594 86.76 L596 88.04 L598 89.18 L600 90.15 L602 90.95 L604 91.53 L606 91.88 L608 92 L610 91.88 L612 91.53 L614 90.95 L616 90.15 L618 89.18 L620 88.04 L622 86.76 L624 85.4 L626 83.97 L628 82.53 L630 81.1 L632 79.74 L634 78.46 L636 77.32 L638 76.35 L640 75.55 L642 74.97 L644 74.62 L646 74.5 L648 74.62 L650 74.97 L652 75.55 L654 76.35 L656 77.32 L658 78.46 L660 79.74 L662 81.1 L664 82.53 L666 83.97 L668 85.4 L670 86.76 L672 88.04 L674 89.18 L676 90.15 L678 90.95 L680 91.53 L682 91.88 L684 92 L686 91.88 L688 91.53 L690 90.95 L692 90.15 L694 89.18 L696 88.04 L698 86.76 L700 85.4 L702 83.97 L704 82.53 L706 81.1 L708 79.74 L710 78.46 L712 77.32 L714 76.35 L716 75.55 L718 74.97 L720 74.62 L722 74.5 L724 74.62 L726 74.97 L728 75.55 L730 76.35 L732 77.32 L734 78.46 L736 79.74 L738 81.1 L740 82.53 L742 83.97 L744 85.4 L746 86.76 L748 88.04 L750 89.18 L752 90.15 L754 90.95 L756 91.53 L758 91.88 L760 92 L762 91.88 L764 91.53 L766 90.95 L768 90.15 L770 89.18 L772 88.04 L774 86.76 L776 85.4 L778 83.97 L780 82.53 L782 81.1 L784 79.74 L786 78.46 L788 77.32 L790 76.35 L792 75.55 L794 74.97 L796 74.62 L798 74.5"/>
+      <g class="pf-dim" data-draw-fade>
+        <path d="M0 122L0 138"/>
+        <path d="M762 122L762 138"/>
+        <path d="M0 130L762 130"/>
+        <text x="381" y="116">762 mm cover</text>
+      </g>
+      <g class="pf-dim" data-draw-fade>
+        <path d="M0 172L0 188"/>
+        <path d="M76 172L76 188"/>
+        <path d="M0 180L76 180"/>
+        <text x="38" y="166">76 mm pitch</text>
+      </g>
+      <g class="pf-dim" data-draw-fade>
+        <path d="M821 92L835 92"/>
+        <path d="M821 74.5L835 74.5"/>
+        <path d="M828 92L828 74.5"/>
+        <text x="840" y="90.25" text-anchor="start">17.5 mm</text>
+      </g>
+    </svg>
+        </figure>
+        <p class="pf-note">Both sections drawn to the same scale, from the confirmed cover widths and rib heights.</p>
+        <div class="ch-aside" data-reveal="plate" data-from="below">
+          <button type="button" class="zoom" data-open="roofTrusses"
+              aria-label="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building. Select to view full size."><img src="assets/img/roof-trusses-1100.webp" srcset="assets/img/roof-trusses-440.webp 440w, assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w"
+             sizes="(max-width:900px) 100vw, 46vw" width="1320" height="792"
+             loading="lazy" decoding="async"
+             style="object-position:54.0% 42.0%" alt="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch ch-cut ch-dark on-dark" id="cut" aria-labelledby="ch-cut-h">
+    <div class="wrap ch-cut-head">
+      <div class="ch-copy" id="ch-cut-h">
+      <p class="ch-mark"><span class="ch-n">03</span><span class="ch-name">Cut</span></p>
+      <h2 class="display ch-title" data-reveal="rise"><span>Straight from your file.</span></h2>
+      <p class="ch-lede">Plate and sheet cut on a DXTECH fiber laser — nested from the drawing you send and cut on a 3 000 × 1 500 mm bed. Mild steel, stainless, aluminium and galvanised sheet.</p>
+      </div>
+      <div class="ch-cut-data">
+      <p class="ch-big" data-reveal="rise"><span>±0.1 <b>MM</b></span></p>
+      <p class="ch-big-label">cutting tolerance, repeating to ± 0.03 mm</p>
+      <dl class="ch-figures">
+        <div><dt>Mild steel</dt><dd>20 mm on oxygen</dd></div>
+        <div><dt>Stainless steel</dt><dd>10 mm on nitrogen</dd></div>
+        <div><dt>Aluminium</dt><dd>8 mm on nitrogen</dd></div>
+        <div><dt>Galvanised sheet</dt><dd>4 mm on nitrogen</dd></div>
+        <div><dt>Files accepted</dt><dd>DXF · DWG · STEP · PDF</dd></div>
+      </dl>
+      <p class="ch-ask">Send a DXF, DWG, STEP or PDF with the material and thickness.</p>
+      </div>
+    </div>
+    <ul class="ch-strip">
+        <li data-reveal="plate" data-from="below" style="--d:0ms">
+          <button type="button" class="zoom" data-open="laserFloor"
+              aria-label="The whole fiber laser on the workshop floor, badged DXTECH LASER: enclosed bed with cutting slats, cable chain along the side, swing-arm control screen and an extraction duct, with a brick pier and timber pallets beside it. Select to view full size."><img src="assets/img/laser-floor-720.webp" srcset="assets/img/laser-floor-440.webp 440w, assets/img/laser-floor-720.webp 720w, assets/img/laser-floor-1100.webp 1100w, assets/img/laser-floor-1350.webp 1350w"
+             sizes="(max-width:900px) 62vw, 24vw" width="1350" height="1800"
+             loading="lazy" decoding="async"
+             style="object-position:45.0% 52.0%" alt="The whole fiber laser on the workshop floor, badged DXTECH LASER: enclosed bed with cutting slats, cable chain along the side, swing-arm control screen and an extraction duct, with a brick pier and timber pallets beside it."><span>The DXTECH laser on the workshop floor</span><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+        </li>
+        <li data-reveal="plate" data-from="below" style="--d:110ms">
+          <button type="button" class="zoom" data-open="gantry"
+              aria-label="The laser gantry carriage seen side-on, cable chain arching over it, travelling above a slatted bed loaded with steel plate, with a brick wall and workshop sheeting behind. Select to view full size."><img src="assets/img/gantry-720.webp" srcset="assets/img/gantry-440.webp 440w, assets/img/gantry-720.webp 720w, assets/img/gantry-1100.webp 1100w, assets/img/gantry-1350.webp 1350w"
+             sizes="(max-width:900px) 62vw, 24vw" width="1350" height="1794"
+             loading="lazy" decoding="async"
+             style="object-position:46.0% 55.0%" alt="The laser gantry carriage seen side-on, cable chain arching over it, travelling above a slatted bed loaded with steel plate, with a brick wall and workshop sheeting behind."><span>Gantry and cable chain over the bed</span><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+        </li>
+        <li data-reveal="plate" data-from="below" style="--d:220ms">
+          <button type="button" class="zoom" data-open="cuttingHead"
+              aria-label="The cutting head of a fiber laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it. Select to view full size."><img src="assets/img/cutting-head-720.webp" srcset="assets/img/cutting-head-440.webp 440w, assets/img/cutting-head-720.webp 720w, assets/img/cutting-head-1100.webp 1100w, assets/img/cutting-head-1350.webp 1350w"
+             sizes="(max-width:900px) 62vw, 24vw" width="1350" height="1800"
+             loading="lazy" decoding="async"
+             style="object-position:60.0% 45.0%" alt="The cutting head of a fiber laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it."><span>Plate loaded on the laser bed</span><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+        </li>
+        <li data-reveal="plate" data-from="below" style="--d:330ms">
+          <button type="button" class="zoom" data-open="nestingStation"
+              aria-label="The laser control station: an upright monitor showing a nested cutting path on screen, keyboard, mouse and emergency stop on the machine shelf, with the slatted bed and the DXTECH cutting head behind it. Select to view full size."><img src="assets/img/nesting-station-720.webp" srcset="assets/img/nesting-station-440.webp 440w, assets/img/nesting-station-720.webp 720w, assets/img/nesting-station-1100.webp 1100w, assets/img/nesting-station-1350.webp 1350w"
+             sizes="(max-width:900px) 62vw, 24vw" width="1350" height="1800"
+             loading="lazy" decoding="async"
+             style="object-position:45.0% 48.0%" alt="The laser control station: an upright monitor showing a nested cutting path on screen, keyboard, mouse and emergency stop on the machine shelf, with the slatted bed and the DXTECH cutting head behind it."><span>Nesting at the control station</span><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+        </li>
+    </ul>
+  </section>
+
+  <section class="ch ch-folds ch-light" id="fabricate" aria-labelledby="ch-fabricate-h">
+    <div class="wrap ch-split">
+      <div class="ch-copy" id="ch-fabricate-h">
+      <p class="ch-mark"><span class="ch-n">04</span><span class="ch-name">Fabricate</span></p>
+      <h2 class="display ch-title" data-reveal="rise"><span>Folded, welded, finished.</span></h2>
+      <p class="ch-lede">Balustrading, handrails, gates and stainless work, fabricated to your opening and finish. Sheet is folded in-house, and flashings are made to match the roof they go on.</p>
+      <p class="ch-big" data-reveal="rise"><span>3 <b>000 MM</b></span></p>
+      <p class="ch-big-label">maximum fold length</p>
+      <dl class="ch-figures">
+        <div><dt>Material range</dt><dd>0.4 – 3.0 mm</dd></div>
+        <div><dt>In</dt><dd>mild steel · galvanised · stainless · aluminium</dd></div>
+        <div><dt>Standard flashings</dt><dd>ridge · barge · valley</dd></div>
+        <div><dt>Flashing lead time</dt><dd>3 – 5 days on a stock gauge</dd></div>
+      </dl>
+      <p class="ch-ask">Send the opening dimensions and a photograph of the site, or a sketch.</p>
+      </div>
+      <div class="ch-draw">
+        <div class="pf-folds" data-reveal="draw">
+          <figure class="pf-fold">
+        <svg viewBox="0 0 116 92" role="img" aria-label="Ridge flashing, shown in section as a folded profile.">
+          <path class="pf-line" data-draw-path d="M8 74 L58 20 L108 74"/>
+        </svg>
+        <figcaption>Ridge</figcaption>
+      </figure>
+      <figure class="pf-fold">
+        <svg viewBox="0 0 116 92" role="img" aria-label="Barge flashing, shown in section as a folded profile.">
+          <path class="pf-line" data-draw-path d="M10 18 L10 60 L66 60 L66 76 L104 76"/>
+        </svg>
+        <figcaption>Barge</figcaption>
+      </figure>
+      <figure class="pf-fold">
+        <svg viewBox="0 0 116 92" role="img" aria-label="Valley flashing, shown in section as a folded profile.">
+          <path class="pf-line" data-draw-path d="M8 22 L40 72 L76 72 L108 22"/>
+        </svg>
+        <figcaption>Valley</figcaption>
+      </figure>
+        </div>
+        <p class="pf-note">The three standard flashings, in section. Custom folds to 3 000 mm in the same material range.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch ch-plate ch-dark on-dark" id="lift" aria-labelledby="ch-lift-h">
+    <div class="wrap ch-split ch-split-wide">
+      <div class="ch-copy" id="ch-lift-h">
+      <p class="ch-mark"><span class="ch-n">05</span><span class="ch-name">Lift</span></p>
+      <h2 class="display ch-title" data-reveal="rise"><span>Lifted and set with our own crane.</span></h2>
+      <p class="ch-lede">One telescopic mobile crane, worked on our own erection contracts and hired out for other jobs. Delivery outside Harare is national, with transport priced per load.</p>
+      <p class="ch-big" data-reveal="rise"><span>25 <b>TONNES</b></span></p>
+      <p class="ch-big-label">lifting capacity</p>
+      <dl class="ch-figures">
+        <div><dt>Crane type</dt><dd>telescopic mobile</dd></div>
+        <div><dt>Cranes</dt><dd>one</dd></div>
+        <div><dt>Erection area</dt><dd>Harare and nationally</dd></div>
+      </dl>
+      <p class="ch-ask">Tell us the load, the site access and the date.</p>
+      </div>
+      <div class="ch-tall" data-reveal="swing">
+        <button type="button" class="zoom" data-open="crane"
+              aria-label="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body. Select to view full size."><img src="assets/img/crane-1100.webp" srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
+             sizes="(max-width:900px) 100vw, 40vw" width="1320" height="1757"
+             loading="lazy" decoding="async"
+             style="object-position:50.0% 60.0%" alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+      </div>
+    </div>
+  </section>
+<!--/chapters-->
+
+<!-- ═══════════════ THE WORKSHOP ═══════════════
+     Place, not an About Us. One address, the hours, and the person to ask
+     for — all confirmed — over the machine on its own floor. -->
+<section class="ws sec-alt" id="workshop" aria-labelledby="ws-h"><!--workshop-->
+    <div class="ws-img" data-reveal="settle">
+      <button type="button" class="zoom" data-open="laserMachine"
+              aria-label="A fiber laser cutting machine in a workshop, with a brick pier, yellow sheeting and a control screen beside the bed. Select to view full size."><img src="assets/img/laser-machine-1100.webp" srcset="assets/img/laser-machine-440.webp 440w, assets/img/laser-machine-720.webp 720w, assets/img/laser-machine-1100.webp 1100w, assets/img/laser-machine-1536.webp 1536w"
+             sizes="(max-width:900px) 100vw, 52vw" width="1536" height="2048"
+             loading="lazy" decoding="async"
+             style="object-position:50.0% 53.0%" alt="A fiber laser cutting machine in a workshop, with a brick pier, yellow sheeting and a control screen beside the bed."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+    </div>
+    <div class="ws-copy">
+      <p class="eyebrow">The workshop</p>
+      <p class="ws-place" data-reveal="rise"><span>Tynwald Industries<b>Harare</b></span></p>
+      <h2 class="display" id="ws-h">This is where the work happens.</h2>
+      <p class="ws-lede">One workshop at No. 1262 Tynwald Industries. The laser, the folder and the fabrication bays are under one roof, and the crane goes out from the same yard.</p>
+      <dl class="ch-figures ws-figures">
+        <div><dt>Open</dt><dd>Monday to Saturday, 07:30 – 17:00</dd></div>
+        <div><dt>Ask for</dt><dd>Mr Murandu</dd></div>
+      </dl>
+      <div class="ws-act"><a class="btn" href="#enquiry"><span>Get a price</span></a><a class="btn-ghost" href="tel:+263772262869"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg><span>Call</span></a></div>
+    </div>
+<!--/workshop-->
 </section>
 
 <!-- ═══════════════ SPECIFICATIONS ═══════════════
@@ -599,75 +737,57 @@
   </div>
 </section>
 
-<!-- ═══════════════ WORK ═══════════════
-     Dark, because photographs read better on it and because the page needs a
-     break from white cards. -->
-<section class="work sec-dark on-dark" id="work">
+<!-- ═══════════════ PROOF ═══════════════
+     Three near-full-viewport bands of site work. Labels carry confirmed
+     facts only; content/projects.js explains why there is no case-study
+     metadata and holds the shape for when there is. -->
+<section class="pr sec-dark on-dark" id="work">
   <div class="wrap">
-    <div class="sec-head"><!--workhead-->
+    <div class="sec-head"><!--proofhead-->
     <p class="eyebrow">Photographs</p>
-    <h2 class="display">Recent work</h2>
-    <p>Photographs from our own jobs and workshop.</p>
-<!--/workhead--></div>
-    <ul class="work-grid"><!--work-->
-    <li class="work-wide"><button type="button" data-open="portalFrame">
-      <img src="assets/img/portal-frame-1100.webp" srcset="assets/img/portal-frame-440.webp 440w, assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
-           sizes="(max-width:760px) 100vw, 66vw"
-           width="1320" height="888" loading="eager" decoding="async"
-           style="object-position:54.0% 47.0%" alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.">
-      <span class="work-cap">Portal frame under erection</span>
-    </button></li>
-    <li><button type="button" data-open="roofTrusses">
-      <img src="assets/img/roof-trusses-720.webp" srcset="assets/img/roof-trusses-440.webp 440w, assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w"
-           sizes="(max-width:760px) 50vw, 33vw"
-           width="1320" height="792" loading="eager" decoding="async"
-           style="object-position:54.0% 42.0%" alt="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building.">
-      <span class="work-cap">Long-span trusses and purlins</span>
-    </button></li>
-    <li><button type="button" data-open="laserFloor">
-      <img src="assets/img/laser-floor-720.webp" srcset="assets/img/laser-floor-440.webp 440w, assets/img/laser-floor-720.webp 720w, assets/img/laser-floor-1100.webp 1100w, assets/img/laser-floor-1350.webp 1350w"
-           sizes="(max-width:760px) 50vw, 33vw"
-           width="1350" height="1800" loading="eager" decoding="async"
-           style="object-position:45.0% 52.0%" alt="The whole fiber laser on the workshop floor, badged DXTECH LASER: enclosed bed with cutting slats, cable chain along the side, swing-arm control screen and an extraction duct, with a brick pier and timber pallets beside it.">
-      <span class="work-cap">The DXTECH laser on the workshop floor</span>
-    </button></li>
-    <li><button type="button" data-open="cuttingHead">
-      <img src="assets/img/cutting-head-720.webp" srcset="assets/img/cutting-head-440.webp 440w, assets/img/cutting-head-720.webp 720w, assets/img/cutting-head-1100.webp 1100w, assets/img/cutting-head-1350.webp 1350w"
-           sizes="(max-width:760px) 50vw, 33vw"
-           width="1350" height="1800" loading="lazy" decoding="async"
-           style="object-position:60.0% 45.0%" alt="The cutting head of a fiber laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it.">
-      <span class="work-cap">Plate loaded on the laser bed</span>
-    </button></li>
-    <li><button type="button" data-open="nestingStation">
-      <img src="assets/img/nesting-station-720.webp" srcset="assets/img/nesting-station-440.webp 440w, assets/img/nesting-station-720.webp 720w, assets/img/nesting-station-1100.webp 1100w, assets/img/nesting-station-1350.webp 1350w"
-           sizes="(max-width:760px) 50vw, 33vw"
-           width="1350" height="1800" loading="lazy" decoding="async"
-           style="object-position:45.0% 48.0%" alt="The laser control station: an upright monitor showing a nested cutting path on screen, keyboard, mouse and emergency stop on the machine shelf, with the slatted bed and the DXTECH cutting head behind it.">
-      <span class="work-cap">Nesting at the control station</span>
-    </button></li>
-    <li><button type="button" data-open="gantry">
-      <img src="assets/img/gantry-720.webp" srcset="assets/img/gantry-440.webp 440w, assets/img/gantry-720.webp 720w, assets/img/gantry-1100.webp 1100w, assets/img/gantry-1350.webp 1350w"
-           sizes="(max-width:760px) 50vw, 33vw"
-           width="1350" height="1794" loading="lazy" decoding="async"
-           style="object-position:46.0% 55.0%" alt="The laser gantry carriage seen side-on, cable chain arching over it, travelling above a slatted bed loaded with steel plate, with a brick wall and workshop sheeting behind.">
-      <span class="work-cap">Gantry and cable chain over the bed</span>
-    </button></li>
-    <li><button type="button" data-open="laserMachine">
-      <img src="assets/img/laser-machine-720.webp" srcset="assets/img/laser-machine-440.webp 440w, assets/img/laser-machine-720.webp 720w, assets/img/laser-machine-1100.webp 1100w, assets/img/laser-machine-1536.webp 1536w"
-           sizes="(max-width:760px) 50vw, 33vw"
-           width="1536" height="2048" loading="lazy" decoding="async"
-           style="object-position:50.0% 53.0%" alt="A fiber laser cutting machine in a workshop, with a brick pier, yellow sheeting and a control screen beside the bed.">
-      <span class="work-cap">The machine from the loading side</span>
-    </button></li>
-    <li><button type="button" data-open="crane">
-      <img src="assets/img/crane-720.webp" srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
-           sizes="(max-width:760px) 50vw, 33vw"
-           width="1320" height="1757" loading="lazy" decoding="async"
-           style="object-position:50.0% 60.0%" alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.">
-      <span class="work-cap">Our telescopic mobile crane</span>
-    </button></li>
-<!--/work-->
-    </ul>
+    <h2 class="display">Our own work, on site.</h2>
+    <p>Three photographs from Kingson jobs. No client names, locations or tonnages appear here because none has been confirmed — what is shown is what is in the frame.</p>
+<!--/proofhead--></div>
+  </div>
+  <div class="pr-bands"><!--proof-->
+    <figure class="pr-band" data-reveal="settle">
+      <button type="button" class="zoom" data-open="portalFrame"
+              aria-label="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays. Select to view full size."><img src="assets/img/portal-frame-1320.webp" srcset="assets/img/portal-frame-440.webp 440w, assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
+             sizes="100vw" width="1320" height="888"
+             loading="lazy" decoding="async"
+             style="object-position:54.0% 47.0%" alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+      <figcaption>
+        <b>Portal frame</b>
+        <span>Fabrication and erection</span>
+      </figcaption>
+    </figure>
+    <figure class="pr-band" data-reveal="settle">
+      <button type="button" class="zoom" data-open="roofTrusses"
+              aria-label="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building. Select to view full size."><img src="assets/img/roof-trusses-1320.webp" srcset="assets/img/roof-trusses-440.webp 440w, assets/img/roof-trusses-720.webp 720w, assets/img/roof-trusses-1100.webp 1100w, assets/img/roof-trusses-1320.webp 1320w"
+             sizes="100vw" width="1320" height="792"
+             loading="lazy" decoding="async"
+             style="object-position:54.0% 42.0%" alt="The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+      <figcaption>
+        <b>Long-span roof</b>
+        <span>Trusses, purlins and sheeting</span>
+      </figcaption>
+    </figure>
+    <figure class="pr-band" data-reveal="settle">
+      <button type="button" class="zoom" data-open="crane"
+              aria-label="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body. Select to view full size."><img src="assets/img/crane-1320.webp" srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
+             sizes="100vw" width="1320" height="1757"
+             loading="lazy" decoding="async"
+             style="object-position:50.0% 60.0%" alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
+      <figcaption>
+        <b>Mobile cranage</b>
+        <span>25-tonne telescopic mobile</span>
+      </figcaption>
+    </figure>
+<!--/proof-->
+  </div>
+  <div class="wrap pr-cases"><!--caseStudies-->
+
+<!--/caseStudies-->
   </div>
 </section>
 
@@ -727,8 +847,14 @@
   </div>
 </section>
 
-<!-- ═══════════════ SEND THE BRIEF ═══════════════ -->
-<section class="enq sec-alt" id="enquiry">
+<!-- ═══════════════ SEND THE BRIEF ═══════════════
+     The arc closes where it opened. The hero was a frame being built; this is
+     the same photograph, dimmed, with the form standing on it. The form panel
+     is opaque, so every field keeps the contrast it had on a light ground. -->
+<section class="enq sec-dark on-dark" id="enquiry">
+  <img class="enq-bg" src="assets/img/portal-frame-1320.webp"
+       srcset="assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
+       sizes="100vw" width="1320" height="888" loading="lazy" decoding="async" alt="">
   <div class="wrap">
     <div class="sec-head"><!--enqhead-->
     <p class="eyebrow">Get a price</p>

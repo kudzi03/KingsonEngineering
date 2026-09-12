@@ -117,5 +117,7 @@ export const GALLERY = [
   'gantry', 'laserMachine', 'crane'
 ];
 
-/** The one wide photograph, used full-bleed rather than as a tile. */
+/** The wide photograph that carries chapter 01 full-bleed rather than sitting
+    in the gallery as a tile. Named here so the sitemap and the chapter agree
+    on which one it is. */
 export const BAND_IMAGE = 'roofFrame';

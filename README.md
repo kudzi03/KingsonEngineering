@@ -40,31 +40,45 @@ pass means the file you tested is the file you are shipping.
 
 | Section | |
 |---|---|
-| **Hero** | Who this is, what they make, three actions: get a price, call, WhatsApp |
+| **Hero** | Who this is, what they make, three actions. A portal frame erects itself once on load and hands over to the real photograph — see `scenes/assembly.js` |
 | **Strip** | Four confirmed facts — the machine, the crane, the workshop, the acknowledgement |
-| **What we make** | All six confirmed services, each with what it is, its figures, and the line that says what to send |
-| **Band** | The page's one full-width photograph, carrying the roofing figures into the tables |
-| **Specifications** | 29 confirmed figures in five `<details>` groups |
-| **Recent work** | Eight photographs on a dark ground, click to view full size |
+| **01 Structure** | Full-bleed site photograph, copy in a masthead field |
+| **02 Form** | The IBR and corrugated sections **drawn to scale** from the confirmed figures, at one shared scale |
+| **03 Cut** | **±0.1 MM** beside the thickness table, over four portrait plates of the laser |
+| **04 Fabricate** | **3 000 MM** and the three confirmed flashings drawn in section. No photograph of this work exists |
+| **05 Lift** | **25 TONNES** beside the crane at full height |
+| **Workshop** | Tynwald Industries, Harare — place, not an About Us |
+| **Specifications** | All 29 confirmed figures in five `<details>` groups |
+| **Proof** | Three near-full-viewport bands of site work, labelled with confirmed facts only |
 | **How it works** | The five commitments Kingson confirmed in writing, as a rail |
-| **Send us the brief** | A structured enquiry that composes a message and hands it to WhatsApp or mail |
+| **Send us the brief** | The structured enquiry, over the hero photograph — the arc closes where it opened |
 | **Questions** | Ten questions, every answer a confirmed fact, also emitted as `FAQPage` |
 | **Contact** | Both numbers, both email addresses, hours, address, named contact |
 
 On a phone a **Call / Get a price** bar is fixed to the bottom of every screen.
 
 **Nothing hijacks the scroll.** There is no scroll listener anywhere in this
-build. The version this replaced pinned a 620vh stage and scrubbed six scenes
-against the scroll position: seven screens of animation before a visitor
-reached a single fact, and no way at all to phone the company.
+build. The hero's assembly is a one-shot on load, not scroll-scrubbed; reveals
+are driven by an IntersectionObserver that fires once per element. The version
+this replaced pinned a 620vh stage and scrubbed six scenes against scroll
+position: seven screens of animation before a visitor reached a single fact.
+
+### Six of nine photographs are 3:4 portrait
+
+That is the constraint the whole art direction is built around. A portrait
+source cropped into a 16:9 band shows 41% of its frame and reads as a mistake,
+so the three landscape photographs carry the full-bleed moments and the six
+portraits stand upright at full height — which is also their native format on
+a phone.
 
 ### Two services have no photograph
 
-Kingson supplied none of a balustrade, a gate or a stainless job. Those two
-cards carry a **spec plate** instead — the one confirmed figure a buyer of that
-work asks about, set at the size the photograph would have occupied. The two
-stock-style collages in the repository (`structure.jpeg`, `crane.jpeg`) are not
-Kingson's work and must never be published as if they were.
+Kingson supplied none of a balustrade, a gate or a stainless job, so chapter 04
+is carried by the three confirmed flashing folds drawn in section — for a
+folder, arguably more useful than a photograph. The two stock-style collages in
+the repository (`structure.jpeg`, `crane.jpeg`) are not Kingson's work and must
+never be published as if they were; their derivatives have been deleted so they
+cannot be served by accident.
 
 ---
 
@@ -96,8 +110,11 @@ same asset map the page renders from, so it cannot drift.
 
 Change content → run `render.js` → commit the generated files with it.
 
-`main.js` wires four interactive pieces only: the photograph viewer, the enquiry
-composer, the menu, and a stable small-viewport unit.
+`main.js` wires five interactive pieces only: the hero assembly, the motion
+vocabulary, the photograph viewer, the enquiry composer and the menu. Each is a
+module under `scenes/` or `interface/` and each is independently removable —
+with any of them absent the page is simply static, which is the state the
+stylesheet describes by default.
 
 ---
 
@@ -111,6 +128,9 @@ composer, the menu, and a stable small-viewport unit.
 | Colour, type scale, spacing, radius | `styles/tokens.css` |
 | Layout | `styles/site.css` |
 | The viewer, the form, the menu | `interface/`, `main.js` |
+| The hero's steel, the reveals, the drawn sections | `scenes/` |
+| Which chapter a service lives in | `content/chapters.js` |
+| Case studies, when Kingson supplies any | `content/projects.js` |
 | What counts as a confirmed figure | `tools/check-truth.js` — **with a citation** |
 
 ---
@@ -171,3 +191,14 @@ the running site:
 - **Images** — all 18 confirmed decoded, no failed requests, no console errors.
 - **Structure** — one `h1`, no skipped heading level, structured data parsed
   and asserted to contain no empty values.
+- **Text over photography** — 25 strings sampled against the *rendered pixels*
+  behind them, not against a nominal background colour: 0 below AA.
+- **Progressive enhancement** — with JavaScript disabled the page still serves
+  6 241 characters, all five chapter headings, all 29 specification rows, all
+  10 FAQ answers, 7 phone links and 3 WhatsApp links, and nothing is hidden
+  waiting for a callback.
+- **Performance** — LCP 116ms desktop / 96ms phone, CLS 0.0000 on both,
+  611 KB / 501 KB initial transfer.
+
+See `CREATIVE_ELEVATION_PLAN.md` for the before-and-after numbers and the
+judgement calls behind them.

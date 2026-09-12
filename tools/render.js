@@ -25,10 +25,13 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
-  UPDATED, EYEBROWS, HERO, STRIP, CAPABILITIES, BAND, SPECS, PROCESS,
+  UPDATED, EYEBROWS, HERO, STRIP, CAPABILITIES, SPECS, PROCESS,
   WORK, ENQUIRY, FAQ, CONTACT, NAV
 } from '../content/copy.js';
 import { ASSETS, GALLERY, BAND_IMAGE, src, srcset, position } from '../content/assets.js';
+import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
+import { PROOF, PROJECTS } from '../content/projects.js';
+import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -44,6 +47,7 @@ const wa = () => (publish('whatsapp') ? `https://wa.me/${publish('whatsapp')}` :
 
 const ICON_PHONE = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg>';
 const ICON_WA = '<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.5.1-.6.8-.7 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/></svg>';
+const ICON_EXPAND = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
 const ICON_ARROW = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
 /* ── action buttons ─────────────────────────────────────────────────────── */
@@ -129,17 +133,192 @@ ${facts(c.facts)}
     </li>`;
 }).join('\n');
 
-/* ── the full-width photograph ───────────────────────────────────────────── */
+/* ── the capability chapters ──────────────────────────────────────────────────
+   Five compositions, not five cards. Each one decides its own ground, its own
+   media and whether it has earned a large figure. The markup differs by
+   `media.kind` because a full-bleed photograph, a pair of drawn sections and
+   a strip of vertical plates are genuinely different objects — forcing them
+   through one template is what produced the card grid this replaces.       */
 
-const bandImg = ASSETS[BAND_IMAGE];
-const band = `  <img class="band-img" src="${src(BAND_IMAGE, 1320)}" srcset="${srcset(BAND_IMAGE)}"
-       sizes="100vw" width="${bandImg.w}" height="${bandImg.h}" loading="lazy" decoding="async"
-       style="object-position:${position(BAND_IMAGE)}" alt="${esc(bandImg.alt)}">
-  <div class="band-in">
-    <h2 class="display" id="band-h">${esc(BAND.title)}</h2>
-    <p>${esc(BAND.lede)}</p>
-    <a class="band-link" href="#specs">${esc(BAND.link)}${ICON_ARROW}</a>
-  </div>`;
+/* Every confirmed service must appear in some chapter. If one is dropped
+   during an edit the build stops here rather than quietly shipping a site
+   that no longer mentions it. */
+{
+  const covered = coverage();
+  const missing = CAPABILITIES.map((c) => c.title).filter((t) => !covered.includes(t));
+  if (missing.length) {
+    console.error(`chapters do not cover confirmed service(s): ${missing.join(', ')}`);
+    process.exit(2);
+  }
+}
+
+const photo = (key, { sizes, w, cls = '', eager = false }) => {
+  const a = ASSETS[key];
+  return `<img${cls ? ` class="${cls}"` : ''} src="${src(key, w)}" srcset="${srcset(key)}"
+             sizes="${sizes}" width="${a.w}" height="${a.h}"
+             ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"
+             style="object-position:${position(key)}" alt="${esc(a.alt)}">`;
+};
+
+/* Wraps a photograph in the control that opens it full size. Every photograph
+   the page shows is croppped to its composition, so the uncropped frame has to
+   stay reachable from wherever it appears — not only from a gallery. */
+const zoomable = (key, inner) =>
+  `<button type="button" class="zoom" data-open="${key}"
+              aria-label="${esc(ASSETS[key].alt)} Select to view full size.">${inner}<span class="zoom-cue" aria-hidden="true">${ICON_EXPAND}</span></button>`;
+
+const figures = (rows, cls = 'ch-figures') => `      <dl class="${cls}">
+${rows.map(([k, v]) => `        <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('\n')}
+      </dl>`;
+
+/* The large figure. Split so the unit can be set smaller than the number
+   without the markup having to know which is which. */
+function heroFigure(h) {
+  if (!h) return '';
+  const m = h.value.match(/^(\S+)\s*(.*)$/);
+  return `      <p class="ch-big" data-reveal="rise"><span>${esc(m[1])}${m[2] ? ` <b>${esc(m[2])}</b>` : ''}</span></p>
+      <p class="ch-big-label">${esc(h.label)}</p>`;
+}
+
+/* The chapter body in two halves, so a composition can put them in one
+   column or in two without the copy being written twice. */
+const chapterLead = (c) =>
+  `      <p class="ch-mark"><span class="ch-n">${esc(c.n)}</span><span class="ch-name">${esc(c.name)}</span></p>
+      <h2 class="display ch-title" data-reveal="rise"><span>${esc(c.title)}</span></h2>
+      <p class="ch-lede">${esc(c.body)}</p>`;
+
+const chapterData = (c) =>
+  `${heroFigure(c.hero)}
+${figures(c.figures)}
+      <p class="ch-ask">${esc(c.ask)}</p>`;
+
+const chapterBody = (c) => `${chapterLead(c)}\n${chapterData(c)}`;
+
+/* Section modifier per media kind. Deliberately NOT `ch-${media.kind}`: the
+   strip chapter contains a `<ul class="ch-strip">`, and a section that shared
+   that class made every `.ch-strip span` rule capture the chapter's own
+   headings. Distinct names for container and content. */
+const SECTION_CLASS = {
+  bleed: 'ch-bleed', sections: 'ch-sections', strip: 'ch-cut',
+  folds: 'ch-folds', plate: 'ch-plate'
+};
+
+function chapter(c) {
+  const g = c.ground === 'dark' ? ' ch-dark on-dark' : ' ch-light';
+  const head = `  <section class="ch ${SECTION_CLASS[c.media.kind]}${g}" id="${c.id}" aria-labelledby="ch-${c.id}-h">`;
+
+  if (c.media.kind === 'bleed') {
+    const k = c.media.photos[0];
+    return `${head}
+    <div class="ch-bleed-img" data-reveal="settle">
+      ${zoomable(k, photo(k, { sizes: '100vw', w: 1320 }))}
+    </div>
+    <div class="wrap ch-over">
+      <div class="ch-copy" id="ch-${c.id}-h">
+${chapterBody(c)}
+      </div>
+    </div>
+  </section>`;
+  }
+
+  if (c.media.kind === 'sections') {
+    const k = c.media.photos[0];
+    return `${head}
+    <div class="wrap ch-split">
+      <div class="ch-copy" id="ch-${c.id}-h">
+${chapterBody(c)}
+      </div>
+      <div class="ch-draw">
+        <figure class="pf-fig" data-reveal="draw">
+          <figcaption>IBR</figcaption>
+          ${section('ibr')}
+        </figure>
+        <figure class="pf-fig" data-reveal="draw">
+          <figcaption>Corrugated</figcaption>
+          ${section('corrugated')}
+        </figure>
+        <p class="pf-note">Both sections drawn to the same scale, from the confirmed cover widths and rib heights.</p>
+        <div class="ch-aside" data-reveal="plate" data-from="below">
+          ${zoomable(k, photo(k, { sizes: '(max-width:900px) 100vw, 46vw', w: 1100 }))}
+        </div>
+      </div>
+    </div>
+  </section>`;
+  }
+
+  if (c.media.kind === 'strip') {
+    /* Four portrait photographs at full height. A 3:4 source hard-cropped to a
+       16:9 band shows 41% of its frame and reads as a mistake; stood upright
+       side by side, the whole frame is used and the row reads as a machine
+       bed. */
+    /* All four wipe upward, staggered by position, so the row reads as one
+       movement rather than four unrelated ones. */
+    const plates = c.media.photos.map((k, i) => `        <li data-reveal="plate" data-from="below" style="--d:${i * 110}ms">
+          ${zoomable(k, photo(k, { sizes: '(max-width:900px) 62vw, 24vw', w: 720 })
+            + `<span>${esc(WORK.captions[k])}</span>`)}
+        </li>`).join('\n');
+    return `${head}
+    <div class="wrap ch-cut-head">
+      <div class="ch-copy" id="ch-${c.id}-h">
+${chapterLead(c)}
+      </div>
+      <div class="ch-cut-data">
+${chapterData(c)}
+      </div>
+    </div>
+    <ul class="ch-strip">
+${plates}
+    </ul>
+  </section>`;
+  }
+
+  if (c.media.kind === 'folds') {
+    return `${head}
+    <div class="wrap ch-split">
+      <div class="ch-copy" id="ch-${c.id}-h">
+${chapterBody(c)}
+      </div>
+      <div class="ch-draw">
+        <div class="pf-folds" data-reveal="draw">
+          ${flashings()}
+        </div>
+        <p class="pf-note">The three standard flashings, in section. Custom folds to 3 000 mm in the same material range.</p>
+      </div>
+    </div>
+  </section>`;
+  }
+
+  /* plate — one portrait photograph at full height beside the big figure */
+  const k = c.media.photos[0];
+  return `${head}
+    <div class="wrap ch-split ch-split-wide">
+      <div class="ch-copy" id="ch-${c.id}-h">
+${chapterBody(c)}
+      </div>
+      <div class="ch-tall" data-reveal="swing">
+        ${zoomable(k, photo(k, { sizes: '(max-width:900px) 100vw, 40vw', w: 1100 }))}
+      </div>
+    </div>
+  </section>`;
+}
+
+const chapters = CHAPTERS.map(chapter).join('\n\n');
+
+/* ── the workshop ───────────────────────────────────────────────────────────── */
+
+const workshop = `    <div class="ws-img" data-reveal="settle">
+      ${zoomable(WORKSHOP.photo, photo(WORKSHOP.photo, { sizes: '(max-width:900px) 100vw, 52vw', w: 1100 }))}
+    </div>
+    <div class="ws-copy">
+      <p class="eyebrow">${esc(WORKSHOP.eyebrow)}</p>
+      <p class="ws-place" data-reveal="rise"><span>${esc(WORKSHOP.place)}<b>${esc(WORKSHOP.city)}</b></span></p>
+      <h2 class="display" id="ws-h">${esc(WORKSHOP.title)}</h2>
+      <p class="ws-lede">${esc(WORKSHOP.body)}</p>
+${figures(WORKSHOP.figures, 'ch-figures ws-figures')}
+      <div class="ws-act">${quoteBtn()}${callBtn(NAV.call, true)}</div>
+    </div>`;
+
+/* ── the full-width photograph ───────────────────────────────────────────── */
 
 /* ── specifications ──────────────────────────────────────────────────────────
    Native <details>, so every figure is reachable with JavaScript off and is
@@ -155,17 +334,37 @@ ${g.rows.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></d
 
 /* ── work ────────────────────────────────────────────────────────────────── */
 
-const work = GALLERY.map((k, i) => {
-  const a = ASSETS[k];
-  const wide = i === 0;
-  return `    <li${wide ? ' class="work-wide"' : ''}><button type="button" data-open="${k}">
-      <img src="${src(k, wide ? 1100 : 720)}" srcset="${srcset(k)}"
-           sizes="${wide ? '(max-width:760px) 100vw, 66vw' : '(max-width:760px) 50vw, 33vw'}"
-           width="${a.w}" height="${a.h}" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"
-           style="object-position:${position(k)}" alt="${esc(a.alt)}">
-      <span class="work-cap">${esc(WORK.captions[k])}</span>
-    </button></li>`;
+/* ── proof ───────────────────────────────────────────────────────────────────
+   Three near-full-viewport bands of site work, not a grid of thumbnails. The
+   eight-tile grid this replaces had become pure repetition: every one of the
+   nine photographs is now presented large inside a chapter or the workshop
+   scene, so showing them all again at 232px added length and no information.
+
+   PROJECTS is empty — see content/projects.js — so no case-study metadata is
+   rendered. If entries are ever added, they render here without the renderer
+   needing to change.                                                       */
+
+const proof = PROOF.bands.map((band, i) => {
+  const a = ASSETS[band.photo];
+  return `    <figure class="pr-band" data-reveal="settle">
+      ${zoomable(band.photo, photo(band.photo, { sizes: '100vw', w: 1320 }))}
+      <figcaption>
+        <b>${esc(band.label)}</b>
+        <span>${esc(band.scope)}</span>
+      </figcaption>
+    </figure>`;
 }).join('\n');
+
+const caseStudies = PROJECTS.length
+  ? PROJECTS.map((pj) => `    <article class="pr-case" id="project-${pj.id}">
+      ${photo(pj.photo, { sizes: '(max-width:900px) 100vw, 50vw', w: 1100 })}
+      <h3>${esc(pj.label)}</h3>
+${[['Scope', pj.scope], ['Client', pj.client], ['Location', pj.location],
+   ['Year', pj.year], ['Steel', pj.tonnage]]
+    .filter(([, v]) => v)
+    .map(([k, v]) => `      <p><b>${esc(k)}</b> ${esc(v)}</p>`).join('\n')}
+    </article>`).join('\n')
+  : '';
 
 /* ── how it works ────────────────────────────────────────────────────────── */
 
@@ -337,17 +536,16 @@ const menunav = [...LINKS.slice(0, 3), ['#how', 'How it works'], ['#faq', 'Quest
 /* ── splice into the file between markers ───────────────────────────────── */
 
 const BLOCKS = {
-  ld, hdnav, menunav, hero, strip, services, band, specs, work, steps,
-  procClose, form, faq, contact, foot,
+  ld, hdnav, menunav, hero, strip, chapters, workshop, specs, proof, caseStudies,
+  steps, procClose, form, faq, contact, foot,
   logo:      logo('light', '46px', '(max-width:760px) 116px, 134px'),
   menulogo:  logo('light', '40px', '116px'),
   footlogo:  logo('reverse', '52px', '(max-width:760px) 132px, 152px'),
   headact:   callBtn(NAV.call, true) + quoteBtn(),
   baract:    callBtn(NAV.call, true) + quoteBtn(),
   menuact:   quoteBtn() + callBtn(publish('phone') || NAV.call, true) + waBtn(true),
-  svchead:   head('services', 'What we make.', 'Six things, in our own workshop and on site.'),
   specshead: head('specs', SPECS.title, SPECS.lede),
-  workhead:  head('work', WORK.title, WORK.lede),
+  proofhead: head('work', PROOF.title, PROOF.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
   enqhead:   head('enquiry', ENQUIRY.title, ENQUIRY.lede),
   faqhead:   head('faq', FAQ.title, null),
@@ -419,7 +617,8 @@ if (process.argv.includes('--check')) {
   writeFileSync(file, html);
   writeFileSync(smFile, sitemap);
   console.log(`index.html rendered from content/ — ${Object.keys(BLOCKS).length} regions, ` +
-    `${CAPABILITIES.length} services, ${SPECS.groups.reduce((n, g) => n + g.rows.length, 0)} ` +
-    `specification rows, ${GALLERY.length} photographs, ${FAQ.items.length} questions.`);
+    `${CHAPTERS.length} chapters covering ${CAPABILITIES.length} services, ` +
+    `${SPECS.groups.reduce((n, g) => n + g.rows.length, 0)} specification rows, ` +
+    `${GALLERY.length} photographs, ${FAQ.items.length} questions.`);
   console.log(`sitemap.xml rendered — 1 URL, ${GALLERY.length + 1} images.`);
 }

@@ -29,10 +29,18 @@ export const EYEBROWS = {
   contact:  'Where to find us'
 };
 
+/* The h1 carries the authority and the lede carries the comprehension. Both
+   are needed: "Steelwork. Built here." says who this is in two words — and
+   "here" is a confirmed fact, the workshop at No. 1262 Tynwald Industries —
+   while the line under it still names all four things a buyer might be
+   searching for. The full service list also sits in the title tag, the meta
+   description, the chapter headings, the FAQ and the structured data, so
+   nothing is lost by not cramming it into the h1. */
+
 export const HERO = {
-  eyebrow: 'Steelwork specialists · Harare',
-  title: 'Structural steel, roofing and cranage.',
-  lede: 'Fabrication and erection from our own workshop in Tynwald, with our own crane. Send drawings or a description — enquiries are acknowledged the same working day.',
+  eyebrow: 'Steelwork specialists · Tynwald, Harare',
+  title: 'Steelwork. Built here.',
+  lede: 'Structural steel, roofing, fiber laser cutting and cranage — fabricated in our own workshop and erected with our own crane. Send drawings or a description; enquiries are acknowledged the same working day.',
   /* The lede's promise is the one Kingson confirmed in §7. It is not a
      flourish; it is the commitment the office says it can meet every time. */
   actions: { quote: 'Get a price', call: 'Call', whatsapp: 'WhatsApp' }
@@ -185,16 +193,6 @@ export const STRIP = [
   ['Workshop',     'Tynwald Industries, Harare'],
   ['Enquiries',    'Acknowledged the same working day']
 ];
-
-/* ── the full-width photograph ───────────────────────────────────────────────
-   The page's one wide image, placed where a buyer has just read what Kingson
-   makes and is about to be shown the figures.                                */
-
-export const BAND = {
-  title: 'Cut to 12 m, in the profile you asked for.',
-  lede: 'IBR at 686 mm cover over five ribs. Corrugated at 762 mm over 10.5 corrugations. Galvanised or pre-painted, off the same order.',
-  link: 'See every confirmed figure'
-};
 
 export const WORK = {
   title: 'Recent work',

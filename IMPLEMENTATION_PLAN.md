@@ -130,3 +130,10 @@ this pass from shipping.
    the confirm column; the draft-column copy carries an ambiguous mark.
 6. **Whether the site should move to `kingsonengineering.co.zw`** — the domain
    exists (the confirmed email addresses use it).
+7. **The IBR rib pitch.** §2 gives both "686 mm cover, five ribs" and "rib
+   height / pitch 36 mm / 200 mm", and 686 / 5 = 137.2 mm. Both figures are
+   published in the specification table as written, but the drawn section uses
+   only the consistent set. Which is right?
+8. **Photographs of fabrication in progress, a balustrade, a gate and a
+   stainless job.** The FABRICATE chapter is currently carried by drawn fold
+   geometry because there is no photograph of that work at all.

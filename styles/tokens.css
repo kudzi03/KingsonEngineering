@@ -47,8 +47,10 @@
 
   /* The brand red is 3.57:1 on the dark card — fine for a 46px figure, not for
      a 12px label. This is the same hue and saturation lifted in lightness until
-     it clears 4.5:1 on both dark grounds. Measured, not eyeballed. */
-  --red-on-dark: #E84D52; /* red as small text on dark      4.50:1 on #1a1e1c   */
+     it clears 4.5:1 on EVERY dark ground the page uses, including the chapter
+     grounds (#0f1211, #1a1e1c) and the photographic scrims (rgb(8,10,9) and
+     up). Measured, not eyeballed: 4.59:1 at the tightest of them. */
+  --red-on-dark: #E95156;
 
   --green:     #039647;   /* brand tagline                                      */
   --green-ink: #02803C;   /* green as text                      5.05:1 on white  */
@@ -152,4 +154,104 @@ a { color: inherit; text-decoration: none; }
     animation-duration: .001ms !important; animation-iteration-count: 1 !important;
     transition-duration: .001ms !important;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   the motion vocabulary — see scenes/reveal.js
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Every rule below is scoped to `html.reveal-ready`, which only exists once
+   the script has an observer in hand. With no JavaScript the page is simply
+   visible, which is the correct default.
+
+   The easings are the point. `--ease-heavy` decelerates hard and never
+   overshoots — steel has inertia and does not bounce. `--ease-exact` is nearly
+   linear out: a laser head does not ease into position, it arrives.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --ease-heavy: cubic-bezier(.16, .84, .24, 1);
+  --ease-exact: cubic-bezier(.3, .9, .4, 1);
+  --ease-power: cubic-bezier(.22, .68, .18, 1);
+  --t-plate: 1100ms;
+  --t-rise:   820ms;
+  --t-settle:1400ms;
+  --t-draw:   900ms;
+  --t-swing: 1500ms;
+}
+
+html.reveal-ready [data-reveal] { will-change: clip-path, transform, opacity; }
+html.reveal-ready [data-reveal].is-revealed { will-change: auto; }
+
+/* ── plate: a sheet slid into place ───────────────────────────────────────────
+   NOT clip-path on the observed element. `clip-path: inset(0 0 0 100%)` clips
+   the box to zero area, and an element with zero area never reports as
+   intersecting — so the IntersectionObserver that is supposed to reveal it can
+   never fire, and it stays hidden for ever. That deadlock cost four laser
+   photographs and a chapter aside before it was caught.
+
+   Instead the element keeps its full box and a cover retracts off it. The
+   cover has to match the ground it sits on, which is what --plate-cover is
+   for; each chapter sets it. */
+html.reveal-ready [data-reveal="plate"] { position: relative; overflow: hidden; }
+html.reveal-ready [data-reveal="plate"]::after {
+  content: ""; position: absolute; inset: 0; z-index: 3;
+  background: var(--plate-cover, var(--bg));
+  transform: scaleX(1); transform-origin: 100% 50%;
+  transition: transform var(--t-plate) var(--ease-heavy);
+}
+html.reveal-ready [data-reveal="plate"][data-from="left"]::after  { transform-origin: 0 50%; }
+html.reveal-ready [data-reveal="plate"][data-from="below"]::after {
+  transform: scaleY(1); transform-origin: 50% 100%;
+}
+html.reveal-ready [data-reveal="plate"].is-revealed::after { transform: scaleX(0); }
+html.reveal-ready [data-reveal="plate"][data-from="below"].is-revealed::after { transform: scaleY(0); }
+
+/* ── rise: type out from behind a datum ────────────────────────────────── */
+html.reveal-ready [data-reveal="rise"] > * {
+  transform: translateY(102%);
+  transition: transform var(--t-rise) var(--ease-heavy);
+}
+html.reveal-ready [data-reveal="rise"] { overflow: hidden; }
+html.reveal-ready [data-reveal="rise"].is-revealed > * { transform: none; }
+
+/* ── settle: a camera coming to rest ──────────────────────────────────── */
+html.reveal-ready [data-reveal="settle"] > img,
+html.reveal-ready [data-reveal="settle"] > picture > img {
+  transform: scale(1.045);
+  transition: transform var(--t-settle) var(--ease-power);
+}
+html.reveal-ready [data-reveal="settle"].is-revealed > img,
+html.reveal-ready [data-reveal="settle"].is-revealed > picture > img { transform: none; }
+
+/* ── draw: fast and exact ─────────────────────────────────────────────── */
+html.reveal-ready [data-reveal="draw"] [data-draw-path] {
+  stroke-dasharray: var(--len, 1000);
+  stroke-dashoffset: var(--len, 1000);
+  transition: stroke-dashoffset var(--t-draw) var(--ease-exact);
+}
+html.reveal-ready [data-reveal="draw"].is-revealed [data-draw-path] { stroke-dashoffset: 0; }
+html.reveal-ready [data-reveal="draw"] [data-draw-fade] {
+  opacity: 0; transition: opacity 420ms linear 420ms;
+}
+html.reveal-ready [data-reveal="draw"].is-revealed [data-draw-fade] { opacity: 1; }
+
+/* ── swing: slow and powerful, about a pivot ──────────────────────────── */
+html.reveal-ready [data-reveal="swing"] {
+  transform: rotate(-3.2deg) translateY(3%);
+  transform-origin: 12% 100%;
+  transition: transform var(--t-swing) var(--ease-power);
+}
+html.reveal-ready [data-reveal="swing"].is-revealed { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.reveal-ready [data-reveal],
+  html.reveal-ready [data-reveal]::after,
+  html.reveal-ready [data-reveal] > *,
+  html.reveal-ready [data-reveal] [data-draw-path],
+  html.reveal-ready [data-reveal] [data-draw-fade] {
+    clip-path: none !important; transform: none !important;
+    opacity: 1 !important; stroke-dashoffset: 0 !important;
+  }
+  html.reveal-ready [data-reveal="plate"]::after { display: none !important; }
 }

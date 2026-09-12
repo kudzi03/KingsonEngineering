@@ -167,6 +167,7 @@ project, not a customer-facing contact. **Do not put these on the website.**
 | **Sections 9 and 10** | The returned scan runs page 1, 2, 3, 4, then page 6. **Original page 5 was not photographed**, so whatever sections 9 and 10 asked was neither seen nor answered. | Request a photograph of page 5. Nothing from those sections is assumed. |
 | Crane livery number | The photographed crane carries "0772 262 869", matching the confirmed mobile. Consistent, but it is livery, not a stated fact. | No action — the number is confirmed independently in section 1. |
 | "25 tonnes" | Handwritten in both the draft column and the confirm column. The draft-column copy has a mark through it that could be a correction of a different figure. The confirm column is unambiguous. | Published as 25 tonnes. Worth one verbal check. |
+| **IBR rib pitch, "200 mm"** | §2 confirms both "Cover width 686 mm, five ribs" and "Rib height / pitch 36 mm / 200 mm". These cannot describe the same sheet: 686 / 5 = 137.2 mm, not 200 mm. One of the two figures is wrong, or "pitch" there means something other than rib spacing. | **Both figures stay in the specification table, because the table is a transcript of what Kingson wrote.** But the drawn IBR section in `scenes/profiles.js` is built from the consistent set only — 686 mm cover, five ribs, 36 mm rib height — and the 200 mm figure is neither drawn nor annotated on it. Ask the office which is right. Do not resolve it by picking. |
 
 ---
 

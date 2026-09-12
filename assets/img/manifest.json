@@ -106,29 +106,5 @@
    1320
   ],
   "cropped": true
- },
- "material-tube": {
-  "source": "structure.jpeg",
-  "w": 1320,
-  "h": 1319,
-  "sizes": [
-   440,
-   720,
-   1100,
-   1320
-  ],
-  "cropped": false
- },
- "material-sheet": {
-  "source": "crane.jpeg",
-  "w": 1298,
-  "h": 750,
-  "sizes": [
-   440,
-   720,
-   1100,
-   1298
-  ],
-  "cropped": false
  }
 }
