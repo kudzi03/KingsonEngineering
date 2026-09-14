@@ -101,7 +101,8 @@ export const SERVICES = [
            'The quantity, and whether you want the parts deburred or left as cut.'],
     specGroups: ['laser'],
     bed: true,
-    faq: ['What thickness can you laser cut?', 'What file formats do you accept for cutting?'],
+    faq: ['What thickness can you laser cut?', 'What file formats do you accept for cutting?',
+          'Can I get a price without drawings?'],
     related: ['steel-fabrication', 'structural-steel-harare', 'roofing-and-trusses'],
     strip: ['gantry', 'cuttingHead', 'nestingStation']
   },
@@ -138,7 +139,8 @@ export const SERVICES = [
       { id: 'flashings', title: 'Flashings and custom folding',
         body: 'Ridge, barge and valley are standard items. Custom folds run to 3 000 mm across the full material range, and a stock gauge is three to five days.' }
     ],
-    faq: ['Can you make flashings to match?', 'What thickness can you laser cut?'],
+    faq: ['Can you make flashings to match?', 'What thickness can you laser cut?',
+          'Can I get a price without drawings?'],
     related: ['fiber-laser-cutting-harare', 'roofing-and-trusses', 'structural-steel-harare']
   },
 
@@ -160,7 +162,8 @@ export const SERVICES = [
            'The site address and the access: gate width, overhead lines, ground conditions.',
            'The date you need it, and for how long.'],
     specGroups: ['cranage'],
-    faq: ['How big a lift can you do?', 'Do you deliver outside Harare?'],
+    faq: ['How big a lift can you do?', 'Do you deliver outside Harare?',
+          'Do you hire out the crane on its own?'],
     related: ['structural-steel-harare', 'roofing-and-trusses', 'steel-fabrication']
   }
 ];
