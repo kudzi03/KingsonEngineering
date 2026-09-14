@@ -20,6 +20,7 @@ import { mountViewer } from './interface/image-viewer.js';
 import { mountEnquiry } from './interface/enquiry.js';
 import { mount as mountAssembly } from './scenes/assembly.js';
 import { mountReveals } from './scenes/reveal.js';
+import { mountParallax } from './scenes/parallax.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -73,6 +74,10 @@ if (hero && window.scrollY < hero.offsetHeight * 0.5) {
    itself, so with this module absent the page is simply visible. */
 
 mountReveals();
+
+/* Depth on the scenes that fill a viewport. Reads scrollY, writes transform,
+   and stops its own loop when nothing is in view. See scenes/parallax.js. */
+mountParallax();
 
 /* ── the photograph viewer ──────────────────────────────────────────────── */
 

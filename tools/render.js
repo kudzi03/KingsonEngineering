@@ -33,54 +33,17 @@ import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
 import { PROOF, PROJECTS } from '../content/projects.js';
 import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
+import { SERVICES } from '../content/services.js';
+import { pageGraph, serviceId } from './schema.js';
+import { allServicePages } from './pages.js';
+import {
+  SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
+  enquiryForm, callBtn, waBtn, quoteBtn, logo, bleedPhoto,
+  ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW
+} from './layout.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const file = root + 'index.html';
-const SITE = 'https://kingson-engineering.vercel.app/';
-
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const tel = (v) => 'tel:' + v.replace(/[^\d+]/g, '');
-const wa = () => (publish('whatsapp') ? `https://wa.me/${publish('whatsapp')}` : null);
-
-/* ── icons ──────────────────────────────────────────────────────────────── */
-
-const ICON_PHONE = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg>';
-const ICON_WA = '<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.5.1-.6.8-.7 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/></svg>';
-const ICON_EXPAND = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
-const ICON_ARROW = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-
-/* ── action buttons ─────────────────────────────────────────────────────── */
-
-const cls = (ghost) => (ghost ? 'btn-ghost' : 'btn');
-
-function callBtn(label, ghost) {
-  const p = publish('phone');
-  if (!p) return '';
-  return `<a class="${cls(ghost)}" href="${tel(p)}">${ICON_PHONE}<span>${esc(label || NAV.call)}</span></a>`;
-}
-function waBtn(ghost) {
-  const h = wa();
-  if (!h) return '';
-  return `<a class="${cls(ghost)}" href="${h}" target="_blank" rel="noopener">${ICON_WA}<span>${esc(NAV.whatsapp)}</span></a>`;
-}
-function quoteBtn(ghost) {
-  return `<a class="${cls(ghost)}" href="#enquiry"><span>${esc(NAV.quote)}</span></a>`;
-}
-
-/* ── the logo ────────────────────────────────────────────────────────────────
-   One piece of artwork at three sizes, plus a reversed variant for the dark
-   grounds: the drawn mark in the logo is near-black and vanishes on them, so
-   only that mark is lightened. The red and the green are untouched.          */
-
-function logo(kind, height, sizes) {
-  const stem = kind === 'reverse' ? 'kingson-logo-reverse' : 'kingson-logo';
-  const alt = `${publish('name')} — ${publish('tagline')}`;
-  return `<img src="assets/brand/${stem}-560.png"` +
-    ` srcset="assets/brand/${stem}-320.png 320w, assets/brand/${stem}-560.png 560w"` +
-    ` sizes="${sizes}" width="560" height="229" style="height:${height}"` +
-    ` alt="${esc(alt)}" decoding="async"${kind === 'reverse' ? ' loading="lazy"' : ''}>`;
-}
 
 /* ── section headers ─────────────────────────────────────────────────────── */
 
@@ -187,10 +150,14 @@ const chapterLead = (c) =>
       <h2 class="display ch-title" data-reveal="rise"><span>${esc(c.title)}</span></h2>
       <p class="ch-lede">${esc(c.body)}</p>`;
 
+/* The chapter ends by pointing at the page for that one service. It is the
+   site's principal internal link, and it is the natural next step for someone
+   who has just decided this is the thing they need. */
 const chapterData = (c) =>
   `${heroFigure(c.hero)}
 ${figures(c.figures)}
-      <p class="ch-ask">${esc(c.ask)}</p>`;
+      <p class="ch-ask">${esc(c.ask)}</p>
+      <p class="ch-more"><a href="/${c.route}">${esc(c.moreLabel || `More on ${c.name.toLowerCase()}`)}${ICON_ARROW}</a></p>`;
 
 const chapterBody = (c) => `${chapterLead(c)}\n${chapterData(c)}`;
 
@@ -203,15 +170,19 @@ const SECTION_CLASS = {
   folds: 'ch-folds', plate: 'ch-plate'
 };
 
+/* The four dark-to-light handovers, alternating direction. Named here rather
+   than in the stylesheet so the sequence is visible in one place. */
+const SCENE_CUT = { cut: ' scene-cut-r', lift: ' scene-cut-l' };
+
 function chapter(c) {
-  const g = c.ground === 'dark' ? ' ch-dark on-dark' : ' ch-light';
+  const g = (c.ground === 'dark' ? ' ch-dark on-dark' : ' ch-light') + (SCENE_CUT[c.id] || '');
   const head = `  <section class="ch ${SECTION_CLASS[c.media.kind]}${g}" id="${c.id}" aria-labelledby="ch-${c.id}-h">`;
 
   if (c.media.kind === 'bleed') {
     const k = c.media.photos[0];
     return `${head}
-    <div class="ch-bleed-img" data-reveal="settle">
-      ${zoomable(k, photo(k, { sizes: '100vw', w: 1320 }))}
+    <div class="ch-bleed-img" data-parallax data-reveal="settle">
+      ${zoomable(k, bleedPhoto(k))}
     </div>
     <div class="wrap ch-over">
       <div class="ch-copy" id="ch-${c.id}-h">
@@ -266,7 +237,8 @@ ${chapterLead(c)}
 ${chapterData(c)}
       </div>
     </div>
-    <ul class="ch-strip">
+    <ul class="ch-strip" tabindex="0" role="group"
+        aria-label="Photographs of the fiber laser. On a narrow screen this row scrolls sideways.">
 ${plates}
     </ul>
   </section>`;
@@ -306,7 +278,7 @@ const chapters = CHAPTERS.map(chapter).join('\n\n');
 
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
-const workshop = `    <div class="ws-img" data-reveal="settle">
+const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
       ${zoomable(WORKSHOP.photo, photo(WORKSHOP.photo, { sizes: '(max-width:900px) 100vw, 52vw', w: 1100 }))}
     </div>
     <div class="ws-copy">
@@ -344,10 +316,13 @@ ${g.rows.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></d
    rendered. If entries are ever added, they render here without the renderer
    needing to change.                                                       */
 
-const proof = PROOF.bands.map((band, i) => {
-  const a = ASSETS[band.photo];
+/* A band is full width and at most 700px tall — a wider frame than 16:9 — so
+   it takes the same art-directed cut the bleed scenes use. Two of the three
+   photographs here also appear in a chapter, and sharing the cut means the
+   second appearance costs nothing. */
+const proof = PROOF.bands.map((band) => {
   return `    <figure class="pr-band" data-reveal="settle">
-      ${zoomable(band.photo, photo(band.photo, { sizes: '100vw', w: 1320 }))}
+      ${zoomable(band.photo, bleedPhoto(band.photo))}
       <figcaption>
         <b>${esc(band.label)}</b>
         <span>${esc(band.scope)}</span>
@@ -533,17 +508,37 @@ const menunav = [...LINKS.slice(0, 3), ['#how', 'How it works'], ['#faq', 'Quest
   ['#enquiry', NAV.quote], ['#contact', NAV.contact]]
   .map(([h, t]) => `    <a href="${h}">${esc(t)}</a>`).join('\n');
 
+/* ── the homepage's <head> ───────────────────────────────────────────────────
+   Through the same function the service routes use, so a metadata change
+   cannot reach five pages and miss the sixth. */
+
+const HOME_TITLE = 'Steel Fabrication, Roofing & Cranage in Harare | Kingson';
+const HOME_DESC = 'Steelwork specialists in Tynwald, Harare. Structural steel, roof trusses and sheeting, fiber laser cutting to \u00b1 0.1 mm, and a 25-tonne mobile crane.';
+
+const homeHead = headHtml({
+  title: HOME_TITLE,
+  description: HOME_DESC,
+  path: '/',
+  ogImage: 'portalFrame',
+  preload: 'portalFrame',
+  ld: pageGraph({
+    path: '/', name: HOME_TITLE, description: HOME_DESC,
+    image: 'portalFrame', faq: FAQ.items
+  })
+});
+
 /* ── splice into the file between markers ───────────────────────────────── */
 
 const BLOCKS = {
-  ld, hdnav, menunav, hero, strip, chapters, workshop, specs, proof, caseStudies,
-  steps, procClose, form, faq, contact, foot,
-  logo:      logo('light', '46px', '(max-width:760px) 116px, 134px'),
-  menulogo:  logo('light', '40px', '116px'),
-  footlogo:  logo('reverse', '52px', '(max-width:760px) 132px, 152px'),
-  headact:   callBtn(NAV.call, true) + quoteBtn(),
-  baract:    callBtn(NAV.call, true) + quoteBtn(),
-  menuact:   quoteBtn() + callBtn(publish('phone') || NAV.call, true) + waBtn(true),
+  /* site furniture, generated once in tools/layout.js for every page */
+  head: homeHead,
+  chrometop: chromeTop({ home: true }),
+  sitefooter: siteFooter(),
+  chromebottom: chromeBottom(),
+
+  /* the homepage's own composition */
+  hero, strip, chapters, workshop, specs, proof, caseStudies,
+  steps, procClose, form, faq, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   proofhead: head('work', PROOF.title, PROOF.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
@@ -565,33 +560,55 @@ const before = readFileSync(file, 'utf8');
    `lastmod` comes from copy.js — see UPDATED there for why it is not taken
    from `git log`.                                                            */
 
+/* Homepage images, from the same asset map the page renders from, so the list
+   cannot drift out of step with the photographs actually published. */
 const sitemapImages = [BAND_IMAGE, ...GALLERY].map((k) =>
   `    <image:image>
-      <image:loc>${SITE}${src(k)}</image:loc>
+      <image:loc>${SITE}/${src(k)}</image:loc>
       <image:title>${esc(WORK.captions[k])}</image:title>
     </image:image>`).join('\n');
 
+/* Each service route, with the photographs that route actually shows. */
+const sitemapServices = SERVICES.map((sv) => {
+  const imgs = [sv.hero, ...(sv.strip || []), ...(sv.aside ? [sv.aside] : [])]
+    .filter((k, i, all) => all.indexOf(k) === i)
+    .map((k) => `    <image:image>
+      <image:loc>${SITE}/${src(k)}</image:loc>
+      <image:title>${esc(WORK.captions[k] || ASSETS[k].alt.slice(0, 90))}</image:title>
+    </image:image>`).join('\n');
+  return `  <url>
+    <loc>${SITE}/${sv.slug}</loc>
+    <lastmod>${UPDATED}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+
+${imgs}
+  </url>`;
+}).join('\n');
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <!--
-  One live URL: the site is a single page.
+  GENERATED by tools/render.js. Do not edit by hand — run \`node tools/render.js\`.
 
-  GENERATED by tools/render.js from content/assets.js and content/copy.js.
-  Do not edit by hand — run \`node tools/render.js\` instead.
+  Every URL here is a real committed file, and every image is a photograph
+  Kingson supplied, titled with the caption printed beside it on the page. A
+  sitemap submitted to a search engine is a published claim like any other, so
+  nothing appears here that is not already published and confirmed.
 
-  Every image below is a photograph Kingson supplied, and each title is the
-  caption printed beside it on the page. No client, project name, city or
-  capacity appears here that is not already published and confirmed.
+  \`lastmod\` comes from UPDATED in content/copy.js — see the note there for why
+  it is not taken from \`git log\`.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>${SITE}</loc>
+    <loc>${SITE}/</loc>
     <lastmod>${UPDATED}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
 
 ${sitemapImages}
   </url>
+${sitemapServices}
 </urlset>
 `;
 
@@ -605,20 +622,33 @@ for (const [name, value] of Object.entries(BLOCKS)) {
 const smFile = root + 'sitemap.xml';
 const smBefore = readFileSync(smFile, 'utf8');
 
+/* The service routes are whole generated files — see tools/pages.js. Vercel
+   serves `foo.html` at `/foo` (cleanUrls), so a flat file per route is all a
+   clean URL needs; no rewrite table, no directory indirection. */
+const routes = allServicePages();
+
+const readIf = (f) => { try { return readFileSync(root + f, 'utf8'); } catch { return null; } };
+
 if (process.argv.includes('--check')) {
-  const stale = [html !== before && 'index.html', sitemap !== smBefore && 'sitemap.xml']
-    .filter(Boolean);
+  const stale = [
+    html !== before && 'index.html',
+    sitemap !== smBefore && 'sitemap.xml',
+    ...routes.filter((r) => readIf(r.file) !== r.html).map((r) => r.file)
+  ].filter(Boolean);
   if (stale.length) {
-    console.error(`${stale.join(' and ')} out of date — run: node tools/render.js`);
+    console.error(`out of date — run: node tools/render.js\n  ${stale.join('\n  ')}`);
     process.exit(1);
   }
-  console.log('index.html and sitemap.xml match the content layer.');
+  console.log(`index.html, sitemap.xml and ${routes.length} service routes match the content layer.`);
 } else {
   writeFileSync(file, html);
   writeFileSync(smFile, sitemap);
+  for (const r of routes) writeFileSync(root + r.file, r.html);
   console.log(`index.html rendered from content/ — ${Object.keys(BLOCKS).length} regions, ` +
     `${CHAPTERS.length} chapters covering ${CAPABILITIES.length} services, ` +
     `${SPECS.groups.reduce((n, g) => n + g.rows.length, 0)} specification rows, ` +
     `${GALLERY.length} photographs, ${FAQ.items.length} questions.`);
-  console.log(`sitemap.xml rendered — 1 URL, ${GALLERY.length + 1} images.`);
+  console.log(`${routes.length} service routes rendered:`);
+  for (const r of routes) console.log(`  /${r.file.replace(/\.html$/, '')}`);
+  console.log(`sitemap.xml rendered — ${routes.length + 1} URLs.`);
 }

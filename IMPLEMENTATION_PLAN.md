@@ -91,6 +91,48 @@ for the stack decision and the system shape.
 
 ---
 
+## Creative elevation and final website pass · **DONE**
+
+Two passes after M2, both on the website only. See
+`CREATIVE_ELEVATION_PLAN.md` for the creative brief and the scene decisions.
+
+### Elevation
+
+The service grid became **five scenes** — Structure, Form, Cut, Fabricate,
+Lift — each with its own ground, media and large confirmed figure, and the
+gallery became three near-full-viewport proof bands. A hero assembly erects a
+portal frame once on load and hands over to the photograph. A reveal
+vocabulary (`plate`, `rise`, `settle`, `draw`, `swing`) replaced fade-up.
+
+### Final pass
+
+| | |
+|---|---|
+| Routes | Five service pages generated from `content/services.js`, each with its own title, description, canonical, H1, capability set, what-to-send, process, service area, FAQ, breadcrumb, structured data and pre-selected enquiry form |
+| Shared furniture | `tools/layout.js` and `tools/schema.js` now write the `<head>`, chrome, footer and entity graph for **all six** pages, the home page included |
+| Entity graph | One `@graph` per page: `Organization`+`LocalBusiness`, `WebSite`, `WebPage` (typed `FAQPage` where the page has questions), `BreadcrumbList`, `Service` ×6 cross-referenced by `@id` and pointing at the route that owns them |
+| Deliberately absent from the graph | `aggregateRating`, `review`, `foundingDate`, `numberOfEmployees`, `award`, `hasCredential`, geo coordinates, `priceRange` — none is confirmed, and the gate fails the build if any appears |
+| Art direction | Bleed frames became `<picture>`: a 16:9 cut above 900px derived from the focal anchor already in `content/assets.js`, the uncut portrait below it |
+| Pacing | The laser chapter became a scroll-snap carousel on a phone (2 849 px → 1 432 px); the home page fell from 21.3 to 19.6 phone screens with no information removed |
+| Scene cuts | Four `clip-path` handovers at the dark-to-light boundaries, alternating direction, 34px at desktop and 20px below 760px |
+| Depth | `scenes/parallax.js` — passive scroll read, transform only, stops its own loop when nothing is in view, off below 900px and under reduced motion |
+| Gate additions | Per page: valid JSON-LD, banned properties, one `<h1>`, canonical, title 20–62, description 70–160, both unique across pages; sitemap coverage in both directions; and every image file the HTML references present on disk |
+
+### Measured at the end of the pass
+
+| | |
+|---|---|
+| Contrast | 406 rendered pairs across 6 routes × 2 viewports, 0 below AA |
+| Pointer targets | 770 checked, 0 below the 24px AA minimum |
+| Links | 108 checked across 6 routes, 0 broken |
+| Horizontal scroll | none at 375, 390, 430, 768, 1024 or 1440 |
+| CLS | 0.0000 on every route at both viewports |
+| Page weight, laptop | `/` 1 291 KB · laser 841 KB · fabrication 500 KB · structural 528 KB · roofing 520 KB · cranage 414 KB |
+| Console | no errors, no failed requests on any route |
+| Without JavaScript | every route renders in full — h1, specification transcript, FAQ answers, all contact routes |
+
+---
+
 ## Milestone 3 — Enquiry pipeline · next pass
 
 `POST /api/enquiry` → Supabase persistence → internal notification →

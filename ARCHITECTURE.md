@@ -34,20 +34,75 @@ truth-check tool and the SEO baseline, for no gain to the customer. Declined.
 content/            the only place facts and copy live
   company.js        every business value behind a publication gate
   copy.js           every customer-facing string
-  assets.js         photographs, crops, alt text
+  chapters.js       the five scenes of the home page, and the workshop
+  services.js       the five service routes, composed from confirmed data
+  projects.js       the proof bands (PROJECTS is empty on purpose)
+  assets.js         photographs, focal anchors, alt text, derivative widths
 styles/
   tokens.css        design system (brand colours, type, radius, spacing)
   site.css          layout
+scenes/
+  assembly.js       the hero's one-shot structural erection (canvas 2D)
+  reveal.js         the reveal vocabulary — plate, rise, settle, draw, swing
+  parallax.js       depth on the scenes that fill a viewport
+  profiles.js       drawn sections, fold diagram and the laser bed
 interface/
   enquiry.js        local enquiry composer → WhatsApp / email handoff
   image-viewer.js   accessible full-size photograph dialog
 tools/
-  render.js         content/ → index.html   (run on change, output committed)
+  layout.js         the furniture every page shares — head, header, footer
+  schema.js         one JSON-LD entity graph, per page
+  pages.js          the service-route template
+  render.js         content/ → index.html + 5 routes + sitemap.xml
   check-truth.js    asserts the publication gate over the shipped HTML
   build-images.py   source photographs → responsive webp derivatives
 main.js             interaction only — no content, no scroll listeners
 index.html          generated, static, committed
+<service>.html      five generated routes, static, committed
 ```
+
+### Six routes, one set of furniture
+
+Vercel serves this project with `cleanUrls: true`, so `steel-fabrication.html`
+at the repository root is served at `/steel-fabrication`. That is why there are
+no directories and no rewrites: a flat file per route is the whole routing
+layer.
+
+| route | what it answers |
+|---|---|
+| `/` | who Kingson is and everything they do |
+| `/structural-steel-harare` | portal frames, columns, rafters, erection |
+| `/roofing-and-trusses` | trusses, purlins, sheeting, flashings |
+| `/fiber-laser-cutting-harare` | the DXTECH laser, bed size, tolerance, what to send |
+| `/steel-fabrication` | balustrades, gates, stainless, folding |
+| `/mobile-cranage-harare` | the 25-tonne telescopic mobile crane |
+
+Only five service routes exist, not seven. Balustrades and stainless share four
+confirmed figures between them and neither has a photograph, so separate pages
+would have been thin duplicates — the reason is recorded in the header comment
+of `content/services.js`, and both are covered inside `/steel-fabrication` with
+their own headings and anchors.
+
+The `<head>`, header, menu and footer of **all six pages** — the home page
+included — come from `tools/layout.js`, and every page's structured data from
+`tools/schema.js`. Nothing about the chrome is written twice, so navigation
+cannot drift between routes.
+
+### Photographs: two art-directed arms
+
+Seven of the nine photographs came off a phone in portrait. A full-bleed scene
+is a wide band, so `object-fit: cover` on a portrait file downloads 2.4
+megapixels to paint 1.0. `tools/build-images.py` therefore writes a second
+derivative family for the photographs that carry a bleed scene or a full-width
+band: `<slug>-wide-<width>.webp`, cut to 16:9 around **the same band the page
+was already showing** — the crop anchor is derived from the `focal` coordinate
+in `content/assets.js`, never repeated by hand. Those frames are a `<picture>`:
+the wide cut above 900px, the uncut original below it, where the frame really
+is portrait.
+
+`tools/check-truth.js` fails the build if any `src`, `srcset` or `imagesrcset`
+names a file that is not in the repository, because a missing arm of a
+`<picture>` fails silently in the browser.
 
 ### The publication gate
 

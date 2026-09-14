@@ -16,6 +16,11 @@
    never because large numbers look good. There is no invented statistic here
    and there is no round-number flourish.
 
+   `route` is the dedicated page for that chapter's service. A chapter is the
+   short version; the route is where someone who has decided they need that one
+   thing goes next, and the link between them is the site's main internal
+   linking.
+
    `photos` is what real Kingson photography can carry. FABRICATE has none,
    because Kingson supplied no photograph of a balustrade, a gate or a
    stainless job, and the two stock collages in this repository are not
@@ -25,7 +30,7 @@
 
 export const CHAPTERS = [
   {
-    n: '01', id: 'structure', name: 'Structure', ground: 'dark',
+    n: '01', id: 'structure', route: 'structural-steel-harare', name: 'Structure', ground: 'dark',
     covers: ['Structural steelwork'],
     title: 'Frames that carry the building.',
     body: 'Portal frames, columns, rafters and purlins — set out, fabricated in the workshop, and erected on site with our own crane.',
@@ -36,7 +41,7 @@ export const CHAPTERS = [
   },
 
   {
-    n: '02', id: 'form', name: 'Form', ground: 'light',
+    n: '02', id: 'form', route: 'roofing-and-trusses', name: 'Form', ground: 'light',
     covers: ['Roof steelwork and trusses'],
     title: 'Two profiles, cut to your roof.',
     body: 'Trusses, purlins and sheeting for long-span roofs, new build or re-roof. IBR and corrugated, galvanised or pre-painted, cut to length before it leaves the workshop.',
@@ -57,7 +62,7 @@ export const CHAPTERS = [
   },
 
   {
-    n: '03', id: 'cut', name: 'Cut', ground: 'dark',
+    n: '03', id: 'cut', route: 'fiber-laser-cutting-harare', name: 'Cut', ground: 'dark',
     covers: ['Fiber laser cutting'],
     title: 'Straight from your file.',
     body: 'Plate and sheet cut on a DXTECH fiber laser — nested from the drawing you send and cut on a 3 000 × 1 500 mm bed. Mild steel, stainless, aluminium and galvanised sheet.',
@@ -72,7 +77,7 @@ export const CHAPTERS = [
   },
 
   {
-    n: '04', id: 'fabricate', name: 'Fabricate', ground: 'light',
+    n: '04', id: 'fabricate', route: 'steel-fabrication', name: 'Fabricate', ground: 'light',
     covers: ['Balustrades and gates', 'Stainless fabrication'],
     title: 'Folded, welded, finished.',
     body: 'Balustrading, handrails, gates and stainless work, fabricated to your opening and finish. Sheet is folded in-house, and flashings are made to match the roof they go on.',
@@ -86,7 +91,7 @@ export const CHAPTERS = [
   },
 
   {
-    n: '05', id: 'lift', name: 'Lift', ground: 'dark',
+    n: '05', id: 'lift', route: 'mobile-cranage-harare', name: 'Lift', ground: 'dark',
     covers: ['Mobile cranage'],
     title: 'Lifted and set with our own crane.',
     body: 'One telescopic mobile crane, worked on our own erection contracts and hired out for other jobs. Delivery outside Harare is national, with transport priced per load.',

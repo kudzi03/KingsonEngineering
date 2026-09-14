@@ -28,10 +28,11 @@
    Run:  node tools/check-truth.js
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VALUES, unverifiedKeys } from '../content/company.js';
+import { ASSETS } from '../content/assets.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const SERVED = ['.html', '.js', '.css', '.xml', '.txt', '.json'];
@@ -163,12 +164,15 @@ for (const file of files) {
   }
 }
 
-/* ── the structured data must be real JSON with no holes ─────────────────── */
+/* ── every page's structured data must be real JSON with no holes ────────── */
 
-const html = readFileSync(root + 'index.html', 'utf8');
-const ldMatch = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
-if (!ldMatch) fail('index.html: no structured data');
-else {
+const pages = files.filter((f) => f.endsWith('.html') && !f.includes('404'));
+const seenTitles = [], seenDescs = [];
+for (const file of pages) {
+  const rel = file.slice(root.length);
+  const html = readFileSync(file, 'utf8');
+  const ldMatch = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  if (!ldMatch) { fail(`${rel}: no structured data`); continue; }
   try {
     const json = JSON.parse(ldMatch[1].replace(/<!--\/?ld-->/g, ''));
     const holes = [];
@@ -179,10 +183,113 @@ else {
         for (const [k, v] of Object.entries(node)) scan(v, `${path}.${k}`);
       }
     })(json, '@graph');
-    if (holes.length) fail(`index.html: structured data has empty values at ${holes.join(', ')}`);
+    if (holes.length) fail(`${rel}: structured data has empty values at ${holes.join(', ')}`);
+
+    /* A rating or a review would be the easiest lie on the whole site to tell
+       and the hardest for a reader to catch, because it never appears in the
+       visible page. Kingson has neither on file. */
+    const text = JSON.stringify(json);
+    for (const banned of ['aggregateRating', '"review"', 'foundingDate',
+                          'numberOfEmployees', '"award"', 'priceRange']) {
+      if (text.includes(banned)) fail(`${rel}: structured data asserts ${banned}, which is not confirmed`);
+    }
   } catch (e) {
-    fail(`index.html: structured data is not valid JSON — ${e.message}`);
+    fail(`${rel}: structured data is not valid JSON — ${e.message}`);
   }
+
+  /* One h1 per page, and a canonical that points at this page. */
+  const h1s = (html.match(/<h1[\s>]/g) || []).length;
+  if (h1s !== 1) fail(`${rel}: ${h1s} <h1> elements — expected exactly 1`);
+  const canon = html.match(/<link rel="canonical" href="([^"]+)"/);
+  if (!canon) fail(`${rel}: no canonical link`);
+
+  /* A title or description past the truncation point is not a failure a
+     browser will ever show you, which is exactly why it needs asserting. */
+  const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
+  const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
+  if (title.length > 62) fail(`${rel}: <title> is ${title.length} characters — over 62 is truncated`);
+  if (title.length < 20) fail(`${rel}: <title> is only ${title.length} characters`);
+  if (desc.length > 160) fail(`${rel}: meta description is ${desc.length} characters — over 160 is truncated`);
+  if (desc.length < 70) fail(`${rel}: meta description is only ${desc.length} characters`);
+
+  /* Titles and descriptions must be unique across the site, or the routes are
+     competing with each other for the same query. */
+  seenTitles.push([rel, title]); seenDescs.push([rel, desc]);
+}
+
+const dupes = (rows, what) => {
+  const byValue = {};
+  for (const [rel, v] of rows) (byValue[v] = byValue[v] || []).push(rel);
+  for (const [v, where] of Object.entries(byValue)) {
+    if (where.length > 1) fail(`${where.join(' and ')} share one ${what}: "${v.slice(0, 60)}"`);
+  }
+};
+dupes(seenTitles, '<title>');
+dupes(seenDescs, 'meta description');
+
+/* ── the asset map must describe the files that exist ────────────────────────
+   `content/assets.js` declares each photograph's dimensions and the widths it
+   has been written at; the page's width/height attributes, srcset entries and
+   <picture> arms all come from there. `assets/img/manifest.json` records what
+   `tools/build-images.py` actually wrote. If those two disagree the page is
+   declaring an aspect ratio the file does not have, or naming a derivative
+   that was never built — both silent in a browser. */
+
+{
+  const manifest = JSON.parse(readFileSync(root + 'assets/img/manifest.json', 'utf8'));
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  for (const [key, a] of Object.entries(ASSETS)) {
+    const e = manifest[a.slug];
+    if (!e) { fail(`content/assets.js declares ${key} (${a.slug}), which the image manifest does not list`); continue; }
+    if (e.w !== a.w || e.h !== a.h) {
+      fail(`${key}: content/assets.js says ${a.w}x${a.h}, the built file is ${e.w}x${e.h}`);
+    }
+    if (!same(e.sizes, a.widths)) {
+      fail(`${key}: content/assets.js lists widths ${a.widths.join(', ')}, the built set is ${e.sizes.join(', ')}`);
+    }
+    if (Boolean(e.wide) !== Boolean(a.wide)) {
+      fail(`${key}: ${a.wide ? 'declares' : 'does not declare'} a wide cut, but ${e.wide ? 'one was built' : 'none was built'}`);
+    } else if (e.wide && (e.wide.w !== a.wide.w || e.wide.h !== a.wide.h || !same(e.wide.sizes, a.wide.widths))) {
+      fail(`${key}: the wide cut in content/assets.js does not match the one that was built`);
+    }
+  }
+}
+
+/* ── every image a page asks for must be on disk ─────────────────────────────
+   There are now two derivative families — the plain widths and the 16:9 wide
+   cuts the bleed scenes serve above 900px — and a <picture> that names a file
+   `tools/build-images.py` has not written fails silently: the browser simply
+   falls back and the visitor never knows the art direction was meant to be
+   different. This catches it at build time instead. */
+
+const imageRefs = new Set();
+for (const f of pages) {
+  const html = readFileSync(f, 'utf8');
+  for (const m of html.matchAll(/(?:src|srcset|imagesrcset)="([^"]+)"/g)) {
+    for (const part of m[1].split(',')) {
+      const url = part.trim().split(/\s+/)[0];
+      if (/^assets\/img\/|^\/assets\/img\//.test(url)) imageRefs.add(url.replace(/^\//, ''));
+    }
+  }
+}
+let missing = 0;
+for (const url of imageRefs) {
+  if (!existsSync(root + url)) { fail(`${url} is referenced by a page but is not in the repository`); missing++; }
+}
+
+/* ── the sitemap must list every route that exists, and nothing that does not ─ */
+
+const sitemapXml = readFileSync(root + 'sitemap.xml', 'utf8');
+const listed = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+const expected = pages.map((f) => {
+  const rel = f.slice(root.length);
+  return 'https://kingson-engineering.vercel.app/' + (rel === 'index.html' ? '' : rel.replace(/\.html$/, ''));
+});
+for (const url of expected) {
+  if (!listed.includes(url)) fail(`sitemap.xml does not list ${url}, which is a committed page`);
+}
+for (const url of listed) {
+  if (!expected.includes(url)) fail(`sitemap.xml lists ${url}, which is not a committed page`);
 }
 
 /* ── the served HTML must match the content layer ─────────────────────────── */
@@ -204,3 +311,4 @@ console.log(`Publication gate holds across ${files.length} served files.`);
 console.log(`  ${allowedHits} confirmed figure${allowedHits === 1 ? '' : 's'} published, ` +
             `each citing the returned document.`);
 console.log(`  ${held.length} value${held.length === 1 ? '' : 's'} held back: ${held.join(', ') || 'none'}.`);
+console.log(`  ${imageRefs.size} image files referenced, all present.`);

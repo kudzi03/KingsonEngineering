@@ -243,6 +243,24 @@ WebP derivatives at quality 76 saved 11% and dropped one file to 36.2 dB PSNR
 measurable quality loss for a marginal saving is not an optimisation. The
 originals are unchanged.
 
+**The weight came out of the pixel count instead, not the quality.** A
+full-bleed scene is a wide band; seven of the nine photographs are portrait.
+Cropping to 16:9 *before* the browser downloads the file removes pixels the
+visitor was never going to see, at the same quality 78 — the laser hero fell
+from 405 KB to 144 KB, and `/` from 1 618 KB to 1 291 KB on a laptop, with the
+composition unchanged because the crop is derived from the band the CSS was
+already showing. Adding a 900px derivative did the rest: several frames land
+at about 750 CSS px on a laptop and were paying for the 1100 file.
+
+**`tools/build-images.py` could not reproduce its own output.** The shipped
+derivatives of portal-frame, crane and gantry were built from edge-trimmed
+crops the JOBS table no longer recorded — the manifest said crane was 1 768px
+tall, the shipped file was 1 757px, and `content/assets.js` agreed with the
+file rather than the manifest. The crop boxes are restored from the black rows
+actually present in each source, so the three rebuild to the dimensions they
+have always been served at, and the gate now fails if the asset map and the
+manifest ever disagree again.
+
 **The assembly does not run below 900px.** On a 390×675 hero the copy fills
 the frame, the receding bays have no horizontal room, and the steel reads as
 sticks behind text — worse than no animation. A phone gets the photograph at

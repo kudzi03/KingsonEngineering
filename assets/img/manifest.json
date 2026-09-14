@@ -2,26 +2,44 @@
  "portal-frame": {
   "source": "portalframe.jpeg",
   "w": 1320,
-  "h": 891,
+  "h": 888,
   "sizes": [
    440,
    720,
+   900,
    1100,
    1320
   ],
-  "cropped": false
+  "cropped": true,
+  "wide": {
+   "w": 1319,
+   "h": 742,
+   "sizes": [
+    900,
+    1319
+   ]
+  }
  },
  "crane": {
   "source": "craneyard.jpeg",
   "w": 1320,
-  "h": 1768,
+  "h": 1757,
   "sizes": [
    440,
    720,
+   900,
    1100,
    1320
   ],
-  "cropped": true
+  "cropped": true,
+  "wide": {
+   "w": 1319,
+   "h": 742,
+   "sizes": [
+    900,
+    1319
+   ]
+  }
  },
  "laser-machine": {
   "source": "laser.jpeg",
@@ -30,6 +48,7 @@
   "sizes": [
    440,
    720,
+   900,
    1100,
    1536
   ],
@@ -42,10 +61,19 @@
   "sizes": [
    440,
    720,
+   900,
    1100,
    1350
   ],
-  "cropped": false
+  "cropped": false,
+  "wide": {
+   "w": 1349,
+   "h": 759,
+   "sizes": [
+    900,
+    1320
+   ]
+  }
  },
  "nesting-station": {
   "source": "nesting.jpeg",
@@ -54,6 +82,7 @@
   "sizes": [
    440,
    720,
+   900,
    1100,
    1350
   ],
@@ -62,14 +91,23 @@
  "gantry": {
   "source": "gantry.jpeg",
   "w": 1350,
-  "h": 1800,
+  "h": 1794,
   "sizes": [
    440,
    720,
+   900,
    1100,
    1350
   ],
-  "cropped": false
+  "cropped": true,
+  "wide": {
+   "w": 1349,
+   "h": 759,
+   "sizes": [
+    900,
+    1320
+   ]
+  }
  },
  "cutting-head": {
   "source": "cuttinghead.jpeg",
@@ -78,6 +116,7 @@
   "sizes": [
    440,
    720,
+   900,
    1100,
    1350
   ],
@@ -90,10 +129,19 @@
   "sizes": [
    440,
    720,
+   900,
    1100,
    1320
   ],
-  "cropped": true
+  "cropped": true,
+  "wide": {
+   "w": 1269,
+   "h": 714,
+   "sizes": [
+    900,
+    1269
+   ]
+  }
  },
  "roof-trusses": {
   "source": "trusses.jpeg",
@@ -102,9 +150,44 @@
   "sizes": [
    440,
    720,
+   900,
    1100,
    1320
   ],
-  "cropped": true
+  "cropped": true,
+  "wide": {
+   "w": 1319,
+   "h": 742,
+   "sizes": [
+    900,
+    1319
+   ]
+  }
+ },
+ "material-tube": {
+  "source": "structure.jpeg",
+  "w": 1320,
+  "h": 1319,
+  "sizes": [
+   440,
+   720,
+   900,
+   1100,
+   1320
+  ],
+  "cropped": false
+ },
+ "material-sheet": {
+  "source": "crane.jpeg",
+  "w": 1298,
+  "h": 750,
+  "sizes": [
+   440,
+   720,
+   900,
+   1100,
+   1298
+  ],
+  "cropped": false
  }
 }

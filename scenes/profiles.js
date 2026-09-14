@@ -140,3 +140,80 @@ export function flashings() {
         <figcaption>${fl.name}</figcaption>
       </figure>`).join('\n      ');
 }
+
+/* ── the laser bed, to scale ──────────────────────────────────────────────────
+   The confirmed bed is 3 000 × 1 500 mm. A sentence says so; a rectangle drawn
+   at that ratio with parts nested inside it shows what it means — which is the
+   question a buyer is actually asking ("will my part fit?").
+
+   THE PARTS ARE INDICATIVE AND THE DRAWING SAYS SO. They are ordinary
+   fabrication shapes — a gusset, a flange plate, a bracket — not a Kingson job,
+   not a customer's part, and not presented as either. Faking a nesting from a
+   real order would be inventing a project, and there is no photograph of a
+   nest to trace. What IS confirmed is the bed size, and that is what the
+   drawing dimensions.                                                       */
+
+const BED_W = 3000, BED_H = 1500;
+const BED_PAD = 190;   // room for the dimension lines outside the bed
+
+/** A rounded-corner rectangle path, in mm. */
+const rect = (x, y, w, h, r = 0) => r
+  ? `M${f(x + r)} ${f(y)}H${f(x + w - r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + w)} ${f(y + r)}` +
+    `V${f(y + h - r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + w - r)} ${f(y + h)}` +
+    `H${f(x + r)}A${f(r)} ${f(r)} 0 0 1 ${f(x)} ${f(y + h - r)}` +
+    `V${f(y + r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + r)} ${f(y)}Z`
+  : `M${f(x)} ${f(y)}H${f(x + w)}V${f(y + h)}H${f(x)}Z`;
+
+const circle = (cx, cy, r) =>
+  `M${f(cx - r)} ${f(cy)}a${f(r)} ${f(r)} 0 1 0 ${f(r * 2)} 0a${f(r)} ${f(r)} 0 1 0 ${f(-r * 2)} 0`;
+
+/* Ordinary fabrication shapes, laid out inside the bed. */
+const PARTS = [
+  /* a gusset: right triangle with the corner taken off */
+  `M340 250L1040 250L1040 700L640 950L340 950Z`,
+  /* a flange plate with a bolt pattern */
+  rect(1180, 250, 700, 430, 26),
+  circle(1290, 360, 46), circle(1770, 360, 46),
+  circle(1290, 570, 46), circle(1770, 570, 46),
+  /* a long bracket */
+  rect(2020, 250, 640, 190, 18),
+  rect(2020, 500, 640, 180, 18),
+  /* two small plates */
+  rect(1180, 790, 330, 330, 20),
+  rect(1610, 790, 270, 330, 20),
+  /* a slotted strap */
+  rect(2020, 790, 640, 160, 22),
+  circle(2140, 870, 44), circle(2540, 870, 44)
+];
+
+/** The bed at 3 000 × 1 500 mm, with indicative parts nested in it. */
+export function bed() {
+  const W = BED_W + BED_PAD * 2;
+  const H = BED_H + BED_PAD * 2;
+  const x0 = BED_PAD, y0 = BED_PAD;
+
+  const parts = PARTS.map((d, i) =>
+    `      <path class="bed-part" data-draw-path style="--d:${i * 70}ms" d="${d.replace(/^M(\d)/, (m, g) => 'M' + g)}"/>`
+  ).join('\n');
+
+  return `<svg class="bed" viewBox="0 0 ${W} ${H}" role="img"
+     aria-label="The fiber laser bed drawn to scale at 3 000 by 1 500 millimetres, with indicative fabrication parts nested inside it."
+     preserveAspectRatio="xMidYMid meet">
+      <path class="bed-plate" d="${rect(x0, y0, BED_W, BED_H)}"/>
+      <g transform="translate(${x0} ${y0})">
+${parts}
+      </g>
+      <g class="pf-dim" data-draw-fade>
+        <path d="M${x0} ${y0 + BED_H + 70}L${x0 + BED_W} ${y0 + BED_H + 70}"/>
+        <path d="M${x0} ${y0 + BED_H + 54}L${x0} ${y0 + BED_H + 86}"/>
+        <path d="M${x0 + BED_W} ${y0 + BED_H + 54}L${x0 + BED_W} ${y0 + BED_H + 86}"/>
+        <text x="${x0 + BED_W / 2}" y="${y0 + BED_H + 148}">3 000 mm</text>
+      </g>
+      <g class="pf-dim" data-draw-fade>
+        <path d="M${x0 + BED_W + 70} ${y0}L${x0 + BED_W + 70} ${y0 + BED_H}"/>
+        <path d="M${x0 + BED_W + 54} ${y0}L${x0 + BED_W + 86} ${y0}"/>
+        <path d="M${x0 + BED_W + 54} ${y0 + BED_H}L${x0 + BED_W + 86} ${y0 + BED_H}"/>
+        <text x="${x0 + BED_W + 106}" y="${y0 + BED_H / 2 + 30}" text-anchor="start">1 500 mm</text>
+      </g>
+    </svg>`;
+}

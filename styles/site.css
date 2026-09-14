@@ -65,6 +65,13 @@ section { padding: clamp(56px, 6.4vw, 96px) 0; }
   background: rgba(250, 250, 250, .12); border-color: rgba(250, 250, 250, .6);
 }
 
+/* Every art-directed photograph on the site is a <picture>: a 16:9 cut above
+   900px and the uncut original below it. `display: contents` removes the
+   wrapper box entirely, so every rule written against the image — sizing,
+   object-fit, absolute positioning — still reaches it, and no empty inline box
+   is left behind in a section that only meant to hold a backdrop. */
+picture { display: contents; }
+
 /* ── header ─────────────────────────────────────────────────────────────── */
 
 .hd {
@@ -275,11 +282,21 @@ section { padding: clamp(56px, 6.4vw, 96px) 0; }
    heavy enough to destroy the photograph — so the type gets its own field
    instead, and the picture is left bright. */
 .ch-bleed::after {
-  content: ""; position: absolute; inset: 0;
+  content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(to top, rgba(8, 10, 9, .55) 0%,
                               rgba(8, 10, 9, .14) 34%, rgba(8, 10, 9, 0) 62%);
 }
-.ch-over { position: relative; z-index: 1; padding-block: clamp(56px, 7vw, 96px); }
+/* The scrim above and this overlay both used to sit across the whole frame and
+   swallow every click, so the photograph underneath could not be opened at
+   all — measured at 0% of the button reachable on all five service routes and
+   on the bleed chapters of the home page. The overlay passes pointer events
+   through; only the copy panel itself takes them back, which is the one part
+   of the frame that really is on top of the picture. */
+.ch-over {
+  position: relative; z-index: 1; padding-block: clamp(56px, 7vw, 96px);
+  pointer-events: none;
+}
+.ch-over .ch-copy { pointer-events: auto; }
 
 /* A masthead block, not a card: it runs off the left edge of the viewport and
    its text still lines up with the page gutter, so it reads as architecture
@@ -661,10 +678,14 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 /* ── contact (dark) ─────────────────────────────────────────────────────── */
 
 .ct-list {
-  display: grid; grid-template-columns: repeat(2, 1fr);
+  /* minmax(0, 1fr), not 1fr: a bare `1fr` track has an `auto` minimum, so one
+     unbreakable 34-character email address widened the column past the page
+     and pushed the whole document into horizontal scroll at 768px. */
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: clamp(24px, 4vw, 56px);
   max-width: 1000px; margin: 0 auto;
 }
+.ct-list dd { overflow-wrap: anywhere; }
 .ct-list li { border-top: 1px solid var(--line-dark); }
 .ct-list dl {
   display: flex; align-items: baseline; justify-content: space-between;
@@ -895,4 +916,335 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 
 @media (prefers-reduced-motion: reduce) {
   .ch-aside:hover, .zoom:hover { transform: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SERVICE ROUTES
+   ═══════════════════════════════════════════════════════════════════════════
+   Five dedicated pages. They reuse the chapter system's chrome — the same
+   bleed hero, the same figure rails, the same disclosure groups — because a
+   service page and a homepage chapter are the same company talking about the
+   same work, and two visual languages for that would be a mistake.
+
+   What is different is the ORDER. A chapter is a scene in a sequence; a
+   service page answers one question, in the order it gets asked: can you do
+   this, what exactly can you do, what do you need from me, when, where, and
+   how do I start.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── breadcrumb ─────────────────────────────────────────────────────────── */
+
+.crumbs { background: var(--bg); border-bottom: 1px solid var(--line); }
+.crumbs ol {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding-block: 13px; font-size: var(--t-small); color: var(--fg-faint);
+}
+.crumbs li { display: flex; align-items: center; gap: 8px; }
+.crumbs li + li::before { content: "/"; color: var(--line-strong); }
+.crumbs a { color: var(--fg-muted); min-height: 24px; display: inline-flex; align-items: center; }
+.crumbs a:hover { color: var(--accent-ink); }
+.crumbs [aria-current] { color: var(--fg); font-weight: 500; }
+
+/* ── the service hero ─────────────────────────────────────────────────────── */
+
+.sp-hero { min-height: min(78vh, 720px); }
+.sp-hero .ch-title { font-size: clamp(30px, 3.7vw, 54px); }
+.sp-hero .ch-copy { width: min(100%, 880px); }
+.sp-act { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+
+/* ── the brief: what is confirmed, and what we need ─────────────────────── */
+
+.sp-brief { padding: clamp(52px, 6vw, 88px) 0; }
+.sp-brief-in {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 76px); align-items: start;
+}
+.sp-brief h2 { font-size: clamp(21px, 2vw, 27px); margin-bottom: 20px; }
+
+.sp-rail { display: grid; }
+.sp-rail > div {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 20px; padding: 13px 0; border-top: 1px solid var(--line);
+  font-size: var(--t-ui);
+}
+.sp-rail dt { color: var(--fg-muted); }
+.sp-rail dd { font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
+.on-dark .sp-rail > div { border-top-color: var(--line-dark); }
+.on-dark .sp-rail dt { color: var(--fg-on-dark-muted); }
+
+.sp-send { display: grid; gap: 0; }
+.sp-send li {
+  display: flex; gap: 13px; padding: 13px 0; border-top: 1px solid var(--line);
+  color: var(--fg-muted);
+}
+.sp-send li::before {
+  content: ""; flex: none; width: 3px; align-self: stretch; margin-top: 4px;
+  border-radius: var(--pill); background: var(--accent);
+}
+
+/* ── the drawings ───────────────────────────────────────────────────────── */
+
+.sp-drawing { padding: clamp(52px, 6vw, 88px) 0; }
+.sp-draw { display: grid; gap: clamp(24px, 3vw, 40px); max-width: 980px; margin: 0 auto; }
+.sp-bed { max-width: 1060px; }
+.bed { width: 100%; height: auto; overflow: visible; }
+/* The bed itself reads as plate: a filled ground with a cut edge. */
+.bed-plate { fill: var(--bg); stroke: var(--fg); stroke-width: 3; vector-effect: non-scaling-stroke; }
+.bed-part {
+  fill: none; stroke: var(--accent); stroke-width: 2.5;
+  stroke-linejoin: round; vector-effect: non-scaling-stroke;
+}
+html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0ms); }
+
+/* ── the plate strip on a service page ──────────────────────────────────── */
+
+.sp-plates { padding: 0; }
+.sp-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: clamp(10px, 1.4vw, 18px); }
+.sp-strip > li img { height: clamp(300px, 44vh, 520px); }
+
+/* ── what the page covers, where one page carries more than one service ── */
+
+.sp-parts { padding: clamp(52px, 6vw, 88px) 0; }
+.sp-parts-list { display: grid; gap: clamp(26px, 3vw, 44px); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.sp-parts-list h2 { font-size: clamp(19px, 1.7vw, 23px); margin-bottom: 10px; }
+.sp-parts-list p { color: var(--fg-muted); }
+.sp-parts-list article { padding-top: 20px; border-top: 3px solid var(--accent); }
+
+/* ── process and place ──────────────────────────────────────────────────── */
+
+.sp-proc { padding: clamp(52px, 6vw, 88px) 0; }
+.sp-proc-in {
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: clamp(34px, 5vw, 76px); align-items: start;
+}
+.sp-proc h2 { font-size: clamp(24px, 2.4vw, 34px); margin-bottom: 12px; }
+.sp-lede { color: var(--fg-muted); margin-bottom: 30px; max-width: 52ch; }
+.sp-area {
+  background: var(--bg-soft); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: clamp(24px, 2.6vw, 34px);
+}
+.sp-area h2 { font-family: Archivo, sans-serif; font-weight: 700;
+              font-size: var(--t-h3); letter-spacing: -.012em; margin-bottom: 12px; }
+.sp-area p { color: var(--fg-muted); margin-bottom: 20px; }
+.sp-area .sp-rail > div:first-child { border-top: 0; padding-top: 0; }
+
+/* ── related services ───────────────────────────────────────────────────── */
+
+.sp-related { padding: clamp(48px, 5.5vw, 80px) 0; }
+.sp-related > .wrap > h2 { font-size: clamp(21px, 2vw, 28px); margin-bottom: 22px; }
+.sp-related-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.sp-related-list a {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  min-height: 66px; padding: 0 22px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
+}
+.sp-related-list a:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+.sp-related-name { font-weight: 500; }
+.sp-related-go { color: var(--accent); display: inline-flex; }
+.sp-related-list a:hover .sp-related-go { transform: translateX(3px); }
+.sp-related-go svg { transition: transform 160ms var(--ease); }
+.sp-back { margin-top: 22px; }
+.sp-back a {
+  display: inline-flex; align-items: center; gap: 9px; min-height: 44px;
+  font-size: var(--t-ui); font-weight: 500; color: var(--accent-ink);
+  border-bottom: 1px solid currentColor;
+}
+.sp-tail { padding-top: 0; }
+.sp-aside { border-radius: var(--r-lg); overflow: hidden; }
+.sp-aside img { width: 100%; height: clamp(220px, 30vw, 420px); object-fit: cover; }
+
+/* ── the chapter's link to its own page ─────────────────────────────────── */
+
+.ch-more { margin-top: 20px; }
+.ch-more a {
+  display: inline-flex; align-items: center; gap: 9px; min-height: 44px;
+  font-size: var(--t-ui); font-weight: 500;
+  color: var(--accent-ink); border-bottom: 1px solid currentColor;
+}
+.ch-dark .ch-more a { color: var(--accent-on-dark); }
+.ch-more svg { transition: transform 160ms var(--ease); }
+.ch-more a:hover svg { transform: translateX(3px); }
+
+/* ── the footer, now carrying real navigation ───────────────────────────── */
+
+.ft-nav {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 64px);
+  padding-bottom: clamp(28px, 3.4vw, 44px);
+  border-bottom: 1px solid var(--line-dark);
+  margin-bottom: clamp(22px, 2.6vw, 32px);
+}
+.ft-col h2 {
+  font-size: 12px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--fg-on-dark-muted); font-weight: 600; margin-bottom: 14px;
+}
+.ft-col ul { display: grid; gap: 2px; }
+.ft-col a {
+  display: inline-flex; align-items: center; min-height: 32px;
+  color: var(--fg-on-dark); font-size: var(--t-ui);
+  border-bottom: 1px solid transparent;
+}
+.ft-col a:hover { border-bottom-color: var(--fg-on-dark); }
+.ft-logo img { width: auto; }
+
+/* The service list in the menu, one level in. */
+.menu-sub { font-size: clamp(17px, 4.4vw, 22px) !important; padding-left: 18px !important; }
+.menu-sub::before {
+  content: ""; display: inline-block; width: 10px; height: 1px;
+  background: var(--accent); margin-right: 12px; vertical-align: middle;
+}
+
+/* ── service routes and the footer, below a laptop ─────────────────────────────
+   Every grid added for the service pages is declared here at each width it has
+   to change at. Without these the footer's email column alone pushed the
+   document to 541px inside a 390px viewport — a horizontal scrollbar on every
+   page on the site, which is the single most obvious mobile defect there is. */
+
+@media (max-width: 1024px) {
+  .sp-parts-list   { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sp-related-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ft-nav          { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .ft-col:first-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 900px) {
+  .sp-brief-in, .sp-proc-in { grid-template-columns: minmax(0, 1fr); }
+  .sp-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sp-strip > li img { height: clamp(240px, 34vh, 340px); }
+  .sp-hero { min-height: 0; }
+  .sp-hero .ch-copy { width: 100%; }
+}
+
+@media (max-width: 760px) {
+  .sp-parts-list, .sp-related-list, .ft-nav { grid-template-columns: minmax(0, 1fr); }
+  .ft-nav { gap: 26px; }
+  .sp-strip { grid-template-columns: 1fr; gap: 8px; }
+  .sp-strip > li img { height: 46svh; height: calc(46 * var(--svh, 1vh)); max-height: 400px; }
+
+  /* Stacked, so a 34-character email address has a full line rather than
+     fighting a label for a 98px column. */
+  .sp-rail > div { flex-direction: column; gap: 2px; padding: 11px 0; }
+  .sp-rail dd { text-align: left; }
+  .sp-aside img { height: 34svh; height: calc(34 * var(--svh, 1vh)); max-height: 320px; }
+  .crumbs ol { padding-block: 11px; font-size: 12.5px; }
+  .sp-related-list a { min-height: 60px; padding: 0 18px; }
+}
+
+/* A long address has to be allowed to break, wherever it appears. */
+.ft-col a, .sp-rail dd, .crumbs a { overflow-wrap: anywhere; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCENE CONTINUITY
+   ═══════════════════════════════════════════════════════════════════════════
+   Sections used to meet at a flat horizontal line, which is the edge a
+   CATALOGUE has. A portal frame does not have a horizontal top: it has a
+   pitch. Where a dark scene hands over to a light one, the cut is taken off
+   that pitch instead — the section's own ground carries the angle, so the
+   boundary belongs to the building rather than to the page grid.
+
+   Used FOUR times and no more, alternating direction, at the four dark-to-
+   light handovers. Any more and a deliberate cut becomes a tic.
+
+   The angle is shallow on purpose. The real rafter runs at about 12°, which
+   across a 1440px viewport is 300px of travel and a triangle, not a building.
+   This is that idea at a readable scale: a 34px drop, about 1.4°, which reads
+   as intent at any width and never eats a line of type.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root { --cut: 34px; }
+
+.scene-cut-r { clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), 0 100%); }
+.scene-cut-l { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - var(--cut))); }
+/* The next section closes the wedge the cut opens, so there is no gap. */
+.scene-cut-r + *, .scene-cut-l + * { margin-top: calc(var(--cut) * -1); }
+
+@media (max-width: 760px) {
+  /* A 34px drop across 390px is 5°, which starts to look like a mistake.
+     Narrow screens get a smaller cut rather than a steeper one. */
+  :root { --cut: 20px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* nothing here moves; the cut is static geometry, not an animation */
+}
+
+/* ── depth ──────────────────────────────────────────────────────────────────
+   A parallax element needs somewhere to travel, so the ones that move are
+   oversized inside their own clipping frame. The extra 9% is exactly the 4%
+   of travel each way plus a margin, so an edge can never be exposed. */
+
+[data-parallax] { will-change: transform; }
+.ch-bleed-img[data-parallax] { top: -4.5%; bottom: -4.5%; height: auto; }
+/* The zoom cue is an affordance, so it has to sit inside the frame the reader
+   can actually see. Pinned 12px from the top of a container that starts 4.5%
+   ABOVE its section, it landed under the breadcrumb bar on every service
+   route. This inset absorbs the overshoot. */
+.ch-bleed-img[data-parallax] .zoom-cue { top: calc(4.5% + 14px); }
+.ws-img[data-parallax] { overflow: hidden; }
+.ws-img[data-parallax] img { height: 109%; margin-top: -4.5%; }
+.enq-bg[data-parallax] { height: 109%; top: -4.5%; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax] { transform: none !important; will-change: auto; }
+}
+
+/* ── the crane, vertically ───────────────────────────────────────────────────
+   The one photograph whose job is to say "this thing is physically large".
+   It is given the full height of the section — past the padding, top and
+   bottom — so it reads as a vertical element passing through the frame rather
+   than a picture sitting inside a box.
+
+   The typography is NOT occluded by it. Running a photograph over "25 TONNES"
+   would look like depth and read like a rendering bug, and a figure half
+   hidden behind an image is a figure a screen reader announces and a sighted
+   reader cannot check. Scale comes from the plate's height instead. */
+
+.ch-plate .ch-tall {
+  /* Past the section padding top and bottom, and off the right edge of the
+     viewport. A vertical element that stops at a container edge is a picture
+     in a box; one that leaves the frame is the thing itself, passing through. */
+  margin-block: calc(clamp(64px, 8vw, 120px) * -1);
+  margin-right: calc(50% - 50vw);
+  border-radius: 0;
+}
+.ch-plate .ch-tall img { min-height: clamp(460px, 76vh, 860px); }
+
+@media (max-width: 900px) {
+  .ch-plate .ch-tall { margin-block: 0; margin-right: 0; border-radius: var(--r-lg); }
+  .ch-plate .ch-tall img { min-height: clamp(320px, 52vh, 520px); }
+}
+
+/* ── the plate strip on a phone ───────────────────────────────────────────────
+   Four full-width portraits stacked came to 2 849px — 3.4 screens for one
+   chapter, and the single biggest block of length on the mobile homepage.
+   Sideways is the right axis for a row of machine photographs: all four keep a
+   usable size, the next one is visibly half in frame so the gesture is
+   discoverable, and the chapter drops to about a screen and a half.
+
+   This is the only horizontal scroll on the site, and it is a contained one —
+   the document itself never scrolls sideways at any width. The container is
+   focusable, so arrow keys scroll it for anyone not using a touchscreen. */
+
+@media (max-width: 760px) {
+  .ch-strip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 78%;
+    grid-template-columns: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--margin);
+    padding-inline: var(--margin);
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .ch-strip::-webkit-scrollbar { display: none; }
+  .ch-strip > li { scroll-snap-align: center; }
+  .ch-strip > li img,
+  .sp-strip > li img { height: 52svh; height: calc(52 * var(--svh, 1vh)); max-height: 430px; }
+  .ch-strip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 }

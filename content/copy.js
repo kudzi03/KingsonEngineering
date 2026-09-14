@@ -17,7 +17,7 @@
    hand when a figure, a service or a photograph changes — a sitemap that
    claims a change every time the renderer runs teaches a crawler to ignore
    the field anyway. */
-export const UPDATED = '2026-09-12';
+export const UPDATED = '2026-09-14';
 
 export const EYEBROWS = {
   services: 'Six services',
@@ -291,7 +291,17 @@ export const FAQ = {
     { q: 'Where is the workshop?',
       a: 'No. 1262 Tynwald Industries, Harare. Open Monday to Saturday, 07:30 to 17:00.' },
     { q: 'How do I get a price?',
-      a: 'Send drawings or a description by WhatsApp on +263 772 262 869, or email admin1@kingsonengineering.co.zw. Technical drawings can go to technical@kingsonengineering.co.zw. Enquiries are acknowledged the same working day.' }
+      a: 'Send drawings or a description by WhatsApp on +263 772 262 869, or email admin1@kingsonengineering.co.zw. Technical drawings can go to technical@kingsonengineering.co.zw. Enquiries are acknowledged the same working day.' },
+    { q: 'Where is Kingson Engineering based?',
+      a: 'Kingson Engineering trades as Kingson Trading (Pvt) Ltd and works from one workshop at No. 1262 Tynwald Industries, Harare, Zimbabwe. It is open Monday to Saturday, 07:30 to 17:00, and enquiries reach Mr Murandu.' },
+    { q: 'What areas do you cover?',
+      a: 'Harare, and nationally across Zimbabwe. Erection is covered nationally and delivery outside Harare is priced per load.' },
+    { q: 'Can I get a price without drawings?',
+      a: 'Yes. Send the measurements and a photograph of the site, or a description of what you need. Where the job needs someone on site, a site visit is arranged within two working days, and a written quotation follows within the week.' },
+    { q: 'Do you hire out the crane on its own?',
+      a: 'Yes. The 25-tonne telescopic mobile crane works Kingson\u2019s own erection contracts and is hired out for other jobs. Tell us the load, the site access and the date.' },
+    { q: 'What can Kingson Engineering do?',
+      a: 'Six things: structural steelwork, roof steelwork and trusses, fiber laser cutting, balustrades and gates, stainless fabrication, and mobile cranage. All of it is fabricated at the Tynwald workshop and erected with Kingson\u2019s own crane.' }
   ]
 };
 

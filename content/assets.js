@@ -22,25 +22,28 @@ const V = (slug, widths) => widths.map((w) => `assets/img/${slug}-${w}.webp ${w}
 
 export const ASSETS = {
   portalFrame: {
-    slug: 'portal-frame', w: 1320, h: 888, widths: [440, 720, 1100, 1320],
+    slug: 'portal-frame', w: 1320, h: 888, widths: [440, 720, 900, 1100, 1320],
+    wide: { w: 1319, h: 742, widths: [900, 1319] },
     focal: [0.54, 0.47],
     alt: 'A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.',
     status: 'observed_photo'
   },
   roofTrusses: {
-    slug: 'roof-trusses', w: 1320, h: 792, widths: [440, 720, 1100, 1320],
+    slug: 'roof-trusses', w: 1320, h: 792, widths: [440, 720, 900, 1100, 1320],
+    wide: { w: 1319, h: 742, widths: [900, 1319] },
     focal: [0.54, 0.42],
     alt: 'The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building.',
     status: 'observed_photo'
   },
   roofFrame: {
-    slug: 'roof-frame', w: 1320, h: 714, widths: [440, 720, 1100, 1320],
+    slug: 'roof-frame', w: 1320, h: 714, widths: [440, 720, 900, 1100, 1320],
+    wide: { w: 1269, h: 714, widths: [900, 1269] },
     focal: [0.50, 0.35],
     alt: 'A white-painted roof structure seen from inside: trusses, purlins and corrugated sheeting with rooflights between the bays.',
     status: 'observed_photo'
   },
   cuttingHead: {
-    slug: 'cutting-head', w: 1350, h: 1800, widths: [440, 720, 1100, 1350],
+    slug: 'cutting-head', w: 1350, h: 1800, widths: [440, 720, 900, 1100, 1350],
     /* A wide crop centred lower than this loses the head itself and shows
        only bare plate and slats. Measured against the 16:9 service card. */
     focal: [0.60, 0.45],
@@ -48,31 +51,34 @@ export const ASSETS = {
     status: 'observed_photo'
   },
   laserMachine: {
-    slug: 'laser-machine', w: 1536, h: 2048, widths: [440, 720, 1100, 1536],
+    slug: 'laser-machine', w: 1536, h: 2048, widths: [440, 720, 900, 1100, 1536],
     focal: [0.50, 0.53],
     alt: 'A fiber laser cutting machine in a workshop, with a brick pier, yellow sheeting and a control screen beside the bed.',
     status: 'observed_photo'
   },
   laserFloor: {
-    slug: 'laser-floor', w: 1350, h: 1800, widths: [440, 720, 1100, 1350],
+    slug: 'laser-floor', w: 1350, h: 1800, widths: [440, 720, 900, 1100, 1350],
+    wide: { w: 1349, h: 759, widths: [900, 1320] },
     focal: [0.45, 0.52],
     alt: 'The whole fiber laser on the workshop floor, badged DXTECH LASER: enclosed bed with cutting slats, cable chain along the side, swing-arm control screen and an extraction duct, with a brick pier and timber pallets beside it.',
     status: 'observed_photo'
   },
   nestingStation: {
-    slug: 'nesting-station', w: 1350, h: 1800, widths: [440, 720, 1100, 1350],
+    slug: 'nesting-station', w: 1350, h: 1800, widths: [440, 720, 900, 1100, 1350],
     focal: [0.45, 0.48],
     alt: 'The laser control station: an upright monitor showing a nested cutting path on screen, keyboard, mouse and emergency stop on the machine shelf, with the slatted bed and the DXTECH cutting head behind it.',
     status: 'observed_photo'
   },
   gantry: {
-    slug: 'gantry', w: 1350, h: 1794, widths: [440, 720, 1100, 1350],
+    slug: 'gantry', w: 1350, h: 1794, widths: [440, 720, 900, 1100, 1350],
+    wide: { w: 1349, h: 759, widths: [900, 1320] },
     focal: [0.46, 0.55],
     alt: 'The laser gantry carriage seen side-on, cable chain arching over it, travelling above a slatted bed loaded with steel plate, with a brick wall and workshop sheeting behind.',
     status: 'observed_photo'
   },
   crane: {
-    slug: 'crane', w: 1320, h: 1757, widths: [440, 720, 1100, 1320],
+    slug: 'crane', w: 1320, h: 1757, widths: [440, 720, 900, 1100, 1320],
+    wide: { w: 1319, h: 742, widths: [900, 1319] },
     focal: [0.50, 0.60],
     alt: 'A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.',
     status: 'observed_photo'
@@ -82,6 +88,34 @@ export const ASSETS = {
 export function srcset(key) {
   const a = ASSETS[key];
   return V(a.slug, a.widths);
+}
+
+/* ── the wide cut ───────────────────────────────────────────────────────────
+   Seven of these photographs came off a phone in portrait. A full-bleed scene
+   is a wide band, so `object-fit: cover` throws away most of a portrait file
+   after downloading all of it. `tools/build-images.py` writes a 16:9 cut of
+   each bleed photograph around the same band the page was already showing,
+   and the bleed frames serve it from 900px up through <picture>. Below 900px
+   the frame really is portrait and the uncut file is the right one.
+
+   This is art direction, not a second photograph: same frame, same moment,
+   composed for the shape it is shown in. The viewer still opens the full
+   uncut picture, which is the one that has to stay honest.                 */
+
+export const hasWide = (key) => Boolean(ASSETS[key].wide);
+
+export function wideSrcset(key) {
+  const a = ASSETS[key];
+  return a.wide ? a.wide.widths.map((w) =>
+    `assets/img/${a.slug}-wide-${w}.webp ${w}w`).join(', ') : '';
+}
+
+export function wideSrc(key, width) {
+  const a = ASSETS[key];
+  if (!a.wide) return '';
+  const ws = a.wide.widths;
+  const w = ws.reduce((best, x) => (x >= width && x < best ? x : best), ws[ws.length - 1]);
+  return `assets/img/${a.slug}-wide-${w}.webp`;
 }
 
 /** The variant at or just above `width`; the largest when no width is given. */

@@ -3,8 +3,9 @@
 Public website for Kingson Engineering / Kingson Trading (Pvt) Ltd — steelwork
 specialists, No. 1262 Tynwald Industries, Harare, Zimbabwe.
 
-Static HTML, CSS and three ES modules. No framework, no dependencies, no build
-step to serve. Edit, run the renderer, push; Vercel redeploys.
+Static HTML, CSS and a handful of ES modules across six routes. No framework,
+no dependencies, no build step to serve. Edit, run the renderer, push; Vercel
+redeploys.
 
 Start here: **`SOURCE_OF_TRUTH.md`** for what may be published and why,
 **`ARCHITECTURE.md`** for the stack decision and the enquiry-to-delivery system,
@@ -26,13 +27,52 @@ file, and **each allowlist entry cites the section of the document it came
 from**. Adding a figure means being able to say who confirmed it.
 
 ```
-node tools/render.js          rewrite index.html and sitemap.xml from content/
-node tools/render.js --check  fail if either has drifted
-node tools/check-truth.js     assert all three gates over the shipped files
+node tools/render.js          rewrite index.html, the 5 service routes and
+                              sitemap.xml from content/
+node tools/render.js --check  fail if any of them has drifted
+node tools/check-truth.js     assert every gate over the shipped files
+python3 tools/build-images.py rebuild the webp derivatives from the source
+                              photographs (only when a photograph changes)
 ```
 
 Run `check-truth.js` before every push. It also runs `render.js --check`, so a
-pass means the file you tested is the file you are shipping.
+pass means the files you tested are the files you are shipping. Beyond the
+figures it asserts, per page: valid JSON-LD with no banned properties, exactly
+one `<h1>`, a canonical link, a `<title>` of 20–62 characters and a meta
+description of 70–160, no two pages sharing either, a sitemap that lists every
+committed page and nothing else, and that every image file the HTML asks for is
+actually in the repository.
+
+---
+
+## Six routes
+
+Vercel serves this project with `cleanUrls: true`, so a file at the repository
+root is served without its extension. That is the entire routing layer.
+
+| file | served at |
+|---|---|
+| `index.html` | `/` |
+| `structural-steel-harare.html` | `/structural-steel-harare` |
+| `roofing-and-trusses.html` | `/roofing-and-trusses` |
+| `fiber-laser-cutting-harare.html` | `/fiber-laser-cutting-harare` |
+| `steel-fabrication.html` | `/steel-fabrication` |
+| `mobile-cranage-harare.html` | `/mobile-cranage-harare` |
+
+A service page is not a slice of the home page. It answers a different question
+— *can you do my job, and what do you need from me* — so it leads with the
+confirmed capability for that one service, says plainly what to send, shows the
+specification transcript for the groups that apply, and carries its own enquiry
+form with that service already selected.
+
+There are five, not seven. Balustrades and stainless have four confirmed
+figures between them and no photograph; separate pages would have been thin
+duplicates, so both live inside `/steel-fabrication` under their own headings.
+The reasoning is in the header comment of `content/services.js`.
+
+All six pages get their `<head>`, header, menu and footer from
+`tools/layout.js` and their structured data from `tools/schema.js`, so the
+chrome cannot drift between routes.
 
 ---
 
@@ -52,7 +92,7 @@ pass means the file you tested is the file you are shipping.
 | **Proof** | Three near-full-viewport bands of site work, labelled with confirmed facts only |
 | **How it works** | The five commitments Kingson confirmed in writing, as a rail |
 | **Send us the brief** | The structured enquiry, over the hero photograph — the arc closes where it opened |
-| **Questions** | Ten questions, every answer a confirmed fact, also emitted as `FAQPage` |
+| **Questions** | Fifteen questions, every answer a confirmed fact, also emitted as `FAQPage` |
 | **Contact** | Both numbers, both email addresses, hours, address, named contact |
 
 On a phone a **Call / Get a price** bar is fixed to the bottom of every screen.
@@ -65,11 +105,22 @@ position: seven screens of animation before a visitor reached a single fact.
 
 ### Six of nine photographs are 3:4 portrait
 
-That is the constraint the whole art direction is built around. A portrait
-source cropped into a 16:9 band shows 41% of its frame and reads as a mistake,
-so the three landscape photographs carry the full-bleed moments and the six
-portraits stand upright at full height — which is also their native format on
-a phone.
+That is the constraint the whole art direction is built around. Portraits stand
+upright at full height wherever the frame is upright — which is also their
+native format on a phone.
+
+Where a frame really is a wide band, the photograph is **art-directed rather
+than cropped by CSS**: `tools/build-images.py` writes a second derivative,
+`<slug>-wide-<width>.webp`, cut to 16:9 around the same band the page was
+already showing, and the frame becomes a `<picture>` — wide cut above 900px,
+uncut original below it. Same frame, same moment, composed for the shape it is
+shown in. It is also the single largest performance win in the build: the laser
+hero fell from 405 KB to 144 KB and `/fiber-laser-cutting-harare` from 1103 KB
+to 841 KB on a laptop.
+
+The crop anchor is **derived** from the `focal` coordinate already in
+`content/assets.js`, never written twice — a second copy would drift, and the
+drift would be invisible.
 
 ### Two services have no photograph
 
@@ -130,6 +181,9 @@ stylesheet describes by default.
 | The viewer, the form, the menu | `interface/`, `main.js` |
 | The hero's steel, the reveals, the drawn sections | `scenes/` |
 | Which chapter a service lives in | `content/chapters.js` |
+| What a service route says, and which routes exist | `content/services.js` |
+| The shared head, header, footer and buttons | `tools/layout.js` |
+| What the structured data asserts | `tools/schema.js` |
 | Case studies, when Kingson supplies any | `content/projects.js` |
 | What counts as a confirmed figure | `tools/check-truth.js` — **with a citation** |
 
