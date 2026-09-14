@@ -247,9 +247,9 @@ originals are unchanged.
 full-bleed scene is a wide band; seven of the nine photographs are portrait.
 Cropping to 16:9 *before* the browser downloads the file removes pixels the
 visitor was never going to see, at the same quality 78 — the laser hero fell
-from 405 KB to 144 KB, and `/` from 1 618 KB to 1 291 KB on a laptop, with the
-composition unchanged because the crop is derived from the band the CSS was
-already showing. Adding a 900px derivative did the rest: several frames land
+from 405 KB to 144 KB and the home page from 1 475 KB to 1 313 KB on a laptop,
+with the composition unchanged because the crop is derived from the band the
+CSS was already showing. Adding a 900px derivative did the rest: several frames land
 at about 750 CSS px on a laptop and were paying for the 1100 file.
 
 **`tools/build-images.py` could not reproduce its own output.** The shipped

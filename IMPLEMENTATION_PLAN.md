@@ -113,7 +113,7 @@ vocabulary (`plate`, `rise`, `settle`, `draw`, `swing`) replaced fade-up.
 | Entity graph | One `@graph` per page: `Organization`+`LocalBusiness`, `WebSite`, `WebPage` (typed `FAQPage` where the page has questions), `BreadcrumbList`, `Service` ×6 cross-referenced by `@id` and pointing at the route that owns them |
 | Deliberately absent from the graph | `aggregateRating`, `review`, `foundingDate`, `numberOfEmployees`, `award`, `hasCredential`, geo coordinates, `priceRange` — none is confirmed, and the gate fails the build if any appears |
 | Art direction | Bleed frames became `<picture>`: a 16:9 cut above 900px derived from the focal anchor already in `content/assets.js`, the uncut portrait below it |
-| Pacing | The laser chapter became a scroll-snap carousel on a phone (2 849 px → 1 432 px); the home page fell from 21.3 to 19.6 phone screens with no information removed |
+| Pacing | The laser chapter became a scroll-snap carousel on a phone (2 785 px → 1 432 px); the home page fell from 20.0 to 19.6 phone screens with no information removed |
 | Scene cuts | Four `clip-path` handovers at the dark-to-light boundaries, alternating direction, 34px at desktop and 20px below 760px |
 | Depth | `scenes/parallax.js` — passive scroll read, transform only, stops its own loop when nothing is in view, off below 900px and under reduced motion |
 | Gate additions | Per page: valid JSON-LD, banned properties, one `<h1>`, canonical, title 20–62, description 70–160, both unique across pages; sitemap coverage in both directions; and every image file the HTML references present on disk |
@@ -127,7 +127,8 @@ vocabulary (`plate`, `rise`, `settle`, `draw`, `swing`) replaced fade-up.
 | Links | 108 checked across 6 routes, 0 broken |
 | Horizontal scroll | none at 375, 390, 430, 768, 1024 or 1440 |
 | CLS | 0.0000 on every route at both viewports |
-| Page weight, laptop | `/` 1 291 KB · laser 841 KB · fabrication 500 KB · structural 528 KB · roofing 520 KB · cranage 414 KB |
+| Page weight, laptop | `/` 1 313 KB (was 1 475 KB) · laser 843 KB · fabrication 501 KB · structural 534 KB · roofing 516 KB · cranage 432 KB |
+| Saved by the art direction | Measured against the same routes before the wide cuts: laser 1 103 → 843 KB, fabrication 653 → 501 KB, cranage 499 → 432 KB, structural 574 → 534 KB. The laser hero file alone fell 405 KB → 144 KB |
 | Console | no errors, no failed requests on any route |
 | Without JavaScript | every route renders in full — h1, specification transcript, FAQ answers, all contact routes |
 

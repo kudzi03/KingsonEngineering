@@ -115,8 +115,8 @@ than cropped by CSS**: `tools/build-images.py` writes a second derivative,
 already showing, and the frame becomes a `<picture>` — wide cut above 900px,
 uncut original below it. Same frame, same moment, composed for the shape it is
 shown in. It is also the single largest performance win in the build: the laser
-hero fell from 405 KB to 144 KB and `/fiber-laser-cutting-harare` from 1103 KB
-to 841 KB on a laptop.
+hero fell from 405 KB to 144 KB, `/fiber-laser-cutting-harare` from 1 103 KB to
+843 KB and the home page from 1 475 KB to 1 313 KB on a laptop.
 
 The crop anchor is **derived** from the `focal` coordinate already in
 `content/assets.js`, never written twice — a second copy would drift, and the
