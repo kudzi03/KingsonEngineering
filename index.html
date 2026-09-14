@@ -40,8 +40,18 @@
       imagesizes="100vw" media="(max-width: 899.98px)" fetchpriority="high">
 <!-- --svh is set before first paint so a phone's address bar collapsing
      mid-scroll cannot resize a full-height scene under the reader. From
-     main.js it arrived after layout and cost a measured 0.021 CLS. -->
-<script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')</script>
+     main.js it arrived after layout and cost a measured 0.021 CLS.
+
+     The second line puts the header into its over-the-hero state before the
+     first paint. Left to main.js it arrived after the module graph had loaded
+     — measured at 1.2s on a throttled connection — and a visitor watched a
+     white bar sit on the hero and then vanish. The observer in main.js takes
+     over from here and is what turns it off again. Nothing is added when the
+     visitor arrived at an anchor further down, and nothing at all happens with
+     JavaScript off: the header is then the solid bar it is everywhere else.
+     -->
+<script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')
+if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-over')</script>
 <link rel="stylesheet" href="/assets/fonts.css">
 <link rel="stylesheet" href="/styles/tokens.css">
 <link rel="stylesheet" href="/styles/site.css">
@@ -528,7 +538,8 @@
 <header class="hd">
   <div class="hd-in">
     <a class="hd-mark" href="#top" aria-label="Kingson Engineering, home">
-      <img src="assets/brand/kingson-logo-560.png" srcset="assets/brand/kingson-logo-320.png 320w, assets/brand/kingson-logo-560.png 560w" sizes="(max-width:760px) 116px, 134px" width="560" height="229" style="height:46px" alt="Kingson Engineering — Steelwork Specialists" decoding="async">
+      <span class="mark-lit"><img src="assets/brand/kingson-logo-560.png" srcset="assets/brand/kingson-logo-320.png 320w, assets/brand/kingson-logo-560.png 560w" sizes="(max-width:760px) 116px, 134px" width="560" height="229" style="height:46px" alt="Kingson Engineering — Steelwork Specialists" decoding="async"></span>
+      <span class="mark-rev"><img src="assets/brand/kingson-logo-reverse-560.png" srcset="assets/brand/kingson-logo-reverse-320.png 320w, assets/brand/kingson-logo-reverse-560.png 560w" sizes="(max-width:760px) 116px, 134px" width="560" height="229" style="height:46px" alt="" decoding="async"></span>
     </a>
     <nav class="hd-nav" aria-label="Primary">
       <a href="#services">What we do</a>

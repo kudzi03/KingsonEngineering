@@ -261,11 +261,24 @@ actually present in each source, so the three rebuild to the dimensions they
 have always been served at, and the gate now fails if the asset map and the
 manifest ever disagree again.
 
-**The assembly does not run below 900px.** On a 390×675 hero the copy fills
-the frame, the receding bays have no horizontal room, and the steel reads as
-sticks behind text — worse than no animation. A phone gets the photograph at
-full strength immediately, which is the stronger mobile hero and costs no
-battery. This is the brief's own instruction, not a shortcut.
+**The assembly is re-composed below 900px, not switched off.** The first
+version of this pass disabled it: on a 390×675 hero the desktop framing —
+six bays receding down the length, mass pushed right to clear the copy — has
+no horizontal room and reads as sticks behind text.
+
+That was a framing problem, not a rendering one. A phone now gets the same
+renderer with a portrait composition: three bays instead of six, the camera
+pulled back and turned toward the gable, the frame lifted so the whole portal
+sits in the top third and the copy keeps the bottom. Same members, same
+sections, same primer, same erection order, and the sheeting sweep still hands
+over to the photograph — whose own steel continues the model's line.
+
+It costs a phone less than the desktop version costs a laptop: about 40% fewer
+solids under the same device-pixel cap. Measured on the phone profile, 60fps
+held at 1× and 4× CPU throttling; at 6× — a genuinely slow handset — 17 frames
+of 204 fell to 30fps during the 2.6s shot. Hero copy stays above AA throughout:
+eyebrow 4.53:1, h1 and lede above 6:1 at every width, measured against the
+lightest pixel the lit steel puts behind them.
 
 **Chapter 01's copy sits in a masthead field, not on a scrim.** Two passes of
 scrim-strengthening both failed the pixel probe, because that photograph is a

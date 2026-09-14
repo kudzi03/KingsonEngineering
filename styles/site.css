@@ -74,15 +74,81 @@ picture { display: contents; }
 
 /* ── header ─────────────────────────────────────────────────────────────── */
 
+/* The bar's full height, border included. The home page hero is pulled up by
+   exactly this so the header sits OVER the opening scene rather than above it,
+   so the two have to stay in step. */
+:root { --hd-h: 77px; }
+
 .hd {
   position: sticky; top: 0; z-index: 120;
   background: rgba(255, 255, 255, .88);
   backdrop-filter: saturate(180%) blur(12px);
   border-bottom: 1px solid var(--line);
+  transition: background 260ms var(--ease), border-color 260ms var(--ease);
 }
 .hd-in {
-  display: flex; align-items: center; gap: 30px; min-height: 76px;
+  display: flex; align-items: center; gap: 30px;
+  min-height: calc(var(--hd-h) - 1px);
   max-width: var(--page); margin: 0 auto; padding: 0 var(--margin);
+}
+
+/* ── the header over the hero ─────────────────────────────────────────────────
+   A near-white bar above a dark cinematic hero cuts the opening in two. Over
+   the hero the bar becomes part of the scene: a dark field continuous with the
+   photograph behind it, carrying the reverse logo and on-dark navigation. Once
+   the hero has passed under it the bar returns to the solid state it has on
+   every other page, which is also the state it has with JavaScript off — the
+   class below is only ever ADDED by an IntersectionObserver that ran.
+
+   No scroll listener is involved. See main.js.                              */
+
+/* Fully transparent, not a darker bar: a bar of any shade still draws a line
+   across the opening. The hero's own top vignette below is what carries the
+   navigation, which is why that gradient is part of this change and not
+   decoration. */
+html.hd-over .hd {
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+html.hd-over .hd-nav a { color: rgba(250, 250, 250, .86); }
+html.hd-over .hd-nav a:hover { color: #fff; }
+/* The Call button takes the on-dark pair the rest of the site uses — left as
+   `--fg` it was near-black type on a dark sky — AND a translucent ground of
+   its own. The vignette alone is not a guarantee: the top right of this
+   photograph is cloud, and white type measured 2.79:1 over it. Darkening the
+   whole band to rescue one control would cost the photograph far more than the
+   control is worth, so the control carries its own ground. The hover state
+   lifts the fill rather than replacing it, because a hover that goes lighter
+   than the rest would undo exactly what this is for. */
+html.hd-over .hd-act .btn-ghost {
+  color: var(--fg-on-dark); border-color: rgba(250, 250, 250, .38);
+  background: rgba(8, 10, 9, .46);
+}
+html.hd-over .hd-act .btn-ghost:hover {
+  background: rgba(8, 10, 9, .66); border-color: rgba(250, 250, 250, .64);
+}
+html.hd-over .hd-menu { color: var(--fg-on-dark); }
+html.hd-over .hd-menu-bars,
+html.hd-over .hd-menu-bars::before,
+html.hd-over .hd-menu-bars::after { background: var(--fg-on-dark); }
+
+/* One artwork swapped, not two designs: the wordmark is Kingson's red and
+   green on both variants and carries either ground — only the signature above
+   it changes colour. Neither brand colour is light, though, so over a
+   photograph the letters lose their edge even through the vignette; the shadow
+   gives them a ground tight to the glyphs without drawing a box and without
+   lightening colours that are not ours to lighten. */
+.hd-mark .mark-rev { display: none; }
+html.hd-over .hd-mark .mark-rev { display: block; }
+html.hd-over .hd-mark .mark-lit { display: none; }
+html.hd-over .hd-mark img {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .9))
+          drop-shadow(0 0 7px rgba(0, 0, 0, .7));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hd { transition: none; }
 }
 /* The logo is artwork, not type: it keeps its own proportions and the anchor
    is sized by it rather than the reverse. */
@@ -101,16 +167,30 @@ picture { display: contents; }
 
 .hero {
   position: relative; background: var(--bg-dark); color: var(--fg-on-dark);
-  min-height: min(78vh, 700px); display: flex; align-items: flex-end;
+  /* Pulled up under the header and grown by the same amount, so the scene the
+     visitor actually sees is the height it has always been. */
+  margin-top: calc(var(--hd-h) * -1);
+  min-height: calc(min(78vh, 700px) + var(--hd-h));
+  display: flex; align-items: flex-end;
   padding: 0; overflow: hidden;
 }
 .hero-img { position: absolute; inset: 0; width: 100%; height: 100%;
             object-fit: cover; object-position: 54% 47%; }
+/* Two layers. The lower one is the copy's ground and has not changed. The
+   upper one is a short vignette across the top: the header now sits on the
+   photograph, and this is what guarantees the navigation a dark ground
+   whatever the sky is doing behind it. Measured, not guessed — see the
+   contrast probe in the verification notes. */
 .hero::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(to top,
-    rgba(10, 12, 11, .95) 0%,  rgba(10, 12, 11, .92) 26%, rgba(10, 12, 11, .84) 48%,
-    rgba(10, 12, 11, .58) 68%, rgba(10, 12, 11, .20) 85%, rgba(10, 12, 11, 0) 100%);
+  background:
+    linear-gradient(to bottom,
+      rgba(10, 12, 11, .80) 0%, rgba(10, 12, 11, .66) 6%,
+      rgba(10, 12, 11, .42) 12%, rgba(10, 12, 11, .16) 19%,
+      rgba(10, 12, 11, 0) 27%),
+    linear-gradient(to top,
+      rgba(10, 12, 11, .95) 0%,  rgba(10, 12, 11, .92) 26%, rgba(10, 12, 11, .84) 48%,
+      rgba(10, 12, 11, .58) 68%, rgba(10, 12, 11, .20) 85%, rgba(10, 12, 11, 0) 100%);
 }
 /* The assembly canvas sits over the photograph and under every word of the
    hero. It removes itself when it has finished. */
@@ -152,7 +232,7 @@ picture { display: contents; }
 .hero-in {
   position: relative; z-index: 3; width: 100%;
   max-width: var(--page); margin: 0 auto;
-  padding: clamp(72px, 9vw, 120px) var(--margin) clamp(44px, 5.5vw, 68px);
+  padding: calc(clamp(72px, 9vw, 120px) + var(--hd-h)) var(--margin) clamp(44px, 5.5vw, 68px);
 }
 .hero-body { max-width: 740px; }
 .hero-eyebrow {
@@ -826,18 +906,27 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   }
   .hd-menu-bars::before { top: -6px; }
   .hd-menu-bars::after  { top: 6px; }
-  .hd-in { min-height: 64px; gap: 16px; }
+  :root { --hd-h: 65px; }
+  .hd-in { gap: 16px; }
 
-  .hero { min-height: 80svh; min-height: calc(80 * var(--svh, 1vh)); }
+  .hero {
+    min-height: calc(80svh + var(--hd-h));
+    min-height: calc(80 * var(--svh, 1vh) + var(--hd-h));
+  }
   /* Lighter at the top than the desktop scrim: the copy block is taller here
      and the full-strength gradient buried the photograph entirely. */
   /* The copy block is taller here, so the mid-band has to carry more than it
      does on desktop — the eyebrow measured 2.96:1 when this fell away at 56%.
      The very top stays open so the photograph still announces itself. */
   .hero::after {
-    background: linear-gradient(to top,
-      rgba(10, 12, 11, .95) 0%,  rgba(10, 12, 11, .92) 38%, rgba(10, 12, 11, .86) 62%,
-      rgba(10, 12, 11, .62) 80%, rgba(10, 12, 11, .22) 93%, rgba(10, 12, 11, .06) 100%);
+    background:
+      linear-gradient(to bottom,
+        rgba(10, 12, 11, .80) 0%, rgba(10, 12, 11, .64) 5%,
+        rgba(10, 12, 11, .38) 10%, rgba(10, 12, 11, .12) 15%,
+        rgba(10, 12, 11, 0) 22%),
+      linear-gradient(to top,
+        rgba(10, 12, 11, .95) 0%,  rgba(10, 12, 11, .92) 38%, rgba(10, 12, 11, .86) 62%,
+        rgba(10, 12, 11, .62) 80%, rgba(10, 12, 11, .22) 93%, rgba(10, 12, 11, .06) 100%);
   }
   /* The price CTA takes its own row; call and WhatsApp share the next one. */
   .hero-act { gap: 10px; }

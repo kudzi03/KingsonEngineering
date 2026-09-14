@@ -85,13 +85,16 @@ export function quoteBtn(ghost, to = '#enquiry') {
 
 /* ── the logo ───────────────────────────────────────────────────────────── */
 
-export function logo(kind, height, sizes, base = '') {
+export function logo(kind, height, sizes, base = '', decorative = false) {
   const stem = kind === 'reverse' ? 'kingson-logo-reverse' : 'kingson-logo';
-  const alt = `${publish('name')} — ${publish('tagline')}`;
+  const alt = decorative ? '' : `${publish('name')} — ${publish('tagline')}`;
+  /* A reverse mark in the header is the first thing painted, so it is not
+     deferred there the way the footer's is. */
+  const lazy = kind === 'reverse' && !decorative ? ' loading="lazy"' : '';
   return `<img src="${base}assets/brand/${stem}-560.png"` +
     ` srcset="${base}assets/brand/${stem}-320.png 320w, ${base}assets/brand/${stem}-560.png 560w"` +
     ` sizes="${sizes}" width="560" height="229" style="height:${height}"` +
-    ` alt="${esc(alt)}" decoding="async"${kind === 'reverse' ? ' loading="lazy"' : ''}>`;
+    ` alt="${esc(alt)}" decoding="async"${lazy}>`;
 }
 
 /* ── navigation ───────────────────────────────────────────────────────────────
@@ -137,12 +140,22 @@ export function menuNav(home, current) {
 /* ── chrome ─────────────────────────────────────────────────────────────── */
 
 export function chromeTop({ home = false, current = '' } = {}) {
+  /* The home page header sits over the hero, so it carries both marks and the
+     stylesheet shows whichever the ground calls for. The anchor already names
+     itself, so the second image is decorative rather than a repeat of the
+     accessible name. Only the home page pays for it, and the reverse mark is
+     on that page regardless — the footer uses it. */
+  const mark = home
+    ? `      <span class="mark-lit">${logo('light', '46px', '(max-width:760px) 116px, 134px')}</span>
+      <span class="mark-rev">${logo('reverse', '46px', '(max-width:760px) 116px, 134px', '', true)}</span>`
+    : '      ' + logo('light', '46px', '(max-width:760px) 116px, 134px');
+
   return `<a class="skip" href="#main">Skip to content</a>
 
 <header class="hd">
   <div class="hd-in">
     <a class="hd-mark" href="${home ? '#top' : '/'}" aria-label="Kingson Engineering, home">
-${'      ' + logo('light', '46px', '(max-width:760px) 116px, 134px')}
+${mark}
     </a>
     <nav class="hd-nav" aria-label="Primary">
 ${headerNav(home, current)}
@@ -235,7 +248,7 @@ export function chromeBottom() {
 
 const FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f1211'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-weight='700' font-size='30' fill='%23E21E25' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E";
 
-export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld, ogType = 'website' }) {
+export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld, ogType = 'website', home = false }) {
   const canonical = SITE + (path === '/' ? '/' : path);
   const img = ASSETS[ogImage];
   const imgUrl = SITE + '/' + src(ogImage, 1320);
@@ -288,8 +301,18 @@ export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld
 <link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 ${pre}<!-- --svh is set before first paint so a phone's address bar collapsing
      mid-scroll cannot resize a full-height scene under the reader. From
-     main.js it arrived after layout and cost a measured 0.021 CLS. -->
-<script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')</script>
+     main.js it arrived after layout and cost a measured 0.021 CLS.
+${home ? `
+     The second line puts the header into its over-the-hero state before the
+     first paint. Left to main.js it arrived after the module graph had loaded
+     — measured at 1.2s on a throttled connection — and a visitor watched a
+     white bar sit on the hero and then vanish. The observer in main.js takes
+     over from here and is what turns it off again. Nothing is added when the
+     visitor arrived at an anchor further down, and nothing at all happens with
+     JavaScript off: the header is then the solid bar it is everywhere else.` : ''}
+     -->
+<script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')${home ? `
+if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-over')` : ''}</script>
 <link rel="stylesheet" href="/assets/fonts.css">
 <link rel="stylesheet" href="/styles/tokens.css">
 <link rel="stylesheet" href="/styles/site.css">

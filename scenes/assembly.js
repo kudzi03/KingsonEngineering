@@ -41,14 +41,27 @@
    Nothing here is required for the hero to work. Under prefers-reduced-motion,
    or with no 2D context, mount() returns immediately and the canvas is never
    even inserted.
+
+   TWO COMPOSITIONS, ONE SCENE
+
+   A phone gets this building framed for a portrait viewport: three bays
+   instead of six, the camera further back and turned toward the gable, the
+   whole portal lifted into the top third so the copy keeps the bottom. Same
+   members, same sections, same primer, same order of erection. See CAM_NARROW.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── the building, in metres ──────────────────────────────────────────────────
    Representative. A 20m span on 6m bays is an ordinary industrial portal; no
    figure here is published, claimed or attributed to Kingson.               */
 
-const SPAN = 20, EAVES = 6.2, APEX = 8.4, BAY = 6, BAYS = 6;
-const LEN = BAY * BAYS;
+const SPAN = 20, EAVES = 6.2, APEX = 8.4, BAY = 6;
+
+/* How many bays deep the building is. Six on a wide screen, where the
+   recession down the length is the whole point; three on a phone, where there
+   is no horizontal room for six and they collapse into a thicket. Set once by
+   mount(), before build() runs. */
+let BAYS = 6;
+let LEN = BAY * BAYS;
 
 /* Section sizes, also representative, chosen so the I reads at hero scale. */
 const COL = { d: 0.53, bf: 0.24, tf: 0.032, tw: 0.019 };
@@ -193,7 +206,7 @@ function build() {
      bleed off the right and top edges — a foreground structural silhouette
      rather than a diagram centred in a box.                                 */
 
-const CAM = {
+const CAM_WIDE = {
   az: -1.06,      // radians; more negative swings toward the side elevation
   r: 25.5,        // distance from the target
   y: 3.4,         // eye height, metres — below the eaves, looking up into it
@@ -206,8 +219,37 @@ const CAM = {
      changes which end of the building we look down. This just slides the
      frame right, clearing the left half for the copy. */
   shiftX: 0.26,
-  shiftY: 0.03
+  shiftY: 0.03,
+  fitAspect: 1.55
 };
+
+/* ── the portrait composition ─────────────────────────────────────────────────
+   A phone hero is 390 x 740 with the copy occupying everything below about
+   280px, so the composition is the mirror image of the desktop one: the copy
+   takes the BOTTOM rather than the left, and the steel has to live in the top
+   third and bleed off the top edge.
+
+   So the frame is centred horizontally instead of pushed right, lifted well
+   above centre, and turned toward the gable — the portal's own shape, two
+   columns and a pitch, is what reads at this width. Six bays at 390px
+   measured as a thicket of sticks; three read as a building.
+
+   This is the same geometry, the same sections, the same primer and the same
+   erection sequence, at a size a phone can draw. It is not a different hero. */
+const CAM_NARROW = {
+  az: -0.80,
+  r: 50,
+  y: 4.6,
+  target: v3(0, 5.2, 0),
+  lift: 1.0,
+  swing: 0.040,
+  f: 1.30,
+  shiftX: 0.0,
+  shiftY: -0.27,
+  fitAspect: 0.62
+};
+
+let CAM = CAM_WIDE;
 
 function camera(aspect, drift) {
   const a = CAM.az + drift * CAM.swing;
@@ -216,7 +258,7 @@ function camera(aspect, drift) {
   const right = norm(cross(fwd, v3(0, 1, 0)));
   const up = cross(right, fwd);
   /* Narrow viewports get a shorter lens so the frame still fits the height. */
-  const f = CAM.f * Math.min(1, aspect / 1.55);
+  const f = CAM.f * Math.min(1, aspect / CAM.fitAspect);
   return { eye, right, up, fwd, f };
 }
 
@@ -264,20 +306,25 @@ function shade(nrm) {
    mount
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* The narrowest viewport the composition survives. Below this the hero's copy
-   block fills the frame, the receding bays have no horizontal room, and the
-   steel reads as a few sticks behind text — measured at 390x675, where it was
-   worse than no animation at all.
+/* Where the composition changes, not where it stops. The desktop framing looks
+   down the length of a six-bay building and leaves the left of the frame to
+   the copy; neither of those survives a portrait viewport, so below this width
+   the scene is rebuilt three bays deep and re-framed for the top of a tall
+   hero. Same members, same sections, same primer, same erection order.
 
-   So a phone does not get a reduced version of this; it gets the photograph at
-   full strength, immediately, which is the stronger mobile hero and costs no
-   battery. The narrative is unchanged — the chapters carry it either way. */
-const MIN_WIDTH = 900;
+   It costs a phone LESS than the desktop version does: about 40% fewer solids,
+   the same device-pixel cap, and the same 2.6s one-shot that then removes
+   itself. It is not a second hero and not a heavier one. */
+const NARROW_WIDTH = 900;
 
 export function mount(host, { onDone } = {}) {
   if (!host) return null;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) { onDone && onDone(); return null; }
-  if (window.innerWidth < MIN_WIDTH) { onDone && onDone(); return null; }
+
+  const narrow = window.innerWidth < NARROW_WIDTH;
+  CAM = narrow ? CAM_NARROW : CAM_WIDE;
+  BAYS = narrow ? 3 : 6;
+  LEN = BAY * BAYS;
 
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', { alpha: true });

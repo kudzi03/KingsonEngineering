@@ -13,7 +13,7 @@
    and carries its own enquiry form with that service already selected.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { PROCESS, SPECS, CONTACT, NAV, ENQUIRY } from '../content/copy.js';
+import { PROCESS, processFor, SPECS, CONTACT, NAV, ENQUIRY } from '../content/copy.js';
 import { SERVICES, SERVICE_PAGE, BY_SLUG } from '../content/services.js';
 import { ASSETS, src, srcset, position } from '../content/assets.js';
 import { publish } from '../content/company.js';
@@ -69,8 +69,17 @@ ${g.rows.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></d
       </details>`).join('\n');
 };
 
-const processBlock = () => `      <ol class="steps">
-${PROCESS.steps.map((st) => `        <li class="step">
+const COUNT_WORD = ['no', 'One', 'Two', 'Three', 'Four', 'Five', 'Six'];
+const processLede = (slug) => {
+  const n = processFor(slug).length;
+  return SERVICE_PAGE.processLede.replace('{n}', COUNT_WORD[n] || String(n));
+};
+
+/* Only the commitments that are true of this service, renumbered. See the note
+   on PROCESS in content/copy.js for why the rail is not the same on every
+   page — and why a service with no confirmed programme shows none. */
+const processBlock = (slug) => `      <ol class="steps">
+${processFor(slug).map((st) => `        <li class="step">
           <span class="step-n">${esc(st.n)}</span>
           <div class="step-body">
             <h3>${esc(st.title)}</h3>
@@ -245,9 +254,9 @@ ${s.parts.map((p) => `        <article id="${p.id}">
   <section class="spec sec-alt" id="specifications">
     <div class="wrap">
       <div class="sec-head">
-        <p class="eyebrow">${esc(SERVICE_PAGE.specTitle)}</p>
-        <h2 class="display">${esc(SPECS.title)}</h2>
-        <p>${esc(SERVICE_PAGE.specLede)}</p>
+        <p class="eyebrow">${esc((s.spec && s.spec.eyebrow) || SERVICE_PAGE.specTitle)}</p>
+        <h2 class="display">${esc((s.spec && s.spec.head) || SPECS.title)}</h2>
+        <p>${esc((s.spec && s.spec.lede) || SERVICE_PAGE.specLede)}</p>
       </div>
       <div class="spec-list">
 ${specBlock(s.specGroups)}
@@ -260,8 +269,8 @@ ${specBlock(s.specGroups)}
     <div class="wrap sp-proc-in">
       <div>
         <h2 class="display">${esc(SERVICE_PAGE.processTitle)}</h2>
-        <p class="sp-lede">${esc(SERVICE_PAGE.processLede)}</p>
-${processBlock()}
+        <p class="sp-lede">${esc(processLede(s.slug))}</p>
+${processBlock(s.slug)}
       </div>
       <aside class="sp-area">
         <h2>${esc(SERVICE_PAGE.areaTitle)}</h2>

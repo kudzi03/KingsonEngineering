@@ -50,6 +50,18 @@ export const SERVICES = [
            'The site address, and anything tight about access for a crane and a delivery vehicle.',
            'Whether you need fabrication only, or fabrication and erection.'],
     specGroups: ['cranage'],
+    /* The only confirmed figures that bear on structural steelwork are the
+       crane's, and a section headed "Full specification" over four crane rows
+       reads as though the crane WERE the structural specification. Kingson has
+       confirmed no spans, sections, grades, tonnages or erection limits — a
+       fabricator working to a client's drawings would not have them — so this
+       page names the section for what it actually contains instead of
+       inventing a table to fill it. */
+    spec: {
+      eyebrow: 'Erection capability',
+      head: 'The plant that puts it up.',
+      lede: 'Structural steelwork is set out from your drawings, so the sections, grades and spans come from your engineer rather than from a catalogue here. What Kingson confirms is the plant that erects it.'
+    },
     faq: ['How long does a steel structure take?', 'Do you deliver outside Harare?',
           'How big a lift can you do?'],
     related: ['roofing-and-trusses', 'mobile-cranage-harare', 'fiber-laser-cutting-harare'],
@@ -181,7 +193,10 @@ export const SERVICE_PAGE = {
   specTitle: 'Full specification',
   specLede: 'Every figure below was checked and signed off by Kingson.',
   processTitle: 'What happens after you send it',
-  processLede: 'Five commitments Kingson confirmed in writing. They apply to this service the same as to any other.',
+  /* `{n}` is the number of commitments this particular page shows. A service
+     with no confirmed programme shows four, not five — see PROCESS in
+     content/copy.js — and the sentence has to say the number it is looking at. */
+  processLede: '{n} commitments Kingson confirmed in writing. Each applies to this service exactly as it applies to any other.',
   areaTitle: 'Where we work',
   areaBody: 'The workshop is at No. 1262 Tynwald Industries, Harare, and it is open Monday to Saturday, 07:30 – 17:00. Erection and delivery are national, with transport priced per load.',
   relatedTitle: 'Related services',

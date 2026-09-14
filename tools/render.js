@@ -516,6 +516,7 @@ const HOME_TITLE = 'Steel Fabrication, Roofing & Cranage in Harare | Kingson';
 const HOME_DESC = 'Steelwork specialists in Tynwald, Harare. Structural steel, roof trusses and sheeting, fiber laser cutting to \u00b1 0.1 mm, and a 25-tonne mobile crane.';
 
 const homeHead = headHtml({
+  home: true,
   title: HOME_TITLE,
   description: HOME_DESC,
   path: '/',

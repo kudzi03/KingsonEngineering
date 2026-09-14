@@ -69,7 +69,41 @@ if (hero && window.scrollY < hero.offsetHeight * 0.5) {
   }
 }
 
-/* ── the motion vocabulary ──────────────────────────────────────────────────
+/* ── the header over the hero ───────────────────────────────────────────────
+   The bar is dark and part of the scene while the hero is under it, and solid
+   from there down. The class is only ever ADDED by an observer that ran, so
+   with JavaScript off — or without IntersectionObserver — the header is the
+   solid bar it is on every other page, which is the readable default.
+
+   Still no scroll listener in this file. The root is the viewport inset by the
+   bar's own height, so the hero stops intersecting at exactly the moment its
+   last pixel passes under the bar.                                          */
+
+if (hero && 'IntersectionObserver' in window) {
+  const bar = $('.hd');
+  const over = (on) => document.documentElement.classList.toggle('hd-over', on);
+  const watch = () => {
+    const h = bar ? Math.round(bar.getBoundingClientRect().height) : 77;
+    const io = new IntersectionObserver(
+      ([e]) => over(e.isIntersecting),
+      { rootMargin: `-${h}px 0px 0px 0px`, threshold: 0 }
+    );
+    io.observe(hero);
+    return io;
+  };
+  let io = watch();
+  /* The bar is shorter on a phone. A rotation or a resize across that
+     breakpoint needs the margin rebuilt; nothing else does. */
+  let barH = bar ? bar.offsetHeight : 0;
+  addEventListener('resize', () => {
+    if (!bar || bar.offsetHeight === barH) return;
+    barH = bar.offsetHeight;
+    io.disconnect();
+    io = watch();
+  }, { passive: true });
+}
+
+/* ── the motion vocabulary ──────────────────────────────────────────────────/* ── the motion vocabulary ──────────────────────────────────────────────────
    Physical reveals keyed to what each element is. Adds html.reveal-ready
    itself, so with this module absent the page is simply visible. */
 

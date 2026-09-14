@@ -116,7 +116,18 @@ export const CAPABILITIES = [
 /* ── how it works ───────────────────────────────────────────────────────────
    These five are §7 of the returned document verbatim. Kingson was asked to
    strike out anything the office could not meet every time and struck out
-   nothing. They are the most valuable thing on this page.                    */
+   nothing. They are the most valuable thing on this page.
+
+   `only` marks a step that is true of ONE service rather than of the office.
+   The six-to-ten-week programme is the portal frame programme — §7 says so in
+   as many words — and printing it on the laser, fabrication and cranage pages
+   told four of five visitors a lead time that has nothing to do with the work
+   they came for. Kingson has confirmed no programme for those services, so
+   those pages now show the four commitments that ARE universal and no
+   timeline at all. Inventing one to fill the row would be the worse error.
+
+   The home page still shows all five: it is the page about the whole company,
+   and the step names the service it belongs to.                             */
 
 export const PROCESS = {
   title: 'What happens after you send it.',
@@ -125,12 +136,18 @@ export const PROCESS = {
     { n: '01', title: 'Enquiry acknowledged',   body: 'Same working day.' },
     { n: '02', title: 'Site visit arranged',    body: 'Within two working days, where the job needs one.' },
     { n: '03', title: 'Written quotation',      body: 'Within the week.' },
-    { n: '04', title: 'Portal frame programme', body: 'Six to ten weeks from order.' },
+    { n: '04', title: 'Portal frame programme', body: 'Six to ten weeks from order.',
+      only: 'structural-steel-harare' },
     { n: '05', title: 'Delivery outside Harare', body: 'Nationally, with transport priced per load.' }
   ],
   close: 'That is the whole sequence. It starts when you send the drawings.',
   closeAction: 'Send us the brief'
 };
+
+/** The steps that are true on `slug`, renumbered so the rail never skips. */
+export const processFor = (slug) => PROCESS.steps
+  .filter((st) => !st.only || st.only === slug)
+  .map((st, i) => ({ ...st, n: String(i + 1).padStart(2, '0') }));
 
 /* ── confirmed specifications ───────────────────────────────────────────────
    Every figure ticked in §2 – §6. Grouped so a buyer opens only the one they
