@@ -102,7 +102,10 @@ export const SERVICES = [
     description: 'Plate and sheet cut on a DXTECH fiber laser in Harare. 3 000 × 1 500 mm bed, mild steel to 20 mm, ± 0.1 mm. Send DXF, DWG, STEP or PDF.',
     h1: 'Fiber laser cutting in Harare',
     eyebrow: 'Laser cutting',
-    hero: 'laserFloor',
+    /* The machine cutting, not the machine parked. This is the page somebody
+       lands on having searched for laser cutting in Harare, and until now the
+       first thing it showed them was a switched-off bed. */
+    hero: 'laserCutting',
     intro: 'Plate and sheet cut on a DXTECH fiber laser at our Tynwald workshop, nested from the drawing you send. Mild steel, stainless, aluminium and galvanised sheet, cut to ± 0.1 mm on a 3 000 × 1 500 mm bed.',
     figures: [['Bed size', '3 000 × 1 500 mm'],
               ['Mild steel', 'to 20 mm on oxygen'],
@@ -116,7 +119,10 @@ export const SERVICES = [
     faq: ['What thickness can you laser cut?', 'What file formats do you accept for cutting?',
           'Can I get a price without drawings?'],
     related: ['steel-fabrication', 'structural-steel-harare', 'roofing-and-trusses'],
-    strip: ['gantry', 'cuttingHead', 'nestingStation']
+    /* The whole machine, the head mid-cut, and the nested file on screen.
+       `cuttingHead` is the idle version of the second of those and keeps its
+       place in the home page's gallery instead. */
+    strip: ['laserFloor', 'laserSparks', 'nestingStation']
   },
 
   {

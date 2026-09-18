@@ -28,7 +28,7 @@ import {
   UPDATED, EYEBROWS, HERO, STRIP, CAPABILITIES, SPECS, PROCESS,
   WORK, ENQUIRY, FAQ, CONTACT, NAV
 } from '../content/copy.js';
-import { ASSETS, GALLERY, BAND_IMAGE, src, srcset, position } from '../content/assets.js';
+import { ASSETS, PAGE_IMAGES, BAND_IMAGE, src, srcset, position } from '../content/assets.js';
 import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
 import { PROOF, PROJECTS } from '../content/projects.js';
 import { section, flashings } from '../scenes/profiles.js';
@@ -153,8 +153,8 @@ const chapterLead = (c) =>
 /* The chapter ends by pointing at the page for that one service. It is the
    site's principal internal link, and it is the natural next step for someone
    who has just decided this is the thing they need. */
-const chapterData = (c) =>
-  `${heroFigure(c.hero)}
+const chapterData = (c, { hero = true } = {}) =>
+  `${hero ? heroFigure(c.hero) : ''}
 ${figures(c.figures)}
       <p class="ch-ask">${esc(c.ask)}</p>
       <p class="ch-more"><a href="/${c.route}">${esc(c.moreLabel || `More on ${c.name.toLowerCase()}`)}${ICON_ARROW}</a></p>`;
@@ -228,13 +228,32 @@ ${chapterBody(c)}
           ${zoomable(k, photo(k, { sizes: '(max-width:900px) 62vw, 24vw', w: 720 })
             + `<span>${esc(WORK.captions[k])}</span>`)}
         </li>`).join('\n');
-    return `${head}
+    /* The establishing frame, with the tolerance set across it. The figure
+       lives here rather than in the data column for two reasons: the column
+       put it on flat black beside nothing, and a tolerance belongs to the
+       machine that holds it, so it should be written on that machine.
+
+       The scrim is a left-to-right wash, not a flat overlay: the type needs a
+       solid field, and the right of the frame — the DXTECH badge, the nozzle,
+       the sparks coming off the plate — is the part nothing should be laid
+       over. Tuned against the pixels actually behind the glyphs. */
+    const scene = c.media.scene ? `
+    <div class="cut-scene" data-reveal="settle">
+      <div class="cut-scene-img" data-parallax>
+        ${zoomable(c.media.scene, bleedPhoto(c.media.scene))}
+      </div>
+      <div class="wrap cut-tol">
+${heroFigure(c.hero)}
+      </div>
+    </div>` : '';
+
+    return `${head}${scene}
     <div class="wrap ch-cut-head">
       <div class="ch-copy" id="ch-${c.id}-h">
 ${chapterLead(c)}
       </div>
       <div class="ch-cut-data">
-${chapterData(c)}
+${chapterData(c, { hero: !c.media.scene })}
       </div>
     </div>
     <ul class="ch-strip" tabindex="0" role="group"
@@ -278,9 +297,24 @@ const chapters = CHAPTERS.map(chapter).join('\n\n');
 
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
+/* Two frames, not one. The big one is the room and the people in it; the
+   inset is close enough to read the lettering on the overalls, which is the
+   only thing here that says whose workshop this is. It overlaps the corner of
+   the big frame so the pair reads as one photograph's worth of space rather
+   than as a two-up gallery. */
+/* Two elements, because the `plate` reveal takes `position: relative` for the
+   cover it retracts, and a box cannot be both that and absolutely placed. The
+   outer one is the placement, the inner one is the motion. */
+const wsInset = WORKSHOP.inset ? `
+    <div class="ws-inset">
+      <div class="ws-inset-in" data-reveal="plate" data-from="below">
+        ${zoomable(WORKSHOP.inset, photo(WORKSHOP.inset, { sizes: '(max-width:900px) 46vw, 22vw', w: 720 }))}
+      </div>
+    </div>` : '';
+
 const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
       ${zoomable(WORKSHOP.photo, photo(WORKSHOP.photo, { sizes: '(max-width:900px) 100vw, 52vw', w: 1100 }))}
-    </div>
+    </div>${wsInset}
     <div class="ws-copy">
       <p class="eyebrow">${esc(WORKSHOP.eyebrow)}</p>
       <p class="ws-place" data-reveal="rise"><span>${esc(WORKSHOP.place)}<b>${esc(WORKSHOP.city)}</b></span></p>
@@ -563,7 +597,7 @@ const before = readFileSync(file, 'utf8');
 
 /* Homepage images, from the same asset map the page renders from, so the list
    cannot drift out of step with the photographs actually published. */
-const sitemapImages = [BAND_IMAGE, ...GALLERY].map((k) =>
+const sitemapImages = [BAND_IMAGE, ...PAGE_IMAGES].map((k) =>
   `    <image:image>
       <image:loc>${SITE}/${src(k)}</image:loc>
       <image:title>${esc(WORK.captions[k])}</image:title>
@@ -648,7 +682,7 @@ if (process.argv.includes('--check')) {
   console.log(`index.html rendered from content/ — ${Object.keys(BLOCKS).length} regions, ` +
     `${CHAPTERS.length} chapters covering ${CAPABILITIES.length} services, ` +
     `${SPECS.groups.reduce((n, g) => n + g.rows.length, 0)} specification rows, ` +
-    `${GALLERY.length} photographs, ${FAQ.items.length} questions.`);
+    `${PAGE_IMAGES.length + 1} photographs, ${FAQ.items.length} questions.`);
   console.log(`${routes.length} service routes rendered:`);
   for (const r of routes) console.log(`  /${r.file.replace(/\.html$/, '')}`);
   console.log(`sitemap.xml rendered — ${routes.length + 1} URLs.`);

@@ -222,6 +222,10 @@ export const WORK = {
     cuttingHead:    'Plate loaded on the laser bed',
     nestingStation: 'Nesting at the control station',
     gantry:         'Gantry and cable chain over the bed',
+    laserCutting:   'Cutting sheet on the DXTECH laser',
+    laserSparks:    'The head cutting, sparks off the nozzle',
+    weldingBay:     'Welding in the fabrication bay',
+    weldingHands:   'Grating welded up on the workshop floor',
     laserMachine:   'The machine from the loading side',
     crane:          'Our telescopic mobile crane'
   }

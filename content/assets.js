@@ -2,8 +2,8 @@
    content/assets.js — the photographs, described
    ═══════════════════════════════════════════════════════════════════════════
 
-   Nine photographs. Every one was supplied by Kingson and shows Kingson's own
-   workshop, plant or site work. `focal` is a normalised source coordinate: the
+   Thirteen photographs. Every one was supplied by Kingson and shows Kingson's
+   own workshop, plant or site work. `focal` is a normalised source coordinate: the
    point a `cover` crop keeps in frame when the container's ratio does not
    match the photograph's.
 
@@ -76,6 +76,41 @@ export const ASSETS = {
     alt: 'The laser gantry carriage seen side-on, cable chain arching over it, travelling above a slatted bed loaded with steel plate, with a brick wall and workshop sheeting behind.',
     status: 'observed_photo'
   },
+  laserCutting: {
+    slug: 'laser-cutting', w: 1440, h: 2560, widths: [440, 720, 900, 1100, 1440],
+    wide: { w: 1440, h: 810, widths: [900, 1320] },
+    /* The spark burst, not the skylight. The brightest pixels in this frame are
+       the window behind the gantry; anchoring on those would centre the crop on
+       an empty wall and cut the one thing the photograph is here for. */
+    focal: [0.46, 0.44],
+    alt: 'A DXTECH fiber laser cutting steel sheet, sparks thrown from the nozzle across the plate, with the slatted bed below and gas cylinders against the workshop wall behind.',
+    status: 'observed_photo'
+  },
+  laserSparks: {
+    slug: 'laser-sparks', w: 1440, h: 2560, widths: [440, 720, 900, 1100, 1440],
+    focal: [0.38, 0.43],
+    alt: 'The cutting head of the DXTECH fiber laser close up, sparks off the nozzle and the cut line running out across the sheet.',
+    status: 'observed_photo'
+  },
+  weldingBay: {
+    slug: 'welding-bay', w: 1920, h: 2560, widths: [440, 720, 900, 1100, 1920],
+    wide: { w: 1920, h: 1080, widths: [900, 1320] },
+    /* Low on the frame, because the two men and the arc are in the bottom
+       third and the top third is roof. A wide cut anchored at the middle is a
+       photograph of sheeting. */
+    focal: [0.68, 0.62],
+    alt: 'Two Kingson Engineering workers welding a steel grating panel on the floor of the Harare workshop, seen from low down with the workshop roof trusses and sheeting above them.',
+    status: 'observed_photo'
+  },
+  weldingHands: {
+    slug: 'welding-hands', w: 1920, h: 2560, widths: [440, 720, 900, 1100, 1920],
+    /* Held high: the lettering on the overalls is near the top of the frame and
+       the arc is at the middle, and this frame is only in the page because both
+       are in it. */
+    focal: [0.52, 0.30],
+    alt: 'Two workers crouched over a steel grating panel, one holding a welding shield and striking an arc, the other steadying the panel; the overalls are lettered KINGSON ENGINEERING.',
+    status: 'observed_photo'
+  },
   crane: {
     slug: 'crane', w: 1320, h: 1757, widths: [440, 720, 900, 1100, 1320],
     wide: { w: 1319, h: 742, widths: [900, 1319] },
@@ -138,20 +173,29 @@ export function position(key) {
   return `${(x * 100).toFixed(1)}% ${(y * 100).toFixed(1)}%`;
 }
 
-/* The gallery, in the order it reads: site work, then the workshop, then the
-   crane. The first tile spans two columns — it is the strongest photograph and
-   a uniform grid of eight equal squares reads like a template.
+/* ── what the home page actually shows ──────────────────────────────────────
+   This list is what `sitemap.xml` declares as the page's images, and it has
+   exactly one job: match reality.
 
-   `roofFrame` is absent on purpose: it is the wide photograph carrying the
-   full-width band above the specifications, so every photograph Kingson
-   supplied appears exactly once on the page. */
-export const GALLERY = [
-  'portalFrame', 'roofTrusses',
-  'laserFloor', 'cuttingHead', 'nestingStation',
-  'gantry', 'laserMachine', 'crane'
+   It used to be called GALLERY and to describe a grid of eight tiles — a
+   layout the page stopped having when the work section became full-width
+   project bands. Nothing noticed, because nothing checked. The list then
+   survived a round of photography changes still naming `cuttingHead` and
+   `laserMachine`, which by then appeared on no page at all, while the two new
+   welding frames that did appear were absent from it. A sitemap that declares
+   images the page does not carry, and omits ones it does, is worse than no
+   sitemap images at all.
+
+   `tools/check-truth.js` now asserts both directions, so the next time this
+   drifts the publication gate fails instead of the sitemap lying.
+
+   In the order the page reads, after BAND_IMAGE which opens chapter 01.     */
+export const PAGE_IMAGES = [
+  'roofTrusses',
+  'laserCutting', 'nestingStation', 'laserFloor', 'gantry', 'laserSparks',
+  'crane',
+  'weldingBay', 'weldingHands',
+  'portalFrame'
 ];
 
-/** The wide photograph that carries chapter 01 full-bleed rather than sitting
-    in the gallery as a tile. Named here so the sitemap and the chapter agree
-    on which one it is. */
 export const BAND_IMAGE = 'roofFrame';

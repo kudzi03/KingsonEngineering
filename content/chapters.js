@@ -21,6 +21,10 @@
    thing goes next, and the link between them is the site's main internal
    linking.
 
+   `scene` is a single establishing photograph a chapter opens on, full width,
+   with its large figure set across it. Only CUT has one, because only CUT had
+   a dead half to fill and a machine worth showing at that size.
+
    `photos` is what real Kingson photography can carry. FABRICATE has none,
    because Kingson supplied no photograph of a balustrade, a gate or a
    stainless job, and the two stock collages in this repository are not
@@ -73,7 +77,18 @@ export const CHAPTERS = [
               ['Aluminium', '8 mm on nitrogen'],
               ['Galvanised sheet', '4 mm on nitrogen'],
               ['Files accepted', 'DXF · DWG · STEP · PDF']],
-    media: { kind: 'strip', photos: ['laserFloor', 'gantry', 'cuttingHead', 'nestingStation'] }
+    /* `scene` is the establishing frame: the machine actually cutting, carrying
+       the tolerance across it. Before it existed this chapter opened on 380px
+       of black and stated ±0.1 MM next to nothing.
+
+       The strip then reads in the order the chapter's own title describes —
+       the file, the machine, the carriage, the cut. `cuttingHead` leaves it:
+       it is the head parked over plate, and `laserSparks` is the same subject
+       doing the work. It keeps its place in the gallery. */
+    media: {
+      kind: 'strip', scene: 'laserCutting',
+      photos: ['nestingStation', 'laserFloor', 'gantry', 'laserSparks']
+    }
   },
 
   {
@@ -122,5 +137,14 @@ export const WORKSHOP = {
   body: 'One workshop at No. 1262 Tynwald Industries. The laser, the folder and the fabrication bays are under one roof, and the crane goes out from the same yard.',
   figures: [['Open', 'Monday to Saturday, 07:30 – 17:00'],
             ['Ask for', 'Mr Murandu']],
-  photo: 'laserMachine'
+  /* This section's headline is "This is where the work happens." It used to
+     be set beside `laserMachine` — an empty machine in an empty room — which
+     is the one picture on the page that argued with its own sentence.
+
+     `photo` is the low-angle welding frame: two men, an arc, and the
+     workshop's own roof steel above them. `inset` is the closer frame, and it
+     is here for one thing the wide one does not show — the lettering on the
+     overalls. That is the difference between a workshop and this workshop. */
+  photo: 'weldingBay',
+  inset: 'weldingHands'
 };

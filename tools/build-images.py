@@ -67,7 +67,7 @@ QUALITY = 78
 WIDE_AR = 16 / 9
 WIDE_WIDTHS = [900, 1320]
 WIDE_SLUGS = ['portal-frame', 'roof-trusses', 'roof-frame', 'laser-floor',
-              'gantry', 'crane']
+              'gantry', 'crane', 'welding-bay', 'laser-cutting']
 
 # The frame a wide cut is composed for: 1440 x 765, which is what a laptop
 # actually shows. Used only to place the crop vertically — see wide_anchor().
@@ -126,6 +126,10 @@ JOBS = [
     ('cuttinghead.jpeg', 'cutting-head',    None),
     ('warehouse.jpeg',   'roof-frame',      (0, 0, 1320, 714)),     # drops the black band + caption
     ('trusses.jpeg',     'roof-trusses',    (0, 0, 1320, 792)),     # drops the black band + caption
+    ('weldingbay.jpeg',  'welding-bay',     None),
+    ('weldinghands.jpeg', 'welding-hands',  None),
+    ('lasercutting.jpeg', 'laser-cutting',  None),
+    ('lasersparks.jpeg',  'laser-sparks',   None),
     ('structure.jpeg',   'material-tube',   None),                  # stock collage — reference only
     ('crane.jpeg',       'material-sheet',  None),                  # stock collage — reference only
 ]

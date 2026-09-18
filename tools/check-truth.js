@@ -32,7 +32,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VALUES, unverifiedKeys } from '../content/company.js';
-import { ASSETS } from '../content/assets.js';
+import { ASSETS, PAGE_IMAGES, BAND_IMAGE } from '../content/assets.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const SERVED = ['.html', '.js', '.css', '.xml', '.txt', '.json'];
@@ -252,6 +252,41 @@ dupes(seenDescs, 'meta description');
     } else if (e.wide && (e.wide.w !== a.wide.w || e.wide.h !== a.wide.h || !same(e.wide.sizes, a.wide.widths))) {
       fail(`${key}: the wide cut in content/assets.js does not match the one that was built`);
     }
+  }
+}
+
+/* ── the sitemap's image list must be the page's image list ──────────────────
+   `sitemap.xml` declares an <image:image> per entry in PAGE_IMAGES. Those are
+   a claim about what is on the page, and they were wrong for two rounds of
+   photography changes before anyone looked: the list still named two
+   photographs that had been taken off the page, and did not name two that had
+   been put on it.
+
+   Nothing in a browser shows this. Only a search engine sees it, and what it
+   sees is a page describing images it does not have. Both directions are
+   checked, because only checking one is how it drifted in the first place. */
+
+{
+  const declared = [BAND_IMAGE, ...PAGE_IMAGES];
+  const home = readFileSync(root + 'index.html', 'utf8');
+  const shown = Object.entries(ASSETS)
+    .filter(([, a]) => new RegExp(`assets/img/${a.slug}-\\d`).test(home))
+    .map(([key]) => key);
+
+  for (const key of declared) {
+    if (!shown.includes(key)) {
+      fail(`sitemap.xml declares ${key} as an image of the home page, but index.html does not show it`);
+    }
+  }
+  for (const key of shown) {
+    if (!declared.includes(key)) {
+      fail(`index.html shows ${key}, but PAGE_IMAGES does not list it, so sitemap.xml omits it`);
+    }
+  }
+  const seen = new Set();
+  for (const key of declared) {
+    if (seen.has(key)) fail(`PAGE_IMAGES lists ${key} twice`);
+    seen.add(key);
   }
 }
 
