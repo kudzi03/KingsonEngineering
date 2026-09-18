@@ -297,24 +297,9 @@ const chapters = CHAPTERS.map(chapter).join('\n\n');
 
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
-/* Two frames, not one. The big one is the room and the people in it; the
-   inset is close enough to read the lettering on the overalls, which is the
-   only thing here that says whose workshop this is. It overlaps the corner of
-   the big frame so the pair reads as one photograph's worth of space rather
-   than as a two-up gallery. */
-/* Two elements, because the `plate` reveal takes `position: relative` for the
-   cover it retracts, and a box cannot be both that and absolutely placed. The
-   outer one is the placement, the inner one is the motion. */
-const wsInset = WORKSHOP.inset ? `
-    <div class="ws-inset">
-      <div class="ws-inset-in" data-reveal="plate" data-from="below">
-        ${zoomable(WORKSHOP.inset, photo(WORKSHOP.inset, { sizes: '(max-width:900px) 46vw, 22vw', w: 720 }))}
-      </div>
-    </div>` : '';
-
 const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
       ${zoomable(WORKSHOP.photo, photo(WORKSHOP.photo, { sizes: '(max-width:900px) 100vw, 52vw', w: 1100 }))}
-    </div>${wsInset}
+    </div>
     <div class="ws-copy">
       <p class="eyebrow">${esc(WORKSHOP.eyebrow)}</p>
       <p class="ws-place" data-reveal="rise"><span>${esc(WORKSHOP.place)}<b>${esc(WORKSHOP.city)}</b></span></p>

@@ -194,7 +194,7 @@ export const PAGE_IMAGES = [
   'roofTrusses',
   'laserCutting', 'nestingStation', 'laserFloor', 'gantry', 'laserSparks',
   'crane',
-  'weldingBay', 'weldingHands',
+  'weldingBay',
   'portalFrame'
 ];
 

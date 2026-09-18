@@ -141,10 +141,11 @@ export const WORKSHOP = {
      be set beside `laserMachine` — an empty machine in an empty room — which
      is the one picture on the page that argued with its own sentence.
 
-     `photo` is the low-angle welding frame: two men, an arc, and the
-     workshop's own roof steel above them. `inset` is the closer frame, and it
-     is here for one thing the wide one does not show — the lettering on the
-     overalls. That is the difference between a workshop and this workshop. */
-  photo: 'weldingBay',
-  inset: 'weldingHands'
+     One frame, not two. A second, closer frame was set into the corner of
+     this one to show the lettering on the overalls; it read as a sticker on
+     top of the photograph rather than as part of the section, and it cost the
+     big frame the bottom third where the arc is. The wide frame already has
+     two men, an arc and the workshop's roof steel in it, which is the whole
+     claim. `weldingHands` stays in the repository. */
+  photo: 'weldingBay'
 };

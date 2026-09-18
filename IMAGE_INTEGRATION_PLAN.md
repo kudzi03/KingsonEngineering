@@ -37,12 +37,14 @@ not being touched.
 
 ---
 
-## The four that ship, and the one that does not
+## What ships
+
+Three of the five, in the end. A fourth was built, placed, reviewed and pulled.
 
 | Source | Slug | What it proves | Where |
 |---|---|---|---|
 | low-angle, two welders, workshop roof above them, arc burning | `welding-bay` | Kingson fabricates in-house, with its own people | **Workshop** — the dominant frame |
-| the same pair over a grating panel, `KINGSON ENGINEERING` legible on the overalls | `welding-hands` | those are Kingson's own staff, not a stock crew | **Workshop** — the second, tighter frame |
+| the same pair over a grating panel, `KINGSON ENGINEERING` legible on the overalls | `welding-hands` | those are Kingson's own staff, not a stock crew | built, then **pulled** — see below |
 | the laser wide, spark burst on the sheet, DXTECH badge and bed geometry | `laser-cutting` | the machine is real and it is running | **Chapter 03** — the establishing frame, carrying `±0.1 MM` |
 | the cutting head close, sparks off the nozzle | `laser-sparks` | precision is physically happening | **Chapter 03** — the last frame in the strip |
 | third welding frame, same pair, similar angle to `welding-hands` | — | nothing the second one does not already prove | **held back** |
@@ -97,9 +99,17 @@ own hero candidate and it is the right one: it has the workshop's roof steel in
 it, two people in it, and an arc burning in it. The headline stops being a
 claim and becomes a caption.
 
-`welding-hands` sits as a second, smaller frame overlapping the first. It is
-there for one reason: the overalls say `KINGSON ENGINEERING`, which is the
-difference between *a* workshop and *this* workshop.
+`welding-hands` was set into its corner as a second, smaller frame, for one
+reason: the overalls say `KINGSON ENGINEERING`, which is the difference between
+*a* workshop and *this* workshop.
+
+**It was then taken out again.** Reviewed on the page it read as a sticker laid
+over the photograph rather than as part of the section, and it covered the
+bottom third of the big frame — which is where the arc is. The argument for it
+was real and the execution did not carry it. The wide frame already has two
+men, an arc and the workshop's roof steel in it, which is the claim; the
+lettering is a detail that was costing the picture. `welding-hands` stays in
+the repository, built and described, for a place that suits it better.
 
 `laser-machine` is displaced from here, and — same mistake as above — does not
 land anywhere else.
