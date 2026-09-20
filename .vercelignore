@@ -1,0 +1,12 @@
+# The CRM's source. It is in the repository so it can be worked on, and it is
+# bundled into crm/ by tools/build-crm.sh — which is what actually ships.
+#
+# Without this line Vercel would serve it too, and /crm-src/ would be a second
+# working copy of the application on the same host: outside the /crm/ header
+# rule, so without its Content-Security-Policy and without its noindex.
+crm-src
+
+# Plans, notes and the source-of-truth document are for whoever works on this,
+# not for whoever visits it.
+*.md
+!README.md

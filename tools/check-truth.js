@@ -43,8 +43,11 @@ const SERVED = ['.html', '.js', '.css', '.xml', '.txt', '.json'];
    whatever is in the database that morning. Holding it to the same rule would
    mean the gate failing because somebody quoted a real job.
 
-   If anything public is ever served from that path, take it out of here. */
-const SKIP = new Set(['node_modules', '.git', 'tools', 'content', 'crm']);
+   `crm-src` is the same system before it is bundled, and is not deployed at
+   all — see .vercelignore.
+
+   If anything public is ever served from those paths, take them out of here. */
+const SKIP = new Set(['node_modules', '.git', 'tools', 'content', 'crm', 'crm-src']);
 
 /* ── 1. the numeral vocabulary claims are written in ─────────────────────────
    A gate that only looks for digits is not a gate: "six to ten weeks" and
