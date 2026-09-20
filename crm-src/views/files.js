@@ -83,19 +83,38 @@ export function mountFiles(root, link, me, onDone) {
   root.addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-file]');
     if (!btn) return;
+    const name = btn.dataset.name || 'file';
+    const side = btn.parentElement?.querySelector('.mini-side');
+    const wasSide = side?.innerHTML;
+    if (side) side.textContent = '…';
     try {
       const url = await api.downloadUrl(btn.dataset.file);
-      /* A real anchor with `download`, so the browser saves it under the name
-         the person uploaded rather than the storage path. */
+
+      /* Fetched into a blob rather than pointed at with an anchor.
+         `download` is ignored on a cross-origin href, so an anchor straight to
+         Supabase navigates the tab to the file instead of saving it, and the
+         person loses the screen they were on. It also swallows a failure: a
+         404 becomes a blank page rather than a message. A blob URL is
+         same-origin, so the name survives and an error is an error. */
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`That file could not be fetched (${res.status}).`);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
       const a = document.createElement('a');
-      a.href = url;
-      a.download = btn.dataset.name || '';
+      a.href = objectUrl;
+      a.download = name;
       a.rel = 'noopener';
       document.body.appendChild(a);
       a.click();
       a.remove();
+      /* Revoked on the next turn of the loop: immediately is too soon in
+         Safari, which has not finished reading it when click() returns. */
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
     } catch (err) {
       toast(err.message || 'That file could not be opened.', 'bad');
+    } finally {
+      if (side && wasSide !== undefined) side.innerHTML = wasSide;
     }
   });
 }
