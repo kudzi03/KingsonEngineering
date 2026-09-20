@@ -30,9 +30,20 @@ mkdir -p "$OUT"
 cat "$SRC/styles/tokens.css" "$SRC/styles/app.css" > "$OUT/app.css"
 cp "$SRC/fonts.css" "$OUT/fonts.css"
 
+# Two rewrites.
+#
 # The source page loads tokens.css and app.css separately; the bundle has one.
+#
+# And every reference becomes root-absolute. The source is served from the root
+# in development, where "app.css" is right. In production it is served at /crm
+# with cleanUrls on — no trailing slash — so a browser resolves "app.css"
+# against the site root and gets the website's 404 page with a text/html
+# content type. The CRM then loads with no styles at all. /crm/app.css is
+# correct whether the URL ends in a slash or not.
 sed -e 's|<link rel="stylesheet" href="styles/tokens.css">||' \
-    -e 's|<link rel="stylesheet" href="styles/app.css">|<link rel="stylesheet" href="app.css">|' \
+    -e 's|<link rel="stylesheet" href="styles/app.css">|<link rel="stylesheet" href="/crm/app.css">|' \
+    -e 's|href="fonts.css"|href="/crm/fonts.css"|' \
+    -e 's|src="app.js"|src="/crm/app.js"|' \
     "$SRC/index.html" | grep -v '^$' > "$OUT/index.html"
 
 printf 'crm/ built from %s\n' "$SRC"
