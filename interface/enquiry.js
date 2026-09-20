@@ -15,13 +15,21 @@
    verified recipient. If that ever stops being true, the honest state is
    "copy your enquiry" plus a plain explanation — not a dead Send button.
 
-   When the enquiry pipeline in ARCHITECTURE.md is built, this module gains one
-   more action — POST to /api/enquiry — and the WhatsApp and mail handoffs stay
-   exactly as they are. It does not gain a fake one in the meantime.
+   THE ENQUIRY IS NOW ACTUALLY SENT. Pressing the button writes the enquiry
+   into Kingson's database, where a trigger turns it into an opportunity, a
+   timeline entry and a dated follow-up task. Only when the database confirms
+   the row does this module say anything was sent.
+
+   The WhatsApp, mail and copy handoffs are unchanged and still shown, on both
+   outcomes. They are the reason a failed save is never a lost enquiry: the
+   visitor still has the text, still has the buttons, and is told plainly which
+   of the two happened. Nothing here ever discards what somebody typed.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { ENQUIRY } from '../content/copy.js';
 import { hasVerifiedRecipient, recipients } from '../content/company.js';
+import { sendEnquiry } from './send-enquiry.js';
+import { canSubmit } from '../content/crm.js';
 
 /* Field id → the label the composed message uses. Order is the message's
    order, which is the order an estimator reads in. */
@@ -45,6 +53,11 @@ export function mountEnquiry() {
   const draftBody = draft.querySelector('[data-draft-body]');
   const draftActions = draft.querySelector('[data-draft-actions]');
   const draftStatus = draft.querySelector('[data-draft-status]');
+  const draftTitle = draft.querySelector('[data-draft-title]');
+  const sent = document.querySelector('[data-sent]');
+  const sentTitle = sent?.querySelector('[data-sent-title]');
+  const sentBody = sent?.querySelector('[data-sent-body]');
+  const submitBtn = form.querySelector('[data-review]');
 
   const field = (id) => form.querySelector('#f-' + id);
   const val = (id) => (field(id)?.value || '').trim();
@@ -78,6 +91,7 @@ export function mountEnquiry() {
     const p = {};
     for (const [id] of LINES) p[id] = val(id);
     p.description = val('description');
+    p.honeypot = (form.querySelector('#f-website')?.value || '').trim();
     return p;
   }
 
@@ -88,8 +102,11 @@ export function mountEnquiry() {
     return L.join('\n');
   }
 
-  form.addEventListener('submit', (e) => {
+  let inFlight = false;
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (inFlight) return;                    // one enquiry per press
     const p = payload();
 
     const missing = [];
@@ -106,16 +123,52 @@ export function mountEnquiry() {
       summary.focus();
       field(missing[0])?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       draft.dataset.open = 'false';
+      if (sent) sent.hidden = true;
       return;
     }
     summary.hidden = true;
 
+    /* The text is composed before the request, not after, so that whatever the
+       network does the visitor still has their enquiry in front of them. */
     const message = compose(p);
+
+    inFlight = true;
+    const label = submitBtn?.querySelector('span');
+    const was = label?.textContent;
+    if (label) label.textContent = ENQUIRY.sending;
+    if (submitBtn) submitBtn.disabled = true;
+
+    let result = { ok: false, reason: 'unconfigured' };
+    if (canSubmit()) {
+      try { result = await sendEnquiry(p); }
+      catch { result = { ok: false, reason: 'network' }; }
+    }
+
+    inFlight = false;
+    if (submitBtn) submitBtn.disabled = false;
+    if (label) label.textContent = was;
+
+    showOutcome(result, message, p);
+  });
+
+  /* Both outcomes show the same message and the same buttons. What changes is
+     the heading above them, and whether it is true that Kingson already has
+     this enquiry. */
+  function showOutcome(result, message, p) {
+    if (sent) {
+      sentTitle.textContent = result.ok ? ENQUIRY.sentTitle : ENQUIRY.failedTitle;
+      sentBody.textContent  = result.ok ? ENQUIRY.sentBody  : ENQUIRY.failedBody;
+      sent.dataset.state = result.ok ? 'ok' : 'failed';
+      sent.hidden = false;
+    }
+    if (draftTitle) draftTitle.textContent = result.ok ? ENQUIRY.draftAlsoTitle : ENQUIRY.draftTitle;
+
     draftBody.textContent = message;
     draft.dataset.open = 'true';
     buildActions(message, p);
-    draft.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  });
+    (sent && !sent.hidden ? sent : draft).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (sent && !sent.hidden) { sent.setAttribute('tabindex', '-1'); sent.focus({ preventScroll: true }); }
+  }
 
   /* Kingson gave a second address for drawings and technical detail. If the
      visitor says they have a CAD file, the mail handoff goes there. */

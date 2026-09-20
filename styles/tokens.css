@@ -55,6 +55,10 @@
   --green:     #039647;   /* brand tagline                                      */
   --green-ink: #02803C;   /* green as text                      5.05:1 on white  */
   --green-soft:#E8F5EC;
+  /* Green on the green ground. --green-ink is measured against white and lands
+     at exactly 4.50:1 on --green-soft, which is the threshold rather than a
+     margin. This step is 6.03:1 there and 6.78:1 on white. */
+  --green-on-soft: #016A2C;
 
   --mark:      #2B2A28;   /* the drawn mark in the logo                          */
 

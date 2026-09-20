@@ -263,7 +263,7 @@ export const ENQUIRY = {
   ],
   /* §5 confirms the formats the laser accepts. Saying so up front saves a
      round trip, and the note is honest about what this page does with files. */
-  filesNote: 'Drawings are accepted as DXF, DWG, STEP or PDF. Attach them to the message this page prepares — nothing is uploaded from here.',
+  filesNote: 'Your enquiry is logged with Kingson when you send it. Drawings are not — there is no upload here. Attach your DXF, DWG, STEP or PDF to the WhatsApp or email message this page prepares and it reaches the same estimator.',
   actions: {
     review: 'Review my enquiry',
     whatsapp: 'Send on WhatsApp',
@@ -272,6 +272,23 @@ export const ENQUIRY = {
   },
   choose: 'Choose one',
   draftTitle: 'Ready to send.',
+
+  /* The form now actually reaches Kingson: the enquiry is written into their
+     system and is on somebody's list for the next working day. These three
+     lines are the only place on the site that claims anything was sent, and
+     they are only shown when the database has confirmed the row. */
+  sending: 'Sending your enquiry…',
+  /* The draft heading changes once the enquiry is already in: "ready to send"
+     would be wrong there, because it has been. */
+  draftAlsoTitle: 'Send it yourself as well, if you like.',
+  sentTitle: 'Your enquiry has reached Kingson.',
+  sentBody: 'It is logged and booked for a reply on the next working day. If you would rather also send it yourself — on WhatsApp or by email — the message is below.',
+  /* Shown when the save failed. It must not read like a dead end: the handoff
+     buttons underneath it still work, and they are how the enquiry gets
+     through. */
+  failedTitle: 'We could not log that automatically.',
+  failedBody: 'Your enquiry has not been lost — it is written out below. Send it on WhatsApp or by email and it will reach the same estimator.',
+
   edit: 'Change something',
   copied: 'Copied. Paste it wherever you like.',
   handedOff: 'Your message is open in the app — press send there.',

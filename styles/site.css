@@ -738,6 +738,10 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   max-width: 860px; margin: 0 auto;
   background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-xl);
   padding: clamp(26px, 3.6vw, 44px); box-shadow: var(--shadow);
+  /* The card is white but the section around it is dark, so without this the
+     card inherits --fg-on-dark. Everything inside used to name its own colour
+     and get away with it; "Ready to send." did not, and was white on white. */
+  color: var(--fg);
 }
 .form { display: grid; gap: 20px; }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -1402,3 +1406,50 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   .sp-strip > li img { height: 52svh; height: calc(52 * var(--svh, 1vh)); max-height: 430px; }
   .ch-strip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 }
+
+/* ── the enquiry outcome ────────────────────────────────────────────────────
+   Two states, one block. Green is already this site's "confirmed" signal —
+   it marks what Kingson has verified and nothing else — so it is the right
+   colour for an enquiry the database has actually accepted. Red is the same
+   red the field errors use.
+
+   The honeypot is positioned off-screen rather than `display: none`: a bot
+   reading the DOM fills anything it can find, while `display:none` is the
+   first thing the better ones skip. It is out of the tab order and hidden
+   from the accessibility tree, so nobody using the page ever meets it. */
+
+.hp {
+  position: absolute; left: -9999px; width: 1px; height: 1px;
+  overflow: hidden; white-space: nowrap;
+}
+
+.sent {
+  margin-top: 28px; padding: 20px 22px;
+  border: 1px solid var(--line); border-left-width: 3px;
+  border-radius: var(--r); background: var(--bg-soft);
+}
+.sent:focus { outline: none; }
+.sent:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.sent h3 {
+  font-family: Archivo, sans-serif; font-weight: 700;
+  font-size: var(--t-h3); margin-bottom: 8px;
+}
+.sent p { color: var(--fg-muted); font-size: var(--t-ui); max-width: 62ch; }
+
+.sent[data-state="ok"] {
+  border-color: var(--green-on-soft); background: var(--green-soft);
+}
+.sent[data-state="ok"] h3 { color: var(--green-on-soft); }
+.sent[data-state="ok"] p  { color: #2f4a39; }
+
+.sent[data-state="failed"] {
+  border-color: var(--accent); background: var(--accent-soft);
+}
+.sent[data-state="failed"] h3 { color: var(--accent-ink); }
+.sent[data-state="failed"] p  { color: #5c3a3b; }
+
+/* Once the enquiry is in, the draft below it is a convenience, not the act.
+   It recedes. */
+.sent:not([hidden]) + .draft { border-top-color: var(--line); }
+.sent[data-state="ok"]:not([hidden]) + .draft h3 { color: var(--fg-muted); font-size: var(--t-ui); }

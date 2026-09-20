@@ -800,14 +800,23 @@
           </div>
           <span class="field-error" data-error-for="f-drawings" hidden></span>
         </div>
-      <p class="files-note">Drawings are accepted as DXF, DWG, STEP or PDF. Attach them to the message this page prepares — nothing is uploaded from here.</p>
+      <div class="hp" aria-hidden="true">
+        <label for="f-website">Leave this field empty</label>
+        <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
+      <p class="files-note">Your enquiry is logged with Kingson when you send it. Drawings are not — there is no upload here. Attach your DXF, DWG, STEP or PDF to the WhatsApp or email message this page prepares and it reaches the same estimator.</p>
       <div class="form-actions">
         <button type="submit" class="btn" data-review><span>Review my enquiry</span></button>
       </div>
     </form>
 
+    <div class="sent" data-sent aria-live="polite" hidden>
+      <h3 data-sent-title></h3>
+      <p data-sent-body></p>
+    </div>
+
     <div class="draft" data-draft aria-live="polite">
-      <h3>Ready to send.</h3>
+      <h3 data-draft-title>Ready to send.</h3>
       <div class="draft-body" data-draft-body></div>
       <div class="draft-actions" data-draft-actions></div>
       <p class="draft-status" data-draft-status></p>

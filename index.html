@@ -1100,7 +1100,7 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
           <label for="f-service">What do you need?</label>
           <div class="select">
             <select id="f-service" name="service">
-              <option value="">Choose one</option>
+              <option value="" selected>Choose one</option>
               <option>Structural steelwork</option>
               <option>Roof steelwork and trusses</option>
               <option>Fiber laser cutting</option>
@@ -1128,7 +1128,7 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
           <label for="f-drawings">Do you have drawings?</label>
           <div class="select">
             <select id="f-drawings" name="drawings">
-              <option value="">Choose one</option>
+              <option value="" selected>Choose one</option>
               <option>Yes — DXF or DWG</option>
               <option>Yes — STEP</option>
               <option>Yes — PDF or a drawing on paper</option>
@@ -1138,9 +1138,13 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
           </div>
           <span class="field-error" data-error-for="f-drawings" hidden></span>
         </div>
+      <div class="hp" aria-hidden="true">
+        <label for="f-website">Leave this field empty</label>
+        <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
 <!--/form-->
       <p class="files-note"><!--filesnote-->
-Drawings are accepted as DXF, DWG, STEP or PDF. Attach them to the message this page prepares — nothing is uploaded from here.
+Your enquiry is logged with Kingson when you send it. Drawings are not — there is no upload here. Attach your DXF, DWG, STEP or PDF to the WhatsApp or email message this page prepares and it reaches the same estimator.
 <!--/filesnote--></p>
       <div class="form-actions">
         <button type="submit" class="btn" data-review><span><!--review-->
@@ -1149,8 +1153,13 @@ Review my enquiry
       </div>
     </form>
 
+    <div class="sent" data-sent aria-live="polite" hidden>
+      <h3 data-sent-title></h3>
+      <p data-sent-body></p>
+    </div>
+
     <div class="draft" data-draft aria-live="polite">
-      <h3><!--drafttitle-->
+      <h3 data-draft-title><!--drafttitle-->
 Ready to send.
 <!--/drafttitle--></h3>
       <div class="draft-body" data-draft-body></div>

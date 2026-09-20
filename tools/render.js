@@ -382,44 +382,12 @@ const procClose = `    <p>${esc(PROCESS.close)}</p>
    it. The note says which formats to attach to the message this page hands
    to WhatsApp or to mail instead.                                           */
 
-const label = (id, key) => `          <label for="f-${id}">${esc(ENQUIRY.fields[key])}</label>`;
-const err = (id) => `          <span class="field-error" data-error-for="f-${id}" hidden></span>`;
-const ph = (k) => (ENQUIRY.placeholders[k] ? ` placeholder="${esc(ENQUIRY.placeholders[k])}"` : '');
+/* The markup is enquiryForm() in tools/layout.js, the same function the five
+   service routes call. It used to be copied out here as well, and the copy is
+   exactly how the home page came to be missing a field the service pages had.
+   One definition, six pages. */
 
-const text = (id, key, extra = '') => `        <div class="field">
-${label(id, key)}
-          <input id="f-${id}" name="${id}" type="text"${extra}${ph(key)}>
-${err(id)}
-        </div>`;
-
-const area = (id, key, rows) => `        <div class="field">
-${label(id, key)}
-          <textarea id="f-${id}" name="${id}" rows="${rows}"${ph(key)}></textarea>
-${err(id)}
-        </div>`;
-
-const select = (id, key, options) => `        <div class="field">
-${label(id, key)}
-          <div class="select">
-            <select id="f-${id}" name="${id}">
-              <option value="">${esc(ENQUIRY.choose)}</option>
-${options.map((o) => `              <option>${esc(o)}</option>`).join('\n')}
-            </select>
-          </div>
-${err(id)}
-        </div>`;
-
-const form = `      <div class="field-row">
-${text('name', 'name', ' autocomplete="name"')}
-${text('company', 'company', ' autocomplete="organization"')}
-      </div>
-      <div class="field-row">
-${text('contact', 'contact', ' autocomplete="tel"')}
-${select('service', 'service', ENQUIRY.serviceOptions)}
-      </div>
-${text('location', 'location')}
-${area('description', 'description', 5)}
-${select('drawings', 'drawings', ENQUIRY.drawingOptions)}`;
+const form = enquiryForm(null);
 
 /* ── questions ───────────────────────────────────────────────────────────── */
 

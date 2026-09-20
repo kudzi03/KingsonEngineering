@@ -366,7 +366,11 @@ ${select('service', 'service', ENQUIRY.serviceOptions, preselectService)}
       </div>
 ${text('location', 'location')}
 ${area('description', 'description', 5)}
-${select('drawings', 'drawings', ENQUIRY.drawingOptions, null)}`;
+${select('drawings', 'drawings', ENQUIRY.drawingOptions, null)}
+      <div class="hp" aria-hidden="true">
+        <label for="f-website">Leave this field empty</label>
+        <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>`;
 }
 
 export function enquiryBlock(preselectService, { title, lede } = {}) {
@@ -386,8 +390,13 @@ ${enquiryForm(preselectService)}
       </div>
     </form>
 
+    <div class="sent" data-sent aria-live="polite" hidden>
+      <h3 data-sent-title></h3>
+      <p data-sent-body></p>
+    </div>
+
     <div class="draft" data-draft aria-live="polite">
-      <h3>${esc(ENQUIRY.draftTitle)}</h3>
+      <h3 data-draft-title>${esc(ENQUIRY.draftTitle)}</h3>
       <div class="draft-body" data-draft-body></div>
       <div class="draft-actions" data-draft-actions></div>
       <p class="draft-status" data-draft-status></p>
