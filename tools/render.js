@@ -47,9 +47,15 @@ const file = root + 'index.html';
 
 /* ── section headers ─────────────────────────────────────────────────────── */
 
+/* The heading rises from behind its datum, the same way every chapter title
+   above it does. Without this the page speaks in one voice down to the
+   workshop and then goes silent for the second half — specifications,
+   process, enquiry, questions and contact, which is precisely where a reader
+   is being asked to commit. `rise` needs a single wrapped child; see
+   scenes/reveal.js. */
 const head = (key, title, lede) =>
   `    <p class="eyebrow">${esc(EYEBROWS[key])}</p>\n` +
-  `    <h2 class="display">${esc(title)}</h2>\n` +
+  `    <h2 class="display" data-reveal="rise"><span>${esc(title)}</span></h2>\n` +
   (lede ? `    <p>${esc(lede)}</p>` : '');
 
 /* ── hero and the strip under it ─────────────────────────────────────────── */

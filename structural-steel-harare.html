@@ -458,6 +458,12 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="hd">
+  <!-- How far down a seventeen-screen page you are. Driven entirely by CSS
+       scroll-driven animation where the browser has it, so there is no scroll
+       listener and no JavaScript in the path at all; browsers without it
+       simply do not show the bar, which costs a visitor nothing. It is
+       decorative to a screen reader, hence aria-hidden. -->
+  <div class="hd-progress" aria-hidden="true"><i></i></div>
   <div class="hd-in">
     <a class="hd-mark" href="/" aria-label="Kingson Engineering, home">
       <img src="assets/brand/kingson-logo-560.png" srcset="assets/brand/kingson-logo-320.png 320w, assets/brand/kingson-logo-560.png 560w" sizes="(max-width:760px) 116px, 134px" width="560" height="229" style="height:46px" alt="Kingson Engineering — Steelwork Specialists" decoding="async">
@@ -527,7 +533,7 @@
   <section class="sp-brief">
     <div class="wrap sp-brief-in">
       <div class="sp-brief-col">
-        <h2 class="display">Confirmed capability</h2>
+        <h2 class="display" data-reveal="rise"><span>Confirmed capability</span></h2>
       <dl class="sp-rail">
         <div><dt>Portal frame programme</dt><dd>six to ten weeks from order</dd></div>
         <div><dt>Erection</dt><dd>Harare and nationally</dd></div>
@@ -535,7 +541,7 @@
       </dl>
       </div>
       <div class="sp-brief-col">
-        <h2 class="display">What to send for a structural steel quotation</h2>
+        <h2 class="display" data-reveal="rise"><span>What to send for a structural steel quotation</span></h2>
         <ul class="sp-send">
           <li>Drawings in DXF, DWG, STEP or PDF — or the span, height and bay spacing if drawings do not exist yet.</li>
           <li>The site address, and anything tight about access for a crane and a delivery vehicle.</li>
@@ -551,7 +557,7 @@
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">Erection capability</p>
-        <h2 class="display">The plant that puts it up.</h2>
+        <h2 class="display" data-reveal="rise"><span>The plant that puts it up.</span></h2>
         <p>Structural steelwork is set out from your drawings, so the sections, grades and spans come from your engineer rather than from a catalogue here. What Kingson confirms is the plant that erects it.</p>
       </div>
       <div class="spec-list">
@@ -572,7 +578,7 @@
   <section class="sp-proc">
     <div class="wrap sp-proc-in">
       <div>
-        <h2 class="display">What happens after you send it</h2>
+        <h2 class="display" data-reveal="rise"><span>What happens after you send it</span></h2>
         <p class="sp-lede">Five commitments Kingson confirmed in writing. Each applies to this service exactly as it applies to any other.</p>
       <ol class="steps">
         <li class="step">
@@ -629,7 +635,7 @@
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">Questions</p>
-        <h2 class="display">Questions we get asked about this</h2>
+        <h2 class="display" data-reveal="rise"><span>Questions we get asked about this</span></h2>
       </div>
       <div class="faq-list">
       <details class="faq-item" id="q-1">
@@ -656,7 +662,7 @@
     <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow">Get a price</p>
-      <h2 class="display">Send us the brief.</h2>
+      <h2 class="display" data-reveal="rise"><span>Send us the brief.</span></h2>
       <p>Tell us what you need. Enquiries are acknowledged the same working day.</p>
     </div>
 
@@ -751,7 +757,7 @@
   <!-- ═══ where else to go ═══ -->
   <section class="sp-related sec-alt">
     <div class="wrap">
-      <h2 class="display">Related services</h2>
+      <h2 class="display" data-reveal="rise"><span>Related services</span></h2>
       <ul class="sp-related-list">
         <li><a href="/roofing-and-trusses">
           <span class="sp-related-name">Roofing and trusses</span>

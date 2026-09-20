@@ -536,6 +536,12 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="hd">
+  <!-- How far down a seventeen-screen page you are. Driven entirely by CSS
+       scroll-driven animation where the browser has it, so there is no scroll
+       listener and no JavaScript in the path at all; browsers without it
+       simply do not show the bar, which costs a visitor nothing. It is
+       decorative to a screen reader, hence aria-hidden. -->
+  <div class="hd-progress" aria-hidden="true"><i></i></div>
   <div class="hd-in">
     <a class="hd-mark" href="#top" aria-label="Kingson Engineering, home">
       <span class="mark-lit"><img src="assets/brand/kingson-logo-560.png" srcset="assets/brand/kingson-logo-320.png 320w, assets/brand/kingson-logo-560.png 560w" sizes="(max-width:760px) 116px, 134px" width="560" height="229" style="height:46px" alt="Kingson Engineering — Steelwork Specialists" decoding="async"></span>
@@ -889,10 +895,10 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
   <div class="wrap">
     <div class="sec-head"><!--specshead-->
     <p class="eyebrow">Confirmed specifications</p>
-    <h2 class="display">The numbers, confirmed.</h2>
+    <h2 class="display" data-reveal="rise"><span>The numbers, confirmed.</span></h2>
     <p>Kingson checked and signed off every figure below. Open the one you need.</p>
 <!--/specshead--></div>
-    <div class="spec-list"><!--specs-->
+    <div class="spec-list" data-reveal="lift" data-reveal-stagger="70"><!--specs-->
       <details class="spec-group" id="spec-ibr" open>
         <summary><span>IBR sheeting</span></summary>
         <dl class="spec-rows">
@@ -960,7 +966,7 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
   <div class="wrap">
     <div class="sec-head"><!--proofhead-->
     <p class="eyebrow">Photographs</p>
-    <h2 class="display">Our own work, on site.</h2>
+    <h2 class="display" data-reveal="rise"><span>Our own work, on site.</span></h2>
     <p>Three photographs from Kingson jobs. No client names, locations or tonnages appear here because none has been confirmed — what is shown is what is in the frame.</p>
 <!--/proofhead--></div>
   </div>
@@ -1011,10 +1017,10 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
   <div class="wrap">
     <div class="sec-head"><!--prochead-->
     <p class="eyebrow">How it works</p>
-    <h2 class="display">What happens after you send it.</h2>
+    <h2 class="display" data-reveal="rise"><span>What happens after you send it.</span></h2>
     <p>Five commitments Kingson confirmed in writing. Each one is what the office holds to, every time.</p>
 <!--/prochead--></div>
-    <ol class="steps"><!--steps-->
+    <ol class="steps" data-reveal="lift" data-reveal-stagger="90"><!--steps-->
       <li class="step">
         <span class="step-n">01</span>
         <div class="step-body">
@@ -1070,7 +1076,7 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
   <div class="wrap">
     <div class="sec-head"><!--enqhead-->
     <p class="eyebrow">Get a price</p>
-    <h2 class="display">Send us the brief.</h2>
+    <h2 class="display" data-reveal="rise"><span>Send us the brief.</span></h2>
     <p>Tell us what you need. Enquiries are acknowledged the same working day.</p>
 <!--/enqhead--></div>
 
@@ -1177,7 +1183,7 @@ Ready to send.
   <div class="wrap">
     <div class="sec-head"><!--faqhead-->
     <p class="eyebrow">Questions</p>
-    <h2 class="display">Questions we get asked</h2>
+    <h2 class="display" data-reveal="rise"><span>Questions we get asked</span></h2>
 
 <!--/faqhead--></div>
     <div class="faq-list"><!--faq-->
@@ -1251,10 +1257,10 @@ Ready to send.
   <div class="wrap">
     <div class="sec-head"><!--cthead-->
     <p class="eyebrow">Where to find us</p>
-    <h2 class="display">Talk to us.</h2>
+    <h2 class="display" data-reveal="rise"><span>Talk to us.</span></h2>
     <p>Call the workshop during working hours, or send a message any time.</p>
 <!--/cthead--></div>
-    <ul class="ct-list" data-contact><!--contact-->
+    <ul class="ct-list" data-contact data-reveal="lift" data-reveal-stagger="45"><!--contact-->
     <li><dl><dt>Mobile</dt><dd><a href="tel:+263772262869">+263 772 262 869</a></dd></dl></li>
     <li><dl><dt>WhatsApp</dt><dd><a href="https://wa.me/263772262869" target="_blank" rel="noopener">+263 772 262 869</a></dd></dl></li>
     <li><dl><dt>Office</dt><dd><a href="tel:+263242304341">+263 242 304 341</a></dd></dl></li>

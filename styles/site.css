@@ -1481,3 +1481,53 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   .hd .btn,
   .hd .btn-ghost     { min-height: 44px; }
 }
+
+/* ── how far down you are ───────────────────────────────────────────────────
+   The home page is about seventeen screens tall. A reader who has committed
+   to the chapters has no way of telling whether the specifications are next
+   or whether there are five more scenes first, and the header — which is the
+   one thing on screen the whole way down — was saying nothing about it.
+
+   Driven by `animation-timeline: scroll()`, so the browser runs it off the
+   compositor with no scroll listener, no rAF loop and no JavaScript of any
+   kind. That is the same reason the rest of this site uses an
+   IntersectionObserver rather than listening to scroll: a handler that fires
+   on every scroll event is the most reliable way to make a page feel heavy on
+   a mid-range phone.
+
+   Browsers without scroll-driven animations get a bar that stays at zero
+   width, which is indistinguishable from the border that was already there.
+   Nobody is worse off, so there is no JavaScript fallback to maintain.      */
+
+.hd-progress {
+  position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+  pointer-events: none; overflow: hidden;
+}
+.hd-progress > i {
+  display: block; height: 100%; width: 100%;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: 0 50%;
+}
+
+@supports (animation-timeline: scroll()) {
+  .hd-progress > i {
+    animation: hd-progress-grow linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes hd-progress-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* On the dark hero the red still reads, but the track needs to not look like
+   a gap in the border. */
+html.hd-over .hd-progress { mix-blend-mode: normal; }
+
+/* It reports position rather than animating anything, so Reduce Motion has no
+   quarrel with it — but a scroll-linked transform is still motion to some
+   people, and the site's rule is that the whole vocabulary goes quiet. */
+@media (prefers-reduced-motion: reduce) {
+  .hd-progress { display: none; }
+}

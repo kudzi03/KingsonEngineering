@@ -217,11 +217,11 @@ ${crumbs(s)}
   <section class="sp-brief">
     <div class="wrap sp-brief-in">
       <div class="sp-brief-col">
-        <h2 class="display">${esc(SERVICE_PAGE.figuresTitle)}</h2>
+        <h2 class="display" data-reveal="rise"><span>${esc(SERVICE_PAGE.figuresTitle)}</span></h2>
 ${figureRail(s.figures)}
       </div>
       <div class="sp-brief-col">
-        <h2 class="display">${esc(s.sendTitle)}</h2>
+        <h2 class="display" data-reveal="rise"><span>${esc(s.sendTitle)}</span></h2>
         <ul class="sp-send">
 ${s.send.map((line) => `          <li>${esc(line)}</li>`).join('\n')}
         </ul>
@@ -243,7 +243,7 @@ ${strip}
     <div class="wrap">
       <div class="sp-parts-list">
 ${s.parts.map((p) => `        <article id="${p.id}">
-          <h2 class="display">${esc(p.title)}</h2>
+          <h2 class="display" data-reveal="rise"><span>${esc(p.title)}</span></h2>
           <p>${esc(p.body)}</p>
         </article>`).join('\n')}
       </div>
@@ -255,7 +255,7 @@ ${s.parts.map((p) => `        <article id="${p.id}">
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">${esc((s.spec && s.spec.eyebrow) || SERVICE_PAGE.specTitle)}</p>
-        <h2 class="display">${esc((s.spec && s.spec.head) || SPECS.title)}</h2>
+        <h2 class="display" data-reveal="rise"><span>${esc((s.spec && s.spec.head) || SPECS.title)}</span></h2>
         <p>${esc((s.spec && s.spec.lede) || SERVICE_PAGE.specLede)}</p>
       </div>
       <div class="spec-list">
@@ -268,7 +268,7 @@ ${specBlock(s.specGroups)}
   <section class="sp-proc">
     <div class="wrap sp-proc-in">
       <div>
-        <h2 class="display">${esc(SERVICE_PAGE.processTitle)}</h2>
+        <h2 class="display" data-reveal="rise"><span>${esc(SERVICE_PAGE.processTitle)}</span></h2>
         <p class="sp-lede">${esc(processLede(s.slug))}</p>
 ${processBlock(s.slug)}
       </div>
@@ -289,7 +289,7 @@ ${[['address', publish('address')], ['hours', publish('hours')], ['contactPerson
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">Questions</p>
-        <h2 class="display">${esc(SERVICE_PAGE.faqTitle)}</h2>
+        <h2 class="display" data-reveal="rise"><span>${esc(SERVICE_PAGE.faqTitle)}</span></h2>
       </div>
       <div class="faq-list">
 ${faqBlock(faq)}
@@ -308,7 +308,7 @@ ${enquiryBlock(s.serviceName, { title: SERVICE_PAGE.ctaTitle, lede: SERVICE_PAGE
   <!-- ═══ where else to go ═══ -->
   <section class="sp-related sec-alt">
     <div class="wrap">
-      <h2 class="display">${esc(SERVICE_PAGE.relatedTitle)}</h2>
+      <h2 class="display" data-reveal="rise"><span>${esc(SERVICE_PAGE.relatedTitle)}</span></h2>
 ${relatedBlock(s.related)}
       <p class="sp-back"><a href="/#services">${esc(SERVICE_PAGE.backHome)}${ICON_ARROW}</a></p>
     </div>

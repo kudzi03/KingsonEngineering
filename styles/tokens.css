@@ -240,6 +240,29 @@ html.reveal-ready [data-reveal="draw"] [data-draw-fade] {
 }
 html.reveal-ready [data-reveal="draw"].is-revealed [data-draw-fade] { opacity: 1; }
 
+/* ── lift: items in a list, in the order they happen ──────────────────────────
+   The sixth of the vocabulary, and the only one that moves a group rather
+   than a thing.
+
+   `rise` is for one line of type coming out from behind a datum: it masks its
+   container and translates a single child. Pointed at a list it clips each row
+   against the next and they slide over one another. A list needs its own
+   motion, and the honest one for a list whose ORDER is its meaning — five
+   commitments in sequence, the specification groups, the ways to reach the
+   workshop — is arrival in that order.
+
+   Short and small on purpose: 14px and a fade, not a slide across the screen.
+   The stagger does the talking. scenes/reveal.js sets the per-child delay from
+   `data-reveal-stagger`, so the markup says how far apart, not how far.       */
+html.reveal-ready [data-reveal="lift"] > * {
+  opacity: 0; transform: translateY(14px);
+  transition: opacity var(--t-rise) var(--ease),
+              transform var(--t-rise) var(--ease-power);
+}
+html.reveal-ready [data-reveal="lift"].is-revealed > * {
+  opacity: 1; transform: none;
+}
+
 /* ── swing: slow and powerful, about a pivot ──────────────────────────── */
 html.reveal-ready [data-reveal="swing"] {
   transform: rotate(-3.2deg) translateY(3%);

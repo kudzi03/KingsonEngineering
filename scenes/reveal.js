@@ -2,7 +2,7 @@
    scenes/reveal.js — the motion vocabulary
    ═══════════════════════════════════════════════════════════════════════════
 
-   Five reveals, each chosen because it matches the physical nature of the
+   Six reveals, each chosen because it matches the physical nature of the
    thing it moves. The point is that a laser and a crane should not arrive on
    screen the same way.
 
@@ -22,6 +22,11 @@
      swing    rotation about a pivot at one edge, slow and powerful, with the
               weight arriving before the rotation finishes. The crane.
 
+     lift     the only one that moves a group rather than a thing. A short
+              14px arrival, staggered by `data-reveal-stagger`, for a list
+              whose ORDER is its meaning: the five commitments, the
+              specification groups, the ways to reach the workshop.
+
    PROGRESSIVE ENHANCEMENT, THE RIGHT WAY ROUND
 
    Everything is VISIBLE in the stylesheet. The hidden-then-revealed state
@@ -35,7 +40,7 @@
    element and then stops watching it.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-const KINDS = ['plate', 'rise', 'settle', 'draw', 'swing'];
+const KINDS = ['plate', 'rise', 'settle', 'draw', 'swing', 'lift'];
 
 export function mountReveals(root = document) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');

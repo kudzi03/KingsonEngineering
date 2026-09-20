@@ -153,6 +153,12 @@ export function chromeTop({ home = false, current = '' } = {}) {
   return `<a class="skip" href="#main">Skip to content</a>
 
 <header class="hd">
+  <!-- How far down a seventeen-screen page you are. Driven entirely by CSS
+       scroll-driven animation where the browser has it, so there is no scroll
+       listener and no JavaScript in the path at all; browsers without it
+       simply do not show the bar, which costs a visitor nothing. It is
+       decorative to a screen reader, hence aria-hidden. -->
+  <div class="hd-progress" aria-hidden="true"><i></i></div>
   <div class="hd-in">
     <a class="hd-mark" href="${home ? '#top' : '/'}" aria-label="Kingson Engineering, home">
 ${mark}
@@ -376,7 +382,7 @@ ${select('drawings', 'drawings', ENQUIRY.drawingOptions, null)}
 export function enquiryBlock(preselectService, { title, lede } = {}) {
   return `    <div class="sec-head">
       <p class="eyebrow">${esc(NAV.quote)}</p>
-      <h2 class="display">${esc(title || ENQUIRY.title)}</h2>
+      <h2 class="display" data-reveal="rise"><span>${esc(title || ENQUIRY.title)}</span></h2>
       <p>${esc(lede || ENQUIRY.lede)}</p>
     </div>
 
