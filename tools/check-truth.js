@@ -36,7 +36,15 @@ import { ASSETS, PAGE_IMAGES, BAND_IMAGE } from '../content/assets.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const SERVED = ['.html', '.js', '.css', '.xml', '.txt', '.json'];
-const SKIP = new Set(['node_modules', '.git', 'tools', 'content']);
+/* `crm` is the internal system, not the website. This gate polices what a
+   visitor is handed as Kingson's published claims: every figure on a public
+   page has to cite the returned document. The CRM publishes nothing — it sits
+   behind a sign-in, carries noindex, and the numbers on its screens are
+   whatever is in the database that morning. Holding it to the same rule would
+   mean the gate failing because somebody quoted a real job.
+
+   If anything public is ever served from that path, take it out of here. */
+const SKIP = new Set(['node_modules', '.git', 'tools', 'content', 'crm']);
 
 /* ── 1. the numeral vocabulary claims are written in ─────────────────────────
    A gate that only looks for digits is not a gate: "six to ten weeks" and
