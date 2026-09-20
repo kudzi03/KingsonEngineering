@@ -1453,3 +1453,31 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
    It recedes. */
 .sent:not([hidden]) + .draft { border-top-color: var(--line); }
 .sent[data-state="ok"]:not([hidden]) + .draft h3 { color: var(--fg-muted); font-size: var(--t-ui); }
+
+/* ── touch targets ──────────────────────────────────────────────────────────
+   Last in the file on purpose.
+
+   The rule for these lives in the max-width: 760px block, which is two
+   hundred lines above the footer navigation that was added afterwards.
+   `.ft-col a` and `.ft a` have the same specificity, so the later one won at
+   every width and quietly cancelled it: both phone numbers and both email
+   addresses were 32px tall on a phone. On a steel fabricator's website the
+   tap on a phone number is the conversion, and it was the smallest target on
+   the page.
+
+   Keyed on `pointer: coarse` rather than on width, because the thing that
+   decides how big a target needs to be is the finger, not the viewport. A
+   768px tablet is a touch device and was getting 27px contact links; a narrow
+   window on a desktop is not, and does not need a taller footer.
+
+   44px is the iOS minimum and the figure the design guidance uses. Android
+   asks for 48. The gap between rows carries the 8px separation.            */
+
+@media (pointer: coarse) {
+  .ft-col a,
+  .ct-list a,
+  .hd-nav a          { min-height: 44px; display: inline-flex; align-items: center; }
+  .ft-col ul         { gap: 4px; }
+  .hd .btn,
+  .hd .btn-ghost     { min-height: 44px; }
+}
