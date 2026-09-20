@@ -46,8 +46,13 @@ const SERVED = ['.html', '.js', '.css', '.xml', '.txt', '.json'];
    `crm-src` is the same system before it is bundled, and is not deployed at
    all — see .vercelignore.
 
+   `.claude` is tooling for whoever works on this — installed skills, their
+   reference material and their starter files. Several of those starters are
+   HTML, which the gate would otherwise read as pages Kingson had published.
+   They are not deployed either; see .vercelignore.
+
    If anything public is ever served from those paths, take them out of here. */
-const SKIP = new Set(['node_modules', '.git', 'tools', 'content', 'crm', 'crm-src']);
+const SKIP = new Set(['node_modules', '.git', '.claude', 'tools', 'content', 'crm', 'crm-src']);
 
 /* ── 1. the numeral vocabulary claims are written in ─────────────────────────
    A gate that only looks for digits is not a gate: "six to ten weeks" and

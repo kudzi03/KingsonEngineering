@@ -10,3 +10,8 @@ crm-src
 # not for whoever visits it.
 *.md
 !README.md
+
+# Skills, their reference material and their starter files. Tooling for
+# whoever works on this repository, and several of the starters are HTML —
+# without this they would be served from the website's own domain.
+.claude
