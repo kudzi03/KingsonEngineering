@@ -3,22 +3,27 @@
 # tools/build-crm.sh — bundle the CRM into crm/ for deployment
 # ═══════════════════════════════════════════════════════════════════════════
 #
-# The CRM is written as thirty ES modules in ../kingson-crm and is developed by
+# The CRM is written as twenty-six ES modules in crm-src/ and is developed by
 # serving that directory directly — no build step, no bundler, which is the
 # whole point of how it is written.
 #
 # It ships as three files, because it is served from the website's deployment
-# and thirty round trips on a Harare connection is a slow morning. The bundle
-# is a build artefact: never edit crm/ by hand, edit ../kingson-crm and run
+# and twenty-six round trips on a Harare connection is a slow morning. The
+# bundle is a build artefact: never edit crm/ by hand, edit crm-src/ and run
 # this. Committing the output is deliberate — the site has no build step on
 # Vercel and adding one for this would mean adding a package.json to a
 # repository that has done without one.
 #
-#   tools/build-crm.sh [path-to-kingson-crm]
+# The default source used to be ../kingson-crm, a directory OUTSIDE this
+# repository. It worked only for as long as that machine existed, and the
+# committed crm-src/ was a copy somebody had to remember to keep in step. The
+# source of truth is the one that is version-controlled.
+#
+#   tools/build-crm.sh [path-to-crm-source]
 # ═══════════════════════════════════════════════════════════════════════════
 set -euo pipefail
 
-SRC="${1:-$(cd "$(dirname "$0")/../../kingson-crm" && pwd)}"
+SRC="${1:-$(cd "$(dirname "$0")/../crm-src" && pwd)}"
 OUT="$(cd "$(dirname "$0")/.." && pwd)/crm"
 ESBUILD="${ESBUILD:-esbuild}"
 

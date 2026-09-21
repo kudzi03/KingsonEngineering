@@ -107,9 +107,13 @@ export const priorityPill = (p) =>
 
 /* ── people ───────────────────────────────────────────────────────────────── */
 
+/* `title` alone is not an accessible name on a span — a screen reader reads
+   the initials, or worse, the bare "?". Both carry a real name now, so the
+   unassigned case is announced as "Unassigned" rather than as a question
+   mark, which is the whole point of showing it. */
 export const avatar = (person, size = 26) => person
-  ? `<span class="avatar" style="--s:${size}px" title="${esc(person.full_name || '')}">${esc(person.initials || mkInitials(person.full_name))}</span>`
-  : `<span class="avatar avatar-none" style="--s:${size}px" title="Unassigned">?</span>`;
+  ? `<span class="avatar" role="img" style="--s:${size}px" title="${esc(person.full_name || '')}" aria-label="${esc(person.full_name || 'Assigned')}">${esc(person.initials || mkInitials(person.full_name))}</span>`
+  : `<span class="avatar avatar-none" role="img" style="--s:${size}px" title="Unassigned" aria-label="Unassigned">?</span>`;
 
 /**
  * Call, WhatsApp and email, as links that work on the phone in somebody's

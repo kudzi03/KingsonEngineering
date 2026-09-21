@@ -153,7 +153,44 @@ async function refresh() {
 
 /* ── PostgREST ────────────────────────────────────────────────────────────── */
 
+/* ── one read, however many callers ───────────────────────────────────────────
+   Opening the dashboard fired the same v_opportunity_state query three times:
+   once for the overdue badge at boot, once for the dashboard's own data, and
+   once for the badge again after the view rendered. Three identical requests
+   over a Harare connection is most of the three and a half seconds before the
+   screen had anything on it.
+
+   So a GET is held for a moment and handed to whoever else asks for the same
+   path in that window. The window is short, and any write clears the whole
+   cache, so nobody can be shown a row they have just changed. It is a render
+   pass, not a cache layer — two seconds is deliberately too short to hide
+   somebody else's edit for longer than it takes to notice.                 */
+
+const READ_TTL = 2000;
+const reads = new Map();
+
+const cacheable = (method, headers) =>
+  method === 'GET' && !headers.Prefer;      // a counted read is not the same read
+
+function remember(key, promise) {
+  reads.set(key, { at: Date.now(), promise });
+  /* A failed read must not be served to the next caller. */
+  promise.catch(() => reads.delete(key));
+  return promise;
+}
+
 async function request(path, { method = 'GET', body, headers = {}, retry = true } = {}) {
+  if (cacheable(method, headers)) {
+    const hit = reads.get(path);
+    if (hit && Date.now() - hit.at < READ_TTL) return hit.promise;
+  } else {
+    reads.clear();                          // anything written invalidates everything
+  }
+  if (cacheable(method, headers)) return remember(path, send(path, { method, headers, retry }));
+  return send(path, { method, body, headers, retry });
+}
+
+async function send(path, { method = 'GET', body, headers = {}, retry = true } = {}) {
   if (session && expired()) {
     try { await refresh(); } catch { /* fall through; the 401 below is the truth */ }
   }
@@ -179,7 +216,7 @@ async function request(path, { method = 'GET', body, headers = {}, retry = true 
   if (res.status === 401 && retry && session?.refresh_token) {
     try {
       await refresh();
-      return request(path, { method, body, headers, retry: false });
+      return send(path, { method, body, headers, retry: false });
     } catch { /* fall through to the error below */ }
   }
 
