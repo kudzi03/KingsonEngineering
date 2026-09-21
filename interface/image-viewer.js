@@ -10,7 +10,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { ASSETS, src } from '../content/assets.js';
-import { WORK } from '../content/copy.js';
+import { WORK } from '../content/runtime-copy.js';
 
 export function mountViewer({ onOpen, onClose } = {}) {
   const dialog = document.querySelector('[data-viewer]');

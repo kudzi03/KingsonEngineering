@@ -26,7 +26,7 @@
    of the two happened. Nothing here ever discards what somebody typed.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { ENQUIRY } from '../content/copy.js';
+import { ENQUIRY } from '../content/runtime-copy.js';
 import { hasVerifiedRecipient, recipients } from '../content/company.js';
 import { sendEnquiry } from './send-enquiry.js';
 import { canSubmit } from '../content/crm.js';
