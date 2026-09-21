@@ -508,7 +508,7 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
 </div>
 <!--/chrometop-->
 
-<main id="main">
+<main id="main" tabindex="-1">
 <span id="top"></span>
 
 <!-- ═══════════════ HERO ═══════════════
@@ -1045,7 +1045,14 @@ Ready to send.
     <span class="viewer-caption" data-viewer-caption></span>
     <button type="button" data-viewer-close>Close</button>
   </div>
-  <div class="viewer-body"><img data-viewer-img alt=""></div>
+  <!-- A transparent pixel, not an empty src. An <img> with no src attribute
+       is invalid, reports naturalWidth 0, and in some browsers paints a
+       broken-image glyph — on every page of the site, because this dialog is
+       part of the shared chrome. It is inert and off screen so nobody saw it,
+       which is exactly why it survived this long. The viewer overwrites the
+       src the moment a photograph is opened; the pixel costs no request. -->
+  <div class="viewer-body"><img data-viewer-img alt=""
+       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></div>
   <div class="viewer-foot"><span data-viewer-alt class="viewer-caption"></span></div>
 </div>
 

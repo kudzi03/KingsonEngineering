@@ -195,7 +195,7 @@ ${head}
 <body>
 ${chromeTop({ home: false, current: s.slug })}
 
-<main id="main">
+<main id="main" tabindex="-1">
 ${crumbs(s)}
 
   <!-- ═══ the service, at scale ═══ -->
@@ -369,7 +369,7 @@ ${head}
 <body>
 ${chromeTop({ home: false, current: '404' })}
 
-<main id="main">
+<main id="main" tabindex="-1">
   <section class="sp-hero nf-hero ch ch-bleed ch-dark on-dark">
     <div class="ch-bleed-img">
       ${bleedPhoto(NOT_FOUND.hero, { eager: true, abs: true, decorative: true })}

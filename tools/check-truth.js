@@ -194,7 +194,12 @@ for (const file of allPages) {
   const rel = file.slice(root.length);
   const html = readFileSync(file, 'utf8');
   if (!/<a class="skip" href="#main">/.test(html)) fail(`${rel}: no skip link`);
-  if (!/<main id="main">/.test(html)) fail(`${rel}: no <main id="main"> landmark`);
+  /* tabindex="-1" is not decoration: without it, activating the skip link
+     moves the URL fragment but leaves focus on <body>, so the next Tab
+     carries on from the skip link and the visitor is back in the header. */
+  if (!/<main id="main" tabindex="-1">/.test(html)) {
+    fail(`${rel}: no focusable <main id="main"> landmark`);
+  }
   if (!/<footer class="ft/.test(html)) fail(`${rel}: no site footer`);
   if (!/<header class="hd">/.test(html)) fail(`${rel}: no site header`);
   if (!/<html lang="en">/.test(html)) fail(`${rel}: no lang on <html>`);
@@ -213,6 +218,47 @@ for (const file of allPages) {
   const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
   const dupes = [...new Set(ids.filter((v, i) => ids.indexOf(v) !== i))];
   if (dupes.length) fail(`${rel}: duplicate id — ${dupes.join(', ')}`);
+}
+
+/* ── every link, fragment and asset path resolves ────────────────────────────
+   A dead internal link is the cheapest possible way to look unserious, and
+   the one thing nobody checks before a demonstration. This walks href, src
+   and every arm of every srcset on every page, follows Vercel's cleanUrls
+   rule, and confirms that a #fragment exists on the page it points at.    */
+
+const isFile = (f) => { try { return statSync(f).isFile(); } catch { return false; } };
+const resolveHref = (u) => {
+  const path = u === '/' ? '/index.html' : u;
+  const base = path.startsWith('/') ? root + path.slice(1) : root + path;
+  for (const c of [base, base + '.html', base + '/index.html']) if (isFile(c)) return c;
+  return null;
+};
+
+let linksChecked = 0;
+for (const file of allPages) {
+  const rel = file.slice(root.length);
+  const html = readFileSync(file, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+  const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+  for (const m of html.matchAll(/(?:href|src|srcset)="([^"]*)"/g)) {
+    const value = m[1];
+    if (/^(https?:|mailto:|tel:|data:)/.test(value)) continue;
+    for (const arm of value.split(',')) {
+      const u = arm.trim().split(/\s+/)[0];
+      if (!u) continue;
+      linksChecked++;
+      if (u.startsWith('#')) {
+        if (u !== '#' && !ids.has(u.slice(1))) fail(`${rel}: link to #${u.slice(1)}, which is not on this page`);
+        continue;
+      }
+      const [path, frag] = u.split('#');
+      const target = resolveHref(path);
+      if (!target) { fail(`${rel}: dead link — ${u}`); continue; }
+      if (frag && target.endsWith('.html')
+          && !readFileSync(target, 'utf8').includes(`id="${frag}"`)) {
+        fail(`${rel}: ${path} has no #${frag}`);
+      }
+    }
+  }
 }
 
 /* 404.html is deliberately outside the SEO block below: it carries noindex

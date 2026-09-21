@@ -111,7 +111,7 @@ export function portfolioPage() {
 ${head}
 <body>
 ${chromeTop({ current: PORTFOLIO.slug })}
-<main id="main">
+<main id="main" tabindex="-1">
   <section class="pj-head">
     <div class="wrap">
       <p class="eyebrow">${esc(PORTFOLIO.eyebrow)}</p>
