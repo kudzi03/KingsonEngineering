@@ -1689,3 +1689,32 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
    one short scroll on a laptop, not two. */
 .nf-svc { padding-block: clamp(40px, 4.4vw, 64px); }
 @media (max-width: 760px) { .nf-hero { min-height: 0; } }
+
+/* ── three actions in the phone bar ──────────────────────────────────────────
+   Call, WhatsApp and Get a price. At 360px three equal thirds leave about
+   103px each, which is not enough for a label beside an icon, so the bar
+   gets its own tighter metrics rather than the page's button padding. The
+   quote button keeps a little more room because its label is the longest and
+   it is the one that has to stay unambiguous. */
+@media (max-width: 760px) {
+  .bar { gap: 8px; }
+  .bar a { padding-inline: 8px; gap: 6px; font-size: 14px; letter-spacing: 0; }
+  .bar a.btn { flex: 1.25; }
+  .bar a svg { flex: none; }
+}
+@media (max-width: 360px) {
+  .bar a { font-size: 13px; gap: 4px; padding-inline: 6px; }
+}
+
+/* The bar steps out of the frame while the hero's own buttons are on screen —
+   see main.js. `html.cta-near` is only ever added by an observer that ran, so
+   with JavaScript off the bar stays where it is, which is the safe way round.
+   It keeps its space in the layout via main's padding-bottom, so nothing
+   reflows when it leaves or returns. */
+@media (max-width: 760px) {
+  .bar { transition: transform .22s cubic-bezier(.4, 0, .2, 1); }
+  html.cta-near .bar { transform: translateY(115%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar { transition: none; }
+}

@@ -280,7 +280,13 @@ export function chromeBottom() {
   <div class="viewer-foot"><span data-viewer-alt class="viewer-caption"></span></div>
 </div>
 
-<div class="bar">${callBtn(NAV.call, true)}${quoteBtn(false, '#enquiry')}</div>
+<!-- The phone action bar. WhatsApp belongs in it: it is how a Zimbabwean
+     buyer actually opens a conversation, and before this it appeared twice on
+     the home page with neither instance above the fold. The bar is the one
+     piece of the page that is reachable at every scroll depth, so the three
+     ways to reach us all live here rather than only in a hero somebody has
+     already scrolled past. -->
+<div class="bar">${callBtn(NAV.call, true)}${waBtn(true)}${quoteBtn(false, '#enquiry')}</div>
 
 <script type="module" src="/main.js"></script>`;
 }

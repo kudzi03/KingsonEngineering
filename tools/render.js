@@ -68,7 +68,7 @@ const head = (key, title, lede, id) =>
 const hero = `    <p class="hero-eyebrow">${esc(HERO.eyebrow)}</p>
     <h1 class="display hero-title">${esc(HERO.title)}</h1>
     <p class="hero-lede">${esc(HERO.lede)}</p>
-    <div class="hero-act">${quoteBtn()}${callBtn(NAV.call, true)}</div>`;
+    <div class="hero-act">${quoteBtn()}${callBtn(NAV.call, true)}${waBtn(true)}</div>`;
 
 const strip = STRIP.map(([label, value]) =>
   `    <li><span class="strip-k">${esc(label)}</span><span class="strip-v">${esc(value)}</span></li>`

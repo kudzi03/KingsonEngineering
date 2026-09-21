@@ -103,7 +103,34 @@ if (hero && 'IntersectionObserver' in window) {
   }, { passive: true });
 }
 
-/* ── the motion vocabulary ──────────────────────────────────────────────────/* ── the motion vocabulary ──────────────────────────────────────────────────
+/* ── the phone action bar, out of the way of the hero ───────────────────────
+   The bar carries Call, WhatsApp and Get a price at every scroll depth. The
+   hero carries the same three. On a phone that means six buttons and three
+   actions stacked on the first screen of the site, which is the single most
+   seen view there is.
+
+   So while the hero's own buttons are on screen, the bar steps down out of
+   the frame. It comes back the moment they leave, which is the moment it
+   starts being the only way to reach us.
+
+   As with the header above: the class is only ever ADDED by an observer that
+   ran. With JavaScript off, or without IntersectionObserver, the bar is
+   simply there — the safe default, because a missing bar costs an enquiry
+   and a duplicated one costs nothing.                                       */
+
+/* `.hero-act` on the home page, `.sp-act` on a service page and the 404 —
+   the same three buttons under the same hero, named differently only because
+   the two heroes have different type scales. */
+const heroAct = $('.hero-act, .sp-act');
+if (heroAct && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver(
+    ([e]) => document.documentElement.classList.toggle('cta-near', e.isIntersecting),
+    { threshold: 0 }
+  );
+  io.observe(heroAct);
+}
+
+/* ── the motion vocabulary ──────────────────────────────────────────────────
    Physical reveals keyed to what each element is. Adds html.reveal-ready
    itself, so with this module absent the page is simply visible. */
 
