@@ -32,41 +32,31 @@
    which is honest, and for a folder arguably more useful than a photograph.
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── the one chapter ─────────────────────────────────────────────────────────
+   There were five, one per service, running 01 to 05. They came out, and this
+   is why.
+
+   The page carried TWO numbered 01–05 sequences: these chapters, and the five
+   commitments under "What happens after you send it". One was six services
+   dressed as a sequence; the other is a real sequence. A reader met `03` twice
+   on one page meaning unrelated things.
+
+   They were also redundant three times over. Every figure they stated is in
+   the specification table below them — checked row by row before they were
+   removed. Every service they described has its own page, which says more:
+   the fabrication chapter's opening sentence was word for word the service
+   page's. And between them they cost seven screens before a visitor could
+   find out whether Kingson makes the thing they came about, which is now the
+   chooser's job and takes one.
+
+   The laser survives because it is not redundant. It is the machine nobody
+   else in Harare has, it is the only chapter with photographs of the work
+   actually happening, and ±0.1 mm is the number the whole site is built on.
+   It has no number any more — there is nothing to be third of. */
+
 export const CHAPTERS = [
   {
-    n: '01', id: 'structure', route: 'structural-steel-harare', name: 'Structure', ground: 'dark',
-    covers: ['Structural steelwork'],
-    title: 'Frames that carry the building.',
-    body: 'Portal frames, columns, rafters and purlins — set out, fabricated in the workshop, and erected on site with our own crane.',
-    ask: 'Send drawings, or the span, height and bay spacing.',
-    figures: [['Portal frame programme', 'six to ten weeks'],
-              ['Erection', 'Harare and nationally']],
-    media: { kind: 'bleed', photos: ['roofFrame'] }
-  },
-
-  {
-    n: '02', id: 'form', route: 'roofing-and-trusses', name: 'Form', ground: 'light',
-    covers: ['Roof steelwork and trusses'],
-    title: 'Two profiles, cut to your roof.',
-    body: 'Trusses, purlins and sheeting for long-span roofs, new build or re-roof. IBR and corrugated, galvanised or pre-painted, cut to length before it leaves the workshop.',
-    ask: 'Send the floor area, the pitch you want, and whether the walls are up.',
-    hero: { value: '12 M', label: 'maximum sheet length' },
-    /* Rib and crest heights are here as well as on the drawing, because below
-       900px the drawn annotations are hidden — see styles/site.css. Every
-       figure the section draws is also stated in type. */
-    figures: [['IBR cover', '686 mm, five ribs'],
-              ['IBR rib height', '36 mm'],
-              ['Corrugated cover', '762 mm, 10.5 corrugations'],
-              ['Corrugated crest', '17.5 mm at 76 mm pitch'],
-              ['Minimum pitch, IBR', '5°; 7° with side laps'],
-              ['Minimum pitch, corrugated', '10°; 12° exposed']],
-    /* The two sections are drawn to scale from these same figures by
-       scenes/profiles.js, at one shared scale so the comparison is honest. */
-    media: { kind: 'sections', photos: ['roofTrusses'] }
-  },
-
-  {
-    n: '03', id: 'cut', route: 'fiber-laser-cutting-harare', name: 'Cut', ground: 'dark',
+    id: 'cut', route: 'fiber-laser-cutting-harare', name: 'Cut', ground: 'dark',
     covers: ['Fiber laser cutting'],
     title: 'Straight from your file.',
     body: 'Plate and sheet cut on a DXTECH fiber laser — nested from the drawing you send and cut on a 3 000 × 1 500 mm bed. Mild steel, stainless, aluminium and galvanised sheet.',
@@ -89,38 +79,13 @@ export const CHAPTERS = [
       kind: 'strip', scene: 'laserCutting',
       photos: ['nestingStation', 'laserFloor', 'gantry', 'laserSparks']
     }
-  },
-
-  {
-    n: '04', id: 'fabricate', route: 'steel-fabrication', name: 'Fabricate', ground: 'light',
-    covers: ['Balustrades and gates', 'Stainless fabrication'],
-    title: 'Folded, welded, finished.',
-    body: 'Balustrading, handrails, gates and stainless work, fabricated to your opening and finish. Sheet is folded in-house, and flashings are made to match the roof they go on.',
-    ask: 'Send the opening dimensions and a photograph of the site, or a sketch.',
-    hero: { value: '3 000 MM', label: 'maximum fold length' },
-    figures: [['Material range', '0.4 – 3.0 mm'],
-              ['In', 'mild steel · galvanised · stainless · aluminium'],
-              ['Standard flashings', 'ridge · barge · valley'],
-              ['Flashing lead time', '3 – 5 days on a stock gauge']],
-    media: { kind: 'folds', photos: [] }
-  },
-
-  {
-    n: '05', id: 'lift', route: 'mobile-cranage-harare', name: 'Lift', ground: 'dark',
-    covers: ['Mobile cranage'],
-    title: 'Lifted and set with our own crane.',
-    body: 'One telescopic mobile crane, worked on our own erection contracts and hired out for other jobs. Delivery outside Harare is national, with transport priced per load.',
-    ask: 'Tell us the load, the site access and the date.',
-    hero: { value: '25 TONNES', label: 'lifting capacity' },
-    figures: [['Crane type', 'telescopic mobile'],
-              ['Cranes', 'one'],
-              ['Erection area', 'Harare and nationally']],
-    media: { kind: 'plate', photos: ['crane'] }
   }
 ];
 
-/* The chapters must between them cover every confirmed service, or a service
-   has silently vanished from the site. render.js asserts this. */
+/* What the chapters cover. It is no longer every service — that guarantee
+   moved to the chooser, which lists all six by construction — but render.js
+   still checks that anything a chapter claims is a real confirmed service, so
+   a chapter cannot quietly describe something Kingson does not do. */
 export function coverage() {
   return CHAPTERS.flatMap((c) => c.covers);
 }
@@ -147,5 +112,5 @@ export const WORKSHOP = {
      big frame the bottom third where the arc is. The wide frame already has
      two men, an arc and the workshop's roof steel in it, which is the whole
      claim. `weldingHands` stays in the repository. */
-  photo: 'weldingBay'
+  photo: 'weldingHands'
 };

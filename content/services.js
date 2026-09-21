@@ -122,7 +122,8 @@ export const SERVICES = [
     /* The whole machine, the head mid-cut, and the nested file on screen.
        `cuttingHead` is the idle version of the second of those and keeps its
        place in the home page's gallery instead. */
-    strip: ['laserFloor', 'laserSparks', 'nestingStation']
+    strip: ['laserMachine', 'laserFloor', 'gantry', 'laserSparks', 'nestingStation'],
+    aside: 'cuttingHead'
   },
 
   {
@@ -136,7 +137,7 @@ export const SERVICES = [
     description: 'Balustrading, handrails, gates, stainless work and custom flashings, folded in Harare to 3 000 mm in 0.4 – 3.0 mm steel or aluminium.',
     h1: 'Steel fabrication, balustrades, gates and stainless',
     eyebrow: 'Fabrication',
-    hero: 'gantry',
+    hero: 'weldingBay',
     intro: 'Balustrading, handrails, gates and stainless work, fabricated to your opening and finish. Sheet is folded in-house to 3 000 mm, and flashings are made to match the roof they go on rather than ordered in a standard length.',
     figures: [['Maximum fold length', '3 000 mm'],
               ['Material range', '0.4 – 3.0 mm'],

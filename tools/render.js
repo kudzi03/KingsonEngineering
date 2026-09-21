@@ -26,11 +26,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
   UPDATED, EYEBROWS, HERO, STRIP, CAPABILITIES, SPECS, PROCESS,
-  WORK, ENQUIRY, FAQ, CONTACT, NAV
+  WORK, ENQUIRY, FAQ, CONTACT, NAV, SERVICES_BLOCK, homeFaq
 } from '../content/copy.js';
 import { ASSETS, PAGE_IMAGES, BAND_IMAGE, src, srcset, position } from '../content/assets.js';
 import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
-import { PROOF, PROJECTS } from '../content/projects.js';
 import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
 import { SERVICES } from '../content/services.js';
@@ -63,7 +62,7 @@ const head = (key, title, lede) =>
 const hero = `    <p class="hero-eyebrow">${esc(HERO.eyebrow)}</p>
     <h1 class="display hero-title">${esc(HERO.title)}</h1>
     <p class="hero-lede">${esc(HERO.lede)}</p>
-    <div class="hero-act">${quoteBtn()}${callBtn(NAV.call, true)}${waBtn(true)}</div>`;
+    <div class="hero-act">${quoteBtn()}${callBtn(NAV.call, true)}</div>`;
 
 const strip = STRIP.map(([label, value]) =>
   `    <li><span class="strip-k">${esc(label)}</span><span class="strip-v">${esc(value)}</span></li>`
@@ -109,14 +108,31 @@ ${facts(c.facts)}
    a strip of vertical plates are genuinely different objects — forcing them
    through one template is what produced the card grid this replaces.       */
 
-/* Every confirmed service must appear in some chapter. If one is dropped
-   during an edit the build stops here rather than quietly shipping a site
-   that no longer mentions it. */
+/* Every confirmed service must reach the page, and every service must have a
+   page of its own to reach. The chooser is what guarantees the first now that
+   there is one chapter rather than five, so the check moved onto it — and
+   gained a second half, because a tile that links to a route which does not
+   exist is a 404 on the most-clicked element on the page.
+
+   A chapter may no longer claim a service that is not confirmed, either. */
 {
-  const covered = coverage();
-  const missing = CAPABILITIES.map((c) => c.title).filter((t) => !covered.includes(t));
-  if (missing.length) {
-    console.error(`chapters do not cover confirmed service(s): ${missing.join(', ')}`);
+  const titles = CAPABILITIES.map((c) => c.title);
+  const routes = new Set(SERVICES.map((s) => s.slug));
+
+  const unlisted = titles.filter((t) => !CAPABILITIES.some((c) => c.title === t));
+  const routeless = CAPABILITIES.filter((c) => !c.route || !routes.has(c.route));
+  const leadless = CAPABILITIES.filter((c) => !Array.isArray(c.lead) || c.lead.length !== 2);
+  const invented = coverage().filter((t) => !titles.includes(t));
+
+  const problems = [
+    unlisted.length  && `services missing from the chooser: ${unlisted.join(', ')}`,
+    routeless.length && `chooser tiles pointing at no page: ${routeless.map((c) => c.id).join(', ')}`,
+    leadless.length  && `chooser tiles with no headline figure: ${leadless.map((c) => c.id).join(', ')}`,
+    invented.length  && `a chapter claims a service that is not confirmed: ${invented.join(', ')}`
+  ].filter(Boolean);
+
+  if (problems.length) {
+    problems.forEach((m) => console.error(m));
     process.exit(2);
   }
 }
@@ -151,8 +167,12 @@ function heroFigure(h) {
 
 /* The chapter body in two halves, so a composition can put them in one
    column or in two without the copy being written twice. */
+/* No number. There is one chapter, so there is nothing to be third of, and the
+   only numbered sequence left on the page is the five commitments. The rule
+   that used to sit beside the numeral stays — it is what separates the
+   chapter's label from the heading under it. */
 const chapterLead = (c) =>
-  `      <p class="ch-mark"><span class="ch-n">${esc(c.n)}</span><span class="ch-name">${esc(c.name)}</span></p>
+  `      <p class="ch-mark"><span class="ch-name">${esc(c.name)}</span></p>
       <h2 class="display ch-title" data-reveal="rise"><span>${esc(c.title)}</span></h2>
       <p class="ch-lede">${esc(c.body)}</p>`;
 
@@ -299,6 +319,29 @@ ${chapterBody(c)}
   </section>`;
 }
 
+/* ── the service chooser ─────────────────────────────────────────────────────
+   Six services, one screen, directly under the hero.
+
+   This is the piece the site did not have. A visitor arrived with one
+   question — can you do my job — and the only answer was seven screens of
+   chapters, in an order that suited the story rather than the buyer. Each
+   tile carries the single figure a buyer of that service asks about first and
+   goes straight to the page that service owns.
+
+   An ordered list, because the services are ranked by how much of Kingson's
+   work they are, and because a screen reader should say "1 of 6". */
+const chooser = `    <ol class="svc-grid" data-reveal="lift" data-reveal-stagger="60">
+${CAPABILITIES.map((c) => `      <li class="svc">
+        <a class="svc-hit" href="/${c.route}">
+          <span class="svc-lead num">${esc(c.lead[0])}</span>
+          <span class="svc-lead-label">${esc(c.lead[1])}</span>
+          <span class="svc-name">${esc(c.title)}</span>
+          <span class="svc-body">${esc(c.body)}</span>
+          <span class="svc-go">${esc(SERVICES_BLOCK.go)}${ICON_ARROW}</span>
+        </a>
+      </li>`).join('\n')}
+    </ol>`;
+
 const chapters = CHAPTERS.map(chapter).join('\n\n');
 
 /* ── the workshop ───────────────────────────────────────────────────────────── */
@@ -312,7 +355,7 @@ const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
       <h2 class="display" id="ws-h">${esc(WORKSHOP.title)}</h2>
       <p class="ws-lede">${esc(WORKSHOP.body)}</p>
 ${figures(WORKSHOP.figures, 'ch-figures ws-figures')}
-      <div class="ws-act">${quoteBtn()}${callBtn(NAV.call, true)}</div>
+      <div class="ws-act">${quoteBtn()}</div>
     </div>`;
 
 /* ── the full-width photograph ───────────────────────────────────────────── */
@@ -330,41 +373,6 @@ ${g.rows.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></d
       </details>`).join('\n');
 
 /* ── work ────────────────────────────────────────────────────────────────── */
-
-/* ── proof ───────────────────────────────────────────────────────────────────
-   Three near-full-viewport bands of site work, not a grid of thumbnails. The
-   eight-tile grid this replaces had become pure repetition: every one of the
-   nine photographs is now presented large inside a chapter or the workshop
-   scene, so showing them all again at 232px added length and no information.
-
-   PROJECTS is empty — see content/projects.js — so no case-study metadata is
-   rendered. If entries are ever added, they render here without the renderer
-   needing to change.                                                       */
-
-/* A band is full width and at most 700px tall — a wider frame than 16:9 — so
-   it takes the same art-directed cut the bleed scenes use. Two of the three
-   photographs here also appear in a chapter, and sharing the cut means the
-   second appearance costs nothing. */
-const proof = PROOF.bands.map((band) => {
-  return `    <figure class="pr-band" data-reveal="settle">
-      ${zoomable(band.photo, bleedPhoto(band.photo))}
-      <figcaption>
-        <b>${esc(band.label)}</b>
-        <span>${esc(band.scope)}</span>
-      </figcaption>
-    </figure>`;
-}).join('\n');
-
-const caseStudies = PROJECTS.length
-  ? PROJECTS.map((pj) => `    <article class="pr-case" id="project-${pj.id}">
-      ${photo(pj.photo, { sizes: '(max-width:900px) 100vw, 50vw', w: 1100 })}
-      <h3>${esc(pj.label)}</h3>
-${[['Scope', pj.scope], ['Client', pj.client], ['Location', pj.location],
-   ['Year', pj.year], ['Steel', pj.tonnage]]
-    .filter(([, v]) => v)
-    .map(([k, v]) => `      <p><b>${esc(k)}</b> ${esc(v)}</p>`).join('\n')}
-    </article>`).join('\n')
-  : '';
 
 /* ── how it works ────────────────────────────────────────────────────────── */
 
@@ -397,7 +405,7 @@ const form = enquiryForm(null);
 
 /* ── questions ───────────────────────────────────────────────────────────── */
 
-const faq = FAQ.items.map((it, i) => `      <details class="faq-item" id="faq-${i + 1}">
+const faq = homeFaq().map((it, i) => `      <details class="faq-item" id="faq-${i + 1}">
         <summary><span>${esc(it.q)}</span></summary>
         <p>${esc(it.a)}</p>
       </details>`).join('\n');
@@ -482,7 +490,10 @@ const graph = [
   })),
   {
     '@type': 'FAQPage', '@id': SITE + '#faq',
-    mainEntity: FAQ.items.map((it) => ({
+    /* The six the page shows, not the fifteen that exist. A FAQPage that
+       declares answers the page does not display is the structured-data
+       version of lying about content. */
+    mainEntity: homeFaq().map((it) => ({
       '@type': 'Question', name: it.q,
       acceptedAnswer: { '@type': 'Answer', text: it.a }
     }))
@@ -517,7 +528,7 @@ const homeHead = headHtml({
   preload: 'portalFrame',
   ld: pageGraph({
     path: '/', name: HOME_TITLE, description: HOME_DESC,
-    image: 'portalFrame', faq: FAQ.items
+    image: 'portalFrame', faq: homeFaq()
   })
 });
 
@@ -531,11 +542,12 @@ const BLOCKS = {
   chromebottom: chromeBottom(),
 
   /* the homepage's own composition */
-  hero, strip, chapters, workshop, specs, proof, caseStudies,
+  hero, strip, chapters, workshop, specs,
   steps, procClose, form, faq, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
-  proofhead: head('work', PROOF.title, PROOF.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
+  svchead:   head('services', SERVICES_BLOCK.title, SERVICES_BLOCK.lede),
+  chooser,
   enqhead:   head('enquiry', ENQUIRY.title, ENQUIRY.lede),
   faqhead:   head('faq', FAQ.title, null),
   cthead:    head('contact', CONTACT.title, CONTACT.lede),
@@ -556,7 +568,7 @@ const before = readFileSync(file, 'utf8');
 
 /* Homepage images, from the same asset map the page renders from, so the list
    cannot drift out of step with the photographs actually published. */
-const sitemapImages = [BAND_IMAGE, ...PAGE_IMAGES].map((k) =>
+const sitemapImages = [BAND_IMAGE, ...PAGE_IMAGES].filter(Boolean).map((k) =>
   `    <image:image>
       <image:loc>${SITE}/${src(k)}</image:loc>
       <image:title>${esc(WORK.captions[k])}</image:title>

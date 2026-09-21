@@ -283,7 +283,7 @@ dupes(seenDescs, 'meta description');
    checked, because only checking one is how it drifted in the first place. */
 
 {
-  const declared = [BAND_IMAGE, ...PAGE_IMAGES];
+  const declared = [BAND_IMAGE, ...PAGE_IMAGES].filter(Boolean);
   const home = readFileSync(root + 'index.html', 'utf8');
   const shown = Object.entries(ASSETS)
     .filter(([, a]) => new RegExp(`assets/img/${a.slug}-\\d`).test(home))

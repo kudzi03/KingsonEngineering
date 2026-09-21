@@ -46,6 +46,15 @@ export const HERO = {
   actions: { quote: 'Get a price', call: 'Call', whatsapp: 'WhatsApp' }
 };
 
+/* ── the chooser under the hero ───────────────────────────────────────────── */
+
+export const SERVICES_BLOCK = {
+  eyebrow: 'Six services',
+  title: 'What do you need made?',
+  lede: 'Pick the one closest to your job. Every figure below is confirmed, and each goes to a page with the full specification.',
+  go: 'See the detail'
+};
+
 /* ── the six services ────────────────────────────────────────────────────────
    All six were ticked "keep" in §8, and "anything missing" was left blank, so
    this list is complete and closed.
@@ -60,9 +69,17 @@ export const HERO = {
    Every `facts` list is two rows long, so the six cards sit level in the grid.
    The complete tables are in SPECS, one section further down.                */
 
+/* `route` is the page this service owns, and `lead` is the one figure a buyer
+   of that service actually asks about. Both exist so the chooser under the
+   hero can put all six on a single screen: before it, the only way to find out
+   whether Kingson does your job was to scroll seven screens of chapters.
+
+   Every `lead` is a figure already confirmed elsewhere on this site — the
+   chooser states them, it does not invent them. */
 export const CAPABILITIES = [
   {
-    id: 'structural', photo: 'portalFrame',
+    id: 'structural', photo: 'portalFrame', route: 'structural-steel-harare',
+    lead: ['6–10', 'weeks, portal frame programme'],
     title: 'Structural steelwork',
     body: 'Portal frames, columns, rafters and purlins — fabricated in the workshop and erected on site with our own crane.',
     ask: 'Send drawings, or the span, height and bay spacing.',
@@ -70,7 +87,8 @@ export const CAPABILITIES = [
             ['Erection', 'Harare and nationally']]
   },
   {
-    id: 'roofing', photo: 'roofTrusses',
+    id: 'roofing', photo: 'roofTrusses', route: 'roofing-and-trusses',
+    lead: ['12 m', 'maximum sheet length'],
     title: 'Roof steelwork and trusses',
     body: 'Trusses, purlins and sheeting for long-span roofs, new build or re-roof. IBR and corrugated profiles, galvanised or pre-painted.',
     ask: 'Send the floor area, the pitch you want, and whether the walls are up.',
@@ -78,7 +96,8 @@ export const CAPABILITIES = [
             ['Corrugated cover', '762 mm, 10.5 corrugations']]
   },
   {
-    id: 'cutting', photo: 'laserFloor',
+    id: 'cutting', photo: 'laserFloor', route: 'fiber-laser-cutting-harare',
+    lead: ['±0.1 mm', 'cutting tolerance'],
     title: 'Fiber laser cutting',
     body: 'Plate and sheet cut on a DXTECH fiber laser, straight from your file. Mild steel, stainless, aluminium and galvanised sheet.',
     ask: 'Send a DXF, DWG, STEP or PDF with the material and thickness.',
@@ -86,7 +105,8 @@ export const CAPABILITIES = [
             ['Mild steel', 'to 20 mm']]
   },
   {
-    id: 'balustrades', photo: null,
+    id: 'balustrades', photo: null, route: 'steel-fabrication',
+    lead: ['3 000 mm', 'maximum fold length'],
     plate: ['3 000 mm', 'maximum fold length'],
     title: 'Balustrades and gates',
     body: 'Balustrading, handrails and gates, fabricated to your opening and finish.',
@@ -95,7 +115,8 @@ export const CAPABILITIES = [
             ['Also in', 'galvanised, stainless, aluminium']]
   },
   {
-    id: 'stainless', photo: null,
+    id: 'stainless', photo: null, route: 'steel-fabrication',
+    lead: ['10 mm', 'stainless, cut on nitrogen'],
     plate: ['10 mm', 'stainless, cut on nitrogen'],
     title: 'Stainless fabrication',
     body: 'Stainless sheet and section work — cut, folded and fabricated to drawing.',
@@ -104,7 +125,8 @@ export const CAPABILITIES = [
             ['Folding', 'to 3 000 mm']]
   },
   {
-    id: 'cranage', photo: 'crane',
+    id: 'cranage', photo: 'crane', route: 'mobile-cranage-harare',
+    lead: ['25 t', 'telescopic mobile crane'],
     title: 'Mobile cranage',
     body: 'Our 25-tonne telescopic mobile crane, for lifting and placing steel — on our jobs or yours.',
     ask: 'Tell us the load, the site access and the date.',
@@ -307,6 +329,16 @@ export const ENQUIRY = {
    assistant rather than the way they would type a search query, because that
    is what an answer engine matches against.                                  */
 
+/* `home: true` marks the six questions the HOME page asks.
+
+   All fifteen stay here: ten of them are answered on the service page for
+   that service, and every one of them feeds the structured data. But the home
+   page was printing all fifteen — a screen and a half, below the enquiry
+   form — and two pairs of them were near-duplicates written for different
+   readers. "Where is the workshop?" and "Where is Kingson Engineering based?"
+   answer the same question twice, as do "Do you deliver outside Harare?" and
+   "What areas do you cover?". The home page keeps the general six; the
+   service-specific ones are on the pages that own them.                     */
 export const FAQ = {
   title: 'Questions we get asked',
   items: [
@@ -314,7 +346,7 @@ export const FAQ = {
       a: 'On the DXTECH fiber laser: mild steel to 20 mm on oxygen, stainless to 10 mm on nitrogen, aluminium to 8 mm, and galvanised sheet to 4 mm. The bed is 3 000 × 1 500 mm and tolerance is ± 0.1 mm, repeating to ± 0.03 mm.' },
     { q: 'What file formats do you accept for cutting?',
       a: 'DXF, DWG, STEP and PDF.' },
-    { q: 'How long does a steel structure take?',
+    { home: true, q: 'How long does a steel structure take?',
       a: 'A portal frame programme runs six to ten weeks. A written quotation comes within the week of your enquiry, and a site visit is arranged within two working days where the job needs one.' },
     { q: 'Do you deliver outside Harare?',
       a: 'Yes — nationally, with transport priced per load. Erection is also covered nationally.' },
@@ -328,20 +360,24 @@ export const FAQ = {
       a: 'Yes — ridge, barge and valley are standard, and custom folding runs to 3 000 mm in 0.4 to 3.0 mm mild steel, galvanised, stainless or aluminium. Three to five days on a stock gauge.' },
     { q: 'Where is the workshop?',
       a: 'No. 1262 Tynwald Industries, Harare. Open Monday to Saturday, 07:30 to 17:00.' },
-    { q: 'How do I get a price?',
+    { home: true, q: 'How do I get a price?',
       a: 'Send drawings or a description by WhatsApp on +263 772 262 869, or email admin1@kingsonengineering.co.zw. Technical drawings can go to technical@kingsonengineering.co.zw. Enquiries are acknowledged the same working day.' },
-    { q: 'Where is Kingson Engineering based?',
+    { home: true, q: 'Where is Kingson Engineering based?',
       a: 'Kingson Engineering trades as Kingson Trading (Pvt) Ltd and works from one workshop at No. 1262 Tynwald Industries, Harare, Zimbabwe. It is open Monday to Saturday, 07:30 to 17:00, and enquiries reach Mr Murandu.' },
-    { q: 'What areas do you cover?',
+    { home: true, q: 'What areas do you cover?',
       a: 'Harare, and nationally across Zimbabwe. Erection is covered nationally and delivery outside Harare is priced per load.' },
-    { q: 'Can I get a price without drawings?',
+    { home: true, q: 'Can I get a price without drawings?',
       a: 'Yes. Send the measurements and a photograph of the site, or a description of what you need. Where the job needs someone on site, a site visit is arranged within two working days, and a written quotation follows within the week.' },
     { q: 'Do you hire out the crane on its own?',
       a: 'Yes. The 25-tonne telescopic mobile crane works Kingson\u2019s own erection contracts and is hired out for other jobs. Tell us the load, the site access and the date.' },
-    { q: 'What can Kingson Engineering do?',
+    { home: true, q: 'What can Kingson Engineering do?',
       a: 'Six things: structural steelwork, roof steelwork and trusses, fiber laser cutting, balustrades and gates, stainless fabrication, and mobile cranage. All of it is fabricated at the Tynwald workshop and erected with Kingson\u2019s own crane.' }
   ]
 };
+
+/** The six the home page asks. */
+export const homeFaq = () => FAQ.items.filter((i) => i.home);
+
 
 export const CONTACT = {
   title: 'Talk to us.',

@@ -112,26 +112,40 @@ export const NAV_LINKS = (home) => [
 
 /* The header keeps four, because a header with nine links in it is a sitemap.
    The menu carries every route. */
+/* ── navigation ──────────────────────────────────────────────────────────────
+   One structure, two renderings. Before this the header showed four items and
+   the menu showed eleven, and they did not agree on what the site contains —
+   the header promoted one of the six services to sit beside a whole category,
+   which is why it read as arbitrary, and the menu offered "Work", a section
+   that no longer exists.
+
+   Laser cutting is not in the header any more. It is the first thing under
+   the hero, in a chooser that shows all six, and it has its own page like the
+   others. Promoting it here said it was a different kind of thing.          */
+
+const NAV_ITEMS = (home) => [
+  [home ? '#services' : '/#services', NAV.services],
+  [home ? '#specs' : '/#specs', NAV.specs],
+  [home ? '#how' : '/#how', 'How it works'],
+  [home ? '#contact' : '/#contact', NAV.contact]
+];
+
 export function headerNav(home, current) {
-  const items = [
-    [home ? '#services' : '/#services', NAV.services],
-    ['/fiber-laser-cutting-harare', 'Laser cutting'],
-    [home ? '#specs' : '/#specs', NAV.specs],
-    [home ? '#contact' : '/#contact', NAV.contact]
-  ];
-  return items.map(([h, t]) =>
+  return NAV_ITEMS(home).map(([h, t]) =>
     `      <a href="${h}"${h === '/' + current ? ' aria-current="page"' : ''}>${esc(t)}</a>`).join('\n');
 }
 
+/* The menu is the header plus the six services nested under the first item,
+   because a phone has the room to show them and the header does not. */
 export function menuNav(home, current) {
+  const [services, ...rest] = NAV_ITEMS(home);
   const rows = [
-    [home ? '#services' : '/#services', NAV.services, false],
+    [...services, false],
     ...SERVICES.map((s) => [`/${s.slug}`, s.nav, true]),
-    [home ? '#specs' : '/#specs', NAV.specs, false],
-    [home ? '#work' : '/#work', NAV.work, false],
-    [home ? '#faq' : '/#faq', 'Questions', false],
-    [home ? '#enquiry' : '#enquiry', NAV.quote, false],
-    [home ? '#contact' : '/#contact', NAV.contact, false]
+    ...rest.map(([h, t]) => [h, t, false])
+    /* No "Get a price" row: the menu already closes with it as a filled
+       button in .menu-contact, and listing it twice in one panel was the
+       clearest case of the site asking for the same thing over and over. */
   ];
   return rows.map(([h, t, sub]) =>
     `    <a href="${h}"${sub ? ' class="menu-sub"' : ''}${h === '/' + current ? ' aria-current="page"' : ''}>${esc(t)}</a>`).join('\n');

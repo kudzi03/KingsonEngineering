@@ -19,12 +19,12 @@
     <priority>1.0</priority>
 
     <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/roof-frame-1320.webp</image:loc>
-      <image:title>Roof structure from inside</image:title>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/portal-frame-1320.webp</image:loc>
+      <image:title>Portal frame under erection</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/roof-trusses-1320.webp</image:loc>
-      <image:title>Long-span trusses and purlins</image:title>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/welding-hands-1920.webp</image:loc>
+      <image:title>Grating welded up on the workshop floor</image:title>
     </image:image>
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-cutting-1440.webp</image:loc>
@@ -45,18 +45,6 @@
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-sparks-1440.webp</image:loc>
       <image:title>The head cutting, sparks off the nozzle</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/crane-1320.webp</image:loc>
-      <image:title>Our telescopic mobile crane</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/welding-bay-1920.webp</image:loc>
-      <image:title>Welding in the fabrication bay</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/portal-frame-1320.webp</image:loc>
-      <image:title>Portal frame under erection</image:title>
     </image:image>
   </url>
   <url>
@@ -100,8 +88,16 @@
       <image:title>Cutting sheet on the DXTECH laser</image:title>
     </image:image>
     <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-machine-1536.webp</image:loc>
+      <image:title>The machine from the loading side</image:title>
+    </image:image>
+    <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-floor-1350.webp</image:loc>
       <image:title>The DXTECH laser on the workshop floor</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/gantry-1350.webp</image:loc>
+      <image:title>Gantry and cable chain over the bed</image:title>
     </image:image>
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-sparks-1440.webp</image:loc>
@@ -111,6 +107,10 @@
       <image:loc>https://kingson-engineering.vercel.app/assets/img/nesting-station-1350.webp</image:loc>
       <image:title>Nesting at the control station</image:title>
     </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/cutting-head-1350.webp</image:loc>
+      <image:title>Plate loaded on the laser bed</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://kingson-engineering.vercel.app/steel-fabrication</loc>
@@ -119,8 +119,8 @@
     <priority>0.8</priority>
 
     <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/gantry-1350.webp</image:loc>
-      <image:title>Gantry and cable chain over the bed</image:title>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/welding-bay-1920.webp</image:loc>
+      <image:title>Welding in the fabrication bay</image:title>
     </image:image>
   </url>
   <url>

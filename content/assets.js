@@ -191,11 +191,13 @@ export function position(key) {
 
    In the order the page reads, after BAND_IMAGE which opens chapter 01.     */
 export const PAGE_IMAGES = [
-  'roofTrusses',
-  'laserCutting', 'nestingStation', 'laserFloor', 'gantry', 'laserSparks',
-  'crane',
-  'weldingBay',
-  'portalFrame'
+  'portalFrame',
+  'weldingHands',
+  'laserCutting', 'nestingStation', 'laserFloor', 'gantry', 'laserSparks'
 ];
 
-export const BAND_IMAGE = 'roofFrame';
+/* There is no band image any more. It was `roofFrame`, the full-width frame
+   under the structure chapter, and that chapter is gone — its subject now
+   lives on the roofing and structural pages, where it is not competing with
+   four other photographs of the same building. */
+export const BAND_IMAGE = null;
