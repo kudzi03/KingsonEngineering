@@ -16,7 +16,8 @@
    carry a phone number simply has no phone number in it.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { NAV, ENQUIRY, CONTACT } from '../content/copy.js';
+import { NAV, ENQUIRY, CONTACT, CAPABILITIES, SERVICES_BLOCK } from '../content/copy.js';
+import { hasProjects } from '../content/projects.js';
 import { SERVICES } from '../content/services.js';
 import { publish } from '../content/company.js';
 import { ASSETS, src, srcset, position, hasWide, wideSrc, wideSrcset } from '../content/assets.js';
@@ -102,13 +103,6 @@ export function logo(kind, height, sizes, base = '', decorative = false) {
    them from a crawler behind a hover; they are real links in the header on a
    wide screen and a real list in the menu on a narrow one.                   */
 
-export const NAV_LINKS = (home) => [
-  [home ? '#services' : '/#services', NAV.services],
-  ...SERVICES.map((s) => [`/${s.slug}`, s.nav]),
-  [home ? '#specs' : '/#specs', NAV.specs],
-  [home ? '#work' : '/#work', NAV.work],
-  [home ? '#contact' : '/#contact', NAV.contact]
-];
 
 /* The header keeps four, because a header with nine links in it is a sitemap.
    The menu carries every route. */
@@ -125,6 +119,9 @@ export const NAV_LINKS = (home) => [
 
 const NAV_ITEMS = (home) => [
   [home ? '#services' : '/#services', NAV.services],
+  /* Projects appears only once there is a project to show. The portfolio
+     architecture is finished and the list is empty — see content/projects.js. */
+  ...(hasProjects() ? [['/projects', 'Projects']] : []),
   [home ? '#specs' : '/#specs', NAV.specs],
   [home ? '#how' : '/#how', 'How it works'],
   [home ? '#contact' : '/#contact', NAV.contact]
@@ -149,6 +146,30 @@ export function menuNav(home, current) {
   ];
   return rows.map(([h, t, sub]) =>
     `    <a href="${h}"${sub ? ' class="menu-sub"' : ''}${h === '/' + current ? ' aria-current="page"' : ''}>${esc(t)}</a>`).join('\n');
+}
+
+/* ── the service chooser ─────────────────────────────────────────────────────
+   Six services, one screen. It sits under the home hero, and it is also the
+   whole of the 404 page's recovery path, because a visitor who has landed on
+   a URL that does not exist wants the same thing the home page's visitor
+   wants: the one of the six that is their job.
+
+   It lives here rather than in the home page's renderer so those two cannot
+   drift. An ordered list, because the services are ranked by how much of the
+   work they are, and because a screen reader should say "1 of 6".          */
+export function serviceChooser({ reveal = true } = {}) {
+  const r = reveal ? ' data-reveal="lift" data-reveal-stagger="60"' : '';
+  return `    <ol class="svc-grid"${r}>
+${CAPABILITIES.map((c) => `      <li class="svc">
+        <a class="svc-hit" href="/${c.route}">
+          <span class="svc-lead num">${esc(c.lead[0])}</span>
+          <span class="svc-lead-label">${esc(c.lead[1])}</span>
+          <span class="svc-name">${esc(c.title)}</span>
+          <span class="svc-body">${esc(c.body)}</span>
+          <span class="svc-go">${esc(SERVICES_BLOCK.go)}${ICON_ARROW}</span>
+        </a>
+      </li>`).join('\n')}
+    </ol>`;
 }
 
 /* ── chrome ─────────────────────────────────────────────────────────────── */
@@ -268,7 +289,8 @@ export function chromeBottom() {
 
 const FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f1211'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-weight='700' font-size='30' fill='%23E21E25' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E";
 
-export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld, ogType = 'website', home = false }) {
+export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld,
+                           ogType = 'website', home = false, index = true }) {
   const canonical = SITE + (path === '/' ? '/' : path);
   const img = ASSETS[ogImage];
   const imgUrl = SITE + '/' + src(ogImage, 1320);
@@ -293,7 +315,7 @@ export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <meta name="theme-color" content="#0f1211">
-<link rel="canonical" href="${canonical}">
+${index ? `<link rel="canonical" href="${canonical}">` : '<meta name="robots" content="noindex">'}
 
 <meta property="og:type" content="${ogType}">
 <meta property="og:site_name" content="${esc(publish('name'))}">
@@ -303,8 +325,7 @@ export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld
 <meta property="og:image:width" content="${img.w}">
 <meta property="og:image:height" content="${img.h}">
 <meta property="og:image:alt" content="${esc(ogAlt || img.alt)}">
-<meta property="og:url" content="${canonical}">
-<meta property="og:locale" content="en_ZW">
+${index ? `<meta property="og:url" content="${canonical}">\n` : ''}<meta property="og:locale" content="en_ZW">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
@@ -336,10 +357,10 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
 <link rel="stylesheet" href="/assets/fonts.css">
 <link rel="stylesheet" href="/styles/tokens.css">
 <link rel="stylesheet" href="/styles/site.css">
-
+${ld ? `
 <script type="application/ld+json">
 ${ld}
-</script>`;
+</script>` : ''}`;
 }
 
 /* ── the enquiry form ─────────────────────────────────────────────────────────

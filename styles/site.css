@@ -1596,3 +1596,96 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 
 @media (max-width: 1000px) { .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px)  { .svc-grid { grid-template-columns: 1fr; } }
+
+/* ── the portfolio ──────────────────────────────────────────────────────────
+   Styled and unused. content/projects.js is empty until the office says which
+   photograph belongs to which job, so /projects is not written and none of
+   this is served. It exists so that adding a project is typing, not building.
+
+   A project is a photograph and a column of facts, not a card. The photograph
+   is given real size because at thumbnail scale a finished portal frame and a
+   stock image look identical, and the whole argument of this page is that ours
+   are not stock. */
+
+.pj-head { padding-top: clamp(38px, 6vw, 84px); }
+.pj-head h1 { font-size: var(--t-h1); margin-bottom: 16px; }
+.pj-lede { font-size: var(--t-lede); color: var(--fg-muted); max-width: 62ch; }
+
+.pj-list { padding-top: clamp(30px, 4vw, 54px); }
+
+.pj {
+  display: grid; gap: clamp(22px, 3vw, 44px);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: start;
+  padding-bottom: clamp(44px, 6vw, 88px);
+  margin-bottom: clamp(44px, 6vw, 88px);
+  border-bottom: 1px solid var(--line);
+}
+.pj:last-child { border-bottom: 0; margin-bottom: 0; }
+
+.pj-shot { border-radius: var(--r-lg); overflow: hidden; background: var(--bg-soft); }
+.pj-shot img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+
+.pj-title { font-size: var(--t-h2); margin-bottom: 10px; }
+.pj-credit {
+  font-size: var(--t-ui); color: var(--fg-faint);
+  padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid var(--line);
+}
+.pj-scope { font-size: var(--t-lede); color: var(--fg); margin-bottom: 12px; }
+.pj-body  { color: var(--fg-muted); max-width: 54ch; }
+
+.pj-figures { margin-top: 20px; }
+.pj-figures > div {
+  display: flex; justify-content: space-between; gap: 20px;
+  padding: 11px 0; border-top: 1px solid var(--line);
+}
+.pj-figures dt { color: var(--fg-faint); font-size: var(--t-small); }
+.pj-figures dd { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.pj-points { margin-top: 18px; display: grid; gap: 8px; }
+.pj-points li {
+  position: relative; padding-left: 20px;
+  font-size: var(--t-ui); color: var(--fg-muted);
+}
+.pj-points li::before {
+  content: ""; position: absolute; left: 0; top: .62em;
+  width: 10px; height: 1px; background: var(--accent);
+}
+
+.pj-svc {
+  margin-top: 20px; font-size: var(--t-small); color: var(--fg-faint);
+  text-transform: none; letter-spacing: .01em;
+}
+
+/* The gallery spans both columns: the remaining frames, smaller, because by
+   this point the reader has already seen the work at size. */
+.pj-gallery {
+  grid-column: 1 / -1;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.2vw, 18px);
+}
+.pj-gallery img {
+  width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
+  border-radius: var(--r); display: block;
+}
+
+@media (max-width: 900px) {
+  .pj { grid-template-columns: 1fr; }
+  .pj-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ── the 404 ─────────────────────────────────────────────────────────────────
+   It reuses the service-page hero wholesale — same photograph treatment, same
+   scrim, same copy column. It only needs to be shorter, because the six
+   services sit directly under it and a lost visitor should see them without
+   scrolling on a laptop. */
+.nf-hero { min-height: min(46vh, 400px); }
+/* A 404 does not deserve a full service-page hero. Cutting the frame's own
+   padding brings the first row of service tiles up to the fold on a 900px
+   laptop instead of a full screen below it. */
+.nf-hero .ch-over { padding-block: clamp(36px, 4vw, 56px); }
+/* The chooser under it is the whole point of the page, so it gets the tighter
+   of the two section rhythms — the first row of tiles should be reachable in
+   one short scroll on a laptop, not two. */
+.nf-svc { padding-block: clamp(40px, 4.4vw, 64px); }
+@media (max-width: 760px) { .nf-hero { min-height: 0; } }

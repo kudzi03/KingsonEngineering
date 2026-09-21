@@ -182,7 +182,53 @@ for (const file of files) {
 
 /* ── every page's structured data must be real JSON with no holes ────────── */
 
-const pages = files.filter((f) => f.endsWith('.html') && !f.includes('404'));
+const allPages = files.filter((f) => f.endsWith('.html'));
+
+/* ── every page wears the same chrome ────────────────────────────────────────
+   404.html was hand-written until this build and had none of it: no skip
+   link, no <main> landmark, no header, no footer. A keyboard visitor who
+   landed on a dead URL had to tab the whole page, and a screen reader had no
+   landmark to jump to. It is generated now (tools/pages.js), and this assert
+   is what stops any future page shipping without the same parts.           */
+for (const file of allPages) {
+  const rel = file.slice(root.length);
+  const html = readFileSync(file, 'utf8');
+  if (!/<a class="skip" href="#main">/.test(html)) fail(`${rel}: no skip link`);
+  if (!/<main id="main">/.test(html)) fail(`${rel}: no <main id="main"> landmark`);
+  if (!/<footer class="ft/.test(html)) fail(`${rel}: no site footer`);
+  if (!/<header class="hd">/.test(html)) fail(`${rel}: no site header`);
+  if (!/<html lang="en">/.test(html)) fail(`${rel}: no lang on <html>`);
+
+  /* An aria-labelledby pointing at an id that does not exist is announced as
+     nothing at all — worse than having left the attribute off. index.html
+     carried one of these for the whole of the restructure. */
+  for (const m of html.matchAll(/aria-(?:labelledby|describedby|controls)="([^"]+)"/g)) {
+    for (const id of m[1].split(/\s+/)) {
+      if (!html.includes(`id="${id}"`)) fail(`${rel}: aria reference points at no element — ${id}`);
+    }
+  }
+
+  /* Two elements sharing an id makes one of them unreachable by fragment and
+     makes every aria reference to it ambiguous. */
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+  const dupes = [...new Set(ids.filter((v, i) => ids.indexOf(v) !== i))];
+  if (dupes.length) fail(`${rel}: duplicate id — ${dupes.join(', ')}`);
+}
+
+/* 404.html is deliberately outside the SEO block below: it carries noindex
+   and no canonical by design, and a page a crawler is told to ignore has no
+   business holding structured data. Everything it DOES owe is asserted
+   above and here. */
+const notFound = allPages.find((f) => f.endsWith('404.html'));
+if (!notFound) fail('404.html is missing');
+else {
+  const html = readFileSync(notFound, 'utf8');
+  if (!/<meta name="robots" content="noindex">/.test(html)) fail('404.html: not noindex');
+  if (/<link rel="canonical"/.test(html)) fail('404.html: carries a canonical');
+  if ((html.match(/<h1[\s>]/g) || []).length !== 1) fail('404.html: expected exactly one <h1>');
+}
+
+const pages = allPages.filter((f) => !f.endsWith('404.html'));
 const seenTitles = [], seenDescs = [];
 for (const file of pages) {
   const rel = file.slice(root.length);

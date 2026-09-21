@@ -22,8 +22,7 @@ export const UPDATED = '2026-09-14';
 export const EYEBROWS = {
   services: 'Six services',
   process:  'How it works',
-  specs:    'Confirmed specifications',
-  work:     'Photographs',
+  specs:    'Specifications',
   enquiry:  'Get a price',
   faq:      'Questions',
   contact:  'Where to find us'
@@ -51,8 +50,29 @@ export const HERO = {
 export const SERVICES_BLOCK = {
   eyebrow: 'Six services',
   title: 'What do you need made?',
-  lede: 'Pick the one closest to your job. Every figure below is confirmed, and each goes to a page with the full specification.',
+  lede: 'Pick the one closest to your job. Each goes to a page with the full specification.',
   go: 'See the detail'
+};
+
+/* ── the 404 ─────────────────────────────────────────────────────────────────
+   A dead URL is not an occasion for an apology. The person came to have
+   something built and clicked a link that does not exist; the page's whole
+   job is to get them to the right one of the six in a single move, or to let
+   them send the brief from where they stand.                               */
+
+export const NOT_FOUND = {
+  title: 'Page not found',
+  description:
+    'That page is not on this site. Structural steel, roof steelwork, fiber laser '
+    + 'cutting, fabrication and mobile cranage are all one click away.',
+  hero: 'portalFrame',
+  eyebrow: 'Error 404',
+  h1: 'That page isn\u2019t here.',
+  lede: 'Either the address is wrong or the page has moved. Everything else is where '
+    + 'it was \u2014 every service, every specification, and the form that sends us '
+    + 'your brief.',
+  ctaTitle: 'Or just send us the brief.',
+  ctaLede: 'Tell us what you need. Enquiries are acknowledged the same working day.'
 };
 
 /* ── the six services ────────────────────────────────────────────────────────
@@ -153,7 +173,7 @@ export const CAPABILITIES = [
 
 export const PROCESS = {
   title: 'What happens after you send it.',
-  lede: 'Five commitments Kingson confirmed in writing. Each one is what the office holds to, every time.',
+  lede: 'Five things we hold to on every job. Not targets — what the office actually does.',
   steps: [
     { n: '01', title: 'Enquiry acknowledged',   body: 'Same working day.' },
     { n: '02', title: 'Site visit arranged',    body: 'Within two working days, where the job needs one.' },
@@ -176,8 +196,8 @@ export const processFor = (slug) => PROCESS.steps
    need rather than reading a wall of tables.                                 */
 
 export const SPECS = {
-  title: 'The numbers, confirmed.',
-  lede: 'Kingson checked and signed off every figure below. Open the one you need.',
+  title: 'The numbers we work to.',
+  lede: 'The figures we work to, by material and profile. Open the group you need.',
   groups: [
     { id: 'ibr', title: 'IBR sheeting', rows: [
       ['Cover width', '686 mm, five ribs'],
@@ -390,6 +410,6 @@ export const CONTACT = {
 };
 
 export const NAV = {
-  services: 'What we do', specs: 'Specifications', work: 'Work',
+  services: 'What we do', specs: 'Specifications',
   contact: 'Contact', quote: 'Get a price', call: 'Call', whatsapp: 'WhatsApp'
 };

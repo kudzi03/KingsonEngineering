@@ -33,11 +33,13 @@ import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
 import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
 import { SERVICES } from '../content/services.js';
+import { portfolioRoutes, PORTFOLIO } from './portfolio.js';
+import { hasProjects, publishable as publishableProjects, problems as projectProblems } from '../content/projects.js';
 import { pageGraph, serviceId } from './schema.js';
-import { allServicePages } from './pages.js';
+import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryForm, callBtn, waBtn, quoteBtn, logo, bleedPhoto,
+  enquiryForm, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
   ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW
 } from './layout.js';
 
@@ -52,9 +54,13 @@ const file = root + 'index.html';
    process, enquiry, questions and contact, which is precisely where a reader
    is being asked to commit. `rise` needs a single wrapped child; see
    scenes/reveal.js. */
-const head = (key, title, lede) =>
+/* `id` is not decoration: the section wrapping this block names the h2 in
+   aria-labelledby, so a screen reader announces the region by its heading
+   rather than as an unnamed group. A dangling reference is announced as
+   nothing at all, which is worse than having left the attribute off. */
+const head = (key, title, lede, id) =>
   `    <p class="eyebrow">${esc(EYEBROWS[key])}</p>\n` +
-  `    <h2 class="display" data-reveal="rise"><span>${esc(title)}</span></h2>\n` +
+  `    <h2 class="display"${id ? ` id="${id}"` : ''} data-reveal="rise"><span>${esc(title)}</span></h2>\n` +
   (lede ? `    <p>${esc(lede)}</p>` : '');
 
 /* ── hero and the strip under it ─────────────────────────────────────────── */
@@ -130,6 +136,8 @@ ${facts(c.facts)}
     leadless.length  && `chooser tiles with no headline figure: ${leadless.map((c) => c.id).join(', ')}`,
     invented.length  && `a chapter claims a service that is not confirmed: ${invented.join(', ')}`
   ].filter(Boolean);
+
+  problems.push(...projectProblems());
 
   if (problems.length) {
     problems.forEach((m) => console.error(m));
@@ -234,7 +242,7 @@ ${chapterBody(c)}
           <figcaption>Corrugated</figcaption>
           ${section('corrugated')}
         </figure>
-        <p class="pf-note">Both sections drawn to the same scale, from the confirmed cover widths and rib heights.</p>
+        <p class="pf-note">Both sections drawn to the same scale, from the cover widths and rib heights below.</p>
         <div class="ch-aside" data-reveal="plate" data-from="below">
           ${zoomable(k, photo(k, { sizes: '(max-width:900px) 100vw, 46vw', w: 1100 }))}
         </div>
@@ -319,28 +327,7 @@ ${chapterBody(c)}
   </section>`;
 }
 
-/* ── the service chooser ─────────────────────────────────────────────────────
-   Six services, one screen, directly under the hero.
-
-   This is the piece the site did not have. A visitor arrived with one
-   question — can you do my job — and the only answer was seven screens of
-   chapters, in an order that suited the story rather than the buyer. Each
-   tile carries the single figure a buyer of that service asks about first and
-   goes straight to the page that service owns.
-
-   An ordered list, because the services are ranked by how much of Kingson's
-   work they are, and because a screen reader should say "1 of 6". */
-const chooser = `    <ol class="svc-grid" data-reveal="lift" data-reveal-stagger="60">
-${CAPABILITIES.map((c) => `      <li class="svc">
-        <a class="svc-hit" href="/${c.route}">
-          <span class="svc-lead num">${esc(c.lead[0])}</span>
-          <span class="svc-lead-label">${esc(c.lead[1])}</span>
-          <span class="svc-name">${esc(c.title)}</span>
-          <span class="svc-body">${esc(c.body)}</span>
-          <span class="svc-go">${esc(SERVICES_BLOCK.go)}${ICON_ARROW}</span>
-        </a>
-      </li>`).join('\n')}
-    </ol>`;
+const chooser = serviceChooser();
 
 const chapters = CHAPTERS.map(chapter).join('\n\n');
 
@@ -502,15 +489,6 @@ const graph = [
 
 const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, null, 2);
 
-/* ── navigation ──────────────────────────────────────────────────────────── */
-
-const LINKS = [['#services', NAV.services], ['#specs', NAV.specs],
-  ['#work', NAV.work], ['#contact', NAV.contact]];
-
-const hdnav = LINKS.map(([h, t]) => `      <a href="${h}">${esc(t)}</a>`).join('\n');
-const menunav = [...LINKS.slice(0, 3), ['#how', 'How it works'], ['#faq', 'Questions'],
-  ['#enquiry', NAV.quote], ['#contact', NAV.contact]]
-  .map(([h, t]) => `    <a href="${h}">${esc(t)}</a>`).join('\n');
 
 /* ── the homepage's <head> ───────────────────────────────────────────────────
    Through the same function the service routes use, so a metadata change
@@ -546,7 +524,7 @@ const BLOCKS = {
   steps, procClose, form, faq, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
-  svchead:   head('services', SERVICES_BLOCK.title, SERVICES_BLOCK.lede),
+  svchead:   head('services', SERVICES_BLOCK.title, SERVICES_BLOCK.lede, 'svc-h'),
   chooser,
   enqhead:   head('enquiry', ENQUIRY.title, ENQUIRY.lede),
   faqhead:   head('faq', FAQ.title, null),
@@ -573,6 +551,23 @@ const sitemapImages = [BAND_IMAGE, ...PAGE_IMAGES].filter(Boolean).map((k) =>
       <image:loc>${SITE}/${src(k)}</image:loc>
       <image:title>${esc(WORK.captions[k])}</image:title>
     </image:image>`).join('\n');
+
+/* /projects, with every photograph the portfolio carries. Empty string while
+   the portfolio is empty, so the sitemap never declares a page that the build
+   did not write. */
+const sitemapProjects = hasProjects() ? `
+  <url>
+    <loc>${SITE}/${PORTFOLIO.slug}</loc>
+    <lastmod>${UPDATED}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+${publishableProjects().flatMap((p) => [p.hero, ...(p.gallery || [])])
+    .filter((k, i, all) => all.indexOf(k) === i && ASSETS[k])
+    .map((k) => `    <image:image>
+      <image:loc>${SITE}/${src(k)}</image:loc>
+      <image:title>${esc(ASSETS[k].alt.slice(0, 90))}</image:title>
+    </image:image>`).join('\n')}
+  </url>` : '';
 
 /* Each service route, with the photographs that route actually shows. */
 const sitemapServices = SERVICES.map((sv) => {
@@ -614,7 +609,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 
 ${sitemapImages}
   </url>
-${sitemapServices}
+${sitemapServices}${sitemapProjects}
 </urlset>
 `;
 
@@ -631,7 +626,16 @@ const smBefore = readFileSync(smFile, 'utf8');
 /* The service routes are whole generated files — see tools/pages.js. Vercel
    serves `foo.html` at `/foo` (cleanUrls), so a flat file per route is all a
    clean URL needs; no rewrite table, no directory indirection. */
-const routes = allServicePages();
+/* The service routes, plus /projects when the portfolio has anything in it.
+   It has nothing today, so portfolioRoutes() returns [] and the file is not
+   written — see content/projects.js.
+
+   404.html is generated with them. It was the last hand-written page on the
+   site and the only one without the shared chrome; a lost visitor was the one
+   person who got a page that did not look like the site. It is not in the
+   sitemap — that is built from SERVICES and the portfolio, not from this
+   list — and it carries noindex. */
+const routes = [...allServicePages(), ...portfolioRoutes(), notFoundPage()];
 
 const readIf = (f) => { try { return readFileSync(root + f, 'utf8'); } catch { return null; } };
 
@@ -654,7 +658,7 @@ if (process.argv.includes('--check')) {
     `${CHAPTERS.length} chapters covering ${CAPABILITIES.length} services, ` +
     `${SPECS.groups.reduce((n, g) => n + g.rows.length, 0)} specification rows, ` +
     `${PAGE_IMAGES.length + 1} photographs, ${FAQ.items.length} questions.`);
-  console.log(`${routes.length} service routes rendered:`);
+  console.log(`${routes.length} routes rendered:`);
   for (const r of routes) console.log(`  /${r.file.replace(/\.html$/, '')}`);
-  console.log(`sitemap.xml rendered — ${routes.length + 1} URLs.`);
+  console.log(`sitemap.xml rendered — ${(sitemap.match(/<loc>/g) || []).length} URLs.`);
 }

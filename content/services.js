@@ -196,14 +196,14 @@ export const BY_SLUG = Object.fromEntries(SERVICES.map((s) => [s.slug, s]));
 export const SERVICE_PAGE = {
   breadcrumbHome: 'Home',
   breadcrumbServices: 'What we do',
-  figuresTitle: 'Confirmed capability',
+  figuresTitle: 'What we can do',
   specTitle: 'Full specification',
-  specLede: 'Every figure below was checked and signed off by Kingson.',
+  specLede: 'The figures we work to. Open the group you need.',
   processTitle: 'What happens after you send it',
   /* `{n}` is the number of commitments this particular page shows. A service
      with no confirmed programme shows four, not five — see PROCESS in
      content/copy.js — and the sentence has to say the number it is looking at. */
-  processLede: '{n} commitments Kingson confirmed in writing. Each applies to this service exactly as it applies to any other.',
+  processLede: 'What we hold to on every job, this one included.',
   areaTitle: 'Where we work',
   areaBody: 'The workshop is at No. 1262 Tynwald Industries, Harare, and it is open Monday to Saturday, 07:30 – 17:00. Erection and delivery are national, with transport priced per load.',
   relatedTitle: 'Related services',

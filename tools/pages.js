@@ -13,7 +13,7 @@
    and carries its own enquiry form with that service already selected.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { PROCESS, processFor, SPECS, CONTACT, NAV, ENQUIRY } from '../content/copy.js';
+import { PROCESS, processFor, SPECS, CONTACT, NAV, ENQUIRY, NOT_FOUND, SERVICES_BLOCK } from '../content/copy.js';
 import { SERVICES, SERVICE_PAGE, BY_SLUG } from '../content/services.js';
 import { ASSETS, src, srcset, position } from '../content/assets.js';
 import { publish } from '../content/company.js';
@@ -21,7 +21,7 @@ import { section as profileSection, flashings, bed } from '../scenes/profiles.js
 import { pageGraph, pickFaq, pickSpecs, serviceId } from './schema.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryBlock, callBtn, waBtn, quoteBtn, bleedPhoto, ICON_ARROW
+  enquiryBlock, callBtn, waBtn, quoteBtn, bleedPhoto, serviceChooser, ICON_ARROW
 } from './layout.js';
 import { CAPABILITIES } from '../content/copy.js';
 
@@ -117,7 +117,7 @@ function drawing(s) {
         <figcaption>Corrugated</figcaption>
         ${profileSection('corrugated')}
       </figure>
-      <p class="pf-note">Both sections drawn to the same scale, from the confirmed cover widths and rib heights.</p>
+      <p class="pf-note">Both sections drawn to the same scale, from the cover widths and rib heights below.</p>
     </div>`;
   }
   if (s.bed) {
@@ -213,7 +213,7 @@ ${crumbs(s)}
     </div>
   </section>
 
-  <!-- ═══ what is confirmed, and what we need from you ═══ -->
+  <!-- ═══ what we can do, and what we need from you ═══ -->
   <section class="sp-brief">
     <div class="wrap sp-brief-in">
       <div class="sp-brief-col">
@@ -331,4 +331,83 @@ ${chromeBottom()}
 
 export function allServicePages() {
   return SERVICES.map((s) => ({ file: `${s.slug}.html`, html: servicePage(s) }));
+}
+
+/* ── the 404 ─────────────────────────────────────────────────────────────────
+   It used to be a hand-written file with its own stylesheet block, its own
+   logo plaque and none of the site's chrome: no header, no menu, no skip
+   link, no <main>, no footer. It was the one page that visibly belonged to an
+   older template, and it was also the one page a lost visitor sees.
+
+   It is generated now, from the same chrome as everything else. A dead URL is
+   not an apology page — the person still wants something built, so the page
+   answers the only useful question it can: which of the six is your job. The
+   chooser under the headline is the same component the home page uses, and
+   the form below it is the same form, so a visitor who landed here by a bad
+   link can finish without going anywhere.
+
+   Never in the sitemap, always noindex. Vercel serves it for any unmatched
+   path with a real 404 status — see vercel.json.                           */
+
+export function notFoundPage() {
+  const head = headHtml({
+    title: `${NOT_FOUND.title} — ${publish('name')}`,
+    description: NOT_FOUND.description,
+    path: '/404',
+    ogImage: NOT_FOUND.hero,
+    preload: NOT_FOUND.hero,
+    index: false,
+    ld: null
+  });
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+${head}
+</head>
+
+<body>
+${chromeTop({ home: false, current: '404' })}
+
+<main id="main">
+  <section class="sp-hero nf-hero ch ch-bleed ch-dark on-dark">
+    <div class="ch-bleed-img">
+      ${bleedPhoto(NOT_FOUND.hero, { eager: true, abs: true, decorative: true })}
+    </div>
+    <div class="wrap ch-over">
+      <div class="ch-copy">
+        <p class="ch-mark"><span class="ch-name">${esc(NOT_FOUND.eyebrow)}</span></p>
+        <h1 class="display ch-title">${esc(NOT_FOUND.h1)}</h1>
+        <p class="ch-lede">${esc(NOT_FOUND.lede)}</p>
+        <div class="sp-act">${quoteBtn(false, '#enquiry')}${callBtn(NAV.call, true)}${waBtn(true)}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="svc nf-svc" id="services" aria-labelledby="nf-svc-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">${esc(SERVICES_BLOCK.eyebrow)}</p>
+        <h2 class="display" id="nf-svc-h" data-reveal="rise"><span>${esc(SERVICES_BLOCK.title)}</span></h2>
+        <p>${esc(SERVICES_BLOCK.lede)}</p>
+      </div>
+${serviceChooser()}
+    </div>
+  </section>
+
+  <section class="enq sec-dark on-dark" id="enquiry">
+    ${bleedPhoto(NOT_FOUND.hero, { abs: true, cls: 'enq-bg', decorative: true })}
+    <div class="wrap">
+${enquiryBlock(null, { title: NOT_FOUND.ctaTitle, lede: NOT_FOUND.ctaLede })}
+    </div>
+  </section>
+</main>
+
+${siteFooter()}
+
+${chromeBottom()}
+</body>
+</html>
+`;
+  return { file: '404.html', html };
 }
