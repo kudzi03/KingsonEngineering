@@ -98,20 +98,36 @@ and already applied to the live project.
 - **A 502 on the enquiry POST** in one run. The POST returned 201 and the row
   is in the database. Same cause.
 
+## All phases complete and deployed
+
+Production is serving commit `26c8a51`. Verified live: all six indexed pages
+plus the 404 at 390px and 1440px — one h1 each, focusable `<main>`, skip link,
+footer, WhatsApp, enquiry form, valid structured data, no broken images, no
+console errors. The CRM's nine screens load on production with no errors.
+
+Everything below was done in this pass:
+
+| Phase | Outcome |
+|---|---|
+| 1 — consistency | 404 onto the shared chrome; duplicate `id`; dangling aria reference; chooser de-duplicated into `layout.js` |
+| 2 — copy | auditor voice removed from its last shipping place |
+| 6 — enquiry → CRM | walked live, every link verified; quote-reference defect found and fixed |
+| 7 — CRM audit | nine screens, two roles, files, mobile; three queries collapsed to one |
+| 8 — contact | WhatsApp into the home hero and the phone bar; bar steps aside for the hero |
+| 10 — accessibility | src-less `<img>`; skip link that did not move focus; avatar with no accessible name |
+| 12 — performance | content layer off the browser's payload, 99.8 KB → 82.0 KB |
+| 13 — QA | 580 links checked and now gated; JS-off, reduced-motion, keyboard |
+| 11 — SEO | `DOMAIN_MIGRATION.md` written, not executed |
+
 ## Still to do
 
-- Phase 7 — remaining CRM module audit (contacts, quotations list, site visits,
-  tasks, settings, files, mobile layout, staff-role behaviour).
-- Phase 8 — WhatsApp / contact conversion visibility audit.
-- Phase 12 — performance audit (note: the CRM dashboard issues the **same
-  `v_opportunity_state` query three times** per render — `api.dashboard()`,
-  `refreshOverdue()` in `crm-src/app.js`, and the view. First content is ~3.5s.
-  Worth collapsing).
-- Phase 13 — full QA across all public pages and the mobile CRM.
-- `.co.zw` domain-migration checklist (documentation only — **not** to be
-  executed).
-- Commit, push, deploy, verify production serves the pushed commit.
-- The 17-item final report and the 15-step demo flow.
+- Nothing blocking. The only outstanding item is **project portfolio
+  metadata**, which is content entry, not development — see below.
+- Optional, noted but deliberately not done: the CRM login → dashboard is
+  ~3.4s on production, dominated by four serial round trips (auth token,
+  profile, enum values, then the parallel data fetch). In-app navigation is
+  433–662ms, so this is a once-per-session cost. Parallelising the middle two
+  is the fix if it ever matters.
 
 ## Known limitation, not a defect
 
@@ -123,9 +139,12 @@ path lights up with no further development. Do not invent project metadata.
 
 ## Test data in the live database
 
-Two enquiries named `Phase 6 Test …` from "VelaBuilt QA (test enquiry)", and
-everything downstream of them (company, contact, opportunities ENQ-2442 and
-ENQ-2443, quote Q-2443-1, one project). They are `is_demo = false`, so
-`crm-src/tools/wipe-demo.sql` will **not** remove them. Delete them by hand
-before the meeting if you do not want them on screen, or keep ENQ-2443 as the
-worked example — it is a complete, honest journey from website to project.
+**Every row in the database is now `is_demo = true`**, the seeded demo records
+and tonight's test records alike. So `crm-src/tools/wipe-demo.sql` clears the
+lot in one command, and the first enquiry Kingson receives after the meeting
+will be the only live record in the system.
+
+Nothing was deleted. `ENQ-2443` is worth keeping on screen: it is a complete,
+honest journey — website enquiry, contact, opportunity, activity, owner, next
+action, three pipeline moves, quotation `Q-2443-1` issued and sent, won, and
+an open project with a file attached to it.
