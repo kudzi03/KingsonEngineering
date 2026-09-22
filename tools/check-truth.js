@@ -250,7 +250,10 @@ for (const file of allPages) {
         if (u !== '#' && !ids.has(u.slice(1))) fail(`${rel}: link to #${u.slice(1)}, which is not on this page`);
         continue;
       }
-      const [path, frag] = u.split('#');
+      const [pathQ, frag] = u.split('#');
+      /* A ?v= build stamp names the same file; the query is for caches, not
+         for the file system. */
+      const path = pathQ.split('?')[0];
       const target = resolveHref(path);
       if (!target) { fail(`${rel}: dead link — ${u}`); continue; }
       if (frag && target.endsWith('.html')

@@ -45,10 +45,14 @@ cp "$SRC/fonts.css" "$OUT/fonts.css"
 # against the site root and gets the website's 404 page with a text/html
 # content type. The CRM then loads with no styles at all. /crm/app.css is
 # correct whether the URL ends in a slash or not.
+#
+# Each URL also carries ?v=<hash of the built files>, so a browser or network
+# cache holding the previous build cannot serve it: a new build is a new URL.
+V=$(cat "$OUT/app.js" "$OUT/app.css" "$OUT/fonts.css" | sha256sum | cut -c1-10)
 sed -e 's|<link rel="stylesheet" href="styles/tokens.css">||' \
-    -e 's|<link rel="stylesheet" href="styles/app.css">|<link rel="stylesheet" href="/crm/app.css">|' \
-    -e 's|href="fonts.css"|href="/crm/fonts.css"|' \
-    -e 's|src="app.js"|src="/crm/app.js"|' \
+    -e "s|<link rel=\"stylesheet\" href=\"styles/app.css\">|<link rel=\"stylesheet\" href=\"/crm/app.css?v=$V\">|" \
+    -e "s|href=\"fonts.css\"|href=\"/crm/fonts.css?v=$V\"|" \
+    -e "s|src=\"app.js\"|src=\"/crm/app.js?v=$V\"|" \
     "$SRC/index.html" | grep -v '^$' > "$OUT/index.html"
 
 printf 'crm/ built from %s\n' "$SRC"

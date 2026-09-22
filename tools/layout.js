@@ -21,6 +21,24 @@ import { hasProjects } from '../content/projects.js';
 import { SERVICES } from '../content/services.js';
 import { publish } from '../content/company.js';
 import { ASSETS, src, srcset, position, hasWide, wideSrc, wideSrcset } from '../content/assets.js';
+import { createHash } from 'node:crypto';
+import { readFileSync, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+/* ── the build stamp ─────────────────────────────────────────────────────────
+   A short hash of every stylesheet and script the pages load, appended to
+   their URLs as ?v=. The headers already say "revalidate every time", but a
+   phone network's proxy, a data-saver or a tab restored from memory does not
+   always listen. A new URL cannot be served from an old cache, so the moment
+   a design change ships every visitor gets it. The hash only changes when the
+   files do, so an unchanged deploy keeps its cache.                          */
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
+const STAMPED = ['assets/fonts.css', 'styles/tokens.css', 'styles/site.css', 'main.js',
+  ...['interface', 'scenes'].flatMap((d) =>
+    readdirSync(ROOT + d).filter((f) => f.endsWith('.js')).sort().map((f) => `${d}/${f}`))];
+export const BUILD = createHash('sha256')
+  .update(STAMPED.map((f) => readFileSync(ROOT + f)).join('\u0000'))
+  .digest('hex').slice(0, 10);
 
 export const SITE = 'https://kingson-engineering.vercel.app';
 
@@ -319,7 +337,7 @@ export function chromeBottom() {
      already scrolled past. -->
 <div class="bar">${callBtn(NAV.call, true)}${waBtn(true)}${quoteBtn(false, '#enquiry')}</div>
 
-<script type="module" src="/main.js"></script>`;
+<script type="module" src="/main.js?v=${BUILD}"></script>`;
 }
 
 /* ── <head> ─────────────────────────────────────────────────────────────────── */
@@ -391,9 +409,9 @@ ${home ? `
      -->
 <script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')${home ? `
 if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-over')` : ''}</script>
-<link rel="stylesheet" href="/assets/fonts.css">
-<link rel="stylesheet" href="/styles/tokens.css">
-<link rel="stylesheet" href="/styles/site.css">
+<link rel="stylesheet" href="/assets/fonts.css?v=${BUILD}">
+<link rel="stylesheet" href="/styles/tokens.css?v=${BUILD}">
+<link rel="stylesheet" href="/styles/site.css?v=${BUILD}">
 ${ld ? `
 <script type="application/ld+json">
 ${ld}
