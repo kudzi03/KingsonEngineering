@@ -21,6 +21,56 @@ CRM logins (also in the scratchpad `creds.env`):
 - `admin1@kingsonengineering.co.zw` — Mr Murandu, administrator
 - `technical@kingsonengineering.co.zw` — Technical Office, staff
 
+## Latest pass — quote lifecycle (22 Sept 2026)
+
+Commits `4b219e6` (CRM) and `7fb9c57` (site). SQL for every database change
+is in `crm-src/supabase/migrations/20260922_*.sql`, applied to production in
+this order: `lifecycle_enums`, `quote_lifecycle`, `quote_superseded`,
+`harden_function_surface`.
+
+**How a job moves now.** Every important transition is a database function
+that checks `is_staff()` and does the business logic itself; the CRM screens
+only collect input.
+
+| Action | Function | What it does |
+|---|---|---|
+| Record quotation | `record_quote` | Numbered revision (`Q-<enq>-<n>`), draft, stage → quoting, next action "Send quotation …" today |
+| Mark as sent | `mark_quote_sent` | Stamps `sent_at` + `sent_by`, follow-up = N working days (settings, default 3, Mon–Sat), replaces the next action, supersedes older revisions |
+| Log follow-up | `log_follow_up` | Timeline entry by channel, quote sent → follow-up, books the next date |
+| Customer replied | `mark_customer_replied` | Stops the chase, quote → "customer responded", next action "Respond to customer reply" today |
+| Won / Lost / On hold | `decide_opportunity` | Won needs an accepted value; lost a coded reason; hold a reason + review date. Decisions stop follow-ups |
+
+The stage select on the board and on the opportunity routes won/lost/on-hold
+through the same dialogs; the database refuses them otherwise.
+
+**Values.** No free-typed estimate any more. An opportunity's value is its
+latest non-rejected quotation, or its won value. No quotation = "Not quoted
+yet", never $0. `dashboard_metrics(p_include_demo)` computes every headline
+figure, per currency.
+
+**Demo data.** All lists pass `is_demo=eq.false` unless the browser's
+Settings switch is on (then a warning strip shows on every screen).
+`dashboard_metrics(false)` currently returns **zero real opportunities** —
+every row in the database is demo or test data.
+
+**Email.** `crm_settings.email_mode` = `manual`. The deployed `send-email`
+(v2) returns `manual_mode` and sends nothing; `test` mode redirects every
+message to `crm_settings.test_mailbox`; `connected` is disabled in the UI
+until Kingson's mailbox credentials exist. Reply detection does not exist —
+replies are recorded by hand.
+
+**Tests that passed** (scripts in the session scratchpad: `life-ui.mjs`,
+`life-staff.mjs`, `mail-mode.mjs`, `vp6.mjs`, `ld.mjs`): the whole lifecycle
+in a browser as admin and as staff, reload persistence, overdue display,
+dashboard sums, demo toggle, 390px layout, anon locked out of the view and
+all functions, triggers still firing after the revokes.
+
+**Still open**
+- Kingson's mailbox credentials (for `connected` mode and the office alert).
+- Supabase Auth → enable leaked-password protection (dashboard setting; the
+  advisor flags it).
+- Project portfolio metadata (unchanged, see below).
+
 ## How this repository works
 
 Static HTML, CSS and ES modules. **No framework, no bundler, no package.json
@@ -140,7 +190,8 @@ path lights up with no further development. Do not invent project metadata.
 ## Test data in the live database
 
 **Every row in the database is now `is_demo = true`**, the seeded demo records
-and tonight's test records alike. So `crm-src/tools/wipe-demo.sql` clears the
+and every test record — including `ENQ-2445` (the owner's own test through the
+live form) and the automated lifecycle tests `ENQ-2448`–`ENQ-2450`. So `crm-src/tools/wipe-demo.sql` clears the
 lot in one command, and the first enquiry Kingson receives after the meeting
 will be the only live record in the system.
 
