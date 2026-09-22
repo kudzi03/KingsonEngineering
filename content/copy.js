@@ -278,7 +278,7 @@ export const STRIP = [
    form — and two pairs of them were near-duplicates written for different
    readers. "Where is the workshop?" and "Where is Kingson Engineering based?"
    answer the same question twice, as do "Do you deliver outside Harare?" and
-   "What areas do you cover?". The home page keeps the general six; the
+   "What areas do you cover?". The home page keeps the general seven; the
    service-specific ones are on the pages that own them.                     */
 export const FAQ = {
   title: 'Questions we get asked',
@@ -287,6 +287,10 @@ export const FAQ = {
       a: 'On the DXTECH fiber laser: mild steel to 20 mm on oxygen, stainless to 10 mm on nitrogen, aluminium to 8 mm, and galvanised sheet to 4 mm. The bed is 3 000 × 1 500 mm and tolerance is ± 0.1 mm, repeating to ± 0.03 mm.' },
     { q: 'What file formats do you accept for cutting?',
       a: 'DXF, DWG, STEP and PDF.' },
+    { q: 'Can you cut stainless steel?',
+      a: 'Yes. The DXTECH fiber laser cuts stainless to 10 mm on nitrogen, and the workshop folds it to 3 000 mm and fabricates it to drawing — handrails, balustrades and sheet work.' },
+    { home: true, q: 'How long does a quotation take?',
+      a: 'Enquiries are acknowledged the same working day, and a written quotation follows within the week. Where the job needs someone on site first, the site visit is arranged within two working days.' },
     { home: true, q: 'How long does a steel structure take?',
       a: 'A portal frame programme runs six to ten weeks. A written quotation comes within the week of your enquiry, and a site visit is arranged within two working days where the job needs one.' },
     { q: 'Do you deliver outside Harare?',
@@ -316,7 +320,7 @@ export const FAQ = {
   ]
 };
 
-/** The six the home page asks. */
+/** The seven the home page asks. */
 export const homeFaq = () => FAQ.items.filter((i) => i.home);
 
 

@@ -62,8 +62,8 @@ export const SERVICES = [
       head: 'The plant that puts it up.',
       lede: 'Structural steelwork is set out from your drawings, so the sections, grades and spans come from your engineer rather than from a catalogue here. What Kingson confirms is the plant that erects it.'
     },
-    faq: ['How long does a steel structure take?', 'Do you deliver outside Harare?',
-          'How big a lift can you do?'],
+    faq: ['How long does a steel structure take?', 'How long does a quotation take?',
+          'Do you deliver outside Harare?', 'How big a lift can you do?'],
     related: ['roofing-and-trusses', 'mobile-cranage-harare', 'fiber-laser-cutting-harare'],
     aside: 'roofFrame'
   },
@@ -116,8 +116,8 @@ export const SERVICES = [
            'The quantity, and whether you want the parts deburred or left as cut.'],
     specGroups: ['laser'],
     bed: true,
-    faq: ['What thickness can you laser cut?', 'What file formats do you accept for cutting?',
-          'Can I get a price without drawings?'],
+    faq: ['What thickness can you laser cut?', 'Can you cut stainless steel?',
+          'What file formats do you accept for cutting?', 'Can I get a price without drawings?'],
     related: ['steel-fabrication', 'structural-steel-harare', 'roofing-and-trusses'],
     /* The whole machine, the head mid-cut, and the nested file on screen.
        `cuttingHead` is the idle version of the second of those and keeps its
@@ -158,8 +158,8 @@ export const SERVICES = [
       { id: 'flashings', title: 'Flashings and custom folding',
         body: 'Ridge, barge and valley are standard items. Custom folds run to 3 000 mm across the full material range, and a stock gauge is three to five days.' }
     ],
-    faq: ['Can you make flashings to match?', 'What thickness can you laser cut?',
-          'Can I get a price without drawings?'],
+    faq: ['Can you make flashings to match?', 'Can you cut stainless steel?',
+          'What thickness can you laser cut?', 'Can I get a price without drawings?'],
     related: ['fiber-laser-cutting-harare', 'roofing-and-trusses', 'structural-steel-harare']
   },
 

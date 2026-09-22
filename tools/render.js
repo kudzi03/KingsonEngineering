@@ -477,7 +477,7 @@ const graph = [
   })),
   {
     '@type': 'FAQPage', '@id': SITE + '#faq',
-    /* The six the page shows, not the fifteen that exist. A FAQPage that
+    /* The seven the page shows, not the seventeen that exist. A FAQPage that
        declares answers the page does not display is the structured-data
        version of lying about content. */
     mainEntity: homeFaq().map((it) => ({
