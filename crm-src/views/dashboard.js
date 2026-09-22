@@ -63,7 +63,8 @@ export async function render() {
       ${stat({
         label: 'Not quoted yet', value: String(m.unquoted_count),
         tone: m.unquoted_count ? 'warn' : '',
-        foot: m.unquoted_count ? 'Open, with no quotation recorded' : 'Every open job has a quotation',
+        foot: m.unquoted_count ? 'Open, with no quotation recorded'
+          : m.open_count ? 'Every open job has a quotation' : 'No open jobs',
         href: '#/pipeline'
       })}
       ${stat({
