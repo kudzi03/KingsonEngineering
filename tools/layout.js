@@ -159,14 +159,38 @@ export function menuNav(home, current) {
    work they are, and because a screen reader should say "1 of 6".          */
 export function serviceChooser({ reveal = true } = {}) {
   const r = reveal ? ' data-reveal="lift" data-reveal-stagger="60"' : '';
+  /* Four of the six have a photograph Kingson supplied of that work. The other
+     two have none, and they do not borrow one: their media panel is a plain
+     steel plate carrying the figure instead. The photograph is decorative here
+     (alt="") because the card's own words already name the service; the same
+     images carry full descriptions where they appear as content. */
+  const media = (c) => {
+    if (!c.photo) {
+      return `<span class="svc-media svc-plate" aria-hidden="true">
+            <span class="svc-plate-fig num">${esc(c.lead[0])}</span>
+            <span class="svc-plate-cap">${esc(c.lead[1])}</span>
+          </span>`;
+    }
+    const a = ASSETS[c.photo];
+    return `<span class="svc-media">
+            <img src="/${src(c.photo, 720)}" srcset="${srcset(c.photo).split(', ').map((x) => '/' + x).join(', ')}"
+                 sizes="(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 420px"
+                 width="${a.w}" height="${a.h}" loading="lazy" decoding="async"
+                 style="object-position:${position(c.photo)}" alt="">
+            <span class="svc-media-fig num" aria-hidden="true">${esc(c.lead[0])}</span>
+          </span>`;
+  };
   return `    <ol class="svc-grid"${r}>
-${CAPABILITIES.map((c) => `      <li class="svc">
+${CAPABILITIES.map((c, i) => `      <li class="svc-card${c.photo ? '' : ' svc-card-plate'}">
         <a class="svc-hit" href="/${c.route}">
-          <span class="svc-lead num">${esc(c.lead[0])}</span>
-          <span class="svc-lead-label">${esc(c.lead[1])}</span>
-          <span class="svc-name">${esc(c.title)}</span>
-          <span class="svc-body">${esc(c.body)}</span>
-          <span class="svc-go">${esc(SERVICES_BLOCK.go)}${ICON_ARROW}</span>
+          ${media(c)}
+          <span class="svc-text">
+            <span class="svc-idx num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+            <span class="svc-name">${esc(c.title)}</span>
+            <span class="svc-lead-label"><b class="num">${esc(c.lead[0])}</b> ${esc(c.lead[1])}</span>
+            <span class="svc-body">${esc(c.body)}</span>
+            <span class="svc-go">${esc(SERVICES_BLOCK.go)}${ICON_ARROW}</span>
+          </span>
         </a>
       </li>`).join('\n')}
     </ol>`;

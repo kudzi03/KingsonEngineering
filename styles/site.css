@@ -175,12 +175,27 @@ html.hd-over .hd-mark img {
   /* Pulled up under the header and grown by the same amount, so the scene the
      visitor actually sees is the height it has always been. */
   margin-top: calc(var(--hd-h) * -1);
-  min-height: calc(min(78vh, 700px) + var(--hd-h));
+  min-height: calc(min(90vh, 860px) + var(--hd-h));
   display: flex; align-items: flex-end;
   padding: 0; overflow: hidden;
 }
 .hero-img { position: absolute; inset: 0; width: 100%; height: 100%;
-            object-fit: cover; object-position: 54% 47%; }
+            object-fit: cover; object-position: 54% 47%;
+            animation: hero-settle 2.4s cubic-bezier(.16, 1, .3, 1) both; }
+/* The photograph arrives already visible and eases a few percent back to
+   rest. No opacity fade: the first paint is the finished picture. */
+@keyframes hero-settle { from { transform: scale(1.07); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-img { animation: none; } }
+
+/* A plate caption, the way a technical journal labels a photograph. */
+.hero-cap {
+  position: absolute; z-index: 3; right: var(--margin); bottom: clamp(44px, 5.5vw, 68px);
+  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  font-size: var(--t-small); color: rgba(250, 250, 250, .72); text-align: right;
+  padding-right: 14px; border-right: 2px solid var(--accent);
+}
+.hero-cap span:first-child { color: #fff; font-weight: 600; }
+@media (max-width: 1100px) { .hero-cap { display: none; } }
 /* Two layers. The lower one is the copy's ground and has not changed. The
    upper one is a short vignette across the top: the header now sits on the
    photograph, and this is what guarantees the navigation a dark ground
@@ -247,7 +262,8 @@ html.hd-over .hd-mark img {
 }
 .hero-eyebrow::before { content: ""; width: 7px; height: 7px; flex: none;
                         border-radius: var(--pill); background: var(--accent); }
-.hero h1 { font-size: var(--t-h1); margin-bottom: 18px; }
+.hero h1 { font-size: clamp(46px, 7.4vw, 104px); line-height: .96; letter-spacing: -.04em;
+           margin-bottom: 22px; max-width: 11ch; }
 .hero-lede { font-size: var(--t-lede); color: var(--fg-on-dark-muted);
              max-width: 58ch; margin-bottom: 28px; }
 .hero-act { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -689,34 +705,49 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
    Five commitments, so not five equal cards: a rail, read top to bottom, which
    is the order they happen in. */
 
-.steps { max-width: 760px; margin: 0 auto; display: grid; }
-.step { display: flex; gap: clamp(18px, 3vw, 30px); position: relative;
-        padding-bottom: 30px; }
-.step:last-child { padding-bottom: 0; }
-/* The rail between the numbers, drawn behind them. */
-.step:not(:last-child)::before {
-  content: ""; position: absolute; left: 23px; top: 52px; bottom: 6px;
-  width: 2px; background: var(--line); border-radius: var(--pill);
+.proc { background: var(--bg-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+/* Five commitments laid out as a rail, left to right, in the order they
+   happen. Large outlined numerals carry the sequence; the rail joins them. */
+.steps {
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0; position: relative; counter-reset: none;
 }
+.steps::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 36px; height: 2px;
+  background: linear-gradient(to right, var(--accent) 0 20%, var(--line) 20% 100%);
+}
+.step { position: relative; padding: 0 clamp(12px, 1.6vw, 22px) 0 0; }
 .step-n {
-  flex: none; display: inline-flex; align-items: center; justify-content: center;
-  width: 48px; height: 48px; border-radius: var(--pill);
-  background: var(--accent); color: var(--accent-on);
-  font-family: Archivo, sans-serif; font-weight: 700; font-size: 16px;
-  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 74px; height: 74px; border-radius: var(--pill);
+  background: var(--bg); border: 2px solid var(--line);
+  font-family: Archivo, sans-serif; font-weight: 800; font-size: 26px;
+  letter-spacing: -.03em; color: var(--fg); position: relative; z-index: 1;
+  transition: background-color 200ms var(--ease), color 200ms var(--ease), border-color 200ms var(--ease);
 }
-.step-body { padding-top: 9px; }
+.step:first-child .step-n { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+.step:hover .step-n { border-color: var(--accent); color: var(--accent-ink); }
+.step:first-child:hover .step-n { color: var(--accent-on); }
+.step-body { padding-top: 22px; }
 .step h3 { font-family: Archivo, sans-serif; font-weight: 700;
-           font-size: var(--t-h3); letter-spacing: -.012em; margin-bottom: 6px; }
-.step p { color: var(--fg-muted); }
+           font-size: clamp(17px, 1.5vw, 20px); letter-spacing: -.018em; line-height: 1.25; margin-bottom: 8px; }
+.step p { color: var(--fg-muted); font-size: var(--t-ui); }
 
 /* The rail ends on the action it describes, rather than in white space. */
 .proc-close {
-  max-width: 760px; margin: clamp(34px, 4vw, 48px) auto 0;
-  padding-left: calc(48px + clamp(18px, 3vw, 30px));
-  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px;
+  margin: clamp(40px, 5vw, 60px) 0 0; padding: clamp(20px, 2.4vw, 28px) clamp(20px, 2.6vw, 32px);
+  background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px;
 }
-.proc-close p { color: var(--fg-muted); flex: 1 1 260px; }
+.proc-close p { color: var(--fg); font-weight: 500; flex: 1 1 260px; font-size: var(--t-lede); }
+@media (max-width: 900px) {
+  .steps { grid-template-columns: 1fr; gap: 26px; }
+  .steps::before { left: 27px; right: auto; top: 10px; bottom: 10px; width: 2px; height: auto;
+                   background: linear-gradient(to bottom, var(--accent) 0 18%, var(--line) 18% 100%); }
+  .step { display: flex; gap: 18px; padding: 0; }
+  .step-n { width: 56px; height: 56px; font-size: 20px; flex: none; }
+  .step-body { padding-top: 6px; }
+}
 
 /* ── enquiry ──────────────────────────────────────────────────────────────────
    The closing act. The hero opened on a frame being erected; this is the same
@@ -807,10 +838,48 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 
 /* ── questions ──────────────────────────────────────────────────────────── */
 
-.faq-list { max-width: 800px; margin: 0 auto; }
-.faq-item { border-bottom: 1px solid var(--line); }
-.faq-item > summary { padding: 20px 4px; }
-.faq-item > p { padding: 0 4px 22px; color: var(--fg-muted); max-width: 72ch; }
+/* Two columns: the heading and a way to ask stay put on the left while the
+   questions scroll on the right. Numbered, because a phone call often goes
+   "the fourth one on your site". */
+.faq-wrap {
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 6vw, 96px); align-items: start;
+}
+.faq-side { position: sticky; top: calc(var(--hd-h) + 32px); }
+.faq-side .sec-head { text-align: left; margin: 0 0 28px; max-width: none; }
+.faq-side .sec-head h2 { font-size: clamp(34px, 4.2vw, 58px); line-height: 1.02; }
+.faq-side .eyebrow { justify-content: flex-start; }
+.faq-ask {
+  background: var(--bg-dark); color: var(--fg-on-dark);
+  border-radius: var(--r-lg); padding: clamp(20px, 2.4vw, 28px);
+  border-left: 3px solid var(--accent);
+}
+.faq-ask-k { font-family: Archivo, sans-serif; font-weight: 700; font-size: 19px; margin-bottom: 6px; }
+.faq-ask-t { color: var(--fg-on-dark-muted); font-size: var(--t-ui); margin-bottom: 18px; }
+.faq-ask-act { display: flex; flex-wrap: wrap; gap: 10px; }
+.faq-ask .btn-ghost { color: var(--fg-on-dark); border-color: rgba(250, 250, 250, .34); }
+.faq-ask .btn-ghost:hover { border-color: #fff; }
+
+.faq-list { counter-reset: faq; border-top: 2px solid var(--fg); }
+.faq-item { border-bottom: 1px solid var(--line); counter-increment: faq; }
+.faq-item > summary { padding: 24px 4px; font-size: clamp(17px, 1.5vw, 20px); gap: 18px; }
+.faq-item > summary > span::before {
+  content: counter(faq, decimal-leading-zero);
+  display: inline-block; min-width: 2.4em; color: var(--accent-ink);
+  font-size: .78em; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.faq-item[open] > summary { color: var(--accent-ink); }
+.faq-item > p { padding: 0 4px 26px calc(4px + 2.4em * .78); color: var(--fg-muted);
+                max-width: 64ch; font-size: var(--t-body, 16px); line-height: 1.7; }
+@media (max-width: 900px) {
+  .faq-wrap { grid-template-columns: 1fr; }
+  /* On one column the questions come first and the "ask us" panel follows
+     them, so a phone reader meets the answers before the fallback. */
+  .faq-side { display: contents; }
+  .faq-side .sec-head { order: 0; margin-bottom: 0; }
+  .faq-list { order: 1; }
+  .faq-ask { order: 2; }
+}
 
 /* ── contact (dark) ─────────────────────────────────────────────────────── */
 
@@ -1013,7 +1082,6 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   .strip-in li:first-child { border-top: 0; }
   .strip-in li:nth-child(-n+2) { border-bottom: 0; }
 
-  .proc-close { padding-left: 0; }
   .proc-close .btn { width: 100%; }
 
   .band { min-height: 64svh; min-height: calc(64 * var(--svh, 1vh)); }
@@ -1036,10 +1104,6 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   .ch-bleed .ch-copy { border-radius: 0; }
   .enq-bg { opacity: .22; }
 
-  .step { gap: 16px; padding-bottom: 24px; }
-  .step:not(:last-child)::before { left: 20px; top: 46px; }
-  .step-n { width: 42px; height: 42px; font-size: 15px; }
-  .step-body { padding-top: 7px; }
 
   .field-row { grid-template-columns: 1fr; }
   .field input, .field textarea, .field select { font-size: 16px; }  /* no zoom on focus */
@@ -1547,55 +1611,93 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
    already found. Tabular numerals so the six line up down the grid. */
 
 .svc { background: var(--bg); }
+/* Six cards, photograph first. The figure a buyer is scanning for sits on
+   the photograph itself, large, so the grid reads as six pieces of work and
+   six numbers before anybody reads a sentence. */
 .svc-grid {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px; background: var(--line);
-  border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden;
+  gap: clamp(14px, 1.6vw, 22px);
 }
-.svc-grid > li { background: var(--bg); }
-
-/* A column, not a grid, so the link can be pushed to the bottom with
-   `margin-top: auto`. The six bodies are different lengths and the links were
-   landing at six different heights across the row — the kind of raggedness
-   that reads as unfinished even when nobody can say what is wrong. */
+.svc-card { display: flex; }
 .svc-hit {
-  display: flex; flex-direction: column; align-items: flex-start;
-  padding: clamp(22px, 2.4vw, 30px);
-  height: 100%; text-decoration: none; color: inherit;
-  transition: background-color 180ms var(--ease);
+  display: flex; flex-direction: column; width: 100%;
+  text-decoration: none; color: inherit; background: var(--bg);
+  border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden;
+  transition: border-color 200ms var(--ease), box-shadow 260ms var(--ease), transform 260ms var(--ease);
 }
-.svc-hit:hover { background: var(--bg-soft); }
-
-.svc-lead {
-  font-family: Archivo, sans-serif; font-weight: 700;
-  font-size: clamp(30px, 3.2vw, 40px); line-height: 1;
-  letter-spacing: -.03em; color: var(--accent);
+.svc-hit:hover {
+  border-color: var(--line-strong, #d4d4d8);
+  box-shadow: 0 18px 40px -22px rgba(10, 12, 11, .45);
+  transform: translateY(-3px);
+}
+.svc-media {
+  position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden;
+  background: var(--bg-dark);
+}
+.svc-media img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 700ms var(--ease);
+}
+.svc-hit:hover .svc-media img { transform: scale(1.045); }
+.svc-media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10, 12, 11, .78) 0%, rgba(10, 12, 11, .28) 38%, rgba(10, 12, 11, 0) 62%);
+}
+.svc-media-fig {
+  position: absolute; left: clamp(18px, 2vw, 24px); bottom: clamp(14px, 1.6vw, 20px); z-index: 1;
+  font-family: Archivo, sans-serif; font-weight: 800; color: #fff;
+  font-size: clamp(34px, 3.4vw, 46px); line-height: 1; letter-spacing: -.035em;
   font-variant-numeric: tabular-nums;
 }
-.svc-lead-label {
-  font-size: var(--t-small); color: var(--fg-faint);
-  margin-top: 7px; margin-bottom: 18px;
+/* The two services with no photograph: a plate of dark steel with a red edge,
+   carrying the figure. Honest about being a panel rather than a picture. */
+.svc-plate {
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: clamp(18px, 2vw, 24px);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .05) 0 1px, transparent 1px 100%) 0 0 / 22px 22px,
+    linear-gradient(160deg, #1c201e 0%, #0d0f0e 100%);
+  border-bottom: 3px solid var(--accent);
+}
+.svc-plate::after { display: none; }
+.svc-plate-fig {
+  font-family: Archivo, sans-serif; font-weight: 800; color: #fff;
+  font-size: clamp(38px, 4vw, 56px); line-height: 1; letter-spacing: -.035em;
+}
+.svc-plate-cap { color: var(--fg-on-dark-muted); font-size: var(--t-small); margin-top: 8px; }
+.svc-text {
+  display: flex; flex-direction: column; align-items: flex-start; flex: 1;
+  padding: clamp(18px, 2vw, 24px) clamp(18px, 2vw, 24px) clamp(18px, 2vw, 22px);
+}
+.svc-idx {
+  font-size: var(--t-small); font-weight: 600; color: var(--accent-ink);
+  letter-spacing: .06em; margin-bottom: 8px;
 }
 .svc-name {
   font-family: Archivo, sans-serif; font-weight: 700;
-  font-size: clamp(17px, 1.5vw, 20px); letter-spacing: -.018em;
-  margin-bottom: 8px;
+  font-size: clamp(19px, 1.7vw, 22px); letter-spacing: -.02em; line-height: 1.2;
+  margin-bottom: 6px;
 }
-.svc-body {
-  font-size: var(--t-ui); color: var(--fg-muted); line-height: 1.6;
-  max-width: 38ch;
-}
+.svc-lead-label { font-size: var(--t-small); color: var(--fg-faint); margin-bottom: 12px; }
+.svc-lead-label b { color: var(--fg); font-weight: 600; }
+.svc-body { font-size: var(--t-ui); color: var(--fg-muted); line-height: 1.6; max-width: 40ch; }
 .svc-go {
   display: inline-flex; align-items: center; gap: 7px;
-  margin-top: auto; padding-top: 18px;
-  font-size: var(--t-small); font-weight: 500;
-  color: var(--accent-ink);
+  margin-top: auto; padding-top: 16px;
+  font-size: var(--t-small); font-weight: 600; color: var(--accent-ink);
 }
 .svc-go svg { transition: transform 160ms var(--ease); }
-.svc-hit:hover .svc-go svg { transform: translateX(3px); }
-
+.svc-hit:hover .svc-go svg { transform: translateX(4px); }
+@media (prefers-reduced-motion: reduce) {
+  .svc-hit, .svc-media img { transition: none; }
+  .svc-hit:hover { transform: none; }
+  .svc-hit:hover .svc-media img { transform: none; }
+}
 @media (max-width: 1000px) { .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 640px)  { .svc-grid { grid-template-columns: 1fr; } }
+@media (max-width: 640px)  {
+  .svc-grid { grid-template-columns: 1fr; }
+  .svc-media { aspect-ratio: 16 / 9; }
+}
 
 /* ── the portfolio ──────────────────────────────────────────────────────────
    Styled and unused. content/projects.js is empty until the office says which

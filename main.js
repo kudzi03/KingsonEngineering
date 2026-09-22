@@ -12,13 +12,11 @@
    scrolled seven screens before reaching a single fact about the company.
    Scrolling now scrolls.
 
-   The hero's structural assembly is the one piece of choreography on the page,
-   and it is a ONE-SHOT on load — not scroll-linked. See scenes/assembly.js.
+   There is no load choreography: the hero photograph is the first paint.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { mountViewer } from './interface/image-viewer.js';
 import { mountEnquiry } from './interface/enquiry.js';
-import { mount as mountAssembly } from './scenes/assembly.js';
 import { mountReveals } from './scenes/reveal.js';
 import { mountParallax } from './scenes/parallax.js';
 
@@ -33,41 +31,14 @@ const setSvh = () => document.documentElement.style
   .setProperty('--svh', (window.innerHeight / 100) + 'px');
 window.addEventListener('orientationchange', setSvh);
 
-/* ── the hero's structural assembly ─────────────────────────────────────────
-   A one-shot on load. The hero photograph and every word of the hero are
-   already painted before this runs, so if it never starts — reduced motion, no
-   2D context, a decode that fails — the hero is simply the photograph, which
-   is what it was before.
-
-   `hero-erecting` dims the scrim while the canvas paints its own dark ground,
-   and is removed when the steel hands over. The class is only ever ADDED by a
-   canvas that really mounted, so with JavaScript off the scrim stays at full
-   strength and the copy keeps its contrast.                                 */
+/* ── the hero ───────────────────────────────────────────────────────────────
+   The photograph is the hero from the first frame. It used to be covered for
+   several seconds by a drawn steel "assembly"; a visitor on a slow phone saw
+   red bars instead of Kingson's own work, so the photograph now leads and the
+   only motion is a slow settle done in CSS (and none at all under reduced
+   motion). */
 
 const hero = $('.hero');
-/* Not if the visitor arrived at an anchor further down the page — erecting a
-   frame nobody is looking at is pure waste, and it would pull the scrim down
-   on a hero that is already off screen. */
-if (hero && window.scrollY < hero.offsetHeight * 0.5) {
-  const img = $('.hero-img', hero);
-  const go = () => {
-    const handle = mountAssembly(hero, {
-      onDone: () => hero.classList.remove('hero-erecting')
-    });
-    if (handle) hero.classList.add('hero-erecting');
-  };
-  /* Wait for the photograph so the sheeting sweep always reveals something,
-     but never wait long: 1.2s and the assembly starts regardless. */
-  if (img && !img.complete) {
-    let fired = false;
-    const once = () => { if (!fired) { fired = true; go(); } };
-    img.addEventListener('load', once, { once: true });
-    img.addEventListener('error', once, { once: true });
-    setTimeout(once, 1200);
-  } else {
-    go();
-  }
-}
 
 /* ── the header over the hero ───────────────────────────────────────────────
    The bar is dark and part of the scene while the hero is under it, and solid

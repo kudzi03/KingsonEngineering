@@ -397,6 +397,12 @@ const faq = homeFaq().map((it, i) => `      <details class="faq-item" id="faq-${
         <p>${esc(it.a)}</p>
       </details>`).join('\n');
 
+/* Beside the questions: the one thing to do when the answer is not there.
+   Same numbers as everywhere else, so nothing new is being claimed. */
+const faqask = `    <p class="faq-ask-k">Not answered here?</p>
+    <p class="faq-ask-t">Ask the workshop directly. Enquiries are acknowledged the same working day.</p>
+    <div class="faq-ask-act">${callBtn(NAV.call, true)}${waBtn(true)}</div>`;
+
 /* ── contact ─────────────────────────────────────────────────────────────────
    Ordered by how a customer actually reaches Kingson, and built by asking for
    each value: an unverified one produces no row at all.                     */
@@ -521,7 +527,7 @@ const BLOCKS = {
 
   /* the homepage's own composition */
   hero, strip, chapters, workshop, specs,
-  steps, procClose, form, faq, contact,
+  steps, procClose, form, faq, faqask, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
   svchead:   head('services', SERVICES_BLOCK.title, SERVICES_BLOCK.lede, 'svc-h'),
