@@ -7,6 +7,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { api } from '../core/api.js';
+import { oppValue } from '../core/model.js';
 import { money, date, relative, esc, pluralise, tel, mailto } from '../core/fmt.js';
 import {
   card, empty, avatar, timeline, contactActions, attentionPill, quoteStatusPill
@@ -58,7 +59,7 @@ export async function render(id, { me }) {
       ${opps.map((o) => `<li>
         <a href="#/opportunity/${esc(o.id)}">
           <span class="mini-main">${esc(o.title)} ${attentionPill(o)}</span>
-          <span class="mini-sub">${esc(o.ref)} · ${esc(o.stage_name)}${o.estimated_value ? ' · ' + esc(money(o.estimated_value, o.currency)) : ''}</span>
+          <span class="mini-sub">${esc(o.ref)} · ${esc(o.stage_name)}${(() => { const v = oppValue(o); return v.amount == null ? ' · not quoted yet' : ' · ' + esc(money(v.amount, v.currency)); })()}</span>
         </a>
         <span class="mini-side">${avatar(o.owner_name ? { full_name: o.owner_name, initials: o.owner_initials } : null, 24)}</span>
       </li>`).join('')}

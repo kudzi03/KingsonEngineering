@@ -9,7 +9,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { api } from '../core/api.js';
-import { STAGES, STAGE, attention, isOpen, isOverdue, quoteAtRisk } from '../core/model.js';
+import { STAGES, STAGE, attention, isOpen, isOverdue, quoteAtRisk, oppValue } from '../core/model.js';
 import { money, date, dateFull, relative, stamp, overdueBy, esc, pluralise, tel, whatsapp, mailto } from '../core/fmt.js';
 import {
   card, empty, avatar, stagePill, priorityPill, quoteStatusPill, sourceTag,
@@ -18,8 +18,12 @@ import {
 import { icon } from '../ui/icons.js';
 import { toast, confirmDialog } from '../ui/form.js';
 import {
-  logActivity, bookFollowUp, quoteDialog, visitDialog, taskDialog, convertDialog
+  logActivity, bookFollowUp, visitDialog, taskDialog, convertDialog
 } from '../ui/dialogs.js';
+import {
+  recordQuoteDialog, markSentDialog, quoteDetailDialog, followUpDialog, repliedDialog,
+  wonDialog, lostDialog, holdDialog, decisionFor
+} from '../ui/lifecycle.js';
 import { filesCard, mountFiles } from './files.js';
 
 let opp = null;
@@ -38,6 +42,10 @@ export async function render(id, { me }) {
   data = { activity, quotes, visits, tasks, files, project, me };
 
   const a = attention(opp);
+  const val = oppValue(opp);
+  const draft = quotes.find((q) => q.status === 'draft');
+  const anySent = quotes.some((q) => q.sent_on);
+  const open = isOpen(opp);
   const alarm = a.level === 'overdue' || a.level === 'unbooked';
   const contact = {
     full_name: opp.contact_name, phone: opp.contact_phone,
@@ -59,7 +67,8 @@ export async function render(id, { me }) {
         ${sourceTag(opp.source)}
       </div>
       <dl class="opp-figs">
-        <div><dt>Value</dt><dd class="num">${esc(money(opp.estimated_value, opp.currency))}</dd></div>
+        <div><dt>${val.kind === 'won' ? 'Won value' : val.kind === 'draft' ? 'Draft quotation' : 'Quoted'}</dt>
+          <dd class="num">${val.amount == null ? '<span class="dim">Not quoted yet</span>' : esc(money(val.amount, val.currency))}</dd></div>
         <div><dt>Enquiry</dt><dd>${esc(date(opp.created_at))} <span class="dim">(${esc(relative(opp.created_at))})</span></dd></div>
         <div><dt>Last contact</dt><dd>${esc(relative(opp.last_activity_at))}</dd></div>
         <div><dt>Owner</dt><dd class="opp-owner">
@@ -77,18 +86,36 @@ export async function render(id, { me }) {
           <p class="opp-next-meta">
             ${esc(opp.owner_name || 'Unassigned')} ·
             ${esc(dateFull(opp.next_action_due))} ·
-            <strong>${esc(isOverdue(opp) ? overdueBy(opp.next_action_due) : relative(opp.next_action_due))}</strong>
-          </p>`
+            <strong>${esc(a.level === 'held' ? 'on hold' : isOverdue(opp) ? overdueBy(opp.next_action_due) : relative(opp.next_action_due))}</strong>
+          </p>
+          ${opp.stage === 'on_hold' && opp.hold_reason ? `<p class="opp-next-meta">On hold: ${esc(opp.hold_reason)}</p>` : ''}
+          ${opp.customer_replied_at ? `<p class="opp-next-meta">Customer replied ${esc(relative(opp.customer_replied_at))} · ${esc(stamp(opp.customer_replied_at))}</p>` : ''}`
         : isOpen(opp) ? `
           <p class="opp-next-text">Nobody has booked a next action on this opportunity.</p>
-          <p class="opp-next-meta">It is open, it has a value on it, and it is on nobody's list.</p>`
+          <p class="opp-next-meta">It is open and it is on nobody's list.</p>`
         : `<p class="opp-next-text">${esc(STAGE[opp.stage].name)}${opp.decided_at ? ' on ' + esc(dateFull(opp.decided_at)) : ''}.</p>
-           ${opp.lost_reason ? `<p class="opp-next-meta">${esc(opp.lost_reason)}</p>` : ''}`}
+           ${opp.lost_reason ? `<p class="opp-next-meta">${esc(opp.lost_reason)}</p>` : ''}
+           ${opp.stage === 'won' && opp.won_value != null ? `<p class="opp-next-meta">Accepted value ${esc(money(opp.won_value, opp.currency))}</p>` : ''}`}
       </div>
       ${isOpen(opp) ? `<button type="button" class="btn btn-sm" data-followup>
         ${icon.calendar(14)}<span>${opp.next_action_due ? 'Change' : 'Book a follow-up'}</span></button>` : ''}
     </div>
+
+    ${open ? `<div class="opp-acts" role="group" aria-label="Move this job on">
+      ${draft
+        ? `<button type="button" class="btn btn-sm" data-mark-sent="${esc(draft.id)}">${icon.doc(14)}<span>Mark ${esc(draft.reference)} as sent</span></button>`
+        : `<button type="button" class="btn btn-sm" data-record-quote>${icon.doc(14)}<span>${quotes.length ? 'Record a revision' : 'Record quotation'}</span></button>`}
+      <button type="button" class="btn-ghost btn-sm" data-log-followup>${icon.phone(14)}<span>Log follow-up</span></button>
+      ${anySent ? `<button type="button" class="btn-ghost btn-sm" data-replied>${icon.note(14)}<span>Customer replied</span></button>` : ''}
+      <span class="opp-acts-gap" aria-hidden="true"></span>
+      <button type="button" class="btn-ghost btn-sm" data-won>${icon.check(14)}<span>Won</span></button>
+      <button type="button" class="btn-ghost btn-sm" data-lost>${icon.cross(14)}<span>Lost</span></button>
+      ${opp.stage !== 'on_hold' ? `<button type="button" class="btn-ghost btn-sm" data-hold>${icon.clock(14)}<span>On hold</span></button>` : ''}
+    </div>` : ''}
   </section>`;
+
+  const demoStrip = opp.is_demo ? `<p class="demo-strip" role="note">${icon.alert(14)}
+    <span><strong>Demonstration record.</strong> Not counted in any total or report.</span></p>` : '';
 
   /* ── the job ───────────────────────────────────────────────────────────── */
 
@@ -150,15 +177,16 @@ export async function render(id, { me }) {
           <span class="quote-ref">${esc(qt.reference)}${qt.version > 1 ? ` <span class="rev">rev ${qt.version}</span>` : ''}</span>
           <span class="quote-val num">${esc(money(qt.amount, qt.currency))}</span>
           <span class="quote-status">${quoteStatusPill(qt.status)}</span>
-          <span class="quote-when">${qt.sent_on ? 'sent ' + esc(date(qt.sent_on)) + ' · ' + esc(relative(qt.sent_on)) : 'not issued'}</span>
+          <span class="quote-when">${qt.sent_at ? 'sent ' + esc(stamp(qt.sent_at)) + ' · ' + esc(relative(qt.sent_at))
+            : qt.sent_on ? 'sent ' + esc(date(qt.sent_on)) + ' · ' + esc(relative(qt.sent_on)) : 'not sent yet'}</span>
         </button>
       </li>`).join('')}
     </ul>
     ${quoteAtRisk(opp) ? `<p class="risk">${icon.alert(14)}
       <span><strong>A quotation is out with no chase booked.</strong>
       A quotation nobody is following up is the most expensive thing in this pipeline.</span></p>` : ''}`
-    : empty('No quotation yet.', 'Nothing has been issued on this opportunity.', { tone: 'quiet' }),
-    { tight: true, action: `<button type="button" class="btn-ghost btn-xs" data-new-quote>${icon.plus(13)}<span>New</span></button>` });
+    : empty('Not quoted yet.', 'The value of this job is the quotation. Record it when it is ready.', { tone: 'quiet' }),
+    { tight: true, action: open ? `<button type="button" class="btn-ghost btn-xs" data-record-quote>${icon.plus(13)}<span>${quotes.length ? 'Revision' : 'Record'}</span></button>` : '' });
 
   /* ── tasks ─────────────────────────────────────────────────────────────── */
 
@@ -195,6 +223,7 @@ export async function render(id, { me }) {
 
   return `
     <a class="back lnk" href="#/pipeline">${icon.chevron(13)}<span>Back to the pipeline</span></a>
+    ${demoStrip}
     ${head}
     <div class="grid grid-opp">
       <div class="col-wide">${job}${activityCard}</div>
@@ -210,20 +239,9 @@ export function mount(root, rerender, { me }) {
     if (!sel) return;
     const next = sel.value;
     if (next === opp.stage) return;
-    if (next === 'lost') {
-      const { dialog, field, textarea, fieldError } = await import('../ui/form.js');
-      dialog({
-        title: 'Mark as lost', sub: opp.title, submitLabel: 'Mark lost', width: 460,
-        body: field('lost_reason', 'Why was it lost?', textarea('lost_reason', '', 3, 'required')),
-        onSubmit: async (v) => {
-          if (!v.lost_reason) throw fieldError('lost_reason', 'Give a reason.');
-          await api.setStage(opp.id, 'lost', { lostReason: v.lost_reason });
-          toast('Marked lost.'); await done();
-        }
-      });
-      sel.value = opp.stage;
-      return;
-    }
+    /* Won, lost and on hold are decisions with their own data. The dialog
+       collects it; the database refuses the move without it. */
+    if (decisionFor(next, { opp, onDone: done, onCancel: () => { sel.value = opp.stage; } })) return;
     try {
       await api.setStage(opp.id, next);
       toast(`Moved to ${STAGE[next].name}.`);
@@ -239,7 +257,14 @@ export function mount(root, rerender, { me }) {
 
     if (t('[data-followup]')) return bookFollowUp({ opp, me, onDone: done });
     if (t('[data-log]'))      return logActivity({ opportunityId: opp.id, contactId: opp.contact_id, me, onDone: done });
-    if (t('[data-new-quote]'))return quoteDialog({ opp, me, onDone: done });
+    if (t('[data-record-quote]')) return recordQuoteDialog({ opp, quotes: data.quotes, onDone: done });
+    if (t('[data-log-followup]')) return followUpDialog({ opp, onDone: done });
+    if (t('[data-replied]')) return repliedDialog({ opp, onDone: done });
+    if (t('[data-won]'))  return wonDialog({ opp, onDone: done });
+    if (t('[data-lost]')) return lostDialog({ opp, onDone: done });
+    if (t('[data-hold]')) return holdDialog({ opp, onDone: done });
+    const ms = t('[data-mark-sent]');
+    if (ms) return markSentDialog({ opp, quote: data.quotes.find((x) => x.id === ms.dataset.markSent), onDone: done });
     if (t('[data-new-visit]'))return visitDialog({ opp, me, onDone: done });
     if (t('[data-new-task]')) return taskDialog({ opp, me, onDone: done });
     /* No onDone: the dialog navigates to the project it just opened. Opening
@@ -248,7 +273,7 @@ export function mount(root, rerender, { me }) {
     if (t('[data-convert]'))  return convertDialog({ opp });
 
     const q = t('[data-quote]');
-    if (q) return quoteDialog({ opp, quote: data.quotes.find((x) => x.id === q.dataset.quote), me, onDone: done });
+    if (q) return quoteDetailDialog({ opp, quote: data.quotes.find((x) => x.id === q.dataset.quote), onDone: done });
 
     const v = t('[data-visit]');
     if (v) return visitDialog({ opp, visit: data.visits.find((x) => x.id === v.dataset.visit), me, onDone: done });

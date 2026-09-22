@@ -13,7 +13,7 @@
 
 import { api } from '../core/api.js';
 import {
-  STAGES, PRIORITIES, SOURCES, SOURCE_LABEL, QUOTE_STATUSES, QUOTE_LABEL,
+  PRIORITIES, SOURCES, SOURCE_LABEL,
   LOGGABLE, ACTIVITY_LABEL, PROJECT_STATUSES, PROJECT_LABEL,
   today, nextWorkingDay, addDays
 } from '../core/model.js';
@@ -50,10 +50,7 @@ export async function newOpportunity({ me, contact = null, onDone }) {
           'Fiber laser cutting', 'Balustrades and gates', 'Stainless fabrication', 'Mobile cranage', 'Other']))}
         ${field('source', 'How did it come in?', select('source', SOURCES.map((s) => [s, SOURCE_LABEL[s]]), 'phone'))}
       </div>
-      <div class="field-row">
-        ${field('location', 'Site', text('location', '', 'placeholder="Msasa, Harare"'))}
-        ${field('estimated_value', 'Estimated value (USD)', number('estimated_value', '', 'min="0" step="100"'))}
-      </div>
+      ${field('location', 'Site', text('location', '', 'placeholder="Msasa, Harare"'), { wide: true })}
       <div class="field-row">
         ${field('owner_id', 'Owner', select('owner_id', people(profiles), me?.id || ''))}
         ${field('priority', 'Priority', select('priority', PRIORITIES.map((p) => [p, titleCase(p)]), 'normal'))}
@@ -87,7 +84,6 @@ export async function newOpportunity({ me, contact = null, onDone }) {
         title: v.title, company_id: companyId, contact_id: contactId,
         owner_id: nul(v.owner_id), stage: 'new', priority: v.priority, source: v.source,
         service: nul(v.service), description: nul(v.description), location: nul(v.location),
-        estimated_value: num(v.estimated_value),
         next_action: v.next_action, next_action_due: nul(v.next_action_due)
       });
 
@@ -166,52 +162,6 @@ export async function bookFollowUp({ opp, me, onDone }) {
         actor_id: me?.id || null
       });
       toast('Booked.');
-      after(onDone);
-    }
-  });
-}
-
-/* ── quotations ───────────────────────────────────────────────────────────── */
-
-export function quoteDialog({ opp, quote = null, me, onDone }) {
-  const editing = Boolean(quote);
-  dialog({
-    title: editing ? `Quotation ${quote.reference}` : 'New quotation',
-    sub: opp.title,
-    width: 560,
-    submitLabel: editing ? 'Save' : 'Create',
-    body: `
-      <div class="field-row">
-        ${field('amount', 'Amount (USD)', number('amount', quote?.amount ?? '', 'required min="0" step="1"'))}
-        ${field('version', 'Revision', number('version', quote?.version ?? 1, 'min="1" step="1"'))}
-      </div>
-      <div class="field-row">
-        ${field('status', 'Status', select('status', QUOTE_STATUSES.map((s) => [s, QUOTE_LABEL[s]]), quote?.status || 'draft'))}
-        ${field('prepared_on', 'Prepared', dateInput('prepared_on', isoDate(quote?.prepared_on) || today()))}
-      </div>
-      <div class="field-row">
-        ${field('sent_on', 'Sent', dateInput('sent_on', isoDate(quote?.sent_on)),
-          { hint: 'Required once the status is anything past draft.' })}
-        ${field('follow_up_on', 'Chase on', dateInput('follow_up_on', isoDate(quote?.follow_up_on)))}
-      </div>
-      ${field('valid_until', 'Valid until', dateInput('valid_until', isoDate(quote?.valid_until)))}
-      ${field('notes', 'Notes', textarea('notes', quote?.notes || '', 2), { wide: true })}`,
-    onSubmit: async (v) => {
-      const amount = num(v.amount);
-      if (amount === null || Number.isNaN(amount)) throw fieldError('amount', 'Give the amount.');
-      if (amount < 0) throw fieldError('amount', 'That cannot be negative.');
-      const needsSent = v.status !== 'draft' && v.status !== 'expired';
-      if (needsSent && !v.sent_on) {
-        throw fieldError('sent_on', 'A quotation past draft needs the date it went out.');
-      }
-      const row = {
-        amount, version: num(v.version) || 1, status: v.status,
-        prepared_on: nul(v.prepared_on) || today(), sent_on: nul(v.sent_on),
-        valid_until: nul(v.valid_until), follow_up_on: nul(v.follow_up_on), notes: nul(v.notes)
-      };
-      if (editing) await api.updateQuote(quote.id, row);
-      else await api.createQuote({ ...row, opportunity_id: opp.id });
-      toast(editing ? 'Quotation saved.' : 'Quotation created.');
       after(onDone);
     }
   });

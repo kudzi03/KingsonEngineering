@@ -2,7 +2,7 @@
    views/pipeline.js — the board
    ═══════════════════════════════════════════════════════════════════════════
 
-   Eight columns, one per stage. A card can be dragged, and it can equally be
+   Nine columns, one per stage. A card can be dragged, and it can equally be
    moved from a <select> on the card itself — the select is not a fallback, it
    is the primary control on a phone and the only one that works from a
    keyboard. Drag is the addition, not the other way round.
@@ -14,20 +14,24 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { api } from '../core/api.js';
-import { STAGES, STAGE, attention, isOverdue, sum } from '../core/model.js';
-import { money, moneyShort, date, relative, esc, pluralise } from '../core/fmt.js';
+import { STAGES, STAGE, attention, isOverdue, oppValue, sumValues } from '../core/model.js';
+import { money, moneyBy, moneyByShort, relative, esc, pluralise } from '../core/fmt.js';
 import { avatar, attentionPill, sourceTag, priorityPill, empty } from '../ui/components.js';
 import { icon } from '../ui/icons.js';
-import { dialog, field, textarea, toast } from '../ui/form.js';
+import { toast } from '../ui/form.js';
+import { decisionFor } from '../ui/lifecycle.js';
 
 export const title = 'Pipeline';
 
 let cache = [];
 
 export async function render() {
-  cache = await api.openOpportunities();
-  const closed = await api.opportunities('stage=in.(won,lost)&order=decided_at.desc&limit=40');
-  const all = [...cache, ...closed];
+  const [open, closed] = await Promise.all([
+    api.openOpportunities(),
+    api.opportunities('stage=in.(won,lost)&order=decided_at.desc&limit=40')
+  ]);
+  cache = [...open, ...closed];
+  const all = cache;
 
   if (!all.length) {
     return empty('No opportunities yet.',
@@ -39,14 +43,14 @@ export async function render() {
   <div class="board" role="list">
     ${STAGES.map((s) => {
       const rows = all.filter((o) => o.stage === s.id);
-      const value = sum(rows, (o) => o.estimated_value);
+      const value = moneyByShort(sumValues(rows).by);
       const late = rows.filter(isOverdue).length;
       return `
       <section class="col" data-group="${esc(s.group)}" data-stage="${esc(s.id)}" role="listitem">
         <header class="col-head">
           <span class="col-name">${esc(s.name)}</span>
           <span class="col-n num">${rows.length}</span>
-          <span class="col-v num">${value ? esc(moneyShort(value)) : ''}</span>
+          <span class="col-v num">${esc(value)}</span>
           ${late ? `<span class="col-alarm" title="${esc(pluralise(late, 'overdue follow-up'))}">${icon.alert(12)}${late}</span>` : ''}
         </header>
         <div class="col-body" data-drop="${esc(s.id)}">
@@ -69,7 +73,9 @@ function cardHtml(o) {
       <span class="deal-title">${esc(o.title)}</span>
     </a>
     <div class="deal-meta">
-      <span class="deal-value num">${o.estimated_value ? esc(money(o.estimated_value, o.currency)) : '<span class="dim">no value</span>'}</span>
+      <span class="deal-value num">${(() => { const v = oppValue(o);
+        return v.amount == null ? '<span class="dim">Not quoted yet</span>'
+          : esc(money(v.amount, v.currency)) + (v.kind === 'draft' ? ' <span class="dim">draft</span>' : ''); })()}</span>
       ${sourceTag(o.source)}
     </div>
     ${Number(o.live_quotes) ? `<p class="deal-quote">${icon.doc(12)}${esc(pluralise(Number(o.live_quotes), 'quotation'))} out${o.last_quote_sent ? ' · ' + esc(relative(o.last_quote_sent)) : ''}</p>` : ''}
@@ -97,7 +103,12 @@ export function mount(root, rerender) {
       || { id, title: 'this opportunity', stage: revertTo };
     if (opp.stage === stage) return;
 
-    if (stage === 'lost') return askWhyLost(id, opp, rerender, revertTo, root);
+    /* Won, lost and on hold collect their own data first. */
+    const sel = root.querySelector(`[data-move="${CSS.escape(id)}"]`);
+    if (decisionFor(stage, {
+      opp, onDone: rerender,
+      onCancel: () => { if (sel && document.contains(sel) && revertTo) sel.value = revertTo; }
+    })) return;
 
     try {
       await api.setStage(id, stage);
@@ -154,38 +165,10 @@ export function mount(root, rerender) {
   });
 }
 
-/* A lost deal has to say why — the database refuses it otherwise, and the
-   reason is the only thing anybody learns from a loss. */
-function askWhyLost(id, opp, rerender, revertTo, root) {
-  dialog({
-    title: 'Mark as lost',
-    sub: opp.title,
-    width: 460,
-    submitLabel: 'Mark lost',
-    body: field('lost_reason', 'Why was it lost?',
-      textarea('lost_reason', '', 3, 'required placeholder="Price — a competitor came in 14% below"'),
-      { hint: 'Recorded on the timeline. This is the part somebody reads back in six months.' }),
-    onSubmit: async (v) => {
-      if (!v.lost_reason) throw Object.assign(new Error('Give a reason.'), { field: 'lost_reason' });
-      await api.setStage(id, 'lost', { lostReason: v.lost_reason });
-      toast('Marked lost.');
-      await rerender();
-    }
-  });
-  /* If the dialog is abandoned the select still shows "Lost". Put it back. */
-  const sel = root.querySelector(`[data-move="${CSS.escape(id)}"]`);
-  const obs = new MutationObserver(() => {
-    if (!document.querySelector('.modal')) {
-      if (sel && document.contains(sel) && revertTo) sel.value = revertTo;
-      obs.disconnect();
-    }
-  });
-  obs.observe(document.body, { childList: true });
-}
-
 export function sub() {
   const open = cache.filter((o) => STAGE[o.stage]?.open);
-  return `${esc(pluralise(open.length, 'open opportunity', 'open opportunities'))} · <span class="num">${esc(money(sum(open, (o) => o.estimated_value)))}</span>`;
+  const v = sumValues(open);
+  return `${esc(pluralise(open.length, 'open opportunity', 'open opportunities'))} · <span class="num">${esc(moneyBy(v.by, { empty: 'nothing quoted' }))}</span>${v.unvalued ? ` · ${v.unvalued} not quoted yet` : ''}`;
 }
 
 export const actions = () =>

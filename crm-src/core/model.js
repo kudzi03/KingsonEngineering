@@ -10,7 +10,7 @@
    THE RULE THIS APPLICATION IS BUILT AROUND
 
    An open opportunity owes a next action and a date. Not a stage — a date.
-   `Follow-Up Due` is one of the eight stages because a fabricator genuinely
+   `Follow-up` is one of the nine stages because a fabricator genuinely
    parks work there, but a deal sitting in Negotiation with nothing booked is
    just as forgotten, so overdue is computed from the date alone and never
    from the stage. `attention()` is the whole argument in one function.
@@ -24,7 +24,8 @@ export const STAGES = [
   { id: 'requirements', name: 'Requirements / site visit', short: 'Requirements', open: true,  group: 'survey' },
   { id: 'quoting',      name: 'Quote / BOQ preparing',     short: 'Quoting',      open: true,  group: 'quote'  },
   { id: 'quote_sent',   name: 'Quote sent',                short: 'Quote sent',   open: true,  group: 'quote'  },
-  { id: 'followup',     name: 'Follow-up due',             short: 'Follow-up',    open: true,  group: 'chase'  },
+  { id: 'followup',     name: 'Follow-up / awaiting decision', short: 'Follow-up', open: true, group: 'chase' },
+  { id: 'on_hold',      name: 'On hold',                   short: 'On hold',      open: true,  group: 'hold'   },
   { id: 'won',          name: 'Won',                       short: 'Won',          open: false, group: 'won'    },
   { id: 'lost',         name: 'Lost',                      short: 'Lost',         open: false, group: 'lost'   }
 ];
@@ -39,14 +40,34 @@ export const SOURCE_LABEL = {
   referral: 'Referral', walk_in: 'Walk-in', other: 'Other'
 };
 
-export const QUOTE_STATUSES = ['draft', 'sent', 'discussed', 'accepted', 'rejected', 'expired'];
+export const QUOTE_STATUSES = ['draft', 'sent', 'discussed', 'accepted', 'rejected', 'superseded', 'expired'];
 export const QUOTE_LABEL = {
   draft: 'Draft', sent: 'Sent',
   /* Deliberately not "Viewed". Kingson has no email-open tracking, and a
      status that implied one would be the dropdown telling a lie. This is set
      by hand when somebody actually discussed it with the customer. */
-  discussed: 'Discussed', accepted: 'Accepted', rejected: 'Rejected', expired: 'Expired'
+  discussed: 'Customer responded', accepted: 'Accepted', rejected: 'Not accepted',
+  superseded: 'Superseded', expired: 'Expired'
 };
+
+/* Why a job was lost. The codes match the check constraint on
+   opportunities.lost_reason_code; the database writes the label. */
+export const LOST_REASONS = [
+  ['price', 'Price'],
+  ['competitor', 'Went with a competitor'],
+  ['timing', 'Timing'],
+  ['project_cancelled', 'Project cancelled'],
+  ['scope_changed', 'Scope changed'],
+  ['no_response', 'No response'],
+  ['other', 'Other']
+];
+
+/* How a follow-up or a reply happened. Mapped to an activity kind by the
+   database functions log_follow_up and mark_customer_replied. */
+export const CHANNELS = [
+  ['email', 'Email'], ['whatsapp', 'WhatsApp'], ['phone', 'Phone'],
+  ['meeting', 'Meeting'], ['other', 'Other']
+];
 
 export const VISIT_STATUSES = ['scheduled', 'completed', 'cancelled'];
 export const PROJECT_STATUSES = ['planning', 'in_progress', 'on_hold', 'complete', 'cancelled'];
@@ -59,7 +80,7 @@ export const ACTIVITY_LABEL = {
   enquiry: 'Enquiry', note: 'Note', call: 'Call', whatsapp: 'WhatsApp', email: 'Email',
   meeting: 'Meeting', site_visit: 'Site visit', quote: 'Quotation',
   stage_change: 'Stage change', task: 'Task', file: 'File', won: 'Won', lost: 'Lost',
-  system: 'System'
+  reply: 'Customer reply', on_hold: 'On hold', system: 'System'
 };
 
 /* The kinds a person can log by hand. `stage_change`, `won`, `lost` and
@@ -121,6 +142,9 @@ export function attention(opp) {
   if (!isOpen(opp)) {
     return { level: 'closed', label: STAGE[opp.stage]?.name || '—', sort: 0 };
   }
+  if (opp.stage === 'on_hold' && opp.hold_review_on && daysUntil(opp.hold_review_on) > 0) {
+    return { level: 'held', label: `On hold · review ${shortDate(opp.hold_review_on)}`, sort: 50 };
+  }
   if (hasNoNextAction(opp)) {
     return { level: 'unbooked', label: 'No next action', sort: 900 };
   }
@@ -139,6 +163,46 @@ export function quoteAtRisk(opp) {
   if (!isOpen(opp)) return false;
   if (!Number(opp.live_quotes || 0)) return false;
   return !opp.next_action_due || daysUntil(opp.next_action_due) < 0;
+}
+
+const shortDate = (iso) => new Date(String(iso).slice(0, 10) + 'T12:00:00Z')
+  .toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+/**
+ * The value of an opportunity, and where it comes from. The customer never
+ * supplies one, so there are only three honest answers: the accepted value
+ * of a won job, the amount on the latest quotation, or nothing at all.
+ * `amount` is null in the last case and must never be summed as zero.
+ */
+export function oppValue(opp) {
+  if (!opp) return { amount: null, currency: 'USD', kind: 'none' };
+  if (opp.stage === 'won' && opp.won_value != null) {
+    return { amount: Number(opp.won_value), currency: opp.currency || 'USD', kind: 'won' };
+  }
+  if (opp.quoted_value != null) {
+    return {
+      amount: Number(opp.quoted_value), currency: opp.quote_currency || opp.currency || 'USD',
+      kind: opp.quote_status === 'draft' ? 'draft' : 'quoted'
+    };
+  }
+  return { amount: null, currency: opp.currency || 'USD', kind: 'none' };
+}
+
+/**
+ * Sum recorded values per currency. Rows with no value are counted apart,
+ * never added as zero: "USD 48,000 across 3, 2 not quoted yet" is the truth;
+ * "USD 48,000 across 5" is not.
+ */
+export function sumValues(rows, pick = oppValue) {
+  const by = {};
+  let valued = 0;
+  for (const r of rows) {
+    const v = pick(r);
+    if (v.amount == null) continue;
+    by[v.currency] = (by[v.currency] || 0) + v.amount;
+    valued++;
+  }
+  return { by, valued, unvalued: rows.length - valued };
 }
 
 export const sum = (rows, pick) => rows.reduce((a, r) => a + (Number(pick(r)) || 0), 0);

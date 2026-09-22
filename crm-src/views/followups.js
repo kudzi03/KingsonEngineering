@@ -9,14 +9,21 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { api } from '../core/api.js';
-import { isOverdue, isDueToday, hasNoNextAction, daysUntil, sum } from '../core/model.js';
-import { money, date, relative, esc, pluralise } from '../core/fmt.js';
+import { isOverdue, isDueToday, hasNoNextAction, daysUntil, oppValue, sumValues } from '../core/model.js';
+import { money, moneyBy, relative, esc, pluralise } from '../core/fmt.js';
 import { card, empty, avatar, attentionPill, dueCell, contactActions } from '../ui/components.js';
 import { icon } from '../ui/icons.js';
 import { toast } from '../ui/form.js';
-import { bookFollowUp, logActivity } from '../ui/dialogs.js';
+import { followUpDialog } from '../ui/lifecycle.js';
 
 export const title = 'Follow-ups';
+
+/* Quoted value in a group, with unquoted jobs counted rather than summed. */
+function quotedText(rows) {
+  const v = sumValues(rows);
+  if (!v.valued) return rows.length ? 'not quoted yet' : '';
+  return moneyBy(v.by) + ' quoted' + (v.unvalued ? ` · ${v.unvalued} unquoted` : '');
+}
 
 let open = [];
 
@@ -35,19 +42,19 @@ export async function render(_arg, { me }) {
     <div class="fu-summary">
       <span class="fu-sum fu-sum-danger">
         ${icon.alert(16)}<b class="num">${overdue.length}</b><span>overdue</span>
-        <em class="num">${esc(money(sum(overdue, (o) => o.estimated_value)))}</em>
+        <em class="num">${esc(quotedText(overdue))}</em>
       </span>
       <span class="fu-sum${unbooked.length ? ' fu-sum-danger' : ''}">
         ${icon.alert(16)}<b class="num">${unbooked.length}</b><span>nothing booked</span>
-        <em class="num">${esc(money(sum(unbooked, (o) => o.estimated_value)))}</em>
+        <em class="num">${esc(quotedText(unbooked))}</em>
       </span>
       <span class="fu-sum">
         ${icon.clock(16)}<b class="num">${dueToday.length}</b><span>due today</span>
-        <em class="num">${esc(money(sum(dueToday, (o) => o.estimated_value)))}</em>
+        <em class="num">${esc(quotedText(dueToday))}</em>
       </span>
       <span class="fu-sum">
         ${icon.calendar(16)}<b class="num">${soon.length}</b><span>next 14 days</span>
-        <em class="num">${esc(money(sum(soon, (o) => o.estimated_value)))}</em>
+        <em class="num">${esc(quotedText(soon))}</em>
       </span>
     </div>`;
 
@@ -72,7 +79,7 @@ function group(heading, rows, note) {
           <span class="fu-when">${dueCell(o.next_action_due)}</span>
           <a class="fu-main" href="#/opportunity/${esc(o.id)}">
             <span class="fu-title">${esc(o.title)}</span>
-            <span class="fu-sub">${esc(o.company_name || o.contact_name || '—')} · ${esc(o.ref)}${o.estimated_value ? ` · <span class="num">${esc(money(o.estimated_value, o.currency))}</span>` : ''}</span>
+            <span class="fu-sub">${esc(o.company_name || o.contact_name || '—')} · ${esc(o.ref)}${(() => { const v = oppValue(o); return v.amount == null ? ' · not quoted yet' : ` · <span class="num">${esc(money(v.amount, v.currency))}</span>`; })()}</span>
             <span class="fu-action">${o.next_action
               ? `${icon.arrowRight(13)}${esc(o.next_action)}`
               : `${icon.alert(13)}No next action recorded`}</span>
@@ -83,32 +90,21 @@ function group(heading, rows, note) {
           <span class="fu-do">
             ${contactActions({ phone: o.contact_phone, whatsapp: o.contact_whatsapp, email: o.contact_email },
               { text: `Good day, Kingson Engineering here regarding ${o.title}.`, size: 'xs' })}
-            <button type="button" class="btn-ghost btn-xs" data-chase="${esc(o.id)}">${icon.check(13)}<span>Log a chase</span></button>
+            <button type="button" class="btn-ghost btn-xs" data-chase="${esc(o.id)}">${icon.check(13)}<span>Log follow-up</span></button>
           </span>
         </li>`).join('')}
     </ul>`, { note, tight: true });
 }
 
-export function mount(root, rerender, { me }) {
-  root.addEventListener('click', async (e) => {
+export function mount(root, rerender) {
+  root.addEventListener('click', (e) => {
     const b = e.target.closest('[data-chase]');
     if (!b) return;
     const opp = open.find((o) => o.id === b.dataset.chase);
-    if (!opp) return;
-    /* Logging a chase is two things at once: the interaction goes on the
-       timeline, and the next one gets a date. Doing only the first is how a
-       pipeline fills with contacted-but-forgotten work. */
-    logActivity({
-      opportunityId: opp.id, contactId: opp.contact_id, me,
-      onDone: async () => { await bookFollowUpAfterChase(opp, me, rerender); }
-    });
+    /* One step: the interaction goes on the timeline and the next date is
+       booked in the same write, so a chase can never be logged without one. */
+    if (opp) followUpDialog({ opp, onDone: rerender });
   });
-}
-
-async function bookFollowUpAfterChase(opp, me, rerender) {
-  await rerender();
-  const fresh = await api.opportunity(opp.id);
-  if (fresh) bookFollowUp({ opp: fresh, me, onDone: rerender });
 }
 
 export function sub() {

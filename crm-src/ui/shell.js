@@ -19,7 +19,7 @@ export const NAV = [
   { key: 'quotes',    href: '#/quotes',      label: 'Quotations',  ic: 'doc'       },
   { key: 'visits',    href: '#/visits',      label: 'Site visits', ic: 'pin'       },
   { key: 'projects',  href: '#/projects',    label: 'Projects',    ic: 'briefcase' },
-  { key: 'settings',  href: '#/settings',    label: 'Settings',    ic: 'shield', admin: true }
+  { key: 'settings',  href: '#/settings',    label: 'Settings',    ic: 'shield' }
 ];
 
 export function railHtml(active, me, { overdue = 0 } = {}) {

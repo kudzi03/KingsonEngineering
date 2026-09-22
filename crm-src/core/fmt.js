@@ -21,6 +21,17 @@ export const money = (n, currency = 'USD') => {
   return `${currency} ${v.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
 };
 
+/**
+ * Per-currency totals from sumValues() or dashboard_metrics(). An empty
+ * object means nothing has been recorded, which reads as a dash — never as
+ * "$0", because nothing recorded is not the same as zero.
+ */
+export function moneyBy(by, { empty = '—' } = {}) {
+  const parts = Object.entries(by || {}).filter(([, v]) => v != null);
+  if (!parts.length) return empty;
+  return parts.map(([c, v]) => money(v, c)).join(' · ');
+}
+
 /** Short money for dense places: $48.6k, $1.2m. */
 export function moneyShort(n) {
   const v = Number(n);
@@ -29,6 +40,13 @@ export function moneyShort(n) {
   if (a >= 1e6) return '$' + (v / 1e6).toFixed(a % 1e6 ? 1 : 0) + 'm';
   if (a >= 1e3) return '$' + (v / 1e3).toFixed(a % 1e3 && a < 1e4 ? 1 : 0) + 'k';
   return '$' + Math.round(v);
+}
+
+/** moneyBy() for dense places: "$48.6k", or "$48.6k · ZAR 12k". */
+export function moneyByShort(by) {
+  const parts = Object.entries(by || {}).filter(([, v]) => v != null);
+  if (!parts.length) return '';
+  return parts.map(([c, v]) => (c === 'USD' ? moneyShort(v) : `${c} ${moneyShort(v).slice(1)}`)).join(' · ');
 }
 
 const DATE  = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: TZ });

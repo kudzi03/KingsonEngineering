@@ -16,7 +16,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { esc, initials as mkInitials, money, date, relative, overdueBy, tel, whatsapp, mailto } from '../core/fmt.js';
-import { attention, STAGE, SOURCE_LABEL, QUOTE_LABEL, PROJECT_LABEL,
+import { attention, STAGE, SOURCE_LABEL, QUOTE_LABEL, PROJECT_LABEL, oppValue,
          ACTIVITY_LABEL as ACT_LABEL } from '../core/model.js';
 import { icon } from './icons.js';
 
@@ -73,7 +73,7 @@ export function attentionPill(opp) {
   const a = attention(opp);
   if (a.level === 'closed') return stagePill(opp.stage);
   if (a.level === 'clear') return `<span class="pill pill-quiet">${esc(a.label)}</span>`;
-  const ic = { overdue: icon.alert(13), unbooked: icon.alert(13), today: icon.clock(13), soon: icon.clock(13) }[a.level];
+  const ic = { overdue: icon.alert(13), unbooked: icon.alert(13), today: icon.clock(13), soon: icon.clock(13), held: icon.clock(13) }[a.level];
   return `<span class="pill pill-${esc(a.level)}">${ic}${esc(a.label)}</span>`;
 }
 
@@ -90,8 +90,8 @@ export const sourceTag = (s) => `<span class="src">${(icon[SRC_ICON[s]] || icon.
 const SRC_ICON = { website: 'globe', whatsapp: 'whatsapp', phone: 'phone', email: 'mail', referral: 'users', walk_in: 'pin', other: 'note' };
 
 export const quoteStatusPill = (s) => {
-  const tone = s === 'accepted' ? 'won' : (s === 'rejected' || s === 'expired') ? 'lost' : 'quiet';
-  const ic = s === 'accepted' ? icon.check(13) : (s === 'rejected' || s === 'expired') ? icon.cross(13) : icon.doc(13);
+  const tone = s === 'accepted' ? 'won' : (s === 'rejected' || s === 'expired' || s === 'superseded') ? 'lost' : s === 'draft' ? 'today' : 'quiet';
+  const ic = s === 'accepted' ? icon.check(13) : (s === 'rejected' || s === 'expired' || s === 'superseded') ? icon.cross(13) : icon.doc(13);
   return `<span class="pill pill-${tone}">${ic}${esc(QUOTE_LABEL[s] || s)}</span>`;
 };
 
@@ -145,7 +145,7 @@ export function oppRow(o, { showStage = true } = {}) {
         </span>
         <span class="att-meta">
           ${esc(o.company_name || o.contact_name || 'No company')} · ${esc(o.ref)}
-          ${o.estimated_value ? ` · <span class="num">${esc(money(o.estimated_value, o.currency))}</span>` : ''}
+          ${(() => { const v = oppValue(o); return v.amount == null ? ' · <span class="dim">not quoted yet</span>' : ` · <span class="num">${esc(money(v.amount, v.currency))}</span>`; })()}
           ${showStage ? ` · ${esc(STAGE[o.stage]?.name || o.stage)}` : ''}
         </span>
         <span class="att-action">
@@ -171,7 +171,8 @@ export const feedRow = (a) => `
 export const ACT_ICON = {
   enquiry: 'bell', note: 'note', call: 'phone', whatsapp: 'whatsapp', email: 'mail',
   meeting: 'users', site_visit: 'pin', quote: 'doc', stage_change: 'move',
-  task: 'clock', file: 'file', won: 'check', lost: 'cross', system: 'refresh'
+  task: 'clock', file: 'file', won: 'check', lost: 'cross', system: 'refresh',
+  reply: 'mail', on_hold: 'clock'
 };
 
 /** The chronological history shown on an opportunity, contact or project. */

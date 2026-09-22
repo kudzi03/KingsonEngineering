@@ -121,6 +121,31 @@ async function callerIsStaff(authHeader: string | null): Promise<boolean> {
   return Array.isArray(rows) && rows.length > 0 && rows[0]?.active !== false;
 }
 
+/* ── the email mode ──────────────────────────────────────────────────────────
+   crm_settings.email_mode decides whether anything may leave at all:
+
+     manual     nothing is sent. Staff send from their own mailbox and record
+                it in the CRM. The default, and the only mode that is honest
+                until Kingson's mailbox credentials exist.
+     test       only to crm_settings.test_mailbox, whatever address was asked
+                for — so a test can never reach a real customer.
+     connected  as asked. Only meaningful once MAIL_FROM is Kingson's own
+                address and the provider secret is set.
+
+   Read as the caller, so an unreadable settings row fails closed (manual). */
+
+async function emailMode(authHeader: string): Promise<{ mode: string; testMailbox: string | null }> {
+  const url = Deno.env.get('SUPABASE_URL');
+  const anon = Deno.env.get('SUPABASE_ANON_KEY');
+  if (!url || !anon) return { mode: 'manual', testMailbox: null };
+  const res = await fetch(`${url}/rest/v1/crm_settings?select=email_mode,test_mailbox&limit=1`, {
+    headers: { apikey: anon, Authorization: authHeader }
+  }).catch(() => null);
+  if (!res?.ok) return { mode: 'manual', testMailbox: null };
+  const rows = await res.json().catch(() => []);
+  return { mode: rows?.[0]?.email_mode ?? 'manual', testMailbox: rows?.[0]?.test_mailbox ?? null };
+}
+
 /* ── the handler ─────────────────────────────────────────────────────────── */
 
 Deno.serve(async (req) => {
@@ -143,6 +168,16 @@ Deno.serve(async (req) => {
   if (!to.length) return json({ error: 'No recipient.' }, 400);
   if (to.some((a) => !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(a))) {
     return json({ error: 'That is not an email address.' }, 400);
+  }
+
+  const { mode, testMailbox } = await emailMode(req.headers.get('Authorization')!);
+  if (mode === 'manual') {
+    return json({ sent: false, reason: 'manual_mode',
+                  detail: 'Email mode is manual. Send from your own mailbox and record it in the CRM.' });
+  }
+  if (mode === 'test') {
+    if (!testMailbox) return json({ sent: false, reason: 'no_test_mailbox' });
+    to.splice(0, to.length, testMailbox);
   }
 
   let mail: Mail;

@@ -16,6 +16,7 @@
 import { db, storage, eq, order } from './supabase.js';
 import { FILES_BUCKET } from './config.js';
 import { OPEN_STAGES } from './model.js';
+import { withDemo, showDemo } from './demo.js';
 
 /* Columns pulled with an opportunity everywhere it is shown as a row. The
    view already flattens company, contact and owner, so a board of sixty cards
@@ -24,6 +25,11 @@ const OPP_LIST = '*';
 const OPP_ORDER = order('next_action_due', 'asc');
 
 const openFilter = `stage=in.(${OPEN_STAGES.join(',')})`;
+
+/* Every list below goes through `withDemo`, so demonstration rows are left
+   out unless this browser has asked for them in Settings. Single-record
+   fetches by id are not filtered: a link to a demo record still opens, and
+   the record says what it is. */
 
 /* ── reference data ────────────────────────────────────────────────────────── */
 
@@ -34,10 +40,11 @@ export const api = {
   /* ── opportunities ─────────────────────────────────────────────────────── */
 
   opportunities: (filter = '') =>
-    db.select('v_opportunity_state', `select=${OPP_LIST}&${OPP_ORDER}${filter ? '&' + filter : ''}`),
+    db.select('v_opportunity_state', withDemo(
+      `select=${OPP_LIST}${/(^|&)order=/.test(filter) ? '' : '&' + OPP_ORDER}${filter ? '&' + filter : ''}`)),
 
   openOpportunities: () =>
-    db.select('v_opportunity_state', `select=${OPP_LIST}&${openFilter}&${OPP_ORDER}`),
+    db.select('v_opportunity_state', withDemo(`select=${OPP_LIST}&${openFilter}&${OPP_ORDER}`)),
 
   opportunity: (id) =>
     db.select('v_opportunity_state', `select=${OPP_LIST}&${eq('id', id)}`).then((r) => r[0] || null),
@@ -47,19 +54,55 @@ export const api = {
   updateOpportunity: (id, patch) =>
     db.update('opportunities', eq('id', id), patch).then((r) => r[0]),
 
-  /* Stage moves go through here rather than through `updateOpportunity` so
-     the one field the database refuses to accept without a reason is asked
-     for at the call site instead of failing at the constraint. */
-  async setStage(id, stage, { lostReason } = {}) {
-    const patch = { stage };
-    if (stage === 'lost') patch.lost_reason = (lostReason || '').trim() || 'No reason recorded';
-    return api.updateOpportunity(id, patch);
-  },
+  /* Plain stage moves between the working stages. Won, lost and on hold are
+     decisions with their own data and go through `decide` instead; the
+     database refuses them without it. */
+  setStage: (id, stage) => api.updateOpportunity(id, { stage }),
+
+  /* ── the quote lifecycle (database functions — see
+       supabase/migrations/20260922_quote_lifecycle.sql) ─────────────────── */
+
+  recordQuote: (oppId, { amount, currency, preparedOn, validUntil, notes, reference, documentRef }) =>
+    db.rpc('record_quote', {
+      p_opportunity_id: oppId, p_amount: amount, p_currency: currency || 'USD',
+      p_prepared_on: preparedOn || null, p_valid_until: validUntil || null,
+      p_notes: notes || null, p_reference: reference || null, p_document_ref: documentRef || null
+    }),
+
+  markQuoteSent: (quoteId, { sentAt, followUpOn, channel, notes }) =>
+    db.rpc('mark_quote_sent', {
+      p_quote_id: quoteId, p_sent_at: sentAt || null, p_follow_up_on: followUpOn || null,
+      p_channel: channel || 'email', p_notes: notes || null
+    }),
+
+  logFollowUp: (oppId, { channel, notes, at, nextAction, nextDue }) =>
+    db.rpc('log_follow_up', {
+      p_opportunity_id: oppId, p_channel: channel, p_notes: notes,
+      p_at: at || null, p_next_action: nextAction || null, p_next_due: nextDue || null
+    }),
+
+  customerReplied: (oppId, { channel, notes, at }) =>
+    db.rpc('mark_customer_replied', {
+      p_opportunity_id: oppId, p_channel: channel, p_notes: notes || null, p_at: at || null
+    }),
+
+  decide: (oppId, outcome, { on, value, reason, notes, reviewOn } = {}) =>
+    db.rpc('decide_opportunity', {
+      p_opportunity_id: oppId, p_outcome: outcome, p_on: on || null,
+      p_value: value ?? null, p_reason: reason || null, p_notes: notes || null,
+      p_review_on: reviewOn || null
+    }),
+
+  /** Working-day arithmetic, done where the settings live. */
+  addWorkingDays: (date, n) => db.rpc('add_working_days', { d: date, n }),
+
+  settings: () => db.select('crm_settings', 'select=*&limit=1').then((r) => r[0] || null),
+  updateSettings: (patch) => db.update('crm_settings', 'id=eq.true', patch).then((r) => r[0]),
 
   /* ── contacts and companies ────────────────────────────────────────────── */
 
   contacts: (search = '') => {
-    let f = `select=*,companies(id,name)&${order('full_name')}`;
+    let f = withDemo(`select=*,companies(id,name)&${order('full_name')}`);
     if (search) {
       const s = encodeURIComponent(`%${search}%`);
       f += `&or=(full_name.ilike.${s},email.ilike.${s},phone.ilike.${s},whatsapp.ilike.${s})`;
@@ -71,7 +114,7 @@ export const api = {
   createContact: (row) => db.insert('contacts', row).then((r) => r[0]),
   updateContact: (id, patch) => db.update('contacts', eq('id', id), patch).then((r) => r[0]),
 
-  companies: () => db.select('companies', `select=*&${order('name')}`),
+  companies: () => db.select('companies', withDemo(`select=*&${order('name')}`)),
   company: (id) => db.select('companies', `select=*&${eq('id', id)}`).then((r) => r[0] || null),
   createCompany: (row) => db.insert('companies', row).then((r) => r[0]),
   updateCompany: (id, patch) => db.update('companies', eq('id', id), patch).then((r) => r[0]),
@@ -102,7 +145,7 @@ export const api = {
 
   recentActivity: (limit = 12) =>
     db.select('activities',
-      `select=*,profiles(full_name,initials),opportunities(id,ref,title)&${order('occurred_at', 'desc')}&limit=${limit}`),
+      withDemo(`select=*,profiles(full_name,initials),opportunities(id,ref,title)&${order('occurred_at', 'desc')}&limit=${limit}`)),
 
   logActivity: (row) => db.insert('activities', row).then((r) => r[0]),
 
@@ -110,7 +153,7 @@ export const api = {
 
   tasks: (filter = '') =>
     db.select('tasks',
-      `select=*,profiles!tasks_owner_id_fkey(full_name,initials),opportunities(id,ref,title,stage),contacts(id,full_name,phone,whatsapp,email)&${order('due_date')}${filter ? '&' + filter : ''}`),
+      withDemo(`select=*,profiles!tasks_owner_id_fkey(full_name,initials),opportunities(id,ref,title,stage),contacts(id,full_name,phone,whatsapp,email)&${order('due_date')}${filter ? '&' + filter : ''}`)),
 
   openTasks: () => api.tasks('status=eq.open'),
   tasksFor: (opportunityId) => api.tasks(eq('opportunity_id', opportunityId)),
@@ -122,7 +165,7 @@ export const api = {
 
   visits: (filter = '') =>
     db.select('site_visits',
-      `select=*,profiles(full_name,initials),opportunities(id,ref,title,company_id,companies(name))&${order('scheduled_at')}${filter ? '&' + filter : ''}`),
+      withDemo(`select=*,profiles(full_name,initials),opportunities(id,ref,title,company_id,companies(name))&${order('scheduled_at')}${filter ? '&' + filter : ''}`)),
 
   upcomingVisits: () =>
     api.visits(`status=eq.scheduled&scheduled_at=gte.${new Date(Date.now() - 864e5).toISOString()}`),
@@ -135,7 +178,7 @@ export const api = {
 
   quotes: (filter = '') =>
     db.select('quotes',
-      `select=*,opportunities(id,ref,title,stage,next_action_due,company_id,companies(name))&${order('prepared_on', 'desc')}${filter ? '&' + filter : ''}`),
+      withDemo(`select=*,profiles:sent_by(full_name,initials),opportunities(id,ref,title,stage,next_action_due,company_id,companies(name))&order=prepared_on.desc,version.desc${filter ? '&' + filter : ''}`)),
 
   liveQuotes: () => api.quotes('status=in.(sent,discussed)'),
   quotesFor: (opportunityId) => api.quotes(eq('opportunity_id', opportunityId)),
@@ -146,7 +189,7 @@ export const api = {
 
   projects: (filter = '') =>
     db.select('projects',
-      `select=*,companies(id,name),contacts(id,full_name,phone,email),profiles(full_name,initials),opportunities(id,ref)&${order('created_at', 'desc')}${filter ? '&' + filter : ''}`),
+      withDemo(`select=*,companies(id,name),contacts(id,full_name,phone,email),profiles(full_name,initials),opportunities(id,ref)&${order('created_at', 'desc')}${filter ? '&' + filter : ''}`)),
 
   project: (id) =>
     db.select('projects',
@@ -170,7 +213,7 @@ export const api = {
   /* ── enquiries (the raw website intake, for audit) ─────────────────────── */
 
   enquiries: (limit = 50) =>
-    db.select('enquiries', `select=*&${order('created_at', 'desc')}&limit=${limit}`),
+    db.select('enquiries', withDemo(`select=*&${order('created_at', 'desc')}&limit=${limit}`)),
 
   /* ── files ─────────────────────────────────────────────────────────────── */
 
@@ -201,17 +244,21 @@ export const api = {
 
   /* ── dashboard ─────────────────────────────────────────────────────────── */
 
+  /* The headline numbers come from one database function so that the
+     dashboard, a report and anybody querying by hand all get the same answer
+     to "what is the pipeline worth". */
+  metrics: () => db.rpc('dashboard_metrics', { p_include_demo: showDemo() }),
+
   async dashboard() {
-    const [open, liveQuotes, tasks, visits, recent, decided] = await Promise.all([
+    const [metrics, open, liveQuotes, tasks, visits, recent] = await Promise.all([
+      api.metrics(),
       api.openOpportunities(),
       api.liveQuotes(),
       api.openTasks(),
       api.upcomingVisits(),
-      api.recentActivity(10),
-      db.select('v_opportunity_state',
-        `select=id,stage,estimated_value,decided_at&stage=in.(won,lost)&${order('decided_at', 'desc')}&limit=200`)
+      api.recentActivity(10)
     ]);
-    return { open, liveQuotes, tasks, visits, recent, decided };
+    return { metrics, open, liveQuotes, tasks, visits, recent };
   }
 };
 

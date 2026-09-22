@@ -349,6 +349,7 @@ a.stat-danger:hover { border-color: var(--danger); }
 }
 .pill-overdue, .pill-unowned { background: var(--danger-soft); color: var(--danger); border-color: var(--danger-line); }
 .pill-today   { background: #fff7ed; color: #9a3412; border-color: #fed7aa; }
+.pill-held    { background: #ecfeff; color: #155e75; border-color: #a5f3fc; }
 .pill-soon    { background: var(--bg-soft); color: var(--fg-muted); border-color: var(--line); }
 .pill-quiet   { background: var(--bg-soft); color: var(--fg-faint); border-color: var(--line); font-weight: 500; }
 .pill-won     { background: var(--ok-soft); color: var(--ok); border-color: var(--ok-line); }
@@ -365,6 +366,7 @@ a.stat-danger:hover { border-color: var(--danger); }
 [data-group="survey"] .stage-dot, .col[data-group="survey"] .col-head::before { color: #b45309; background: #b45309; }
 [data-group="quote"]  .stage-dot, .col[data-group="quote"]  .col-head::before { color: #4f46e5; background: #4f46e5; }
 [data-group="chase"]  .stage-dot, .col[data-group="chase"]  .col-head::before { color: #be185d; background: #be185d; }
+[data-group="hold"]   .stage-dot, .col[data-group="hold"]   .col-head::before { color: #0e7490; background: #0e7490; }
 [data-group="won"]    .stage-dot, .col[data-group="won"]    .col-head::before { color: var(--ok); background: var(--ok); }
 [data-group="lost"]   .stage-dot, .col[data-group="lost"]   .col-head::before { color: #71717a; background: #71717a; }
 
@@ -1059,3 +1061,28 @@ a.lnk-strong:hover { color: var(--brand-ink); }
   .tbl-rows .ta-r { text-align: left; }
   .tbl-wrap .tbl-rows { min-width: 0; }
 }
+
+/* ── the lifecycle actions under the next-action banner ─────────────────── */
+.opp-acts {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 12px 20px 14px; border-top: 1px solid var(--line);
+}
+.opp-acts-gap { flex: 1; }
+@media (max-width: 640px) {
+  .opp-acts-gap { flex-basis: 100%; height: 0; }
+  .opp-acts .btn, .opp-acts .btn-ghost { flex: 1 1 auto; justify-content: center; }
+}
+
+/* ── demonstration data is always labelled ──────────────────────────────── */
+.demo-strip, .demo-banner {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 9px 14px; border: 1px solid #fed7aa; border-radius: var(--r);
+  background: #fff7ed; color: #9a3412; font-size: var(--t-small);
+}
+.demo-strip { margin: 0 0 12px; }
+.demo-strip svg, .demo-banner svg { flex: none; margin-top: 1px; }
+.demo-banner { border-radius: 0; border-width: 0 0 1px; justify-content: center; }
+
+/* ── dashboard: a figure that is not a sum of money reads as such ─────── */
+.stat-foot .dim { color: var(--fg-faint); }
+.settings-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }

@@ -1,0 +1,11 @@
+-- Data, not schema. ENQ-2445 was the owner's own test submission through the
+-- live website form. It is flagged as demonstration data (with its contact,
+-- company, enquiry, task and activities) so it never counts in real metrics.
+-- Reversible: set is_demo = false on the same rows.
+-- Applied 2026-09-22 with opportunities_stage_history disabled for the update,
+-- so last_activity_at was not rewritten.
+--
+-- The same was done for the three automated lifecycle-test enquiries
+-- (contacts named "E2E Lifecycle Won" and "E2E Staff Test"; ENQ-2448,
+-- ENQ-2449, ENQ-2450). After both, dashboard_metrics(false) returns zero real
+-- opportunities: every record in the database today is demonstration data.

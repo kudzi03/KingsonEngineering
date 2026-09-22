@@ -7,11 +7,18 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { api } from '../core/api.js';
-import { QUOTE_STATUSES, QUOTE_LABEL, sum, daysUntil } from '../core/model.js';
-import { money, date, relative, esc, pluralise } from '../core/fmt.js';
+import { QUOTE_STATUSES, QUOTE_LABEL } from '../core/model.js';
+import { money, moneyBy, date, stamp, relative, esc, pluralise } from '../core/fmt.js';
 import { card, empty, quoteStatusPill, tableWrap } from '../ui/components.js';
 import { icon } from '../ui/icons.js';
-import { quoteDialog } from '../ui/dialogs.js';
+import { quoteDetailDialog, markSentDialog } from '../ui/lifecycle.js';
+
+/* Per-currency total of a list of quotations. */
+const total = (list) => {
+  const by = {};
+  for (const q of list) by[q.currency] = (by[q.currency] || 0) + Number(q.amount || 0);
+  return moneyBy(by, { empty: '—' });
+};
 
 export const title = 'Quotations';
 
@@ -36,7 +43,7 @@ function body() {
         <option value="all"${filter === 'all' ? ' selected' : ''}>All quotations</option>
         ${QUOTE_STATUSES.map((s) => `<option value="${s}"${filter === s ? ' selected' : ''}>${esc(QUOTE_LABEL[s])}</option>`).join('')}
       </select>
-      <span class="filters-n">${esc(pluralise(shown.length, 'quotation'))} · <span class="num">${esc(money(sum(shown, (q) => q.amount)))}</span></span>
+      <span class="filters-n">${esc(pluralise(shown.length, 'quotation'))} · <span class="num">${esc(total(shown))}</span></span>
     </div>`;
 
   const list = shown.length ? tableWrap(`
@@ -57,12 +64,14 @@ function body() {
                 <span class="td-sub">${esc(o?.companies?.name || '')}</span></td>
             <td class="ta-r num">${esc(money(q.amount, q.currency))}</td>
             <td>${quoteStatusPill(q.status)}</td>
-            <td><span class="td-main num">${esc(date(q.sent_on))}</span><span class="td-sub">${q.sent_on ? esc(relative(q.sent_on)) : ''}</span></td>
+            <td><span class="td-main num">${esc(q.sent_at ? stamp(q.sent_at) : date(q.sent_on))}</span><span class="td-sub">${q.sent_on ? esc(relative(q.sent_on)) + (q.profiles?.initials ? ' · ' + esc(q.profiles.initials) : '') : ''}</span></td>
             <td>${risk
               ? `<span class="pill pill-overdue">${icon.alert(13)}No chase booked</span>`
               : live ? `<span class="pill pill-quiet">${esc(date(o?.next_action_due))}</span>`
               : '<span class="dim">—</span>'}</td>
-            <td class="ta-r"><button type="button" class="btn-ghost btn-xs" data-edit="${esc(q.id)}">${icon.edit(13)}<span>Edit</span></button></td>
+            <td class="ta-r">${q.status === 'draft'
+              ? `<button type="button" class="btn-ghost btn-xs" data-send="${esc(q.id)}">${icon.doc(13)}<span>Mark sent</span></button>` : ''}
+              <button type="button" class="btn-ghost btn-xs" data-edit="${esc(q.id)}">${icon.edit(13)}<span>Details</span></button></td>
           </tr>`;
         }).join('')}
       </tbody>
@@ -79,16 +88,17 @@ export function mount(root, rerender, { me }) {
     document.getElementById('view').innerHTML = body();
   });
   root.addEventListener('click', async (e) => {
-    const b = e.target.closest('[data-edit]');
+    const b = e.target.closest('[data-edit], [data-send]');
     if (!b) return;
-    const quote = rows.find((q) => q.id === b.dataset.edit);
+    const quote = rows.find((q) => q.id === (b.dataset.edit || b.dataset.send));
     if (!quote) return;
     const opp = await api.opportunity(quote.opportunity_id);
-    quoteDialog({ opp, quote, me, onDone: rerender });
+    if (b.dataset.send) markSentDialog({ opp, quote, onDone: rerender });
+    else quoteDetailDialog({ opp, quote, onDone: rerender });
   });
 }
 
 export function sub() {
   const live = rows.filter((q) => q.status === 'sent' || q.status === 'discussed');
-  return `${esc(pluralise(live.length, 'quotation'))} awaiting a decision · <span class="num">${esc(money(sum(live, (q) => q.amount)))}</span>`;
+  return `${esc(pluralise(live.length, 'quotation'))} awaiting a decision · <span class="num">${esc(total(live))}</span>`;
 }

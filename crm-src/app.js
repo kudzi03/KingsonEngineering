@@ -14,6 +14,7 @@
 import { restore, login, logout, currentUser, isSignedIn } from './core/auth.js';
 import { api } from './core/api.js';
 import { isOverdue } from './core/model.js';
+import { showDemo } from './core/demo.js';
 import { railHtml, topbarHtml, loginHtml } from './ui/shell.js';
 import { loading, errorState } from './ui/components.js';
 import { toast } from './ui/form.js';
@@ -25,6 +26,16 @@ const barEl   = document.getElementById('topbar');
 let   viewEl  = document.getElementById('view');
 const scrim   = document.getElementById('scrim');
 const gate    = document.getElementById('gate');
+
+/* While this browser is showing demonstration records, every screen says so.
+   The strip sits above the top bar so it cannot be scrolled out of sight. */
+if (showDemo()) {
+  const strip = document.createElement('p');
+  strip.className = 'demo-banner';
+  strip.setAttribute('role', 'note');
+  strip.innerHTML = '<strong>Demonstration records are showing.</strong>&nbsp;Totals include sample data. Switch off in Settings.';
+  barEl.before(strip);
+}
 
 /* Lazily imported so the dashboard does not pay for the projects screen. */
 const ROUTES = {
