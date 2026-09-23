@@ -1,0 +1,11 @@
+# The build hashes file bytes into ?v= cache-busting URLs (tools/layout.js,
+# tools/build-crm.sh). CRLF on a Windows checkout changes those bytes, so the
+# same commit would render different HTML per machine. LF everywhere.
+* text=auto eol=lf
+*.jpeg binary
+*.jpg binary
+*.png binary
+*.webp binary
+*.woff2 binary
+*.zip binary
+*.pdf binary
