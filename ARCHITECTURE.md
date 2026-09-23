@@ -15,7 +15,7 @@ is not a reason. Assessed against what Kingson actually needs:
 | Cinematic photographic page | already delivered | no |
 | Content in the HTML for search and answer engines | already true — `render.js` writes it in | React SPA makes this *worse* without SSR |
 | First render speed | 462–560 KB first view, no JS needed for content | a React bundle is a regression |
-| Enquiry form | works, hands off to WhatsApp/email | no |
+| Enquiry form | saves to the CRM, WhatsApp/email as fallback | no |
 | One editable content layer | `content/*.js`, single source | no |
 | **A CRM with auth, persistence and an admin UI (M3+)** | not possible as static files | **yes — this is the real trigger** |
 
@@ -42,7 +42,6 @@ styles/
   tokens.css        design system (brand colours, type, radius, spacing)
   site.css          layout
 scenes/
-  assembly.js       the hero's one-shot structural erection (canvas 2D)
   reveal.js         the reveal vocabulary — plate, rise, settle, draw, swing
   parallax.js       depth on the scenes that fill a viewport
   profiles.js       drawn sections, fold diagram and the laser bed
@@ -144,7 +143,9 @@ website enquiry form
       └─ WhatsApp / email handoff  ◄── today's behaviour, no backend
 ```
 
-### Why the current version hands off instead of posting
+### Why the first version handed off instead of posting
+
+> Superseded: the form now POSTs each enquiry to Supabase (`interface/send-enquiry.js`) and keeps the WhatsApp/email handoff as the fallback. The reasoning below is why the fallback exists.
 
 There is no backend yet, and a form that silently drops an enquiry is worse
 than one that opens WhatsApp. So today the form **composes** the message and

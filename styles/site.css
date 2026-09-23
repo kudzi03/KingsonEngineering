@@ -1320,7 +1320,7 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   .sp-rail dd { text-align: left; }
   .sp-aside img { height: 34svh; height: calc(34 * var(--svh, 1vh)); max-height: 320px; }
   .crumbs ol { padding-block: 1px; font-size: 12.5px; }
-  .crumbs a { min-height: 44px; }
+  .crumbs a { min-height: 44px; min-width: 44px; }
   .sp-related-list a { min-height: 60px; padding: 0 18px; }
 }
 

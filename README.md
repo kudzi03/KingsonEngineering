@@ -80,7 +80,7 @@ chrome cannot drift between routes.
 
 | Section | |
 |---|---|
-| **Hero** | Who this is, what they make, three actions. A portal frame erects itself once on load and hands over to the real photograph — see `scenes/assembly.js` |
+| **Hero** | Who this is, what they make, three actions, over Kingson's own portal-frame photograph — the first paint, with a slow CSS settle (none under reduced motion) |
 | **Strip** | Four confirmed facts — the machine, the crane, the workshop, the acknowledgement |
 | **01 Structure** | Full-bleed site photograph, copy in a masthead field |
 | **02 Form** | The IBR and corrugated sections **drawn to scale** from the confirmed figures, at one shared scale |
@@ -98,7 +98,7 @@ chrome cannot drift between routes.
 On a phone a **Call / Get a price** bar is fixed to the bottom of every screen.
 
 **Nothing hijacks the scroll.** There is no scroll listener anywhere in this
-build. The hero's assembly is a one-shot on load, not scroll-scrubbed; reveals
+build. Reveals
 are driven by an IntersectionObserver that fires once per element. The version
 this replaced pinned a 620vh stage and scrubbed six scenes against scroll
 position: seven screens of animation before a visitor reached a single fact.
@@ -161,8 +161,10 @@ same asset map the page renders from, so it cannot drift.
 
 Change content → run `render.js` → commit the generated files with it.
 
-`main.js` wires five interactive pieces only: the hero assembly, the motion
-vocabulary, the photograph viewer, the enquiry composer and the menu. Each is a
+`main.js` wires the interactive pieces only: the header and phone-bar
+observers, the motion vocabulary, the parallax, the photograph viewer, the
+enquiry form (which saves to the CRM — see `interface/send-enquiry.js`) and the
+menu. Each is a
 module under `scenes/` or `interface/` and each is independently removable —
 with any of them absent the page is simply static, which is the state the
 stylesheet describes by default.
