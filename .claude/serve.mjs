@@ -37,9 +37,10 @@ const headersFor = (url) => {
 };
 
 http.createServer((req, res) => {
-  const url = decodeURIComponent(req.url.split('?')[0]);
+  let url;
+  try { url = decodeURIComponent(req.url.split('?')[0]); } catch { res.writeHead(400); return res.end(); }
   const file = path.join(root, url);
-  const ok = (f) => f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isFile()
+  const ok = (f) => f.startsWith(root + path.sep) && !f.includes(`${path.sep}.git`) && fs.existsSync(f) && fs.statSync(f).isFile()
     && !ignored(path.relative(root, f).split(path.sep).join('/'));
   let found = [file, `${file}.html`, path.join(file, 'index.html')].find(ok);
   if (found && url.endsWith('.html')) {
@@ -53,4 +54,4 @@ http.createServer((req, res) => {
     ...headersFor(url)
   });
   fs.createReadStream(found).pipe(res);
-}).listen(port, () => console.log(`serving ${root} on http://localhost:${port}`));
+}).listen(port, '127.0.0.1', () => console.log(`serving ${root} on http://localhost:${port}`));

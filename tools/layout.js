@@ -357,9 +357,8 @@ export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld
   const canonical = SITE + (path === '/' ? '/' : path);
   const img = ASSETS[ogImage];
   /* Link previews get a 1200x630 JPEG: WhatsApp — how most people here will
-     share this link — does not reliably render a WebP preview. Cut from the
-     wide derivative around the photograph's focal point; regenerate with the
-     snippet in the commit that added them if a source photograph changes. */
+     share this link — does not reliably render a WebP preview. Written by
+     tools/og-images.mjs; check-truth.js fails if one is missing. */
   const imgUrl = SITE + '/' + src(ogImage, 1320).replace(/-\d+\.webp$/, '.jpg').replace('img/', 'img/og-');
   /* The preload has to agree with what the markup will actually choose. A
      bleed hero is a <picture> with a 900px breakpoint, so the preload carries

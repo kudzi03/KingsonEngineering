@@ -25,5 +25,8 @@ crm-src
 /*.jpeg
 /*.jpg
 /*.zip
+# Their webp derivatives too: built for reference by tools/build-images.py,
+# used by no page, and still stock collages.
+assets/img/material-*
 tools
 .gitattributes

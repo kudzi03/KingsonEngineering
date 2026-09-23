@@ -119,8 +119,9 @@ export function mountEnquiry() {
       else { setError(id, ENQUIRY.errors[id]); missing.push(id); }
     }
     /* Something to reply to: an email address, or at least seven digits. The
-       database refuses anything shorter, and "0772" would otherwise surface as
-       a failed save rather than as a field to fix. */
+       save refuses anything under five characters (send-enquiry.js), and
+       "0772" would otherwise surface as a failed save, not a field to fix. */
+    const empty = missing.length;
     if (p.contact && !/\S@\S+\.\S/.test(p.contact) && (p.contact.match(/\d/g) || []).length < 7) {
       setError('contact', ENQUIRY.errors.contactFormat);
       missing.push('contact');
@@ -129,7 +130,7 @@ export function mountEnquiry() {
     if (missing.length) {
       /* Every entered value is preserved. The summary takes focus so a screen
          reader announces the problem, and the first bad field is scrolled to. */
-      summary.textContent = ENQUIRY.errors.summary;
+      summary.textContent = empty ? ENQUIRY.errors.summary : ENQUIRY.errors.summaryFormat;
       summary.hidden = false;
       summary.focus();
       field(missing[0])?.scrollIntoView({ behavior: 'smooth', block: 'center' });

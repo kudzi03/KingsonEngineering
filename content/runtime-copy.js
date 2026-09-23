@@ -101,6 +101,7 @@ export const ENQUIRY = {
     contact: 'A phone number or an email address, so we can come back to you.',
     contactFormat: 'That does not look like a full phone number or email address.',
     service: 'Pick the closest one — "not sure yet" is fine.',
-    summary: 'A few things are missing.'
+    summary: 'A few things are missing.',
+    summaryFormat: 'Check the phone number or email address.'
   }
 };

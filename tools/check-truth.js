@@ -96,6 +96,7 @@ const CONFIRMED = [
   ['same working day',  'returned document §7 — enquiry acknowledged, not struck out'],
   ['two working days',  'returned document §7 — site visit arranged, not struck out'],
   ['six to ten weeks',  'returned document §7 — portal frame programme, not struck out'],
+  ['6–10 weeks',        'returned document §7 — the same programme, in figures'],
   ['3 – 5 days',        'returned document §4 — flashing lead time on a stock gauge'],
   ['three to five days', 'returned document §4 — the same lead time, written out']
 ];
@@ -415,7 +416,7 @@ for (const f of pages) {
   const html = readFileSync(f, 'utf8');
   for (const m of html.matchAll(/(?:src|srcset|imagesrcset|property="og:image" content|name="twitter:image" content)="([^"]+)"/g)) {
     for (const part of m[1].split(',')) {
-      const url = part.trim().split(/\s+/)[0].replace('https://kingson-engineering.vercel.app', '');
+      const url = part.trim().split(/\s+/)[0].replace(/^https?:\/\/[^/]+/, '');
       if (/^assets\/img\/|^\/assets\/img\//.test(url)) imageRefs.add(url.replace(/^\//, ''));
     }
   }

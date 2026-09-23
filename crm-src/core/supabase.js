@@ -309,7 +309,7 @@ export const storage = {
 /** PostgREST needs commas and parentheses inside a value escaped with quotes. */
 export const q = (v) => {
   const s = String(v ?? '');
-  return /[,.()"\s]/.test(s) ? `"${s.replace(/"/g, '\\"')}"` : s;
+  return /[,.()"\\\s]/.test(s) ? `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"` : s;
 };
 
 export const eq = (col, v) => `${col}=eq.${encodeURIComponent(v)}`;

@@ -202,9 +202,12 @@ export async function visitDialog({ opp, visit = null, me, onDone }) {
         await api.updateVisit(visit.id, row);
       } else {
         await api.createVisit({ ...row, opportunity_id: opp.id, status: 'scheduled' });
-        /* Booking a visit is the requirements stage by definition. */
+        /* Booking a visit is the requirements stage by definition. The visit
+           is already saved, so a refused stage move must not reopen the
+           dialog — a second submit would book the visit twice. */
         if (['new', 'contacted'].includes(opp.stage)) {
-          await api.updateOpportunity(opp.id, { stage: 'requirements' });
+          try { await api.updateOpportunity(opp.id, { stage: 'requirements' }); }
+          catch (e) { toast(`Visit booked. The stage was not moved: ${e.message}`, 'bad'); after(onDone); return; }
         }
       }
       toast(editing ? 'Visit saved.' : 'Visit booked.');

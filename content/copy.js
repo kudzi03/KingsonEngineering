@@ -104,7 +104,7 @@ export const NOT_FOUND = {
 export const CAPABILITIES = [
   {
     id: 'structural', photo: 'portalFrame', route: 'structural-steel-harare',
-    lead: ['6–10 wk', 'portal frame programme'],
+    lead: ['6–10 weeks', 'portal frame programme'],
     title: 'Structural steelwork',
     body: 'Portal frames, columns, rafters and purlins — fabricated in the workshop and erected on site with our own crane.',
     ask: 'Send drawings, or the span, height and bay spacing.',
