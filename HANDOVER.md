@@ -21,6 +21,25 @@ CRM logins (also in the scratchpad `creds.env`):
 - `admin1@kingsonengineering.co.zw` — Mr Murandu, administrator
 - `technical@kingsonengineering.co.zw` — Technical Office, staff
 
+## Pre-client audit (23 Sept 2026)
+
+Branch `audit/pre-client-2026-09-23`, rollback tag `pre-audit-baseline`
+(= `e5b6665`, the production build before it). Commit messages carry the
+detail; the open items are:
+
+- **Supabase Auth: public sign-up is ON** (`/auth/v1/settings` →
+  `disable_signup: false`) and a new auth user gets a Staff profile
+  automatically (Settings screen says so). Turn off *Allow new users to sign
+  up* in the dashboard. Adding staff via Authentication → Users still works.
+- **Run `crm-src/supabase/migrations/20260923_flag_audit_tests.sql`** — flags
+  ENQ-2452 (developer test) and ENQ-2453 (audit E2E test) as demo. Until then
+  the dashboard shows two "real" open opportunities.
+- The base schema (tables, RLS, `convert_enquiry`, `handle_new_user`,
+  `is_staff`) is not in the repository. Dump it (`supabase db dump --schema
+  public`) and commit it, so the database can be audited and rebuilt.
+- Local testing without Python: `node .claude/serve.mjs . 8210` mirrors
+  Vercel (cleanUrls, headers, .vercelignore).
+
 ## Latest pass — quote lifecycle (22 Sept 2026)
 
 Commits `4b219e6` (CRM) and `7fb9c57` (site). SQL for every database change
