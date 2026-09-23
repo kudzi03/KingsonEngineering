@@ -212,43 +212,6 @@ html.hd-over .hd-mark img {
       rgba(10, 12, 11, .95) 0%,  rgba(10, 12, 11, .92) 26%, rgba(10, 12, 11, .84) 48%,
       rgba(10, 12, 11, .58) 68%, rgba(10, 12, 11, .20) 85%, rgba(10, 12, 11, 0) 100%);
 }
-/* The assembly canvas sits over the photograph and under every word of the
-   hero. It removes itself when it has finished. */
-.hero-assembly {
-  position: absolute; inset: 0; z-index: 1;
-  width: 100%; height: 100%; pointer-events: none;
-}
-/* The scrim is at FULL strength by default, so the hero copy keeps its
-   contrast with JavaScript off, broken, or still loading. It is dimmed only
-   while the canvas is actually erecting steel and painting its own dark
-   ground, and restored the moment that hands over. Enhancement removes the
-   scrim for a beat; it never depends on script to put it there. */
-.hero::after { transition: opacity 900ms var(--ease); }
-/* Not near-zero. The scrim is bottom-weighted, so most of its weight sits
-   exactly where the copy sits; the steel is brightest up top where there is no
-   text. At .2 the hero lede measured 2.22:1 over lit steel. This is the value
-   that keeps every hero string above AA while the steel still reads — see the
-   pixel probe in the commit that introduced it. */
-.hero.hero-erecting::after { opacity: .62; }
-
-/* A local dark field under the copy, active only while the steel is erecting.
-   Measured: over the brightest lit flange the hero lede came out at 3.32:1
-   with the global scrim alone. Dulling the WHOLE frame to fix that would
-   throw away the thing the scene exists for, so the protection is local —
-   strong at the lower left where every hero string sits, gone by mid-frame
-   where the steel wants to be bright. 0.25 is the alpha the probe says clears
-   AA with headroom; the gradient carries more than that at the corner. */
-.hero-plate {
-  position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  opacity: 0; transition: opacity 700ms var(--ease);
-  background:
-    linear-gradient(to top, rgba(10, 12, 11, .62) 0%, rgba(10, 12, 11, .34) 34%,
-                    rgba(10, 12, 11, 0) 62%),
-    linear-gradient(to right, rgba(10, 12, 11, .55) 0%, rgba(10, 12, 11, .22) 42%,
-                    rgba(10, 12, 11, 0) 68%);
-}
-.hero.hero-erecting .hero-plate { opacity: 1; }
-
 .hero-in {
   position: relative; z-index: 3; width: 100%;
   max-width: var(--page); margin: 0 auto;
@@ -1356,7 +1319,8 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   .sp-rail > div { flex-direction: column; gap: 2px; padding: 11px 0; }
   .sp-rail dd { text-align: left; }
   .sp-aside img { height: 34svh; height: calc(34 * var(--svh, 1vh)); max-height: 320px; }
-  .crumbs ol { padding-block: 11px; font-size: 12.5px; }
+  .crumbs ol { padding-block: 1px; font-size: 12.5px; }
+  .crumbs a { min-height: 44px; }
   .sp-related-list a { min-height: 60px; padding: 0 18px; }
 }
 

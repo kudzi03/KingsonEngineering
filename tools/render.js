@@ -259,7 +259,7 @@ ${chapterBody(c)}
     /* All four wipe upward, staggered by position, so the row reads as one
        movement rather than four unrelated ones. */
     const plates = c.media.photos.map((k, i) => `        <li data-reveal="plate" data-from="below" style="--d:${i * 110}ms">
-          ${zoomable(k, photo(k, { sizes: '(max-width:900px) 62vw, 24vw', w: 720 })
+          ${zoomable(k, photo(k, { sizes: '(max-width:640px) 70vw, (max-width:900px) 48vw, 24vw', w: 720 })
             + `<span>${esc(WORK.captions[k])}</span>`)}
         </li>`).join('\n');
     /* The establishing frame, with the tolerance set across it. The figure
