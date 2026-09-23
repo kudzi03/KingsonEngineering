@@ -40,7 +40,7 @@ import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
   enquiryForm, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
-  ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW
+  ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures
 } from './layout.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -625,6 +625,7 @@ for (const [name, value] of Object.entries(BLOCKS)) {
   if (!re.test(html)) { console.error(`missing marker: ${name}`); process.exit(2); }
   html = html.replace(re, `$1\n${value}\n$2`);
 }
+html = bindFigures(html);
 
 const smFile = root + 'sitemap.xml';
 const smBefore = readFileSync(smFile, 'utf8');
@@ -641,7 +642,8 @@ const smBefore = readFileSync(smFile, 'utf8');
    person who got a page that did not look like the site. It is not in the
    sitemap — that is built from SERVICES and the portfolio, not from this
    list — and it carries noindex. */
-const routes = [...allServicePages(), ...portfolioRoutes(), notFoundPage()];
+const routes = [...allServicePages(), ...portfolioRoutes(), notFoundPage()]
+  .map((r) => ({ ...r, html: bindFigures(r.html) }));
 
 const readIf = (f) => { try { return readFileSync(root + f, 'utf8'); } catch { return null; } };
 

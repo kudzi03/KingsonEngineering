@@ -44,6 +44,14 @@ export const SITE = 'https://kingson-engineering.vercel.app';
 
 export const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/* Digit groups in visible text are joined with a no-break space, so
+   "3 000 × 1 500 mm" and "+263 772 262 869" never wrap mid-number. Applied to
+   each finished page, text nodes only — attributes, scripts and styles are
+   left exactly as written. */
+export const bindFigures = (html) => html.replace(
+  /(<(script|style)\b[\s\S]*?<\/\2>)|>[^<]*(?=<)/g,
+  (m, block) => (block ? m : m.replace(/(\d) (?=\d{3}\b)/g, '$1 ')));
 export const tel = (v) => 'tel:' + v.replace(/[^\d+]/g, '');
 export const wa = () => (publish('whatsapp') ? `https://wa.me/${publish('whatsapp')}` : null);
 
@@ -424,14 +432,21 @@ ${ld}
    a visitor who arrived searching for laser cutting does not have to tell the
    form what it already knows.                                               */
 
+/* Three of seven fields are required, so the four that are not say so — a
+   visitor should not have to fail a submit to find out which is which. The
+   list matches REQUIRED in interface/enquiry.js. */
+const REQUIRED = new Set(['name', 'contact', 'service']);
+
 export function enquiryForm(preselectService) {
-  const label = (id, key) => `          <label for="f-${id}">${esc(ENQUIRY.fields[key])}</label>`;
+  const label = (id, key) => `          <label for="f-${id}">${esc(ENQUIRY.fields[key])}${
+    REQUIRED.has(id) ? '' : ` <span class="opt">${esc(ENQUIRY.optional)}</span>`}</label>`;
+  const req = (id) => (REQUIRED.has(id) ? ' aria-required="true"' : '');
   const err = (id) => `          <span class="field-error" data-error-for="f-${id}" hidden></span>`;
   const ph = (k) => (ENQUIRY.placeholders[k] ? ` placeholder="${esc(ENQUIRY.placeholders[k])}"` : '');
 
   const text = (id, key, extra = '') => `        <div class="field">
 ${label(id, key)}
-          <input id="f-${id}" name="${id}" type="text"${extra}${ph(key)}>
+          <input id="f-${id}" name="${id}" type="text"${req(id)}${extra}${ph(key)}>
 ${err(id)}
         </div>`;
 
@@ -444,7 +459,7 @@ ${err(id)}
   const select = (id, key, options, chosen) => `        <div class="field">
 ${label(id, key)}
           <div class="select">
-            <select id="f-${id}" name="${id}">
+            <select id="f-${id}" name="${id}"${req(id)}>
               <option value=""${chosen ? '' : ' selected'}>${esc(ENQUIRY.choose)}</option>
 ${options.map((o) => `              <option${o === chosen ? ' selected' : ''}>${esc(o)}</option>`).join('\n')}
             </select>

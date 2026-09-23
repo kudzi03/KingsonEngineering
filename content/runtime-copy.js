@@ -49,6 +49,7 @@ export const ENQUIRY = {
     description: 'Describe the job',
     drawings:    'Do you have drawings?'
   },
+  optional: 'optional',
   placeholders: {
     location: 'Town or suburb, and access if it is tight',
     description: 'Spans, heights, quantities — anything already decided.'

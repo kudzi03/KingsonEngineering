@@ -783,6 +783,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .field { display: grid; gap: 8px; align-content: start; }
 .field label { font-size: var(--t-small); font-weight: 500; color: var(--fg-muted); }
+.field label .opt { font-weight: 400; color: var(--fg-faint); }
 .field input, .field textarea, .field select {
   width: 100%; background: var(--bg); color: var(--fg);
   border: 1px solid var(--line-strong); border-radius: var(--r);

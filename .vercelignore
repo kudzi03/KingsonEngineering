@@ -15,3 +15,15 @@ crm-src
 # whoever works on this repository, and several of the starters are HTML —
 # without this they would be served from the website's own domain.
 .claude
+
+# Source material, not the site. The root JPEGs are the unprocessed originals
+# (the page serves the webp derivatives in assets/img) and two of them —
+# structure.jpeg and crane.jpeg — are stock-style collages that are NOT
+# Kingson's work and must never be served from Kingson's domain. The zip is an
+# archive of an earlier build. tools/ is the build and the publication gate;
+# nothing in the browser imports it.
+*.jpeg
+*.jpg
+*.zip
+tools
+.gitattributes
