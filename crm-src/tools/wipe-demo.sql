@@ -53,5 +53,11 @@ update public.tasks set opportunity_id = null
   where opportunity_id in (select id from public.opportunities where is_demo);
 
 delete from public.opportunities where is_demo;
-delete from public.contacts      where is_demo;
-delete from public.companies     where is_demo;
+-- Never delete a contact or company a real opportunity still points at.
+-- (A real enquiry can be de-duplicated onto a demo contact by phone number;
+-- see supabase/migrations/20260923_real_opportunity_is_real.sql.)
+delete from public.contacts  c where c.is_demo
+   and not exists (select 1 from public.opportunities o where o.contact_id = c.id);
+delete from public.companies c where c.is_demo
+   and not exists (select 1 from public.opportunities o where o.company_id = c.id)
+   and not exists (select 1 from public.contacts k where k.company_id = c.id);

@@ -832,7 +832,7 @@ body.is-modal { overflow: hidden; }
   border-radius: var(--r); padding: 9px 12px; font-size: var(--t-small); line-height: 1.45;
 }
 .modal-message { font-size: var(--t-small); color: var(--fg-muted); line-height: 1.6; }
-.check { display: flex; align-items: center; gap: 9px; font-size: var(--t-small); color: var(--fg-muted); cursor: pointer; }
+.check { display: flex; align-items: center; gap: 9px; min-height: 44px; font-size: var(--t-small); color: var(--fg-muted); cursor: pointer; }
 .check input { width: 17px; height: 17px; accent-color: var(--brand); }
 textarea.inp { resize: vertical; min-height: 66px; line-height: 1.55; }
 .btn-danger { background: var(--danger); }
