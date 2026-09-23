@@ -22,8 +22,8 @@ crm-src
 # Kingson's work and must never be served from Kingson's domain. The zip is an
 # archive of an earlier build. tools/ is the build and the publication gate;
 # nothing in the browser imports it.
-*.jpeg
-*.jpg
-*.zip
+/*.jpeg
+/*.jpg
+/*.zip
 tools
 .gitattributes

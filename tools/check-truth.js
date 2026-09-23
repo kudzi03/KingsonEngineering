@@ -408,12 +408,14 @@ dupes(seenDescs, 'meta description');
    falls back and the visitor never knows the art direction was meant to be
    different. This catches it at build time instead. */
 
+/* Share images too: a missing og:image is invisible until somebody pastes the
+   link into WhatsApp in front of the client. */
 const imageRefs = new Set();
 for (const f of pages) {
   const html = readFileSync(f, 'utf8');
-  for (const m of html.matchAll(/(?:src|srcset|imagesrcset)="([^"]+)"/g)) {
+  for (const m of html.matchAll(/(?:src|srcset|imagesrcset|property="og:image" content|name="twitter:image" content)="([^"]+)"/g)) {
     for (const part of m[1].split(',')) {
-      const url = part.trim().split(/\s+/)[0];
+      const url = part.trim().split(/\s+/)[0].replace('https://kingson-engineering.vercel.app', '');
       if (/^assets\/img\/|^\/assets\/img\//.test(url)) imageRefs.add(url.replace(/^\//, ''));
     }
   }

@@ -21,8 +21,10 @@ const ignored = (rel) => {
   let hit = false;
   for (const p of ignore) {
     const neg = p.startsWith('!');
-    const pat = escRe(neg ? p.slice(1) : p).replace(/\\\*|\*/g, '[^/]*');
-    if (new RegExp(`^(?:.*/)?${pat}(?:/.*)?$`).test(rel)) hit = !neg;
+    const raw = neg ? p.slice(1) : p;
+    const anchored = raw.startsWith('/');                 // "/x" matches at the root only
+    const pat = escRe(anchored ? raw.slice(1) : raw).replace(/\\\*|\*/g, '[^/]*');
+    if (new RegExp(`^${anchored ? '' : '(?:.*/)?'}${pat}(?:/.*)?$`).test(rel)) hit = !neg;
   }
   return hit;
 };

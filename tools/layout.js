@@ -356,7 +356,11 @@ export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld
                            ogType = 'website', home = false, index = true }) {
   const canonical = SITE + (path === '/' ? '/' : path);
   const img = ASSETS[ogImage];
-  const imgUrl = SITE + '/' + src(ogImage, 1320);
+  /* Link previews get a 1200x630 JPEG: WhatsApp — how most people here will
+     share this link — does not reliably render a WebP preview. Cut from the
+     wide derivative around the photograph's focal point; regenerate with the
+     snippet in the commit that added them if a source photograph changes. */
+  const imgUrl = SITE + '/' + src(ogImage, 1320).replace(/-\d+\.webp$/, '.jpg').replace('img/', 'img/og-');
   /* The preload has to agree with what the markup will actually choose. A
      bleed hero is a <picture> with a 900px breakpoint, so the preload carries
      the same two arms — otherwise a desktop visitor downloads the portrait
@@ -385,8 +389,8 @@ ${index ? `<link rel="canonical" href="${canonical}">` : '<meta name="robots" co
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:image" content="${imgUrl}">
-<meta property="og:image:width" content="${img.w}">
-<meta property="og:image:height" content="${img.h}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${esc(ogAlt || img.alt)}">
 ${index ? `<meta property="og:url" content="${canonical}">\n` : ''}<meta property="og:locale" content="en_ZW">
 <meta name="twitter:card" content="summary_large_image">
