@@ -241,27 +241,24 @@ export const db = {
   select: (table, query = '') =>
     request(`/rest/v1/${table}${query ? '?' + query : ''}`),
 
-  /* Total row count without pulling the rows. */
-  count: async (table, query = '') => {
-    const res = await request(`/rest/v1/${table}?select=id&limit=1${query ? '&' + query : ''}`,
-      { headers: { Prefer: 'count=exact' } });
-    return Array.isArray(res) ? res.length : 0;
-  },
-
   insert: (table, row, query = '') =>
     request(`/rest/v1/${table}${query ? '?' + query : ''}`, {
       method: 'POST', body: row, headers: { Prefer: 'return=representation' }
     }),
 
-  update: (table, query, patch) =>
-    request(`/rest/v1/${table}?${query}`, {
+  /* When row-level security filters a PATCH out, PostgREST answers 200 with
+     an empty list — nothing was saved, and nothing says so. Every update in
+     this application targets one row by id, so no rows back is a refusal. */
+  update: async (table, query, patch) => {
+    const rows = await request(`/rest/v1/${table}?${query}`, {
       method: 'PATCH', body: patch, headers: { Prefer: 'return=representation' }
-    }),
-
-  remove: (table, query) =>
-    request(`/rest/v1/${table}?${query}`, {
-      method: 'DELETE', headers: { Prefer: 'return=representation' }
-    }),
+    });
+    if (Array.isArray(rows) && !rows.length) {
+      throw new ApiError('Not saved — you may not have permission to change this, or it no longer exists.',
+        { status: 403 });
+    }
+    return rows;
+  },
 
   rpc: (fn, args = {}) =>
     request(`/rest/v1/rpc/${fn}`, { method: 'POST', body: args })

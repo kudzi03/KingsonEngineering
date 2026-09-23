@@ -75,7 +75,7 @@ export async function render(_arg, { me }) {
       </tbody>
     </table>`), {
       tight: true,
-      note: 'Staff run the pipeline. Administrators can also delete records and change roles.'
+      note: 'Staff run the pipeline. Administrators can also change roles, deactivate people and set how email is sent.'
     });
 
   const howTo = card('Adding somebody', `

@@ -1,11 +1,11 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   interface/enquiry.js — a truthful local composer
+   interface/enquiry.js — the enquiry form
    ═══════════════════════════════════════════════════════════════════════════
 
-   Nothing here sends anything. The form validates locally, composes the
-   message an estimator would want to receive, and hands it to an app the
-   visitor already has. There is no upload, no persistence, no "sent", no
-   ticket number.
+   The form validates locally, saves the enquiry to Kingson's database (see
+   below), and composes the message an estimator would want to receive so the
+   visitor can also hand it to an app they already have. No upload, no ticket
+   number.
 
    There is deliberately no file input. A static page cannot upload a drawing,
    and a picker that only collects filenames reads like an upload to the person
@@ -103,6 +103,10 @@ export function mountEnquiry() {
   }
 
   let inFlight = false;
+  /* The text of the last enquiry the database confirmed. Pressing send again
+     on the same words shows the same confirmation instead of creating a
+     second record; change anything and it is a new enquiry. */
+  let lastSaved = null;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -113,6 +117,13 @@ export function mountEnquiry() {
     for (const id of REQUIRED) {
       if (p[id]) setError(id, null);
       else { setError(id, ENQUIRY.errors[id]); missing.push(id); }
+    }
+    /* Something to reply to: an email address, or at least seven digits. The
+       database refuses anything shorter, and "0772" would otherwise surface as
+       a failed save rather than as a field to fix. */
+    if (p.contact && !/\S@\S+\.\S/.test(p.contact) && (p.contact.match(/\d/g) || []).length < 7) {
+      setError('contact', ENQUIRY.errors.contactFormat);
+      missing.push('contact');
     }
 
     if (missing.length) {
@@ -131,6 +142,7 @@ export function mountEnquiry() {
     /* The text is composed before the request, not after, so that whatever the
        network does the visitor still has their enquiry in front of them. */
     const message = compose(p);
+    if (message === lastSaved) { showOutcome({ ok: true }, message, p); return; }
 
     inFlight = true;
     const label = submitBtn?.querySelector('span');
@@ -145,6 +157,7 @@ export function mountEnquiry() {
     }
 
     inFlight = false;
+    if (result.ok) lastSaved = message;
     if (submitBtn) submitBtn.disabled = false;
     if (label) label.textContent = was;
 

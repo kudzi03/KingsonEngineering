@@ -13,7 +13,7 @@
    somebody has to remember to add.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { db, storage, eq, order } from './supabase.js';
+import { db, storage, eq, order, q } from './supabase.js';
 import { FILES_BUCKET } from './config.js';
 import { OPEN_STAGES } from './model.js';
 import { withDemo, showDemo } from './demo.js';
@@ -104,7 +104,8 @@ export const api = {
   contacts: (search = '') => {
     let f = withDemo(`select=*,companies(id,name)&${order('full_name')}`);
     if (search) {
-      const s = encodeURIComponent(`%${search}%`);
+      /* Quoted, so a comma or bracket in the search is text, not filter syntax. */
+      const s = encodeURIComponent(q(`%${search}%`));
       f += `&or=(full_name.ilike.${s},email.ilike.${s},phone.ilike.${s},whatsapp.ilike.${s})`;
     }
     return db.select('contacts', f);

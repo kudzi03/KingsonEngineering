@@ -67,7 +67,7 @@ export const ENQUIRY = {
      round trip, and the note is honest about what this page does with files. */
   filesNote: 'Your enquiry is logged with Kingson when you send it. Drawings are not — there is no upload here. Attach your DXF, DWG, STEP or PDF to the WhatsApp or email message this page prepares and it reaches the same estimator.',
   actions: {
-    review: 'Review my enquiry',
+    review: 'Send my enquiry',
     whatsapp: 'Send on WhatsApp',
     email: 'Send by email',
     copy: 'Copy the text'
@@ -76,7 +76,7 @@ export const ENQUIRY = {
   draftTitle: 'Ready to send.',
 
   /* The form now actually reaches Kingson: the enquiry is written into their
-     system and is on somebody's list for the next working day. These three
+     system and is on somebody's follow-up list. These three
      lines are the only place on the site that claims anything was sent, and
      they are only shown when the database has confirmed the row. */
   sending: 'Sending your enquiry…',
@@ -84,7 +84,7 @@ export const ENQUIRY = {
      would be wrong there, because it has been. */
   draftAlsoTitle: 'Send it yourself as well, if you like.',
   sentTitle: 'Your enquiry has reached Kingson.',
-  sentBody: 'It is logged and booked for a reply on the next working day. If you would rather also send it yourself — on WhatsApp or by email — the message is below.',
+  sentBody: 'It is logged with the office, and Kingson acknowledges enquiries the same working day. If you would rather also send it yourself — on WhatsApp or by email — the message is below.',
   /* Shown when the save failed. It must not read like a dead end: the handoff
      buttons underneath it still work, and they are how the enquiry gets
      through. */
@@ -99,6 +99,7 @@ export const ENQUIRY = {
   errors: {
     name:    'We need a name to reply to.',
     contact: 'A phone number or an email address, so we can come back to you.',
+    contactFormat: 'That does not look like a full phone number or email address.',
     service: 'Pick the closest one — "not sure yet" is fine.',
     summary: 'A few things are missing.'
   }
