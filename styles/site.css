@@ -66,7 +66,7 @@ section { padding: clamp(56px, 6.4vw, 96px) 0; }
   display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   min-height: 48px; padding: 0 24px;
   border: 1px solid transparent; border-radius: var(--r-sm);
-  font-size: var(--t-ui); font-weight: 600; letter-spacing: .005em; cursor: pointer; text-decoration: none;
+  font-size: var(--t-ui); font-weight: 500; letter-spacing: .005em; cursor: pointer; text-decoration: none;
   white-space: nowrap;
   transition: background-color 150ms var(--ease), border-color 150ms var(--ease),
               color 150ms var(--ease), transform 150ms var(--ease);
@@ -1922,7 +1922,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   .bar { transition: none; }
 }
 
-/* The questions header sits in a side column: one column, no rule-top band. */
+/* The questions header sits in a side column: one column. */
 .faq-side .sec-head { grid-template-columns: 1fr; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1996,3 +1996,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   .strip-in li:nth-child(-n+2) { border-top: 0; border-bottom: 0; }
   .strip-f { font-size: 32px; }
 }
+
+/* On a phone the fixed action bar covers the last ~78px of the viewport; the
+   footer's last line has to clear it at full scroll. */
+@media (max-width: 760px) { .ft { padding-bottom: calc(78px + env(safe-area-inset-bottom)); } }

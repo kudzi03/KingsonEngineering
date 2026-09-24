@@ -683,6 +683,7 @@ const routes = [...allServicePages(), ...portfolioRoutes(), notFoundPage()]
 
 /* robots.txt names the sitemap by absolute URL, so it follows SITE too. */
 const robotsFile = readFileSync(root + 'robots.txt', 'utf8');
+if (!/^Sitemap: /m.test(robotsFile)) { console.error('robots.txt has no Sitemap: line'); process.exit(2); }
 const robots = robotsFile.replace(/^Sitemap: .*$/m, `Sitemap: ${SITE}/sitemap.xml`);
 
 const readIf = (f) => { try { return readFileSync(root + f, 'utf8'); } catch { return null; } };

@@ -121,26 +121,37 @@ $$('[data-open]').forEach((b) =>
 
 mountEnquiry();
 
-/* ── the phone bar steps aside while somebody is typing ─────────────────────
-   With the keyboard up the bar sits right against the field being filled in,
-   and its Get a price button points at the form they are already in. */
+/* ── the phone bar steps aside while the keyboard is up ─────────────────────
+   With the keyboard open the bar sits right against the field being filled
+   in. Keyed to the keyboard itself (the visual viewport shrinking), not to
+   focus alone: Android can close the keyboard and leave the field focused,
+   and the bar must come back then. Without visualViewport it never hides. */
 const form = $('[data-form]');
-if (form) {
-  form.addEventListener('focusin', () => document.documentElement.classList.add('form-active'));
-  form.addEventListener('focusout', (e) => {
-    if (!form.contains(e.relatedTarget)) document.documentElement.classList.remove('form-active');
-  });
+const vv = window.visualViewport;
+if (form && vv) {
+  const typing = () => document.documentElement.classList.toggle('form-active',
+    form.contains(document.activeElement) && vv.height < window.innerHeight * 0.75);
+  vv.addEventListener('resize', typing);
+  form.addEventListener('focusin', typing);
+  form.addEventListener('focusout', () => setTimeout(typing, 0));
 }
 
 /* ── the specification sheet on a phone ─────────────────────────────────────
    The HTML ships every group open — a data sheet on a wide screen, and the
    honest default with JavaScript off. On a narrow screen that is a very long
-   wall, so all but the first fold away; a linked group (#spec-…) stays open. */
-if (matchMedia('(max-width: 1023.98px)').matches) {
+   wall, so all but the first fold away; a linked group (#spec-…) stays open.
+   Crossing the breakpoint (a tablet rotating) folds or reopens them. Folding
+   removes height above later sections, so a deep link is put back on its
+   target — Safari has no scroll anchoring to do it. */
+const narrow = matchMedia('(max-width: 1023.98px)');
+const fold = () => {
   $$('.spec-list .spec-group').forEach((d, i) => {
-    if (i > 0 && location.hash !== '#' + d.id) d.open = false;
+    d.open = !narrow.matches || i === 0 || location.hash === '#' + d.id;
   });
-}
+};
+fold();
+if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+narrow.addEventListener('change', fold);
 
 /* ── the small-screen menu ──────────────────────────────────────────────── */
 

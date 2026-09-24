@@ -171,7 +171,9 @@ export function servicePage(s) {
   /* The page's close-up photograph joins the plate row where there is one;
      otherwise it is a captioned plate after the brief. It used to sit alone
      between 'related services' and the footer, uncaptioned. */
-  const plates = s.strip && s.strip.length ? [...s.strip, ...(s.aside ? [s.aside] : [])] : [];
+  /* ...but a row of five is already full: a sixth makes every plate a sliver. */
+  const joins = s.aside && s.strip && s.strip.length && s.strip.length < 5;
+  const plates = s.strip && s.strip.length ? [...s.strip, ...(joins ? [s.aside] : [])] : [];
   const strip = plates.length
     ? `  <ul class="ch-strip sp-strip" tabindex="0" role="group"
        aria-label="Photographs of this work. On a narrow screen this row scrolls sideways.">
@@ -182,7 +184,7 @@ ${plates.map((k, i) => `    <li data-reveal="plate" data-from="below" style="--d
   </ul>`
     : '';
 
-  const aside = s.aside && !plates.length
+  const aside = s.aside && !joins
     ? `      <figure class="sp-aside frame" data-reveal="plate" data-from="below">
         ${zoomable(s.aside, photo(s.aside, { sizes: '(max-width:900px) 100vw, 1200px', w: 1100 }))}
         <figcaption>${esc(ASSETS[s.aside].alt.split(/[:,]/)[0])}</figcaption>

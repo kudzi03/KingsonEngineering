@@ -41,10 +41,12 @@ export const BUILD = createHash('sha256')
   .digest('hex').slice(0, 10);
 
 /* The one place the production origin is written. Canonicals, Open Graph,
-   structured data, the sitemap and robots.txt all derive from it. For the
-   .co.zw move: set SITE_URL when rendering (SITE_URL=https://… node
-   tools/render.js), or change the default here — see DOMAIN_MIGRATION.md. */
-export const SITE = (process.env.SITE_URL || 'https://kingson-engineering.vercel.app').replace(/\/+$/, '');
+   structured data, the sitemap, robots.txt and the truth gate all derive
+   from it. For the .co.zw move, change it here and re-render — a constant in
+   a committed file rather than an environment variable, because the rendered
+   HTML is committed and Vercel never runs the renderer. See
+   DOMAIN_MIGRATION.md. */
+export const SITE = 'https://kingson-engineering.vercel.app';
 
 export const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
