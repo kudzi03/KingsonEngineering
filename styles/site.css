@@ -642,8 +642,11 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
    the first; with JavaScript off everything stays open. */
 .spec-list { display: grid; gap: 14px; }
 @media (min-width: 1024px) {
-  .spec-list { display: block; columns: 2; column-gap: 14px; }
+  .spec-list:has(> .spec-group + .spec-group) { display: block; columns: 2; column-gap: 14px; }
   .spec-list > .spec-group { break-inside: avoid; margin-bottom: 14px; }
+  /* One group on its own (most service pages): its rows take the two columns. */
+  .spec-list:not(:has(> .spec-group + .spec-group)) .spec-rows { columns: 2; column-gap: 48px; }
+  .spec-list:not(:has(> .spec-group + .spec-group)) .spec-rows > div { break-inside: avoid; }
 }
 .spec-group {
   background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg);
