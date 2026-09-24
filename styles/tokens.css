@@ -126,10 +126,14 @@ a { color: inherit; text-decoration: none; }
 
 /* Headings are Archivo at 700 — the reference's bold system sans, with better
    letterfit. Not the -.045em display tracking the previous build used. */
+/* Archivo's width axis carries the identity: headlines expanded, like the
+   lettering stamped on a steel plate; large figures condensed, like the
+   dimension text on a drawing (see .ch-big and the card figures). One family
+   doing the work a second typeface usually would. */
 .display {
   font-family: Archivo, Inter, system-ui, sans-serif;
-  font-weight: 700;
-  letter-spacing: -.028em;
+  font-weight: 800; font-stretch: 125%;
+  letter-spacing: -.032em;
   line-height: 1.05;
   text-wrap: balance;
 }

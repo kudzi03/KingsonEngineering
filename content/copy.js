@@ -180,13 +180,19 @@ export const PROCESS = {
   title: 'What happens after you send it.',
   lede: 'Five things we hold to on every job. Not targets — what the office actually does.',
   steps: [
-    { n: '01', title: 'Enquiry acknowledged',   body: 'Same working day.' },
-    { n: '02', title: 'Site visit arranged',    body: 'Within two working days, where the job needs one.' },
-    { n: '03', title: 'Written quotation',      body: 'Within the week.' },
-    { n: '04', title: 'Portal frame programme', body: 'Six to ten weeks from order.',
+    { n: '01', title: 'Enquiry acknowledged',   body: 'Same working day.', days: [0.5] },
+    { n: '02', title: 'Site visit arranged',    body: 'Within two working days, where the job needs one.', days: [2] },
+    { n: '03', title: 'Written quotation',      body: 'Within the week.', days: [5] },
+    { n: '04', title: 'Portal frame programme', body: 'Six to ten weeks from order.', days: [42, 70],
       only: 'structural-steel-harare' },
     { n: '05', title: 'Delivery outside Harare', body: 'Nationally, with transport priced per load.' }
   ],
+  /* The home page draws steps 01–04 as a chain dimension, each span to scale
+     in days (the longest commitment in each: half a day, two, five, then six
+     to ten weeks as a solid span with a dashed range). Step 05 has no
+     duration and sits after the chain. */
+  chainFigure: '6–10 weeks',
+  chainNote: 'Drawn to scale in days. The dashed end is the range: six to ten weeks.',
   close: 'That is the whole sequence. It starts when you send the drawings.',
   closeAction: 'Send us the brief'
 };

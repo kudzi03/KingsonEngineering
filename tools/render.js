@@ -363,7 +363,41 @@ ${g.rows.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></d
 
 /* ── how it works ────────────────────────────────────────────────────────── */
 
-const steps = PROCESS.steps.map((st) => `      <li class="step">
+/* The chain dimension: steps with a duration become spans, each as wide as
+   its days (a range is drawn solid to its low end, dashed to its high end).
+   Everything is computed from PROCESS, so the drawing cannot disagree with
+   the words. Each list item is placed under the middle of its own span; the
+   three short spans stagger their labels on leaders, rightmost highest, so
+   no leader crosses a label — the way a draughtsman dimensions a crowded
+   corner. The chain itself is decorative; the <ol> below it is the content. */
+const timed = PROCESS.steps.filter((st) => st.days);
+const total = timed.reduce((n, st) => n + st.days[st.days.length - 1], 0);
+const pc = (d) => +(d / total * 100).toFixed(3);
+let at = 0;
+const spans = timed.map((st) => {
+  const [lo, hi = lo] = st.days;
+  const s = { start: pc(at), solid: pc(lo), range: pc(hi - lo) };
+  at += hi;
+  return s;
+});
+const longest = spans.length - 1;
+const chain = `      <div class="chain-reveal" data-reveal="plate"><div class="chain-line">
+${spans.map((s, i) => `        <span class="cs${i === longest ? ' cs-long' : ''}" style="--w:${s.solid}%"></span>${
+  s.range ? `<span class="cs cs-range" style="--w:${s.range}%"></span>` : ''}`).join('\n')}
+        <span class="cs-end"></span>
+        <span class="chain-fig" style="--at:${mid(spans[longest], true)}%">${esc(PROCESS.chainFigure)}</span>
+      </div></div>
+      <p class="chain-note">${esc(PROCESS.chainNote)}</p>`;
+function mid(s, whole) { return +(s.start + (whole ? s.solid + s.range : s.solid) / 2).toFixed(3); }
+/* Each label sits under the middle of its span. The long span's label takes
+   the top row; the short ones stagger below it, rightmost highest. */
+const place = (i) => {
+  if (i >= timed.length) return ' class="step step-after"';     // no duration
+  const row = i === longest ? 0 : longest - 1 - i;
+  return ` class="step" style="--at:${mid(spans[i], i === longest)}%;--row:${row}"`;
+};
+
+const steps = PROCESS.steps.map((st, i) => `      <li${place(i)}>
         <span class="step-n">${esc(st.n)}</span>
         <div class="step-body">
           <h3>${esc(st.title)}</h3>
@@ -527,7 +561,7 @@ const BLOCKS = {
 
   /* the homepage's own composition */
   hero, strip, chapters, workshop, specs,
-  steps, procClose, form, faq, faqask, contact,
+  steps, chain, procClose, form, faq, faqask, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
   svchead:   head('services', SERVICES_BLOCK.title, SERVICES_BLOCK.lede, 'svc-h'),

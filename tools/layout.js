@@ -404,7 +404,7 @@ ${index ? `<meta property="og:url" content="${canonical}">\n` : ''}<meta propert
 <!-- Both faces, not just the display one. The body font arriving after first
      paint reflowed the hero copy and was the entire measured CLS (0.021 on a
      phone): the h1 and lede are set in these two, so neither can be late. -->
-<link rel="preload" href="/assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/archivo-wdth.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 ${pre}<!-- --svh is set before first paint so a phone's address bar collapsing
      mid-scroll cannot resize a full-height scene under the reader. From

@@ -22,7 +22,7 @@ FAMILIES = [
     # V2 uses Archivo 800 for display and Inter 400/500 for body and interface.
     # IBM Plex Mono is deliberately absent: the treatment removes it from all
     # customer-facing typography.
-    ('Archivo', 'Archivo:wght@600;700;800', 'archivo', '600 800', '100%'),
+    ('Archivo', 'Archivo:wdth,wght@62..125,600..800', 'archivo-wdth', '600 800', '62% 125%'),
     ('Inter',   'Inter:wght@400;500',       'inter',   '400 500', None),
 ]
 

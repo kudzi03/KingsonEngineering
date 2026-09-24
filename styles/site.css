@@ -161,7 +161,12 @@ html.hd-over .hd-mark img {
 .hd-mark img { width: auto; }
 
 .hd-nav { display: flex; gap: 28px; }
-.hd-nav a { font-size: var(--t-ui); color: var(--fg-muted); }
+.hd-nav a { font-size: var(--t-ui); color: var(--fg-muted); white-space: nowrap; }
+/* Between the phone menu (760px) and a full desktop bar the four links and
+   two buttons do not fit: at 768 "What we do" broke onto two lines. The
+   phone number is one tap away in the hero and the phone bar, so the header
+   drops its Call button here and keeps Get a price. */
+@media (min-width: 761px) and (max-width: 1000px) { .hd-act .btn-ghost { display: none; } }
 .hd-nav a:hover { color: var(--fg); }
 
 .hd-act { display: flex; gap: 10px; }
@@ -179,13 +184,55 @@ html.hd-over .hd-mark img {
   display: flex; align-items: flex-end;
   padding: 0; overflow: hidden;
 }
+/* Centred, because the markup over it can only be registered to a centred
+   crop (SVG slice has no 54% / 47%). */
 .hero-img { position: absolute; inset: 0; width: 100%; height: 100%;
-            object-fit: cover; object-position: 54% 47%;
+            object-fit: cover; object-position: 50% 50%;
             animation: hero-settle 2.4s cubic-bezier(.16, 1, .3, 1) both; }
 /* The photograph arrives already visible and eases a few percent back to
    rest. No opacity fade: the first paint is the finished picture. */
 @keyframes hero-settle { from { transform: scale(1.07); } to { transform: none; } }
-@media (prefers-reduced-motion: reduce) { .hero-img { animation: none; } }
+
+/* ── the markup: red pencil on the photograph ─────────────────────────────
+   Same box and same settle as the image, so it stays registered while the
+   photograph eases in. Each callout draws once — ring, leader, label — then
+   holds. The drawn state is the default; motion only ever hides it for the
+   length of the animation, and reduced motion skips that entirely. */
+.hero-mark { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%;
+             pointer-events: none; animation: hero-settle 2.4s cubic-bezier(.16, 1, .3, 1) both; }
+.hero-mark-tall { display: none; }
+@media (max-width: 899.98px) { .hero-mark-wide { display: none; } .hero-mark-tall { display: block; } }
+.hero-mark circle, .hero-mark path {
+  fill: none; stroke: var(--accent); stroke-width: 1.6; vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1.05 1; stroke-dashoffset: 0;
+}
+.hero-mark text {
+  font-family: Archivo, sans-serif; font-size: 12px; font-weight: 600; fill: #fff;
+  paint-order: stroke; stroke: rgba(10, 12, 11, .82); stroke-width: 4px; stroke-linejoin: round;
+}
+.hero-mark .mk-k { fill: #ff4d53; }
+.hero-mark-tall text { font-size: 14px; }
+@keyframes mk-draw { from { stroke-dashoffset: 1.05; } }
+@keyframes mk-show { from { opacity: 0; } }
+.hero-mark circle { stroke-dasharray: none; animation: mk-show 220ms var(--ease) both; }
+.hero-mark path   { animation: mk-draw 520ms var(--ease) both; }
+.hero-mark text   { animation: mk-show 300ms var(--ease) both; }
+.hero-mark g:nth-of-type(1) > * { animation-delay: 700ms; }
+.hero-mark g:nth-of-type(1) path { animation-delay: 900ms; }
+.hero-mark g:nth-of-type(1) text { animation-delay: 1350ms; }
+.hero-mark g:nth-of-type(2) > * { animation-delay: 950ms; }
+.hero-mark g:nth-of-type(2) path { animation-delay: 1150ms; }
+.hero-mark g:nth-of-type(2) text { animation-delay: 1600ms; }
+.hero-mark g:nth-of-type(3) > * { animation-delay: 1200ms; }
+.hero-mark g:nth-of-type(3) path { animation-delay: 1400ms; }
+.hero-mark g:nth-of-type(3) text { animation-delay: 1850ms; }
+.hero-mark g:nth-of-type(4) > * { animation-delay: 1450ms; }
+.hero-mark g:nth-of-type(4) path { animation-delay: 1650ms; }
+.hero-mark g:nth-of-type(4) text { animation-delay: 2100ms; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-img, .hero-mark,
+  .hero-mark circle, .hero-mark path, .hero-mark text { animation: none; }
+}
 
 /* A plate caption, the way a technical journal labels a photograph. */
 .hero-cap {
@@ -290,13 +337,13 @@ html.hd-over .hd-mark img {
    Only where the capability earned one. Tabular numerals so a tolerance does
    not wobble, and the unit set smaller than the number it qualifies. */
 .ch-big {
-  font-family: Archivo, sans-serif; font-weight: 700;
-  font-size: clamp(52px, 7.6vw, 116px); line-height: .92;
-  letter-spacing: -.04em; font-variant-numeric: tabular-nums;
+  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
+  font-size: clamp(64px, 9.4vw, 148px); line-height: .88;
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums;
   color: var(--accent); margin-bottom: 10px;
 }
 .ch-dark .ch-big { color: var(--accent-on-dark); }
-.ch-big b { font-weight: 700; font-size: .48em; letter-spacing: -.01em; }
+.ch-big b { font-weight: 700; font-size: .42em; letter-spacing: 0; font-stretch: 100%; }
 .ch-big-label {
   font-size: var(--t-small); color: var(--fg-faint); margin-bottom: 28px;
 }
@@ -695,6 +742,53 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .step h3 { font-family: Archivo, sans-serif; font-weight: 700;
            font-size: clamp(17px, 1.5vw, 20px); letter-spacing: -.018em; line-height: 1.25; margin-bottom: 8px; }
 .step p { color: var(--fg-muted); font-size: var(--t-ui); }
+
+/* ── the chain dimension (home page, desktop) ──────────────────────────────
+   Steps 01–04 dimensioned in time, each span to scale in days: extension
+   lines, 45° ticks, one dimension figure over the long span, the range drawn
+   dashed. The short spans' labels hang on staggered leaders (render.js sets
+   --at and --row). Below 901px the list is the vertical rail above. */
+.chain { display: none; }
+@media (min-width: 901px) {
+  .chain { display: block; position: relative; margin-top: clamp(28px, 3.4vw, 44px); --plate-cover: var(--bg-soft); }
+  /* The reveal cover needs overflow: hidden; the padding keeps the end ticks
+     inside it, the negative margin keeps the spans aligned with the labels. */
+  .chain-reveal { padding: 0 8px; margin: 0 -8px; }
+  .chain-line { position: relative; display: flex; height: 60px; }
+  .cs { flex: 0 0 var(--w); position: relative; border-left: 1.5px solid var(--accent); }
+  .cs::after { content: ""; position: absolute; left: 0; right: 0; bottom: 14px; border-top: 1.5px solid var(--accent); }
+  .cs-range { border-left-width: 1px; border-right: 1.5px solid var(--accent); }
+  .cs-range::after { border-top-style: dashed; }
+  .cs::before, .cs-end {
+    content: ""; position: absolute; left: -6px; bottom: 8px; width: 12px;
+    border-top: 1.5px solid var(--accent); transform: rotate(-45deg);
+  }
+  .cs-end { left: auto; right: -6px; }
+  .chain-fig {
+    position: absolute; left: var(--at); bottom: 20px; transform: translateX(-50%);
+    padding: 0 12px; background: var(--bg-soft); white-space: nowrap;
+    font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
+    font-size: clamp(28px, 2.6vw, 38px); line-height: 1; color: var(--accent-ink);
+  }
+  .chain-note { position: absolute; right: 0; top: -30px; font-size: var(--t-small); color: var(--fg-faint); }
+
+  .steps-chain { display: block; height: 196px; }
+  .steps-chain::before { display: none; }
+  .steps-chain .step {
+    position: absolute; left: var(--at); top: calc(var(--row) * 58px + 16px);
+    padding: 0 0 0 14px; white-space: nowrap;
+  }
+  .steps-chain .step::before {
+    content: ""; position: absolute; left: 0; bottom: calc(100% - 8px);
+    height: calc(var(--row) * 58px + 38px); border-left: 1px solid var(--accent);
+  }
+  .steps-chain .step-n { display: none; }
+  .steps-chain .step-body { padding-top: 0; }
+  .steps-chain .step h3 { font-size: 16px; margin-bottom: 2px; }
+  .steps-chain .step p { font-size: 14px; }
+  .steps-chain .step-after { left: auto; right: 0; top: 74px; padding: 0; text-align: right; }
+  .steps-chain .step-after::before { display: none; }
+}
 
 /* The rail ends on the action it describes, rather than in white space. */
 .proc-close {
@@ -1610,8 +1704,8 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 }
 .svc-media-fig {
   position: absolute; left: clamp(18px, 2vw, 24px); bottom: clamp(14px, 1.6vw, 20px); z-index: 1;
-  font-family: Archivo, sans-serif; font-weight: 800; color: #fff;
-  font-size: clamp(34px, 3.4vw, 46px); line-height: 1; letter-spacing: -.035em;
+  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%; color: #fff;
+  font-size: clamp(42px, 4.2vw, 58px); line-height: 1; letter-spacing: -.015em;
   font-variant-numeric: tabular-nums;
 }
 /* The two services with no photograph: a plate of dark steel with a red edge,
@@ -1626,8 +1720,8 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 }
 .svc-plate::after { display: none; }
 .svc-plate-fig {
-  font-family: Archivo, sans-serif; font-weight: 800; color: #fff;
-  font-size: clamp(38px, 4vw, 56px); line-height: 1; letter-spacing: -.035em;
+  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%; color: #fff;
+  font-size: clamp(46px, 4.8vw, 68px); line-height: 1; letter-spacing: -.015em;
 }
 .svc-plate-cap { color: var(--fg-on-dark-muted); font-size: var(--t-small); margin-top: 8px; }
 .svc-text {
