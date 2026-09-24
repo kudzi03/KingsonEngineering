@@ -243,6 +243,8 @@ for (const file of allPages) {
   for (const m of html.matchAll(/(?:href|src|srcset)="([^"]*)"/g)) {
     const value = m[1];
     if (/^(https?:|mailto:|tel:|data:)/.test(value)) continue;
+    /* Served by the Vercel platform (Web Analytics), not by a repository file. */
+    if (value === '/_vercel/insights/script.js') continue;
     for (const arm of value.split(',')) {
       const u = arm.trim().split(/\s+/)[0];
       if (!u) continue;
