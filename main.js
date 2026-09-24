@@ -135,7 +135,8 @@ if (si && 'IntersectionObserver' in window) {
       si.dataset.ground = e.target.matches('.on-dark, .sec-dark') ? 'dark' : 'light';
     }
   }, { rootMargin: '-50% 0px -50% 0px' });
-  [hero, ...[...links.keys()].map((id) => document.getElementById(id))]
+  /* The footer is not a sheet, and the ruler would sit on its logo. */
+  [hero, $('.ft'), ...[...links.keys()].map((id) => document.getElementById(id))]
     .filter(Boolean).forEach((s) => io.observe(s));
 }
 

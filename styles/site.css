@@ -268,7 +268,7 @@ html.hd-over .hd {
   .hero-title { margin-bottom: 18px; }
   /* Taller on a phone, where the frame is narrow: the uncut file and the
      portrait markup (see .hero-mark-tall). */
-  .hero-plate { aspect-ratio: 4 / 5; max-height: 72svh; }
+  .hero .hero-plate { height: min(125vw, 72svh); }
   .hero-cap { padding: 10px 14px 10px 0; font-size: 12.5px; }
   .hero-cap span:last-child { display: none; }
 }
@@ -283,7 +283,10 @@ html.hd-over .hd {
 .hero-plate {
   --pi: max(var(--margin), calc((100% - var(--page)) / 2 + var(--margin)));
   position: relative; margin-top: clamp(28px, 3.4vw, 52px);
-  aspect-ratio: 16 / 9; max-height: calc(100vh - var(--hd-h));
+  /* A height, not aspect-ratio + max-height: with both, a short wide window
+     capped the height and the browser narrowed the plate to keep the ratio,
+     so the clip centred on a box that no longer spanned the screen. */
+  width: 100%; height: min(56.25vw, calc(100vh - var(--hd-h)));
   overflow: hidden; background: var(--bg-dark);
   clip-path: inset(0 var(--pi));
 }
@@ -1298,7 +1301,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   .bar {
     display: flex; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 150;
     padding: 10px var(--margin) calc(10px + env(safe-area-inset-bottom));
-    background: rgba(255, 255, 255, .94);
+    background: rgba(236, 238, 239, .94);
     backdrop-filter: saturate(180%) blur(12px);
     border-top: 1px solid var(--line);
   }
@@ -1482,15 +1485,22 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
 
 /* ── the footer, now carrying real navigation ───────────────────────────── */
 
+/* On the grid like every sheet above it: the mark in bay A, the services in
+   bay B, the ways to reach us across C and D. */
+.ft { padding-top: clamp(48px, 5vw, 80px); }
 .ft-nav {
-  display: grid; grid-template-columns: minmax(0, 1.1fr) repeat(2, minmax(0, 1fr));
-  gap: clamp(28px, 4vw, 64px);
-  padding-bottom: clamp(28px, 3.4vw, 44px);
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--gut); row-gap: 32px;
+  padding-bottom: clamp(32px, 3.6vw, 56px);
   border-bottom: 1px solid var(--line-dark);
   margin-bottom: clamp(22px, 2.6vw, 32px);
 }
+.ft-col:last-child { grid-column: span 2; }
 .ft-col h2 {
-  font-size: var(--t-small); color: var(--fg-on-dark-muted); font-weight: 500; margin-bottom: 14px;
+  font: 600 var(--t-label)/1.2 Archivo, "Archivo Fallback", sans-serif; font-stretch: 112%;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--fg-on-dark-muted); margin-bottom: 16px;
+  padding-top: 12px; border-top: 1px solid var(--line-dark);
 }
 .ft-col ul { display: grid; gap: 2px; }
 .ft-col a {
@@ -1532,6 +1542,7 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
 
 @media (max-width: 760px) {
   .sp-parts-list, .sp-related-list, .ft-nav { grid-template-columns: minmax(0, 1fr); }
+  .ft-col:last-child { grid-column: auto; }
   .ft-nav { gap: 26px; }
   .sp-strip { grid-template-columns: 1fr; gap: 8px; }
   .sp-strip > li img { height: 46svh; height: calc(46 * var(--svh, 1vh)); max-height: 400px; }
@@ -1845,12 +1856,12 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
    scrolling on a laptop. */
 /* A 404 does not deserve a full photograph: a thin band of it, so the index
    of services under it is one short scroll away on a laptop. */
-.nf-hero .hero-plate { aspect-ratio: 32 / 9; }
+.hero.nf-hero .hero-plate { height: min(28vw, 50vh); }
 /* The chooser under it is the whole point of the page, so it gets the tighter
    of the two section rhythms — the first row of tiles should be reachable in
    one short scroll on a laptop, not two. */
 .nf-svc { padding-block: clamp(40px, 4.4vw, 64px); }
-@media (max-width: 760px) { .nf-hero .hero-plate { aspect-ratio: 16 / 9; } }
+@media (max-width: 760px) { .hero.nf-hero .hero-plate { height: 56vw; } }
 
 /* ── three actions in the phone bar ──────────────────────────────────────────
    Call, WhatsApp and Get a price. At 360px three equal thirds leave about

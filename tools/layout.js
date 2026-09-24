@@ -291,7 +291,7 @@ export function siteFooter() {
       return `        <li><a href="${href}">${esc(v)}</a></li>`;
     }).join('\n');
 
-  return `<footer class="ft on-dark">
+  return `<footer class="ft on-dark gl">
   <div class="ft-nav wrap">
     <div class="ft-col">
       <span class="ft-logo">${logo('reverse', '52px', '(max-width:760px) 132px, 152px')}</span>
