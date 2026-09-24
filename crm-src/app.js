@@ -11,11 +11,11 @@
    the chrome; a view owns nothing outside `#view`.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { restore, login, logout, currentUser, isSignedIn } from './core/auth.js';
+import { restore, login, logout, currentUser, isSignedIn, requestPasswordReset, updatePassword, takeRecoveryFromUrl } from './core/auth.js';
 import { api } from './core/api.js';
 import { isOverdue } from './core/model.js';
 import { showDemo } from './core/demo.js';
-import { railHtml, topbarHtml, loginHtml } from './ui/shell.js';
+import { railHtml, topbarHtml, loginHtml, forgotHtml, resetHtml } from './ui/shell.js';
 import { loading, errorState } from './ui/components.js';
 import { toast } from './ui/form.js';
 import { esc } from './core/fmt.js';
@@ -50,7 +50,8 @@ const ROUTES = {
   visits:      () => import('./views/visits.js'),
   projects:    () => import('./views/projects.js'),
   project:     () => import('./views/project.js'),
-  settings:    () => import('./views/settings.js')
+  settings:    () => import('./views/settings.js'),
+  account:     () => import('./views/account.js')
 };
 
 /* Which rail item lights up for a detail screen. */
@@ -164,6 +165,8 @@ function showLogin(message = '') {
   const btn = form.querySelector('[data-signin]');
   const err = form.querySelector('.signin-err');
   form.querySelector('#si-email').focus();
+  form.querySelector('[data-forgot]').addEventListener('click', () =>
+    showForgot(form.querySelector('#si-email').value.trim()));
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -227,6 +230,10 @@ document.addEventListener('click', async (e) => {
      in `actions()` cannot be handled by that view's own mount(). They are
      handled here, against the same dialogs the views use. */
   const me = currentUser();
+  if (e.target.closest('[data-search-open]')) {
+    const { openSearch } = await import('./ui/search.js');
+    return openSearch();
+  }
   if (e.target.closest('[data-new-opp]')) {
     const { newOpportunity } = await import('./ui/dialogs.js');
     /* No onDone: the dialog navigates to the opportunity it just created.
@@ -244,11 +251,111 @@ document.addEventListener('click', async (e) => {
   }
 });
 
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', async (e) => {
   if (e.key === 'Escape' && app.classList.contains('rail-open')) closeRail();
+  /* "/" opens search from anywhere that is not already a text field. */
+  if (e.key === '/' && !app.hidden && !document.body.classList.contains('is-modal')
+      && !e.target.closest?.('input, textarea, select, [contenteditable]')) {
+    e.preventDefault();
+    const { openSearch } = await import('./ui/search.js');
+    openSearch();
+  }
 });
 
+/* ── forgot password ──────────────────────────────────────────────────────── */
+
+function showForgot(email = '') {
+  app.hidden = true;
+  gate.hidden = false;
+  gate.innerHTML = forgotHtml(email);
+  const form = gate.querySelector('#forgot-form');
+  const err = form.querySelector('.signin-err');
+  const ok = form.querySelector('.signin-ok');
+  const btn = form.querySelector('[data-send]');
+  form.querySelector('#fp-email').focus();
+  form.querySelector('[data-back]').addEventListener('click', () => showLogin());
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const address = form.querySelector('#fp-email').value.trim();
+    err.hidden = true; ok.hidden = true;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(address)) {
+      err.textContent = 'Enter the email address you sign in with.';
+      err.hidden = false;
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      await requestPasswordReset(address);
+      /* The same words whether or not the address has an account. */
+      ok.textContent = 'If that address has an account, the link is on its way. Check the inbox, and the spam folder.';
+      ok.hidden = false;
+      btn.textContent = 'Send again';
+    } catch (ex) {
+      err.textContent = ex?.message || 'The link could not be sent. Try again in a few minutes.';
+      err.hidden = false;
+      btn.textContent = 'Send the link';
+    }
+    btn.disabled = false;
+  });
+}
+
+/* ── choose a new password, from the emailed link ─────────────────────────── */
+
+const LINK_ERRORS = {
+  otp_expired: 'The link has expired or has already been used. Links last one hour and work once.',
+  access_denied: 'The link could not be accepted. It may have expired or already been used.'
+};
+
+function showReset(outcome) {
+  app.hidden = true;
+  gate.hidden = false;
+  if (outcome.error) {
+    gate.innerHTML = resetHtml({ error: LINK_ERRORS[outcome.error] || outcome.description || 'The link could not be accepted.' });
+    gate.querySelector('[data-forgot]').addEventListener('click', () => showForgot());
+    gate.querySelector('[data-back]').addEventListener('click', () => showLogin());
+    return;
+  }
+  gate.innerHTML = resetHtml();
+  const form = gate.querySelector('#reset-form');
+  const err = form.querySelector('.signin-err');
+  const btn = form.querySelector('[data-save]');
+  form.querySelector('#np-1').focus();
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const a = form.querySelector('#np-1').value;
+    const b = form.querySelector('#np-2').value;
+    err.hidden = true;
+    if (a.length < 8) { err.textContent = 'Use at least 8 characters.'; err.hidden = false; return; }
+    if (a !== b) { err.textContent = 'The two passwords are not the same.'; err.hidden = false; return; }
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    try {
+      await updatePassword(a);
+      const me = await restore();
+      if (!me) throw new Error('Your password was changed, but this account cannot use the CRM. Ask an administrator.');
+      gate.hidden = true;
+      gate.innerHTML = '';
+      app.hidden = false;
+      location.hash = '#/';
+      await refreshOverdue();
+      await render();
+      toast('Password changed. You are signed in.');
+    } catch (ex) {
+      err.textContent = ex?.status === 401
+        ? 'The link has expired. Ask for a new one.'
+        : (ex?.message || 'The password could not be saved.');
+      err.hidden = false;
+      btn.disabled = false;
+      btn.textContent = 'Save and sign in';
+    }
+  });
+}
+
 addEventListener('hashchange', () => {
+  /* A reset link opened in a tab that already had the CRM loaded. */
+  const recovery = takeRecoveryFromUrl();
+  if (recovery) return showReset(recovery);
   route = parseHash();
   render().then(() => { viewEl.focus({ preventScroll: true }); scrollTo(0, 0); });
 });
@@ -263,6 +370,10 @@ addEventListener('storage', (e) => {
 
 (async function boot() {
   document.getElementById('boot')?.remove();
+  /* Arriving from a password-reset email: the link's tokens are in the
+     address. Handle them before anything else reads the hash as a route. */
+  const recovery = takeRecoveryFromUrl();
+  if (recovery) return showReset(recovery);
   const me = await restore();
   if (!me) return showLogin();
   gate.hidden = true;

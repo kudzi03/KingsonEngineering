@@ -1,139 +1,51 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   send-email — the provider abstraction
+   send-email — a member of staff sends one templated email
    ═══════════════════════════════════════════════════════════════════════════
 
-   Email is sent from here and nowhere else. The browser never holds a sending
-   credential: it calls this function with the caller's own access token, the
-   function checks that token belongs to active staff, and only then does the
-   provider key — which lives in this function's environment and is never
-   returned to anybody — get used.
+   Called from the CRM with the caller's own access token. Nothing automatic
+   goes through here: the staff alert, the customer acknowledgement and the
+   morning digest are sent by `notify`, from the outbox. This function exists
+   for a PERSON choosing to send a message.
 
-   ── THE ONE REMAINING CREDENTIAL ───────────────────────────────────────────
-   Nothing below is guessed or stubbed, but nothing can actually leave the
-   building until a provider key is set. Set exactly one of these:
-
-     RESEND_API_KEY   a key from resend.com — the short path. It needs
-                      kingsonengineering.co.zw verified as a sending domain,
-                      which is three DNS records.
-
-     SMTP_URL         smtps://user:pass@host:465 — if Kingson would rather send
-                      through the mailbox they already have.
-
-   Plus, in both cases:
-
-     MAIL_FROM        e.g. "Kingson Engineering <admin1@kingsonengineering.co.zw>"
-     MAIL_OFFICE      where office alerts go. Defaults to MAIL_FROM's address.
-
-       supabase secrets set RESEND_API_KEY=... MAIL_FROM='...' MAIL_OFFICE='...'
-
-   With none of them set the function does not pretend. It returns 200 with
-   `{ sent: false, reason: 'not_configured' }`, so an enquiry is still saved
-   and the office still sees it in the CRM — the email is the extra, not the
-   record. It never returns a success it did not achieve.
+   Secrets (see _shared/mail.ts): RESEND_API_KEY or SMTP_URL, and MAIL_FROM.
+   ALLOWED_ORIGINS — comma-separated origins allowed to call this from a
+   browser, e.g. "https://crm.kingsonengineering.co.zw,https://kingson-engineering.vercel.app".
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { TEMPLATES, type Mail } from './templates.ts';
+import { TEMPLATES, type Mail } from '../_shared/templates.ts';
+import { send, isEmail } from '../_shared/mail.ts';
 
-const CORS = {
-  'Access-Control-Allow-Origin': Deno.env.get('ALLOWED_ORIGIN') ?? '*',
-  'Access-Control-Allow-Headers': 'authorization, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS'
-};
+const ORIGINS = (Deno.env.get('ALLOWED_ORIGINS') ?? 'https://kingson-engineering.vercel.app')
+  .split(',').map((s) => s.trim()).filter(Boolean);
 
-const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), {
-    status, headers: { ...CORS, 'Content-Type': 'application/json' }
-  });
-
-/* ── providers ──────────────────────────────────────────────────────────────
-   Each one takes the same message and reports the same three outcomes. Adding
-   a third provider means adding a function here and a line in `provider()`,
-   and touching nothing else. */
-
-interface Sent { sent: boolean; id?: string; reason?: string; detail?: string }
-
-async function viaResend(to: string[], mail: Mail, from: string, replyTo?: string): Promise<Sent> {
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${Deno.env.get('RESEND_API_KEY')}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      from, to, subject: mail.subject, text: mail.text, html: mail.html,
-      ...(replyTo ? { reply_to: replyTo } : {})
-    })
-  });
-  if (res.ok) {
-    const body = await res.json().catch(() => ({}));
-    return { sent: true, id: body?.id };
-  }
-  return { sent: false, reason: 'provider_rejected', detail: (await res.text()).slice(0, 300) };
+function cors(req: Request) {
+  const origin = req.headers.get('Origin') ?? '';
+  return {
+    'Access-Control-Allow-Origin': ORIGINS.includes(origin) ? origin : ORIGINS[0],
+    'Vary': 'Origin',
+    'Access-Control-Allow-Headers': 'authorization, content-type, apikey, x-client-info',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  };
 }
 
-async function viaSmtp(to: string[], mail: Mail, from: string, replyTo?: string): Promise<Sent> {
-  /* Imported here rather than at the top so a deployment using Resend does not
-     pay to load an SMTP client it will never call. */
-  const { SMTPClient } = await import('https://deno.land/x/denomailer@1.6.0/mod.ts');
-  const url = new URL(Deno.env.get('SMTP_URL')!);
-  const client = new SMTPClient({
-    connection: {
-      hostname: url.hostname,
-      port: Number(url.port || 465),
-      tls: url.protocol === 'smtps:',
-      auth: { username: decodeURIComponent(url.username), password: decodeURIComponent(url.password) }
-    }
-  });
-  try {
-    await client.send({
-      from, to, subject: mail.subject, content: mail.text, html: mail.html,
-      ...(replyTo ? { replyTo } : {})
-    });
-    return { sent: true };
-  } catch (e) {
-    return { sent: false, reason: 'provider_rejected', detail: String(e).slice(0, 300) };
-  } finally {
-    await client.close().catch(() => {});
-  }
-}
-
-function provider() {
-  if (Deno.env.get('RESEND_API_KEY')) return viaResend;
-  if (Deno.env.get('SMTP_URL')) return viaSmtp;
-  return null;
-}
-
-/* ── who is allowed to ask ───────────────────────────────────────────────────
-   The caller's own token, checked against the database as that caller. An
-   anonymous token reads no profile and gets nothing, so this cannot be used as
-   an open relay by anybody who finds the URL. */
-
+/* Active staff only, checked as the caller: an anonymous or deactivated token
+   reads no usable profile, so this cannot be used as an open relay. */
 async function callerIsStaff(authHeader: string | null): Promise<boolean> {
   if (!authHeader?.startsWith('Bearer ')) return false;
   const url = Deno.env.get('SUPABASE_URL');
   const anon = Deno.env.get('SUPABASE_ANON_KEY');
   if (!url || !anon) return false;
-  const res = await fetch(`${url}/rest/v1/profiles?select=id,active&limit=1`, {
-    headers: { apikey: anon, Authorization: authHeader }
+  const res = await fetch(`${url}/rest/v1/rpc/is_staff`, {
+    method: 'POST',
+    headers: { apikey: anon, Authorization: authHeader, 'Content-Type': 'application/json' },
+    body: '{}'
   });
   if (!res.ok) return false;
-  const rows = await res.json().catch(() => []);
-  return Array.isArray(rows) && rows.length > 0 && rows[0]?.active !== false;
+  return (await res.json().catch(() => false)) === true;
 }
 
-/* ── the email mode ──────────────────────────────────────────────────────────
-   crm_settings.email_mode decides whether anything may leave at all:
-
-     manual     nothing is sent. Staff send from their own mailbox and record
-                it in the CRM. The default, and the only mode that is honest
-                until Kingson's mailbox credentials exist.
-     test       only to crm_settings.test_mailbox, whatever address was asked
-                for — so a test can never reach a real customer.
-     connected  as asked. Only meaningful once MAIL_FROM is Kingson's own
-                address and the provider secret is set.
-
+/* manual — nothing leaves.  test — only to the test mailbox.  live — as asked.
    Read as the caller, so an unreadable settings row fails closed (manual). */
-
 async function emailMode(authHeader: string): Promise<{ mode: string; testMailbox: string | null }> {
   const url = Deno.env.get('SUPABASE_URL');
   const anon = Deno.env.get('SUPABASE_ANON_KEY');
@@ -146,34 +58,28 @@ async function emailMode(authHeader: string): Promise<{ mode: string; testMailbo
   return { mode: rows?.[0]?.email_mode ?? 'manual', testMailbox: rows?.[0]?.test_mailbox ?? null };
 }
 
-/* ── the handler ─────────────────────────────────────────────────────────── */
-
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
-  if (req.method !== 'POST') return json({ error: 'POST only' }, 405);
+  const headers = { ...cors(req), 'Content-Type': 'application/json' };
+  const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers });
 
-  if (!(await callerIsStaff(req.headers.get('Authorization')))) {
-    return json({ error: 'Not authorised.' }, 403);
-  }
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: cors(req) });
+  if (req.method !== 'POST') return json({ error: 'POST only' }, 405);
+  if (!(await callerIsStaff(req.headers.get('Authorization')))) return json({ error: 'Not authorised.' }, 403);
 
   let body: { template?: string; to?: string | string[]; replyTo?: string; data?: Record<string, unknown> };
   try { body = await req.json(); } catch { return json({ error: 'Expected JSON.' }, 400); }
 
   const build = TEMPLATES[body.template as keyof typeof TEMPLATES];
-  if (!build) {
-    return json({ error: `Unknown template. One of: ${Object.keys(TEMPLATES).join(', ')}` }, 400);
-  }
+  if (!build) return json({ error: `Unknown template. One of: ${Object.keys(TEMPLATES).join(', ')}` }, 400);
 
   const to = (Array.isArray(body.to) ? body.to : [body.to]).filter(Boolean) as string[];
   if (!to.length) return json({ error: 'No recipient.' }, 400);
-  if (to.some((a) => !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(a))) {
-    return json({ error: 'That is not an email address.' }, 400);
-  }
+  if (!to.every(isEmail)) return json({ error: 'That is not an email address.' }, 400);
 
   const { mode, testMailbox } = await emailMode(req.headers.get('Authorization')!);
   if (mode === 'manual') {
     return json({ sent: false, reason: 'manual_mode',
-                  detail: 'Email mode is manual. Send from your own mailbox and record it in the CRM.' });
+                  detail: 'Email is switched off. Send from your own mailbox and record it in the CRM.' });
   }
   if (mode === 'test') {
     if (!testMailbox) return json({ sent: false, reason: 'no_test_mailbox' });
@@ -181,23 +87,9 @@ Deno.serve(async (req) => {
   }
 
   let mail: Mail;
-  try { mail = build(body.data as never); }
+  try { mail = (build as (d: never) => Mail)(body.data as never); }
   catch (e) { return json({ error: `That template needs more than it was given: ${e}` }, 400); }
 
-  const send = provider();
-  if (!send) {
-    /* Honest, and deliberately not an error: the enquiry is already saved and
-       the office already has it in the CRM. Only the courtesy email is
-       missing, and the reason says exactly which secret would fix it. */
-    console.warn('[kingson] no mail provider configured — set RESEND_API_KEY or SMTP_URL');
-    return json({ sent: false, reason: 'not_configured',
-                  needs: 'RESEND_API_KEY or SMTP_URL, plus MAIL_FROM',
-                  preview: { subject: mail.subject, to } });
-  }
-
-  const from = Deno.env.get('MAIL_FROM');
-  if (!from) return json({ sent: false, reason: 'not_configured', needs: 'MAIL_FROM' });
-
-  const result = await send(to, mail, from, body.replyTo);
-  return json(result, result.sent ? 200 : 502);
+  const result = await send(to, mail, body.replyTo);
+  return json(result, result.sent || result.reason === 'not_configured' ? 200 : 502);
 });

@@ -76,16 +76,24 @@ export class ApiError extends Error {
    translated here falls through with the database's own message, which is
    better than a generic apology that hides what went wrong. */
 function humanise(status, body) {
-  const code = body?.code || '';
+  const code = String(body?.error_code || body?.code || '');
   const msg = body?.message || body?.error_description || body?.msg || '';
 
+  /* GoTrue's password rules and link failures, in words. */
+  if (code === 'weak_password' || /password should be|weak password/i.test(msg))
+    return 'That password is too weak. Use at least 8 characters, mixing letters and numbers.';
+  if (code === 'same_password') return 'That is the password you already have. Choose a different one.';
+  if (code === 'over_email_send_rate_limit' || status === 429)
+    return 'Too many attempts. Wait a few minutes and try again.';
+  if (code === '23505' && msg && !/_key"?$/.test(msg) && !/duplicate key/i.test(msg)) return msg;
+  if (code === '23514' && msg && !/violates check constraint/i.test(msg)) return msg;
   if (code === '23505') {
     if (/contacts_email_key/.test(msg)) return 'A contact with that email address already exists.';
     if (/companies_name_key/.test(msg)) return 'A company with that name already exists.';
     return 'That record already exists.';
   }
   if (code === '23514') {
-    if (/lost_has_reason/.test(msg))  return 'A lost opportunity needs a reason.';
+    if (/lost_has_reason/.test(msg))  return 'A lost enquiry needs a reason.';
     if (/quotes_sent_has_date/.test(msg)) return 'A quotation marked sent needs the date it went out.';
     if (/contacts_reachable/.test(msg))   return 'A contact needs a phone number, a WhatsApp number or an email address.';
     if (/amount_sane|value_sane/.test(msg)) return 'That amount cannot be negative.';
@@ -136,8 +144,46 @@ export async function signOut() {
   }
 }
 
+/* The reset email links back to wherever this CRM is being served from —
+   /crm on the website's host today, crm.kingsonengineering.co.zw later — so
+   no host is written into the code. The address must be listed in Supabase
+   → Authentication → URL Configuration → Redirect URLs, or GoTrue falls back
+   to the Site URL. GoTrue answers 200 whether or not the address has an
+   account, so this cannot be used to find out who works at Kingson. */
+export const resetRedirect = () => `${location.origin}${location.pathname.replace(/[^/]*$/, '')}?reset=1`;
+
 export async function requestPasswordReset(email) {
-  return gotrue('/recover', { body: { email: email.trim() } });
+  return gotrue(`/recover?redirect_to=${encodeURIComponent(resetRedirect())}`,
+    { body: { email: email.trim() } });
+}
+
+/**
+ * A recovery link arrives as `#access_token=…&refresh_token=…&type=recovery`
+ * (or `#error=…&error_code=otp_expired`). Read it, keep the session so the new
+ * password can be saved, and scrub the tokens out of the address bar so they
+ * are not left in history or a screenshot.
+ */
+export function takeRecoveryFromUrl() {
+  const h = new URLSearchParams((location.hash || '').replace(/^#/, ''));
+  if (!h.get('type') && !h.get('error') && !h.get('error_code')) return null;
+  const clean = () => history.replaceState(null, '', location.pathname);
+  if (h.get('error') || h.get('error_code')) {
+    clean();
+    return { error: h.get('error_code') || h.get('error'), description: h.get('error_description') || '' };
+  }
+  if (h.get('type') !== 'recovery' || !h.get('access_token')) return null;
+  setSession(stamp({
+    access_token: h.get('access_token'), refresh_token: h.get('refresh_token'),
+    expires_in: Number(h.get('expires_in')) || 3600, user: null
+  }));
+  clean();
+  return { recovery: true };
+}
+
+/** Set a new password for the signed-in user (or the recovery session). */
+export async function updatePassword(password) {
+  if (session && expired()) { try { await refresh(); } catch { /* the 401 below explains */ } }
+  return gotrue('/user', { method: 'PUT', token: session?.access_token, body: { password } });
 }
 
 async function refresh() {

@@ -19,7 +19,7 @@ export async function render() {
   rows = await api.projects();
   if (!rows.length) {
     return card('', empty('No projects yet.',
-      'When an opportunity is marked won, open a project from it and it appears here.', { tone: 'quiet' }), { tight: true });
+      'When an enquiry is marked won, open a project from it and it appears here.', { tone: 'quiet' }), { tight: true });
   }
   const live = rows.filter((p) => ['planning', 'in_progress', 'on_hold'].includes(p.status));
   const done = rows.filter((p) => !['planning', 'in_progress', 'on_hold'].includes(p.status));

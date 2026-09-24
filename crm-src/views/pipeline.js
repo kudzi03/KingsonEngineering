@@ -8,7 +8,7 @@
    keyboard. Drag is the addition, not the other way round.
 
    Every stage change is persisted immediately and written onto the
-   opportunity's timeline by the database. If the write fails the card goes
+   enquiry's timeline by the database. If the write fails the card goes
    back where it was and says why, because a board that shows a move which did
    not happen is worse than one that refuses the move.
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -21,21 +21,33 @@ import { icon } from '../ui/icons.js';
 import { toast } from '../ui/form.js';
 import { decisionFor } from '../ui/lifecycle.js';
 
-export const title = 'Pipeline';
+export const title = 'Enquiries';
 
+const CLOSED_PAGE = 40;
 let cache = [];
+let closedN = 0;          // won + lost loaded so far
+let closedMore = false;
+
+/* Every open enquiry, but only the most recent decisions: the won and lost
+   columns grow forever, so older ones are fetched a page at a time. */
+async function closedPage(offset) {
+  const page = await api.closedPage(offset, CLOSED_PAGE + 1);
+  closedMore = page.length > CLOSED_PAGE;
+  closedN = offset + Math.min(page.length, CLOSED_PAGE);
+  return page.slice(0, CLOSED_PAGE);
+}
 
 export async function render() {
-  const [open, closed] = await Promise.all([
-    api.openOpportunities(),
-    api.opportunities('stage=in.(won,lost)&order=decided_at.desc&limit=40')
-  ]);
+  const [open, closed] = await Promise.all([api.openOpportunities(), closedPage(0)]);
   cache = [...open, ...closed];
-  const all = cache;
+  return board();
+}
 
+function board() {
+  const all = cache;
   if (!all.length) {
-    return empty('No opportunities yet.',
-      'An enquiry from the website appears here automatically. You can also add one by hand.',
+    return empty('No enquiries yet.',
+      'An enquiry from the website appears here automatically. Add one by hand with New enquiry.',
       { tone: 'quiet' });
   }
 
@@ -57,6 +69,8 @@ export async function render() {
           ${rows.length
             ? rows.sort((a, b) => attention(b).sort - attention(a).sort).map(cardHtml).join('')
             : '<p class="col-empty">Nothing here</p>'}
+          ${closedMore && (s.id === 'won' || s.id === 'lost')
+            ? '<button type="button" class="btn-ghost btn-xs col-more" data-more-closed>Show older decisions</button>' : ''}
         </div>
       </section>`;
     }).join('')}
@@ -100,7 +114,7 @@ export function mount(root, rerender) {
   /* One handler for the select and one for drag, both ending in `move()`. */
   async function move(id, stage, revertTo) {
     const opp = cache.find((o) => o.id === id)
-      || { id, title: 'this opportunity', stage: revertTo };
+      || { id, title: 'this enquiry', stage: revertTo };
     if (opp.stage === stage) return;
 
     /* Won, lost and on hold collect their own data first. */
@@ -122,6 +136,19 @@ export function mount(root, rerender) {
       if (sel && revertTo) sel.value = revertTo;
     }
   }
+
+  root.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-more-closed]');
+    if (!b) return;
+    b.disabled = true;
+    try {
+      cache = cache.concat(await closedPage(closedN));
+      const x = root.querySelector('.board')?.scrollLeft || 0;
+      root.innerHTML = board();
+      const el = root.querySelector('.board');
+      if (el) el.scrollLeft = x;
+    } catch (err) { b.disabled = false; toast(err.message || 'Could not load more.', 'bad'); }
+  });
 
   root.addEventListener('change', (e) => {
     const sel = e.target.closest('[data-move]');
@@ -168,8 +195,7 @@ export function mount(root, rerender) {
 export function sub() {
   const open = cache.filter((o) => STAGE[o.stage]?.open);
   const v = sumValues(open);
-  return `${esc(pluralise(open.length, 'open opportunity', 'open opportunities'))} · <span class="num">${esc(moneyBy(v.by, { empty: 'nothing quoted' }))}</span>${v.unvalued ? ` · ${v.unvalued} not quoted yet` : ''}`;
+  return `${esc(pluralise(open.length, 'open enquiry', 'open enquiries'))} · <span class="num">${esc(moneyBy(v.by, { empty: 'nothing quoted' }))}</span>${v.unvalued ? ` · ${v.unvalued} not quoted yet` : ''}`;
 }
 
-export const actions = () =>
-  `<button type="button" class="btn btn-sm" data-new-opp>${icon.plus(14)}<span>New opportunity</span></button>`;
+/* New enquiry is in the top bar on every screen (ui/shell.js). */

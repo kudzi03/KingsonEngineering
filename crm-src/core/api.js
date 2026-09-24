@@ -51,6 +51,43 @@ export const api = {
 
   createOpportunity: (row) => db.insert('opportunities', row).then((r) => r[0]),
 
+  /* ── intake (see 20260925_b_production_readiness.sql) ─────────────────── */
+
+  /** Contacts already on file that this caller might be. Strong = same email
+   *  or same phone once normalised; soft = similar name or company. */
+  findMatches: ({ phone, email, name, company }) =>
+    db.rpc('find_contact_matches', {
+      p_phone: phone || null, p_email: email || null, p_name: name || null, p_company: company || null
+    }),
+
+  /** Contact + company + enquiry + first timeline entry, in one transaction. */
+  createEnquiry: (v) =>
+    db.rpc('create_enquiry', {
+      p_full_name: v.fullName || null, p_phone: v.phone || null, p_email: v.email || null,
+      p_description: v.description || null, p_title: v.title || null,
+      p_company: v.company || null, p_contact_id: v.contactId || null,
+      p_service: v.service || null, p_location: v.location || null,
+      p_source: v.source || 'phone', p_preferred_channel: v.preferredChannel || null,
+      p_drawings: v.drawings || 'unknown', p_owner_id: v.ownerId || null,
+      p_next_action: v.nextAction || null, p_next_due: v.nextDue || null,
+      p_force_new: Boolean(v.forceNew)
+    }).then((r) => (Array.isArray(r) ? r[0] : r)),
+
+  /** One box across contacts, enquiries, quotations and projects. */
+  search: (text, limit = 8) =>
+    db.rpc('global_search', { p_q: text, p_include_demo: showDemo(), p_limit: limit }),
+
+  managementSummary: (from, to) =>
+    db.rpc('management_summary', { p_from: from, p_to: to, p_include_demo: showDemo() }),
+
+  /** Closed enquiries a page at a time, newest decision first. */
+  closedPage: (offset = 0, limit = 40) =>
+    db.select('v_opportunity_state', withDemo(
+      `select=*&stage=in.(won,lost)&order=decided_at.desc.nullslast&limit=${limit}&offset=${offset}`)),
+
+  outbox: (limit = 20) =>
+    db.select('notification_outbox', `select=*&order=created_at.desc&limit=${limit}`),
+
   updateOpportunity: (id, patch) =>
     db.update('opportunities', eq('id', id), patch).then((r) => r[0]),
 
@@ -101,12 +138,17 @@ export const api = {
 
   /* ── contacts and companies ────────────────────────────────────────────── */
 
-  contacts: (search = '') => {
-    let f = withDemo(`select=*,companies(id,name)&${order('full_name')}`);
+  /* A page of contacts, searched in the database. The whole contact book is
+     never pulled into the browser: at a few thousand rows that would be slow,
+     and past the API's row cap it would silently stop finding people. */
+  contacts: (search = '', { offset = 0, limit = 50 } = {}) => {
+    let f = withDemo(`select=*,companies(id,name)&${order('full_name')}&limit=${limit}&offset=${offset}`);
     if (search) {
       /* Quoted, so a comma or bracket in the search is text, not filter syntax. */
       const s = encodeURIComponent(q(`%${search}%`));
-      f += `&or=(full_name.ilike.${s},email.ilike.${s},phone.ilike.${s},whatsapp.ilike.${s})`;
+      const digits = search.replace(/\D+/g, '').replace(/^(00)?263/, '').replace(/^0+/, '');
+      const d = digits.length >= 5 ? `,phone_norm.like.${encodeURIComponent(`*${digits}*`)},whatsapp_norm.like.${encodeURIComponent(`*${digits}*`)}` : '';
+      f += `&or=(full_name.ilike.${s},email.ilike.${s},phone.ilike.${s},whatsapp.ilike.${s},job_title.ilike.${s}${d})`;
     }
     return db.select('contacts', f);
   },
@@ -177,9 +219,9 @@ export const api = {
 
   /* ── quotes ────────────────────────────────────────────────────────────── */
 
-  quotes: (filter = '') =>
+  quotes: (filter = '', { offset = 0, limit = 200 } = {}) =>
     db.select('quotes',
-      withDemo(`select=*,profiles:sent_by(full_name,initials),opportunities(id,ref,title,stage,next_action_due,company_id,companies(name))&order=prepared_on.desc,version.desc${filter ? '&' + filter : ''}`)),
+      withDemo(`select=*,profiles:sent_by(full_name,initials),opportunities(id,ref,title,stage,next_action_due,company_id,companies(name))&order=prepared_on.desc,version.desc&limit=${limit}&offset=${offset}${filter ? '&' + filter : ''}`)),
 
   liveQuotes: () => api.quotes('status=in.(sent,discussed)'),
   quotesFor: (opportunityId) => api.quotes(eq('opportunity_id', opportunityId)),
@@ -220,6 +262,9 @@ export const api = {
 
   filesFor: (column, id) =>
     db.select('files', `select=*,profiles(full_name,initials)&${eq(column, id)}&${order('created_at', 'desc')}`),
+
+  /** Attach an uploaded file to one quotation version (it stays on the enquiry too). */
+  linkFileToQuote: (fileId, quoteId) => db.update('files', eq('id', fileId), { quote_id: quoteId }).then((r) => r[0]),
 
   async uploadFile(file, link, uploadedBy) {
     /* A path that cannot collide and cannot be guessed, keeping the original

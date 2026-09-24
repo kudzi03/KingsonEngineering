@@ -16,6 +16,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { api } from '../core/api.js';
+import { currentUser } from '../core/auth.js';
 import { today, LOST_REASONS, CHANNELS, oppValue } from '../core/model.js';
 import { isoDateTime, fromLocalInput, money, dateFull, esc } from '../core/fmt.js';
 import {
@@ -124,9 +125,16 @@ export async function markSentDialog({ opp, quote, onDone }) {
 
 /* ── quotation detail ─────────────────────────────────────────────────────── */
 
-export function quoteDetailDialog({ opp, quote, onDone }) {
+const MAX_FILE = 25 * 1024 * 1024;
+
+export async function quoteDetailDialog({ opp, quote, onDone }) {
   const draft = quote.status === 'draft';
-  dialog({
+  /* The PDF that went to the customer, kept against this version. Files
+     already on the enquiry can be pointed at instead of uploaded twice. */
+  const files = await api.filesFor('opportunity_id', quote.opportunity_id).catch(() => []);
+  const mine = files.filter((f) => f.quote_id === quote.id);
+  const loose = files.filter((f) => !f.quote_id);
+  const close = dialog({
     title: `Quotation ${quote.reference}`,
     sub: `${opp?.title || ''}${quote.version > 1 ? ` · revision ${quote.version}` : ''}`,
     width: 540,
@@ -147,8 +155,21 @@ export function quoteDetailDialog({ opp, quote, onDone }) {
         ${field('valid_until', 'Valid until', dateInput('valid_until', quote.valid_until || ''))}
         ${field('document_ref', 'Document / where it is filed', text('document_ref', quote.document_ref || ''))}
       </div>
-      ${field('notes', 'Notes', textarea('notes', quote.notes || '', 3), { wide: true })}`,
+      ${field('notes', 'Notes', textarea('notes', quote.notes || '', 3), { wide: true })}
+      <div class="field field-wide">
+        <span class="field-label">The document sent</span>
+        ${mine.length ? `<ul class="mini">${mine.map((f) => `<li><button type="button" class="lnk" data-open-file="${esc(f.path)}">${esc(f.name)}</button></li>`).join('')}</ul>`
+          : '<p class="field-hint">Nothing attached to this version yet.</p>'}
+      </div>
+      <div class="field-row">
+        ${field('attach', 'Attach a file', `<input class="inp" id="attach" name="attach" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.xlsx,.xls,.docx,.doc">`,
+          { hint: 'The quotation PDF as sent. 25 MB at most.' })}
+        ${loose.length ? field('link_file', 'Or use a file already on the enquiry',
+          select('link_file', [['', 'None'], ...loose.map((f) => [f.id, f.name])], '')) : ''}
+      </div>`,
     onSubmit: async (v) => {
+      const pick = document.getElementById('attach')?.files?.[0] || null;
+      if (pick && pick.size > MAX_FILE) throw fieldError('attach', 'That file is over 25 MB.');
       const patch = { valid_until: nul(v.valid_until), document_ref: nul(v.document_ref), notes: nul(v.notes) };
       if (draft) {
         const amount = num(v.amount);
@@ -156,10 +177,25 @@ export function quoteDetailDialog({ opp, quote, onDone }) {
         patch.amount = amount;
       }
       await api.updateQuote(quote.id, patch);
+      if (pick) {
+        const me = currentUser();
+        await api.uploadFile(pick, { opportunity_id: quote.opportunity_id, quote_id: quote.id }, me?.id);
+        await api.logActivity({ opportunity_id: quote.opportunity_id, kind: 'file',
+          body: `File added to ${quote.reference}: ${pick.name}`, actor_id: me?.id || null });
+      }
+      if (v.link_file) await api.linkFileToQuote(v.link_file, quote.id);
       toast('Quotation saved.');
       after(onDone);
     }
   });
+  [...document.querySelectorAll('.modal')].pop()?.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-open-file]');
+    if (!b) return;
+    const { saveFile } = await import('../views/files.js');
+    try { await saveFile(b.dataset.openFile, b.textContent.trim()); }
+    catch (err) { toast(err.message || 'That file could not be opened.', 'bad'); }
+  });
+  return close;
 }
 
 /* ── log a follow-up ──────────────────────────────────────────────────────── */

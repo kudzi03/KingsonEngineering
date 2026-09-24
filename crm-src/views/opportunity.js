@@ -29,11 +29,11 @@ import { filesCard, mountFiles } from './files.js';
 let opp = null;
 let data = {};
 
-export const title = () => opp?.title || 'Opportunity';
+export const title = () => opp?.title || 'Enquiry';
 
 export async function render(id, { me }) {
   opp = await api.opportunity(id);
-  if (!opp) return empty('That opportunity no longer exists.', 'It may have been deleted.', { tone: 'quiet' });
+  if (!opp) return empty('That enquiry no longer exists.', 'It may have been deleted.', { tone: 'quiet' });
 
   const [activity, quotes, visits, tasks, files, project] = await Promise.all([
     api.activityFor(id), api.quotesFor(id), api.visitsFor(id),
@@ -91,7 +91,7 @@ export async function render(id, { me }) {
           ${opp.stage === 'on_hold' && opp.hold_reason ? `<p class="opp-next-meta">On hold: ${esc(opp.hold_reason)}</p>` : ''}
           ${opp.customer_replied_at ? `<p class="opp-next-meta">Customer replied ${esc(relative(opp.customer_replied_at))} · ${esc(stamp(opp.customer_replied_at))}</p>` : ''}`
         : isOpen(opp) ? `
-          <p class="opp-next-text">Nobody has booked a next action on this opportunity.</p>
+          <p class="opp-next-text">Nobody has booked a next action on this enquiry.</p>
           <p class="opp-next-meta">It is open and it is on nobody's list.</p>`
         : `<p class="opp-next-text">${esc(STAGE[opp.stage].name)}${opp.decided_at ? ' on ' + esc(dateFull(opp.decided_at)) : ''}.</p>
            ${opp.lost_reason ? `<p class="opp-next-meta">${esc(opp.lost_reason)}</p>` : ''}
@@ -149,7 +149,7 @@ export async function render(id, { me }) {
     })}</div>
     ${opp.contact_id ? `<p class="co-also"><a class="lnk" href="#/contact/${esc(opp.contact_id)}">
       ${icon.users(13)}Full history for this contact</a></p>` : ''}`
-    : empty('No contact on this opportunity.', '', { tone: 'quiet' }), { tight: false });
+    : empty('No contact on this enquiry.', '', { tone: 'quiet' }), { tight: false });
 
   /* ── site visits ───────────────────────────────────────────────────────── */
 
@@ -184,7 +184,7 @@ export async function render(id, { me }) {
     </ul>
     ${quoteAtRisk(opp) ? `<p class="risk">${icon.alert(14)}
       <span><strong>A quotation is out with no chase booked.</strong>
-      A quotation nobody is following up is the most expensive thing in this pipeline.</span></p>` : ''}`
+      A quotation nobody is following up is the most expensive thing in this CRM.</span></p>` : ''}`
     : empty('Not quoted yet.', 'The value of this job is the quotation. Record it when it is ready.', { tone: 'quiet' }),
     { tight: true, action: open ? `<button type="button" class="btn-ghost btn-xs" data-record-quote>${icon.plus(13)}<span>${quotes.length ? 'Revision' : 'Record'}</span></button>` : '' });
 
@@ -210,7 +210,7 @@ export async function render(id, { me }) {
   const wonCard = opp.stage !== 'won' ? '' : card('Project', project
     ? `<p class="co-name"><a class="lnk" href="#/project/${esc(project.id)}">${esc(project.name)}</a></p>
        <p class="co-kind">${projectStatusPill(project.status)}</p>`
-    : `<p class="modal-message">This opportunity is won and has no project yet.</p>
+    : `<p class="modal-message">This enquiry is won and has no project yet.</p>
        <button type="button" class="btn btn-sm" data-convert>${icon.briefcase(14)}<span>Open a project</span></button>`);
 
   /* ── activity ──────────────────────────────────────────────────────────── */

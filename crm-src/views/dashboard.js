@@ -18,7 +18,7 @@
 import { api } from '../core/api.js';
 import {
   STAGES, isOverdue, isDueToday, hasNoNextAction, quoteAtRisk,
-  attention, today, daysUntil, sumValues
+  attention, today, daysUntil, sumValues, addDays, SOURCE_LABEL, LOST_REASONS
 } from '../core/model.js';
 import { money, moneyBy, moneyByShort, date, relative, stamp, esc, pluralise } from '../core/fmt.js';
 import {
@@ -54,7 +54,7 @@ export async function render() {
   const tiles = `
     <div class="stats">
       ${stat({
-        label: 'Open opportunities', value: String(m.open_count),
+        label: 'Open enquiries', value: String(m.open_count),
         foot: m.quoted_pipeline_count
           ? `<span class="num">${esc(moneyBy(m.quoted_pipeline))}</span> quoted and awaiting a decision`
           : '<span class="dim">No quotation out</span>',
@@ -96,7 +96,7 @@ export async function render() {
     needs.length
       ? `<ul class="att-list">${needs.map((o) => oppRow(o)).join('')}</ul>`
       : empty('Nothing is overdue and nothing is unbooked.',
-              'Every open opportunity has a next action with a date on it.'),
+              'Every open enquiry has a next action with a date on it.'),
     { note: 'Overdue, unbooked, due today or unanswered — in any stage', tight: true });
 
   /* ── today ─────────────────────────────────────────────────────────────── */
@@ -136,7 +136,7 @@ export async function render() {
      reader is looking for a bulge in a known sequence, and eight categorical
      colours could not be told apart by anybody. Values are direct-labelled so
      the chart reads with no axis and no colour at all. */
-  const funnel = card('Pipeline by stage', `
+  const funnel = card('Open enquiries by stage', `
     <ul class="funnel">
       ${byStage.map((b) => `
         <li class="funnel-row${b.n ? '' : ' is-empty'}">
@@ -166,7 +166,7 @@ export async function render() {
   const quotesCard = card('Quotations awaiting a decision', liveQuotes.length ? tableWrap(`
     <table class="tbl">
       <thead><tr>
-        <th scope="col">Quotation</th><th scope="col">Opportunity</th>
+        <th scope="col">Quotation</th><th scope="col">Enquiry</th>
         <th scope="col" class="ta-r">Amount</th><th scope="col">Sent</th><th scope="col">Chase</th>
       </tr></thead>
       <tbody>
@@ -198,7 +198,7 @@ export async function render() {
       ${Object.entries(bySource).sort((a, b) => b[1] - a[1]).map(([k, v]) =>
         `<li class="srcs-row">${sourceTag(k)}<span class="srcs-n num">${v}</span></li>`).join('')}
     </ul>
-    <p class="funnel-key">Open opportunities only. The website writes straight into this pipeline.</p>`
+    <p class="funnel-key">Open enquiries only. Website enquiries arrive here by themselves.</p>`
     : empty('No open enquiries yet.', '', { tone: 'quiet' }));
 
   const activityCard = card('Recent activity',
@@ -208,9 +208,81 @@ export async function render() {
   return `
     ${tiles}
     <div class="grid grid-main">
-      <div class="col-wide">${attentionCard}${todayCard}${quotesCard}</div>
+      <div class="col-wide">${attentionCard}${todayCard}${quotesCard}${mgmtShell()}</div>
       <div class="col-side">${funnel}${decidedCard}${sourceCard}${activityCard}</div>
     </div>`;
+}
+
+/* ── management summary ──────────────────────────────────────────────────
+   Counted in the database (management_summary) for a date range, so it is
+   the same figure whoever asks and however many enquiries there are. It is
+   loaded after the rest of the screen: the morning list must never wait for
+   a report. */
+
+const LOST_LABEL = Object.fromEntries(LOST_REASONS);
+const PERIODS = {
+  week:  { label: 'Last 7 days',  from: () => addDays(today(), -6) },
+  month: { label: 'This month',   from: () => today().slice(0, 8) + '01' },
+  q:     { label: 'Last 90 days', from: () => addDays(today(), -89) }
+};
+let period = 'month';
+
+const mgmtShell = () => card('How the business is doing', `
+    <div class="period-tabs" role="group" aria-label="Period">
+      ${Object.entries(PERIODS).map(([k, p]) =>
+        `<button type="button" data-period="${k}" aria-pressed="${k === period}">${esc(p.label)}</button>`).join('')}
+    </div>
+    <div data-mgmt aria-live="polite"><p class="mini-none">Counting…</p></div>`,
+  { note: 'Demonstration records are left out' });
+
+const tally = (obj, label = (k) => k) => {
+  const rows = Object.entries(obj || {}).sort((a, b) => b[1] - a[1]);
+  return rows.length ? `<ul class="mgmt-list">${rows.map(([k, n]) =>
+    `<li><span>${esc(label(k))}</span><span class="num">${n}</span></li>`).join('')}</ul>`
+    : '<p class="mini-none">None</p>';
+};
+
+function mgmtHtml(r) {
+  const hrs = r.avg_hours_to_first_response;
+  const fig = (v, l) => `<div class="mgmt-fig"><b class="num">${v}</b><span>${l}</span></div>`;
+  return `
+    <div class="mgmt-grid" style="margin-top:12px">
+      ${fig(r.enquiries, 'enquiries received')}
+      ${fig(r.quotes_sent, `quotations sent · <span class="num">${esc(moneyBy(r.quoted_value, { empty: '—' }))}</span>`)}
+      ${fig(r.won, `won · <span class="num">${esc(moneyBy(r.won_value, { empty: '—' }))}</span>`)}
+      ${fig(r.lost, 'lost')}
+      ${fig(r.win_rate_quoted == null ? '—' : r.win_rate_quoted + '%', 'win rate of quoted jobs decided')}
+      ${fig(hrs == null ? '—' : hrs < 48 ? hrs + ' h' : (hrs / 24).toFixed(1) + ' days', 'average time to first response')}
+      ${fig(r.avg_days_to_quote == null ? '—' : r.avg_days_to_quote + ' days', 'average time to a quotation')}
+    </div>
+    <div class="mgmt-cols">
+      <div><p class="mgmt-h">Where they came from</p>${tally(r.by_source, (k) => SOURCE_LABEL[k] || k)}</div>
+      <div><p class="mgmt-h">What they asked for</p>${tally(r.by_service)}</div>
+      <div><p class="mgmt-h">Why jobs were lost</p>${tally(r.lost_reasons, (k) => LOST_LABEL[k] || k)}</div>
+    </div>`;
+}
+
+async function loadMgmt(root) {
+  const host = root.querySelector('[data-mgmt]');
+  if (!host) return;
+  const mine = period;
+  try {
+    const r = await api.managementSummary(PERIODS[period].from(), today());
+    if (mine === period) host.innerHTML = mgmtHtml(r);
+  } catch {
+    host.innerHTML = '<p class="mini-none">The summary is not available yet. It needs the 2026-09-25 database update.</p>';
+  }
+}
+
+export function mount(root) {
+  loadMgmt(root);
+  root.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-period]');
+    if (!b || b.dataset.period === period) return;
+    period = b.dataset.period;
+    root.querySelectorAll('[data-period]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    loadMgmt(root);
+  });
 }
 
 export function sub() {

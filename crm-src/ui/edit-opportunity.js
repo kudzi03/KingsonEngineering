@@ -14,7 +14,7 @@ const titleCase = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 export async function editOpportunity({ opp, me, onDone }) {
   const profiles = await api.profiles();
   dialog({
-    title: 'Edit opportunity',
+    title: 'Edit enquiry',
     sub: opp.ref,
     width: 620,
     submitLabel: 'Save',

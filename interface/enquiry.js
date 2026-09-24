@@ -107,6 +107,7 @@ export function mountEnquiry() {
      on the same words shows the same confirmation instead of creating a
      second record; change anything and it is a new enquiry. */
   let lastSaved = null;
+  let lastRef = null;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -143,7 +144,7 @@ export function mountEnquiry() {
     /* The text is composed before the request, not after, so that whatever the
        network does the visitor still has their enquiry in front of them. */
     const message = compose(p);
-    if (message === lastSaved) { showOutcome({ ok: true }, message, p); return; }
+    if (message === lastSaved) { showOutcome({ ok: true, ref: lastRef }, message, p); return; }
 
     inFlight = true;
     const label = submitBtn?.querySelector('span');
@@ -158,7 +159,7 @@ export function mountEnquiry() {
     }
 
     inFlight = false;
-    if (result.ok) lastSaved = message;
+    if (result.ok) { lastSaved = message; lastRef = result.ref || null; }
     if (submitBtn) submitBtn.disabled = false;
     if (label) label.textContent = was;
 
@@ -171,7 +172,9 @@ export function mountEnquiry() {
   function showOutcome(result, message, p) {
     if (sent) {
       sentTitle.textContent = result.ok ? ENQUIRY.sentTitle : ENQUIRY.failedTitle;
-      sentBody.textContent  = result.ok ? ENQUIRY.sentBody  : ENQUIRY.failedBody;
+      sentBody.textContent  = result.ok
+        ? (result.ref ? ENQUIRY.sentRef.replace('{ref}', result.ref) + ' ' : '') + ENQUIRY.sentBody
+        : ENQUIRY.failedBody;
       sent.dataset.state = result.ok ? 'ok' : 'failed';
       sent.hidden = false;
     }

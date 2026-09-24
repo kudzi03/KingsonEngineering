@@ -12,7 +12,8 @@
    and only one of them is load-bearing.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { loadSession, getSession, setSession, signIn, signOut, db } from './supabase.js';
+import { loadSession, getSession, setSession, signIn, signOut, db,
+         requestPasswordReset, updatePassword, takeRecoveryFromUrl } from './supabase.js';
 import { assertStagesMatchDatabase } from './model.js';
 
 let me = null;               // the profile row for the signed-in user
@@ -96,4 +97,24 @@ export async function logout() {
   announce();
 }
 
-export { signIn, signOut };
+/** The signed-in person's login email, from the session GoTrue handed back. */
+export const currentEmail = () => getSession()?.user?.email || '';
+
+/**
+ * Change your own password. The current one is checked first by signing in
+ * with it: a session left open on a shared office computer must not be
+ * enough to take the account over.
+ */
+export async function changePassword(current, next) {
+  const email = currentEmail();
+  if (!email) throw new Error('Sign out and back in, then try again.');
+  try {
+    await signIn(email, current);
+  } catch (e) {
+    if (e?.status === 400) throw Object.assign(new Error('Your current password is not right.'), { field: 'pw-current' });
+    throw e;
+  }
+  await updatePassword(next);
+}
+
+export { signIn, signOut, requestPasswordReset, updatePassword, takeRecoveryFromUrl };

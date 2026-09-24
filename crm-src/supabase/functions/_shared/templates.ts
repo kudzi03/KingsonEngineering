@@ -1,13 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   templates.ts — the three emails Kingson actually sends
+   templates.ts — every email the system can send
    ═══════════════════════════════════════════════════════════════════════════
 
-   Plain text beside the HTML, always. A quotation follow-up that arrives as a
-   blank message because somebody's client strips HTML is a lost job.
+   Plain text beside the HTML, always. A message that arrives blank because
+   somebody's client strips HTML is a lost job.
 
-   The wording is Kingson's, not a template vendor's: the acknowledgement makes
-   the same promise the website makes — a reply the same working day — because
-   the two must not disagree.
+   Two kinds, never blurred:
+     to staff     officeAlert (new enquiry), digest (morning follow-up list)
+     to customers acknowledgement — a receipt with the reference, sent once,
+                  only for a website enquiry that gave an email address.
+                  quoteFollowUp exists for a person to send deliberately; no
+                  automatic process sends it.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 export interface Mail { subject: string; text: string; html: string }
@@ -54,19 +57,25 @@ const p = (s: string) => `<p style="margin:0 0 12px;font-size:14.5px;line-height
 
 /* ── 1. to the customer, the moment their enquiry lands ───────────────────── */
 
+/* A receipt, not a reply. It says the enquiry arrived and gives the reference.
+   It does not say anybody has read it yet, and it does not promise a price —
+   neither is true at the moment it is sent. The hours are the confirmed
+   opening hours. */
 export function acknowledgement(v: {
   name: string; ref: string; service?: string | null; location?: string | null;
 }): Mail {
   const what = [v.service, v.location].filter(Boolean).join(' — ');
-  const subject = `We have your enquiry — ${v.ref}`;
+  const subject = `Enquiry received — ${v.ref}`;
 
   const text = [
-    `Good day ${v.name},`, '',
-    `Thank you for your enquiry. It is with our estimating team and we will come back to you the same working day.`,
+    `Good day${v.name ? ' ' + v.name : ''},`, '',
+    `Thank you. Your enquiry has been received.`,
     '',
-    `Your reference is ${v.ref}.${what ? `\nWhat you asked about: ${what}` : ''}`,
+    `Reference: ${v.ref}${what ? `\nAbout: ${what}` : ''}`,
     '',
-    `If you have drawings — DXF, DWG, STEP or PDF — reply to this message with them attached and it will speed things up.`,
+    `Kingson Engineering will review it during working hours (Monday to Saturday, 07:30 – 17:00). Please quote the reference if you get in touch about it.`,
+    '',
+    `Drawings (DXF, DWG, STEP or PDF) can be sent by replying to this email.`,
     '',
     `Kingson Engineering`,
     OFFICE.address,
@@ -76,11 +85,12 @@ export function acknowledgement(v: {
   return {
     subject,
     text,
-    html: frame('We have your enquiry.',
-      p(`Good day ${esc(v.name)},`) +
-      p('Thank you for your enquiry. It is with our estimating team and we will come back to you the same working day.') +
-      p(`Your reference is <strong>${esc(v.ref)}</strong>.${what ? `<br>What you asked about: ${esc(what)}` : ''}`) +
-      p('If you have drawings — DXF, DWG, STEP or PDF — reply to this message with them attached and it will speed things up.'))
+    html: frame('Your enquiry has been received.',
+      p(`Good day${v.name ? ' ' + esc(v.name) : ''},`) +
+      p('Thank you. Your enquiry has been received.') +
+      p(`Reference: <strong>${esc(v.ref)}</strong>${what ? `<br>About: ${esc(what)}` : ''}`) +
+      p('Kingson Engineering will review it during working hours (Monday to Saturday, 07:30 – 17:00). Please quote the reference if you get in touch about it.') +
+      p('Drawings (DXF, DWG, STEP or PDF) can be sent by replying to this email.'))
   };
 }
 
@@ -88,21 +98,25 @@ export function acknowledgement(v: {
 
 export function officeAlert(v: {
   ref: string; name: string; company?: string | null; contact: string;
+  phone?: string | null; email?: string | null;
   service?: string | null; location?: string | null; message?: string | null;
-  dueOn: string; crmUrl: string;
+  received: string; source?: string; dueOn: string; crmUrl: string;
 }): Mail {
   const rows: [string, string][] = [
     ['Reference', v.ref],
-    ['Name', v.name],
+    ['From', v.name],
     ['Company', v.company || '—'],
-    ['Phone or email', v.contact],
+    ['Phone', v.phone || '—'],
+    ['Email', v.email || '—'],
+    ...(!v.phone && !v.email ? [['Contact', v.contact] as [string, string]] : []),
     ['Needs', v.service || '—'],
     ['Site', v.location || '—'],
-    ['Reply by', v.dueOn]
+    ['Received', v.received],
+    ['Respond by', v.dueOn]
   ];
 
   const text = [
-    `New website enquiry — ${v.ref}`, '',
+    `New ${v.source || 'website'} enquiry — ${v.ref}`, '',
     ...rows.map(([k, val]) => `${k}: ${val}`),
     v.message ? `\n${v.message}` : '',
     '', `Open it: ${v.crmUrl}`
@@ -111,7 +125,7 @@ export function officeAlert(v: {
   return {
     subject: `New enquiry — ${v.name}${v.company ? ` (${v.company})` : ''} — ${v.ref}`,
     text,
-    html: frame('New website enquiry.',
+    html: frame(`New ${v.source || 'website'} enquiry.`,
       `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;font-size:14px;margin-bottom:14px">
         ${rows.map(([k, val]) => `<tr>
           <td style="padding:6px 12px 6px 0;color:#71717a;white-space:nowrap;vertical-align:top">${esc(k)}</td>
@@ -152,4 +166,61 @@ export function quoteFollowUp(v: {
   };
 }
 
-export const TEMPLATES = { acknowledgement, officeAlert, quoteFollowUp };
+/* ── 4. the morning list, to the people who own the work ──────────────────
+   Internal only. It tells Kingson staff what to chase; it never writes to a
+   customer. One section each for overdue and due today, most overdue first. */
+
+export interface DigestRow {
+  ref: string; title: string; company?: string | null; contact?: string | null;
+  quote?: string | null; quoteSent?: string | null; due: string; late: number;
+  action?: string | null; owner?: string | null; url: string;
+}
+
+export function digest(v: {
+  date: string; forName?: string | null; overdue: DigestRow[]; today: DigestRow[];
+  awaiting: string; crmUrl: string;
+}): Mail {
+  const n = v.overdue.length + v.today.length;
+  const line = (r: DigestRow) => [
+    `${r.company || r.contact || r.title} — ${r.ref}`,
+    r.quote ? `  Quote: ${r.quote}${r.quoteSent ? ` · sent ${r.quoteSent}` : ''}` : '',
+    `  ${r.action || 'Next action'} — ${r.late > 0 ? `${r.late} day${r.late === 1 ? '' : 's'} overdue` : 'due today'}`,
+    r.owner ? `  Owner: ${r.owner}` : '',
+    `  ${r.url}`
+  ].filter(Boolean).join('\n');
+
+  const text = [
+    `KINGSON CRM — FOLLOW-UP SUMMARY — ${v.date}`, '',
+    `${v.today.length} due today · ${v.overdue.length} overdue · ${v.awaiting} awaiting a customer decision`, '',
+    ...(v.overdue.length ? ['OVERDUE', ...v.overdue.map(line), ''] : []),
+    ...(v.today.length ? ['DUE TODAY', ...v.today.map(line), ''] : []),
+    `Open the follow-up list: ${v.crmUrl}#/followups`,
+    '', 'This is an internal reminder. Nothing has been sent to any customer.'
+  ].join('\n');
+
+  const rowHtml = (r: DigestRow) => `<tr><td style="padding:10px 0;border-top:1px solid #e4e4e7">
+      <a href="${esc(r.url)}" style="color:#0a0a0a;font-weight:600;text-decoration:none">${esc(r.company || r.contact || r.title)}</a>
+      <span style="color:#71717a"> · ${esc(r.ref)}</span><br>
+      ${r.quote ? `<span style="color:#3f3f46">Quote ${esc(r.quote)}${r.quoteSent ? ` · sent ${esc(r.quoteSent)}` : ''}</span><br>` : ''}
+      <span style="color:${r.late > 0 ? '#C4181E' : '#0a0a0a'}">${esc(r.action || 'Next action')} — ${r.late > 0 ? `${r.late} day${r.late === 1 ? '' : 's'} overdue` : 'due today'}</span>
+      ${r.owner ? `<span style="color:#71717a"> · ${esc(r.owner)}</span>` : ''}
+    </td></tr>`;
+  const section = (h: string, rows: DigestRow[]) => rows.length
+    ? `<p style="margin:16px 0 4px;font-size:12px;font-weight:700;letter-spacing:.08em;color:#71717a">${esc(h)}</p>
+       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px">${rows.map(rowHtml).join('')}</table>`
+    : '';
+
+  return {
+    subject: `Follow-ups: ${v.today.length} due today, ${v.overdue.length} overdue — ${v.date}`,
+    text,
+    html: frame(`${n} follow-up${n === 1 ? '' : 's'} need${n === 1 ? 's' : ''} attention.`,
+      p(`${v.forName ? `Good morning ${esc(v.forName)}. ` : ''}<strong>${v.today.length}</strong> due today · <strong>${v.overdue.length}</strong> overdue · <strong>${esc(v.awaiting)}</strong> awaiting a customer decision.`) +
+      section('OVERDUE', v.overdue) + section('DUE TODAY', v.today) +
+      `<p style="margin:18px 0 0"><a href="${esc(v.crmUrl)}#/followups"
+         style="display:inline-block;background:#E21E25;color:#ffffff;text-decoration:none;
+                padding:11px 20px;border-radius:8px;font-size:14px;font-weight:600">Open the follow-up list</a></p>` +
+      p('<span style="font-size:12px;color:#71717a">An internal reminder. Nothing has been sent to any customer.</span>'))
+  };
+}
+
+export const TEMPLATES = { acknowledgement, officeAlert, quoteFollowUp, digest };

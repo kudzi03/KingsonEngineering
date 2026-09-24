@@ -10,25 +10,40 @@ import { esc, pluralise, tel, relative } from '../core/fmt.js';
 import { card, empty, avatar, contactActions, tableWrap } from '../ui/components.js';
 import { icon } from '../ui/icons.js';
 import { contactDialog } from '../ui/dialogs.js';
+import { toast } from '../ui/form.js';
 
 export const title = 'Contacts';
 
+const PAGE = 50;
 let rows = [];
 let term = '';
+let more = false;
+
+/* Counted as "50+" rather than exactly: an exact count of a large table on
+   every keystroke costs more than it tells the person on the phone. */
+const countText = () => more ? `${rows.length}+ contacts` : pluralise(rows.length, 'contact');
+const moreRow = () => more
+  ? '<div class="more-row"><button type="button" class="btn-ghost btn-sm" data-more>Show more contacts</button></div>' : '';
+
+async function fetchPage(offset) {
+  const page = await api.contacts(term, { offset, limit: PAGE + 1 });
+  more = page.length > PAGE;
+  return page.slice(0, PAGE);
+}
 
 export async function render() {
-  rows = await api.contacts();
+  rows = await fetchPage(0);
   return `
     <div class="filters">
       <div class="search">
         ${icon.search(15)}
         <label class="sr-only" for="c-search">Search contacts</label>
-        <input class="inp" id="c-search" type="search" placeholder="Name, company, phone or email"
+        <input class="inp" id="c-search" type="search" placeholder="Name, phone or email"
                value="${esc(term)}" autocomplete="off">
       </div>
-      <span class="filters-n" data-count>${esc(pluralise(rows.length, 'contact'))}</span>
+      <span class="filters-n" data-count>${esc(countText())}</span>
     </div>
-    <div data-list>${list(rows)}</div>`;
+    <div data-list>${list(rows)}${moreRow()}</div>`;
 }
 
 function list(items) {
@@ -59,25 +74,40 @@ export function mount(root) {
   const input = root.querySelector('#c-search');
   const host = root.querySelector('[data-list]');
   const count = root.querySelector('[data-count]');
-  let t = null;
+  let t = null, seq = 0;
+  const paint = () => { host.innerHTML = list(rows) + moreRow(); count.textContent = countText(); };
 
+  /* Searched in the database, a page at a time: the contact book is never
+     pulled into the browser, so it stays quick at ten thousand people. */
   input?.addEventListener('input', () => {
-    term = input.value.trim();
     clearTimeout(t);
-    /* Filtered in the browser: a workshop's contact book is hundreds of rows,
-       not millions, and a round trip per keystroke would feel worse. */
-    t = setTimeout(() => {
-      const q = term.toLowerCase();
-      const hits = !q ? rows : rows.filter((c) =>
-        [c.full_name, c.companies?.name, c.phone, c.whatsapp, c.email, c.job_title]
-          .some((v) => String(v || '').toLowerCase().includes(q)));
-      host.innerHTML = list(hits);
-      count.textContent = pluralise(hits.length, 'contact');
-    }, 120);
+    t = setTimeout(async () => {
+      term = input.value.trim();
+      const mine = ++seq;
+      try {
+        const page = await fetchPage(0);
+        if (mine !== seq) return;                  // a newer search has started
+        rows = page;
+        paint();
+      } catch (e) { toast(e.message || 'Search failed.', 'bad'); }
+    }, 200);
+  });
+
+  host.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-more]');
+    if (!b) return;
+    b.disabled = true;
+    const mine = seq;
+    try {
+      const page = await fetchPage(rows.length);
+      if (mine !== seq) return;
+      rows = rows.concat(page);
+      paint();
+    } catch (err) { b.disabled = false; toast(err.message || 'Could not load more.', 'bad'); }
   });
 }
 
-export const sub = () => pluralise(rows.length, 'contact');
+export const sub = () => countText();
 
 export const actions = () =>
   `<button type="button" class="btn btn-sm" data-new-contact>${icon.plus(14)}<span>New contact</span></button>`;

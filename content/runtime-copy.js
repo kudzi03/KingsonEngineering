@@ -95,6 +95,8 @@ export const ENQUIRY = {
      would be wrong there, because it has been. */
   draftAlsoTitle: 'Send it yourself as well, if you like.',
   sentTitle: 'Your enquiry has reached Kingson.',
+  /* Only shown when the database returned a reference for the row. */
+  sentRef: 'Reference: {ref}. Quote it if you call or write about this enquiry.',
   sentBody: 'It is logged with the office, and Kingson acknowledges enquiries the same working day. If you would rather also send it yourself — on WhatsApp or by email — the message is below.',
   /* Shown when the save failed. It must not read like a dead end: the handoff
      buttons underneath it still work, and they are how the enquiry gets

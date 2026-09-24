@@ -12,6 +12,7 @@ import { money, moneyBy, date, stamp, relative, esc, pluralise } from '../core/f
 import { card, empty, quoteStatusPill, tableWrap } from '../ui/components.js';
 import { icon } from '../ui/icons.js';
 import { quoteDetailDialog, markSentDialog } from '../ui/lifecycle.js';
+import { toast } from '../ui/form.js';
 
 /* Per-currency total of a list of quotations. */
 const total = (list) => {
@@ -22,18 +23,31 @@ const total = (list) => {
 
 export const title = 'Quotations';
 
-let rows = [];
+const PAGE = 100;
+let rows = [];            // the current filter, as far as it has been paged
+let live = [];            // every quotation awaiting a decision, for the headline
 let filter = 'live';
+let more = false;
+
+/* The filter runs in the database, a page at a time, so "All quotations"
+   stays quick when there are thousands of them. */
+const FILTER = (f) => f === 'all' ? '' : f === 'live' ? 'status=in.(sent,discussed)' : `status=eq.${f}`;
+
+async function fetchPage(offset) {
+  const page = await api.quotes(FILTER(filter), { offset, limit: PAGE + 1 });
+  more = page.length > PAGE;
+  return page.slice(0, PAGE);
+}
 
 export async function render(_arg, { me }) {
-  rows = await api.quotes();
+  live = await api.liveQuotes();
+  rows = filter === 'live' ? live : await fetchPage(0);
+  if (filter === 'live') more = false;
   return body();
 }
 
 function body() {
-  const shown = filter === 'all' ? rows
-    : filter === 'live' ? rows.filter((q) => q.status === 'sent' || q.status === 'discussed')
-    : rows.filter((q) => q.status === filter);
+  const shown = rows;
 
   const controls = `
     <div class="filters">
@@ -43,13 +57,13 @@ function body() {
         <option value="all"${filter === 'all' ? ' selected' : ''}>All quotations</option>
         ${QUOTE_STATUSES.map((s) => `<option value="${s}"${filter === s ? ' selected' : ''}>${esc(QUOTE_LABEL[s])}</option>`).join('')}
       </select>
-      <span class="filters-n">${esc(pluralise(shown.length, 'quotation'))} · <span class="num">${esc(total(shown))}</span></span>
+      <span class="filters-n">${more ? `${shown.length}+ quotations` : esc(pluralise(shown.length, 'quotation'))}${more ? '' : ` · <span class="num">${esc(total(shown))}</span>`}</span>
     </div>`;
 
   const list = shown.length ? tableWrap(`
     <table class="tbl tbl-rows">
       <thead><tr>
-        <th scope="col">Reference</th><th scope="col">Opportunity</th>
+        <th scope="col">Reference</th><th scope="col">Enquiry</th>
         <th scope="col" class="ta-r">Amount</th><th scope="col">Status</th>
         <th scope="col">Sent</th><th scope="col">Chase</th><th scope="col"></th>
       </tr></thead>
@@ -78,16 +92,32 @@ function body() {
     </table>`) : empty(filter === 'live' ? 'No quotations are out.' : 'Nothing matches that filter.',
       filter === 'live' ? 'Everything issued has been decided.' : '', { tone: 'ok' });
 
-  return controls + card('', list, { tight: true });
+  const moreRow = more
+    ? '<div class="more-row"><button type="button" class="btn-ghost btn-sm" data-more>Show more quotations</button></div>' : '';
+  return controls + card('', list + moreRow, { tight: true });
 }
 
 export function mount(root, rerender, { me }) {
-  root.addEventListener('change', (e) => {
+  root.addEventListener('change', async (e) => {
     if (!e.target.closest('[data-f]')) return;
     filter = e.target.value;
-    document.getElementById('view').innerHTML = body();
+    try {
+      rows = filter === 'live' ? live : await fetchPage(0);
+      if (filter === 'live') more = false;
+      root.innerHTML = body();
+      root.querySelector('[data-f]')?.focus();
+    } catch (err) { toast(err.message || 'Those quotations could not be loaded.', 'bad'); }
   });
   root.addEventListener('click', async (e) => {
+    const m = e.target.closest('[data-more]');
+    if (m) {
+      m.disabled = true;
+      try {
+        rows = rows.concat(await fetchPage(rows.length));
+        root.innerHTML = body();
+      } catch (err) { m.disabled = false; toast(err.message || 'Could not load more.', 'bad'); }
+      return;
+    }
     const b = e.target.closest('[data-edit], [data-send]');
     if (!b) return;
     const quote = rows.find((q) => q.id === (b.dataset.edit || b.dataset.send));
@@ -99,6 +129,5 @@ export function mount(root, rerender, { me }) {
 }
 
 export function sub() {
-  const live = rows.filter((q) => q.status === 'sent' || q.status === 'discussed');
   return `${esc(pluralise(live.length, 'quotation'))} awaiting a decision · <span class="num">${esc(total(live))}</span>`;
 }

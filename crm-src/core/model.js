@@ -34,10 +34,41 @@ export const STAGE = Object.fromEntries(STAGES.map((s) => [s.id, s]));
 export const OPEN_STAGES = STAGES.filter((s) => s.open).map((s) => s.id);
 
 export const PRIORITIES = ['low', 'normal', 'high', 'urgent'];
-export const SOURCES = ['website', 'whatsapp', 'phone', 'email', 'referral', 'walk_in', 'other'];
+export const SOURCES = ['phone', 'whatsapp', 'email', 'walk_in', 'referral',
+  'existing_customer', 'social_media', 'website', 'other'];
 export const SOURCE_LABEL = {
   website: 'Website', whatsapp: 'WhatsApp', phone: 'Phone', email: 'Email',
-  referral: 'Referral', walk_in: 'Walk-in', other: 'Other'
+  referral: 'Referral', walk_in: 'Walk-in', existing_customer: 'Existing customer',
+  social_media: 'Social media', other: 'Other'
+};
+
+export const DRAWINGS = [['unknown', 'Not asked yet'], ['yes', 'Yes'], ['no', 'No']];
+export const CONTACT_METHODS = [['', 'No preference'], ['Phone', 'Phone'], ['WhatsApp', 'WhatsApp'], ['Email', 'Email']];
+
+/* What a task is FOR. Won and Lost close the sales ones by this, never by
+   reading the title — see the task_type column and decide_opportunity. */
+export const TASK_TYPES = [
+  ['general', 'General'], ['enquiry_response', 'Respond to enquiry'],
+  ['quote_followup', 'Quotation follow-up'], ['customer_reply', 'Respond to customer'],
+  ['site_visit', 'Site visit']
+];
+
+/* ── matching a caller to somebody already on file ─────────────────────────────
+   The same rules as public.norm_phone / public.norm_email in the database, so
+   what the form highlights is what the server would match. Zimbabwe numbers:
+   0771234567, 771234567, +263 77 123 4567 and 00263771234567 are one number,
+   stored as 263771234567. Anything else keeps its digits as typed. */
+export function normPhone(v) {
+  let d = String(v || '').replace(/\D+/g, '');
+  if (!d) return '';
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.length === 10 && d.startsWith('0')) d = '263' + d.slice(1);
+  else if (d.length === 9 && /^[1-9]/.test(d)) d = '263' + d;
+  return d.length >= 7 ? d : '';
+}
+export const normEmail = (v) => {
+  const s = String(v || '').trim().toLowerCase();
+  return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s) ? s : '';
 };
 
 export const QUOTE_STATUSES = ['draft', 'sent', 'discussed', 'accepted', 'rejected', 'superseded', 'expired'];

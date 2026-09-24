@@ -88,33 +88,38 @@ export function mountFiles(root, link, me, onDone) {
     const wasSide = side?.innerHTML;
     if (side) side.textContent = '…';
     try {
-      const url = await api.downloadUrl(btn.dataset.file);
-
-      /* Fetched into a blob rather than pointed at with an anchor.
-         `download` is ignored on a cross-origin href, so an anchor straight to
-         Supabase navigates the tab to the file instead of saving it, and the
-         person loses the screen they were on. It also swallows a failure: a
-         404 becomes a blank page rather than a message. A blob URL is
-         same-origin, so the name survives and an error is an error. */
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`That file could not be fetched (${res.status}).`);
-      const blob = await res.blob();
-      const objectUrl = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = objectUrl;
-      a.download = name;
-      a.rel = 'noopener';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      /* Revoked on the next turn of the loop: immediately is too soon in
-         Safari, which has not finished reading it when click() returns. */
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
+      await saveFile(btn.dataset.file, name);
     } catch (err) {
       toast(err.message || 'That file could not be opened.', 'bad');
     } finally {
       if (side && wasSide !== undefined) side.innerHTML = wasSide;
     }
   });
+}
+
+/** Save one stored file under its own name. Shared with the quotation dialog. */
+export async function saveFile(path, name = 'file') {
+  const url = await api.downloadUrl(path);
+
+  /* Fetched into a blob rather than pointed at with an anchor.
+     `download` is ignored on a cross-origin href, so an anchor straight to
+     Supabase navigates the tab to the file instead of saving it, and the
+     person loses the screen they were on. It also swallows a failure: a
+     404 becomes a blank page rather than a message. A blob URL is
+     same-origin, so the name survives and an error is an error. */
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`That file could not be fetched (${res.status}).`);
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = objectUrl;
+  a.download = name;
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  /* Revoked on the next turn of the loop: immediately is too soon in
+     Safari, which has not finished reading it when click() returns. */
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
 }
