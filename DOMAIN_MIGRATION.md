@@ -51,9 +51,9 @@ That single edit regenerates, on the next `node tools/render.js`:
 
 - [ ] `robots.txt` — last line, `Sitemap:` — change by hand. It is the one
       file the renderer does not generate.
-- [ ] `crm-src/views/settings.js` line 89 — the sentence naming the website
-      the CRM receives enquiries from. Cosmetic, but it will be on screen in
-      front of Kingson.
+- [ ] CRM → Settings → Email notifications → **CRM address in emails**:
+      set it to the CRM's new address, so links in office alerts and the
+      morning digest open the right place. (A setting, not code.)
 
 ## 3 · Rebuild, verify, deploy
 
@@ -89,8 +89,24 @@ Nothing in the database or the CRM depends on the website's hostname. Two
 settings do:
 
 - [ ] Supabase → Authentication → URL Configuration → **Site URL** and
-      **Redirect URLs** — add `https://kingsonengineering.co.zw/crm`.
-      Password-reset emails link to whatever is set here.
+      **Redirect URLs** — add `https://kingsonengineering.co.zw/crm/**` and,
+      if the CRM gets its own name, `https://crm.kingsonengineering.co.zw/**`.
+      The CRM asks for the reset link to come back to the address it is open
+      on; Supabase refuses any address not on this list.
+- [ ] Supabase → Edge Functions → Secrets → `ALLOWED_ORIGINS`: add the new
+      origins (comma-separated, no trailing slash). The `send-email` function
+      refuses browsers from anywhere else.
+
+### The CRM on its own address (`crm.kingsonengineering.co.zw`)
+
+`vercel.json` already carries the rules, keyed to that host, so nothing in the
+repository changes: the host's root redirects to `/crm`, and every page on it
+is `noindex`. To switch it on:
+
+- [ ] Vercel → Domains → add `crm.kingsonengineering.co.zw` to this project;
+      `CNAME crm → cname.vercel-dns.com` at the registrar.
+- [ ] The two Supabase settings above, for that origin.
+- [ ] Sign in there, send yourself a password reset, and follow the link.
 - [ ] The public site posts enquiries straight to PostgREST with the
       publishable key. Supabase's CORS accepts any origin for that, so there
       is nothing to change — but confirm one real enquiry from the new
