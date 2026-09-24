@@ -46,27 +46,30 @@
 
 :root {
   /* ── ground ─────────────────────────────────────────────────────────── */
-  --bg:          #ECEEEF;   /* the sheet: light steel, not white           */
-  --bg-soft:     #E2E5E7;   /* an alternating sheet                        */
-  --surface:     #F7F8F8;   /* a panel, a field, a table on the sheet      */
-  --bg-dark:     #111518;   /* steel: chapters, contact, footer            */
-  --bg-dark-2:   #181D21;   /* a band or panel on the steel ground         */
+  /* Cinema: the whole site is steel at night, lit by its own photographs.
+     Every pairing measured: body ink 17.7:1, muted 10.4:1, faint 6.7:1 on
+     the ground; the small-text red 5.8:1. */
+  --bg:          #0B0E10;   /* the ground                                  */
+  --bg-soft:     #12161A;   /* an alternating band                         */
+  --surface:     #181D21;   /* a panel, a field, a table                   */
+  --bg-dark:     #07090A;   /* the deepest bands: title block, footer      */
+  --bg-dark-2:   #12161A;
 
   /* ── ink ────────────────────────────────────────────────────────────── */
-  --fg:          #0C0F11;   /* 16.5:1 on the sheet                         */
-  --fg-muted:    #464E54;   /* 7.3:1 on the sheet, 6.7:1 on the alt sheet  */
-  --fg-faint:    #59626A;   /* 5.3:1 on the sheet, 4.9:1 on the alt sheet  */
+  --fg:          #F3F5F6;
+  --fg-muted:    #B6BFC4;
+  --fg-faint:    #8F999F;
   --fg-on-dark:  #F3F5F6;
-  --fg-on-dark-muted: #A9B2B8;   /* 8.5:1 on steel                         */
+  --fg-on-dark-muted: #B6BFC4;
 
   /* ── lines ──────────────────────────────────────────────────────────── */
-  --line:        #CDD3D6;
-  --line-strong: #AEB6BB;
-  --line-dark:   #2A3237;
+  --line:        #252C31;
+  --line-strong: #3A444A;
+  --line-dark:   #252C31;
 
   /* ── the structural grid ─────────────────────────────────────────────── */
-  --gl-ink:      rgba(12, 15, 17, .085);
-  --gl-ink-dark: rgba(243, 245, 246, .065);
+  --gl-ink:      rgba(243, 245, 246, .055);
+  --gl-ink-dark: rgba(243, 245, 246, .055);
 
   /* ── brand ──────────────────────────────────────────────────────────────
      Measured off the logo artwork Kingson supplied, not invented. The red is
@@ -77,9 +80,9 @@
      Green is the tagline colour and stays a secondary signal — it marks what
      Kingson has confirmed, and nothing else. */
   --red:       #E21E25;   /* brand · buttons, the mark          4.72:1 both ways */
-  --red-ink:   #C4181E;   /* small text and links               6.01:1 on white  */
-  --red-hover: #B8161C;
-  --red-soft:  #FDEAEA;
+  --red-ink:   #EF5A5F;   /* small red text on the dark ground   5.8:1           */
+  --red-hover: #C4181E;
+  --red-soft:  #2A1214;
   --red-on:    #ffffff;
 
   /* The brand red is 3.9:1 on steel — fine for a large figure, not for a

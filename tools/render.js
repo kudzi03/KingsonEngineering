@@ -39,7 +39,7 @@ import { pageGraph, serviceId } from './schema.js';
 import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryForm, enquiryAside, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
+  enquiryForm, enquiryAside, cinemaHero, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
   ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote
 } from './layout.js';
 
@@ -65,11 +65,12 @@ const SHEETS = [
   ['services', '01', 'Capabilities'],
   ['cut',      '02', 'Fiber laser'],
   ['workshop', '03', 'Workshop'],
-  ['specs',    '04', 'Specifications'],
-  ['how',      '05', 'Programme'],
-  ['enquiry',  '06', 'Get a price'],
-  ['faq',      '07', 'Questions'],
-  ['contact',  '08', 'Contact']
+  ['crane',    '04', 'Cranage'],
+  ['specs',    '05', 'Specifications'],
+  ['how',      '06', 'Programme'],
+  ['enquiry',  '07', 'Get a price'],
+  ['faq',      '08', 'Questions'],
+  ['contact',  '09', 'Contact']
 ];
 const SHEET_OF = { services: 'services', specs: 'specs', process: 'how',
   enquiry: 'enquiry', faq: 'faq', contact: 'contact' };
@@ -94,15 +95,21 @@ const sheets = SHEETS.map(([id, n, name]) =>
 const heroLines = HERO.title.split(/(?<=\.)\s+/).map((s) =>
   `<span class="ln"><span>${esc(s).replace(/\.$/, '<span class="pt">.</span>')}</span></span>`).join(' ');
 
-const hero = `    <div class="hero-top">
-      <p class="hero-eyebrow">${esc(HERO.eyebrow)}</p>
-      <p class="hero-meta">${HERO.disciplines.map((d) => `<span>${esc(d)}</span>`).join('')}</p>
-    </div>
-    <h1 class="display hero-title" id="hero-h">${heroLines}</h1>
-    <div class="hero-foot">
-      <p class="hero-lede">${esc(HERO.lede)}</p>
-      <div class="hero-act">${quoteBtn()}${callBtn(NAV.call, true)}${waBtn(true)}</div>
-    </div>`;
+/* Red-pencil markup, registered to the portal-frame photograph: each SVG's
+   viewBox is the pixel size of the file its <picture> arm serves, and
+   xMidYMid slice is object-fit: cover centred, so the callouts stay on the
+   same steel at every viewport. Decorative; the alt text names the frame. */
+const MARKUP = `<svg class="hero-mark hero-mark-wide" viewBox="0 0 1319 742" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <g><circle cx="698" cy="145" r="6"/><path d="M698 145 L740 97 H836" pathLength="1"/><text x="744" y="90"><tspan class="mk-k">B</tspan> Rafter</text></g>
+    <g><circle cx="446" cy="191" r="6"/><path d="M446 191 L400 125 H290" pathLength="1"/><text x="294" y="118"><tspan class="mk-k">C</tspan> Purlins</text></g>
+  </svg><svg class="hero-mark hero-mark-tall" viewBox="0 0 1320 888" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <g><circle cx="700" cy="182" r="7"/><path d="M700 182 L664 140 H586" pathLength="1"/><text x="590" y="131"><tspan class="mk-k">B</tspan> Rafter</text></g>
+  </svg>`;
+
+const hero = cinemaHero({
+  id: 'hero-h', eyebrow: HERO.eyebrow, lede: HERO.lede, titleHtml: heroLines,
+  slides: HERO.slides, captions: WORK.captions, markup: MARKUP
+});
 
 const strip = STRIP.map(([label, fig, value]) =>
   `    <li><span class="strip-k">${esc(label)}</span><span class="strip-f">${esc(fig)}</span><span class="strip-v">${esc(value)}</span></li>`
@@ -379,6 +386,25 @@ ${figures(WORKSHOP.figures, 'ch-figures ws-figures')}
       <div class="ws-act">${quoteBtn()}</div>
     </div>`;
 
+/* ── the crane, full bleed ───────────────────────────────────────────────────
+   The one machine that has to say "this is physically large", given the
+   whole screen. Every word and figure is the cranage entry in CAPABILITIES. */
+const CRANE = CAPABILITIES.find((c) => c.id === 'cranage');
+const crane = `    <div class="band-img" data-parallax>
+      ${zoomable('crane', bleedPhoto('crane'))}
+    </div>
+    <div class="wrap band-in">
+      <p class="eyebrow"><span class="sn">${sheetNo('crane')}</span>${esc(CRANE.title)}</p>
+      <p class="band-fig num" data-reveal="rise"><span>${esc(CRANE.lead[0])}</span></p>
+      <h2 class="display band-title" id="crane-h">${esc(CRANE.lead[1].replace(/^./, (c) => c.toUpperCase()))}</h2>
+      <p class="band-lede">${esc(CRANE.body)}</p>
+      <p class="ch-more"><a href="/${CRANE.route}">More on cranage${ICON_ARROW}</a></p>
+    </div>`;
+
+/* The enquiry is set over the fabrication bay, dimmed right down. The same
+   file as the last photograph of the first screen, so no new download. */
+const enqbg = bleedPhoto('weldingBay', { cls: 'enq-bg', decorative: true });
+
 /* ── the full-width photograph ───────────────────────────────────────────── */
 
 /* ── specifications ──────────────────────────────────────────────────────────
@@ -595,7 +621,7 @@ const BLOCKS = {
   chromebottom: chromeBottom(),
 
   /* the homepage's own composition */
-  hero, strip, chapters, workshop, specs, sheets,
+  hero, strip, chapters, workshop, specs, sheets, crane, enqbg,
   steps, gantt, procClose, form, faq, faqask, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),

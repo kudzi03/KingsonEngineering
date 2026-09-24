@@ -88,6 +88,10 @@ export const ASSETS = {
   },
   laserSparks: {
     slug: 'laser-sparks', w: 1440, h: 2560, widths: [440, 720, 900, 1100, 1440],
+    /* The wide cut is anchored low (0.70, see WIDE_ANCHOR_Y in
+       tools/build-images.py): on the first screen it is the sparks that
+       matter, not the head. */
+    wide: { w: 1440, h: 810, widths: [900, 1320] },
     focal: [0.38, 0.43],
     alt: 'The cutting head of the DXTECH fiber laser close up, sparks off the nozzle and the cut line running out across the sheet.',
     status: 'observed_photo'
@@ -191,9 +195,9 @@ export function position(key) {
 
    In the order the page reads, after BAND_IMAGE which opens chapter 01.     */
 export const PAGE_IMAGES = [
-  'portalFrame', 'roofTrusses', 'crane',
+  'portalFrame', 'laserSparks', 'crane', 'weldingBay', 'roofTrusses',
   'weldingHands',
-  'laserCutting', 'nestingStation', 'laserFloor', 'gantry', 'laserSparks'
+  'laserCutting', 'nestingStation', 'laserFloor', 'gantry'
 ];
 
 /* There is no band image any more. It was `roofFrame`, the full-width frame

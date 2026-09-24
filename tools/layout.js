@@ -89,6 +89,54 @@ export function bleedPhoto(key, { eager = false, abs = false, cls = '',
               srcset="${set(wideSrcset(key))}">${img}</picture>`;
 }
 
+/* ── the cinema hero ─────────────────────────────────────────────────────────
+   The first screen is Kingson's own photography, full bleed, drifting slowly
+   (a Ken Burns move) and cross-fading through the work — frame, laser, crane,
+   workshop — with the title set over it. One builder for the home page, the
+   five service pages and the 404, so they cannot drift apart.
+
+   Only the first photograph is in the page's initial download. The others
+   carry their sources in data- attributes and are switched on by
+   scenes/cinema.js after load, so the slideshow never competes with the first
+   paint; with JavaScript off the first photograph simply stays. */
+const GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+const defer = (html) => html
+  .replace(/ srcset="/g, ' data-srcset="')
+  .replace(/<img([^>]*?) src="([^"]+)"/, `<img$1 src="${GIF}" data-src="$2"`);
+
+export function cinemaHero({ id, eyebrow, meta = '', titleHtml, lede, slides,
+                             captions, markup = '', abs = false, cls = '', quoteTo = '#enquiry' }) {
+  const figs = slides.map((k, i) => {
+    const img = bleedPhoto(k, { eager: i === 0, abs });
+    return `    <figure class="cin-slide${i === 0 ? ' is-on' : ''}" data-i="${i}">${i === 0 ? img + markup : defer(img)}</figure>`;
+  }).join('\n');
+  const many = slides.length > 1;
+  const ctl = many
+    ? `  <div class="wrap cin-ctl">
+    <ol class="cin-dots">
+${slides.map((k, i) => `      <li><button type="button" data-go="${i}"${i === 0 ? ' aria-current="true"' : ''} aria-label="Photograph ${i + 1} of ${slides.length}: ${esc(captions[k])}"><span class="cin-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><span class="cin-t" aria-hidden="true">${esc(captions[k])}</span><i aria-hidden="true"></i></button></li>`).join('\n')}
+    </ol>
+    <button type="button" class="cin-pause" data-pause aria-pressed="false" aria-label="Pause the photographs"><span aria-hidden="true"></span></button>
+  </div>`
+    : `  <div class="wrap cin-ctl"><p class="cin-cap"><span class="cin-n num">01</span><span class="cin-t">${esc(captions[slides[0]])}</span></p></div>`;
+  return `
+  <div class="cin-slides"${many ? ' aria-live="off"' : ''}>
+${figs}
+  </div>
+  <div class="cin-shade" aria-hidden="true"></div>
+  <div class="wrap cin-in">
+    <p class="hero-eyebrow">${esc(eyebrow)}</p>
+    <h1 class="display hero-title${cls}" id="${id}">${titleHtml}</h1>
+    <div class="hero-foot">
+      <p class="hero-lede">${esc(lede)}</p>
+      <div class="hero-act">${quoteBtn(false, quoteTo)}${callBtn(NAV.call, true)}${waBtn(true)}</div>
+    </div>${meta ? `
+    <p class="hero-meta">${meta}</p>` : ''}
+  </div>
+${ctl}
+`;
+}
+
 /* ── icons ──────────────────────────────────────────────────────────────── */
 
 export const ICON_PHONE = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg>';
@@ -118,12 +166,12 @@ export function quoteBtn(ghost, to = '#enquiry') {
 
 /* ── the logo ───────────────────────────────────────────────────────────── */
 
-export function logo(kind, height, sizes, base = '', decorative = false) {
+export function logo(kind, height, sizes, base = '', decorative = false, eager = false) {
   const stem = kind === 'reverse' ? 'kingson-logo-reverse' : 'kingson-logo';
   const alt = decorative ? '' : `${publish('name')} — ${publish('tagline')}`;
   /* A reverse mark in the header is the first thing painted, so it is not
      deferred there the way the footer's is. */
-  const lazy = kind === 'reverse' ? ' loading="lazy" fetchpriority="low"' : '';
+  const lazy = kind === 'reverse' && !eager ? ' loading="lazy" fetchpriority="low"' : '';
   return `<img src="${base}assets/brand/${stem}-560.png"` +
     ` srcset="${base}assets/brand/${stem}-320.png 320w, ${base}assets/brand/${stem}-560.png 560w"` +
     ` sizes="${sizes}" width="560" height="229" style="height:${height}"` +
@@ -195,20 +243,18 @@ export function serviceChooser({ reveal = true } = {}) {
      two have none, and they do not borrow one: their media is a plain steel
      plate carrying the figure instead. Decorative here (alt="", aria-hidden)
      because the row's own words already name the service; the same images
-     carry full descriptions where they appear as content. The media is shown
-     inline on touch and narrow screens, and cloned into the cursor preview on
-     a wide screen with a mouse — see scenes/index-preview.js. */
+     carry full descriptions where they appear as content. */
   const media = (c) => {
     if (!c.photo) {
       return `<span class="cx-media cx-plate" aria-hidden="true"><b class="num">${esc(c.lead[0])}</b><span>${esc(c.lead[1])}</span></span>`;
     }
     const a = ASSETS[c.photo];
     return `<span class="cx-media" aria-hidden="true"><img src="/${src(c.photo, 720)}" srcset="${srcset(c.photo).split(', ').map((x) => '/' + x).join(', ')}"
-                 sizes="(max-width: 900px) 28vw, 340px"
+                 sizes="(max-width: 900px) 28vw, 180px"
                  width="${a.w}" height="${a.h}" loading="lazy" decoding="async"
                  style="object-position:${position(c.photo)}" alt=""></span>`;
   };
-  return `    <ol class="cx" data-cx${r}>
+  return `    <ol class="cx"${r}>
 ${CAPABILITIES.map((c, i) => `      <li class="cx-row">
         <a class="cx-hit" href="/${c.route}">
           <span class="cx-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
@@ -228,7 +274,7 @@ export function chromeTop({ home = false, current = '' } = {}) {
   /* One mark on every page. The home page's first sheet is the same light
      ground as the bar, so the reverse artwork it used to carry for a dark
      photographic hero has nothing left to do. */
-  const mark = '      ' + logo('light', '46px', '(max-width:760px) 116px, 134px');
+  const mark = '      ' + logo('reverse', '46px', '(max-width:760px) 116px, 134px', '', false, true);
 
   return `<a class="skip" href="#main">Skip to content</a>
 

@@ -19,7 +19,7 @@ import { mountViewer } from './interface/image-viewer.js';
 import { mountEnquiry } from './interface/enquiry.js';
 import { mountReveals } from './scenes/reveal.js';
 import { mountParallax } from './scenes/parallax.js';
-import { mountIndexPreview } from './scenes/index-preview.js';
+import { mountCinema } from './scenes/cinema.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -112,8 +112,9 @@ mountReveals();
    and stops its own loop when nothing is in view. See scenes/parallax.js. */
 mountParallax();
 
-/* The photograph beside the cursor on the capability index. */
-mountIndexPreview();
+/* The first screen's photographs. See scenes/cinema.js. */
+mountCinema();
+
 
 /* ── the sheet index ────────────────────────────────────────────────────────
    Which sheet is under a line across the middle of the screen. One observer,

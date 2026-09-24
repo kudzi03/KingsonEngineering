@@ -42,6 +42,9 @@ export const HERO = {
   lede: 'Structural steel, roofing, fiber laser cutting and cranage — fabricated in our own workshop and erected with our own crane. Send drawings or a description; enquiries are acknowledged the same working day.',
   /* The four the lede names, set as the sheet's reference line. */
   disciplines: ['Structural steel', 'Roofing', 'Fiber laser', 'Cranage'],
+  /* The photographs the first screen moves through, in the order of the
+     work: the frame on site, the laser, the crane, the bay. */
+  slides: ['portalFrame', 'laserSparks', 'crane', 'weldingBay'],
   /* The lede's promise is the one Kingson confirmed in §7. It is not a
      flourish; it is the commitment the office says it can meet every time. */
   actions: { quote: 'Get a price', call: 'Call', whatsapp: 'WhatsApp' }

@@ -100,7 +100,7 @@ section { padding: clamp(72px, 8.4vw, 144px) 0; }
 
 .sec-head h2 {
   font-size: var(--t-h2); line-height: .92; letter-spacing: -.045em;
-  margin-bottom: 0; max-width: 14ch;
+  margin-bottom: 0; max-width: 11em;
 }
 @media (max-width: 900px) { .sec-head h2 { margin-bottom: 18px; } }
 .sec-head p:not(.eyebrow) { font-size: var(--t-lede); color: var(--fg-muted); line-height: 1.5; }
@@ -153,7 +153,7 @@ picture { display: contents; }
 
 .hd {
   position: sticky; top: 0; z-index: 120;
-  background: rgba(236, 238, 239, .9);
+  background: rgba(11, 14, 16, .86);
   backdrop-filter: saturate(160%) blur(14px);
   border-bottom: 1px solid var(--line);
   transition: background 260ms var(--ease), border-color 260ms var(--ease);
@@ -172,7 +172,7 @@ picture { display: contents; }
    <head> before first paint), so with JavaScript off the bar is simply the
    solid bar it is on every other page. See main.js. */
 html.hd-over .hd {
-  background: var(--bg);
+  background: transparent;
   backdrop-filter: none;
   border-bottom-color: transparent;
 }
@@ -706,11 +706,11 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .spec-list { counter-reset: sg; }
 .spec-group { counter-increment: sg; background: var(--surface); border: 0; box-shadow: none; }
 .spec-group > summary {
-  background: var(--fg); color: var(--surface);
+  background: #222A2F; color: var(--fg);
   font-size: 13px; font-stretch: 112%; letter-spacing: .12em; text-transform: uppercase;
   padding: 15px 20px;
 }
-.spec-group > summary:hover { background: #1F2529; }
+.spec-group > summary:hover { background: #2A3338; }
 .spec-group > summary > span { display: flex; }
 .spec-group > summary > span::before {
   content: "S" counter(sg); flex: none; min-width: 3.2em;
@@ -926,7 +926,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   outline: none; border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
-.field input::placeholder, .field textarea::placeholder { color: #a1a1aa; }
+.field input::placeholder, .field textarea::placeholder { color: #8F999F; }
 
 /* A select with the platform arrow replaced, so it matches the inputs. */
 .select { position: relative; }
@@ -1301,7 +1301,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   .bar {
     display: flex; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 150;
     padding: 10px var(--margin) calc(10px + env(safe-area-inset-bottom));
-    background: rgba(236, 238, 239, .94);
+    background: rgba(11, 14, 16, .94);
     backdrop-filter: saturate(180%) blur(12px);
     border-top: 1px solid var(--line);
   }
@@ -1347,7 +1347,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
    not two words. */
 .sp-title {
   font-size: clamp(34px, 6.4vw, 104px); line-height: .9; letter-spacing: -.045em;
-  max-width: 15ch; margin: 0 0 clamp(26px, 3vw, 44px); margin-left: -.04em;
+  max-width: 11.8em; margin: 0 0 clamp(26px, 3vw, 44px); margin-left: -.04em;
 }
 .hero-plate .zoom { position: absolute; inset: 0; }
 .hero-plate .zoom img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -1669,13 +1669,13 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   border-color: var(--green-on-soft); background: var(--green-soft);
 }
 .sent[data-state="ok"] h3 { color: var(--green-on-soft); }
-.sent[data-state="ok"] p  { color: #2f4a39; }
+.sent[data-state="ok"] p  { color: #BFE3CC; }
 
 .sent[data-state="failed"] {
   border-color: var(--accent); background: var(--accent-soft);
 }
 .sent[data-state="failed"] h3 { color: var(--accent-ink); }
-.sent[data-state="failed"] p  { color: #5c3a3b; }
+.sent[data-state="failed"] p  { color: #F2C4C6; }
 
 /* Once the enquiry is in, the draft below it is a convenience, not the act.
    It recedes. */
@@ -1989,7 +1989,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 .si { display: none; }
 @media (min-width: 1280px) {
   html.si-ready .si {
-    display: flex; flex-direction: column; gap: 9px;
+    display: flex; flex-direction: column; gap: 1px;
     position: fixed; z-index: 90; left: clamp(14px, 1.3vw, 26px); top: 50%;
     transform: translateY(-50%);
     opacity: 0; visibility: hidden;
@@ -2000,7 +2000,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   html.si-ready .si[data-ground="dark"] { --si-c: var(--fg-on-dark-muted); --si-on: var(--red-on-dark); }
   .si a {
     display: flex; align-items: center; gap: 7px;
-    height: 16px; color: var(--si-c);
+    height: 24px; min-width: 40px; color: var(--si-c);
     font: 600 10px/1 Archivo, "Archivo Fallback", sans-serif; letter-spacing: .06em; font-variant-numeric: tabular-nums;
     transition: color 240ms var(--ease);
   }
@@ -2027,11 +2027,9 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 /* ── the capability index ─────────────────────────────────────────────────────
    Six services as a schedule, not six cards: a ruled list read across — the
    number, the name at size, the one figure a buyer of that work asks about,
-   and the way through to the page. Hovered or focused, a row inverts to
-   steel and the arrow fills; with a fine pointer a photograph of that work
-   rides beside the cursor (scenes/index-preview.js). A touch screen has no
-   hover to reveal anything with, so there every row carries its photograph
-   inline — nothing on this list is only visible to a mouse. */
+   and the way through to the page, with a photograph of the work in every
+   row. Hovered or focused, a row lights red and its photograph comes up in
+   colour. */
 .svc { background: var(--bg); }
 .cx { border-top: 2px solid var(--fg); position: relative; }
 .cx-row { border-bottom: 1px solid var(--line-strong); }
@@ -2074,8 +2072,6 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   transition: background-color 260ms var(--ease), border-color 260ms var(--ease), color 260ms var(--ease);
 }
 .cx-go svg { width: 20px; height: 20px; transition: transform 320ms var(--ease); }
-/* Photographs and the two figure plates: hidden in the row where the
-   preview carries them, shown inline on touch and narrow screens. */
 .cx-hit > .cx-media { display: none; }
 
 .cx-hit:hover, .cx-hit:focus-visible { color: var(--fg-on-dark); }
@@ -2090,20 +2086,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 .cx-hit:hover .cx-name, .cx-hit:focus-visible .cx-name { transform: translateX(10px); }
 .cx-hit:focus-visible { outline-offset: -3px; }
 
-/* The preview that rides beside the cursor. aria-hidden: the row's own
-   words already name the service; this is only the picture of it. */
-.cx-pv {
-  position: fixed; z-index: 100; left: 0; top: 0; transform-origin: 50% 100%;
-  width: clamp(240px, 22vw, 340px); aspect-ratio: 4 / 3;
-  pointer-events: none; overflow: hidden; background: var(--bg-dark);
-  opacity: 0; visibility: hidden;
-  transition: opacity 220ms var(--ease), visibility 0s linear 220ms;
-  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .6);
-}
-.cx-pv.is-on { opacity: 1; visibility: visible; transition: opacity 220ms var(--ease); }
-.cx-pv > * { position: absolute; inset: 0; }
-.cx-pv img { width: 100%; height: 100%; object-fit: cover; animation: pv-in 420ms var(--ease) both; }
-@keyframes pv-in { from { transform: scale(1.12); opacity: .4; } }
+
 
 .cx-plate {
   display: flex; flex-direction: column; justify-content: flex-end; gap: 6px;
@@ -2115,12 +2098,10 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   font-size: clamp(40px, 4vw, 64px); line-height: .9;
 }
 .cx-plate span { font-size: 13px; color: var(--fg-on-dark-muted); }
-/* In the preview the plate sits on an inverted (steel) row, so it takes a
-   lighter steel and a hairline to stay a separate object. */
-.cx-pv .cx-plate { background: #283036; box-shadow: inset 0 0 0 1px rgba(243, 245, 246, .14); }
+
 
 @media (prefers-reduced-motion: reduce) {
-  .cx-hit::before, .cx-name, .cx-go, .cx-go svg, .cx-pv, .cx-pv img { transition: none; animation: none; }
+  .cx-hit::before, .cx-name, .cx-go, .cx-go svg { transition: none; animation: none; }
   .cx-hit:hover .cx-name, .cx-hit:focus-visible .cx-name { transform: none; }
 }
 
@@ -2154,3 +2135,197 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   .cx-media.cx-plate span { font-size: 11.5px; line-height: 1.3; }
   .cx-hit:hover .cx-name, .cx-hit:focus-visible .cx-name { transform: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CINEMA — the first screen
+   ═══════════════════════════════════════════════════════════════════════════
+   Kingson's photographs, full bleed, each drifting slowly (a Ken Burns move)
+   and cross-fading into the next; the title set over them; an index of the
+   photographs along the foot with a progress rule on the one showing, and a
+   pause control, because anything that moves on its own for more than five
+   seconds has to be stoppable (WCAG 2.2.2). Reduce Motion gets the first
+   photograph, still. scenes/cinema.js runs the sequence. */
+
+.hero.cin {
+  position: relative; padding: 0; overflow: hidden; isolation: isolate;
+  height: 100vh; height: 100svh; min-height: 620px; max-height: 1180px;
+  margin-top: calc(var(--hd-h) * -1);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  background: #07090A; color: #F3F5F6;
+}
+.cin-slides, .cin-slide { position: absolute; inset: 0; }
+.cin-slide { margin: 0; opacity: 0; z-index: 0; transition: opacity 1500ms var(--ease); }
+.cin-slide.was { opacity: 1; z-index: 1; }
+.cin-slide.is-on { opacity: 1; z-index: 2; }
+.cin-slide img, .cin-slide .hero-mark {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transform-origin: var(--ox, 50%) var(--oy, 50%);
+}
+.cin-slide[data-i="0"] { --kx: 1.2%;  --ky: .8%;  --ox: 55%; --oy: 40%; }
+.cin-slide[data-i="1"] { --kx: -1.8%; --ky: 0%;   --ox: 45%; --oy: 55%; }
+.cin-slide[data-i="2"] { --kx: 1%;    --ky: -1.2%; --ox: 60%; --oy: 50%; }
+.cin-slide[data-i="3"] { --kx: -1%;   --ky: 1%;   --ox: 40%; --oy: 45%; }
+@media (prefers-reduced-motion: no-preference) {
+  .cin-slide.is-on img, .cin-slide.is-on .hero-mark,
+  .cin-slide.was img, .cin-slide.was .hero-mark { animation: cin-kb 9s linear both; }
+  .hero.cin.is-paused .cin-slide img, .hero.cin.is-paused .hero-mark { animation-play-state: paused; }
+}
+@keyframes cin-kb {
+  from { transform: scale(1.14) translate(var(--kx, 0), var(--ky, 0)); }
+  to   { transform: scale(1.03) translate(0, 0); }
+}
+/* The markup draws once, on the first photograph, as it always has. */
+.cin .hero-mark { z-index: 1; pointer-events: none; }
+
+/* Dark at the head for the navigation, darker at the foot for the title,
+   and a wash from the left behind the copy — measured behind the glyphs on
+   the brightest of the four photographs (the sky over the frame). */
+.cin-shade {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(5,7,8,.72) 0, rgba(5,7,8,.2) 16%, rgba(5,7,8,0) 30%,
+                    rgba(5,7,8,.35) 52%, rgba(5,7,8,.86) 76%, #07090A 100%),
+    linear-gradient(90deg, rgba(5,7,8,.62) 0, rgba(5,7,8,.25) 45%, rgba(5,7,8,0) 70%);
+}
+.cin-in { position: relative; z-index: 4; width: 100%; padding-bottom: clamp(120px, 14vh, 170px); }
+.cin .hero-eyebrow { color: #D5DCE0; margin-bottom: clamp(16px, 2vw, 26px); }
+.cin .hero-title {
+  font-size: clamp(46px, 9.4vw, 170px); line-height: .84; letter-spacing: -.055em;
+  text-transform: uppercase; color: #F7F8F8; margin: 0 0 clamp(22px, 2.6vw, 40px) -.04em;
+  text-shadow: 0 2px 30px rgba(0,0,0,.35);
+}
+.cin .hero-title .ln { white-space: nowrap; }
+.cin .hero-title .ln + .ln { text-align: left; }
+.cin .hero-lede { color: #D0D7DB; }
+.cin .hero-act .btn-ghost { color: #F3F5F6; border-color: rgba(243,245,246,.6); background: rgba(7,9,10,.25); }
+.cin .hero-act .btn-ghost:hover { background: #F3F5F6; color: #07090A; }
+.cin .hero-meta {
+  margin-top: 22px; display: inline-flex; gap: 10px; padding: 8px 12px;
+  background: rgba(7,9,10,.55); border-left: 3px solid var(--accent);
+  font: 600 var(--t-label)/1.2 Archivo, "Archivo Fallback", sans-serif; font-stretch: 112%;
+  letter-spacing: .14em; text-transform: uppercase; color: #F3F5F6;
+}
+/* The service pages' titles are sentences, not two words. */
+.cin .hero-title.sp-title { text-transform: none; font-size: clamp(38px, 6.2vw, 104px); line-height: .92;
+                           white-space: normal; max-width: 12.6em; }
+
+/* The index of photographs along the foot. */
+.cin-ctl {
+  position: absolute; z-index: 4; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: flex-end; gap: var(--gut); padding-bottom: clamp(20px, 3vh, 34px);
+}
+.cin-dots { flex: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--gut); }
+.cin-dots button {
+  position: relative; width: 100%; display: flex; align-items: baseline; gap: 12px;
+  padding: 14px 0 0; background: none; border: 0; border-top: 1px solid rgba(243,245,246,.28);
+  color: rgba(243,245,246,.62); text-align: left; cursor: pointer; min-height: 44px;
+  font: 500 13.5px/1.35 Inter, "Inter Fallback", sans-serif; transition: color 240ms var(--ease);
+}
+.cin-dots button:hover, .cin-dots button[aria-current] { color: #F3F5F6; }
+.cin-n { font: 700 12px/1 Archivo, "Archivo Fallback", sans-serif; letter-spacing: .08em; color: var(--red-on-dark); }
+.cin-dots i { position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--accent);
+              transform: scaleX(0); transform-origin: 0 50%; }
+.cin-dots button[aria-current] i { transform: scaleX(1); }
+.cin-dots button.run i { animation: cin-prog var(--cin-dur, 7000ms) linear both; }
+@keyframes cin-prog { from { transform: scaleX(0); } }
+.cin-pause {
+  flex: none; width: 44px; height: 44px; border-radius: var(--pill); cursor: pointer;
+  border: 1px solid rgba(243,245,246,.55); background: rgba(7,9,10,.35); display: grid; place-items: center;
+}
+.cin-pause span { width: 10px; height: 12px; border-left: 3px solid #F3F5F6; border-right: 3px solid #F3F5F6; }
+.cin-pause[aria-pressed="true"] span { width: 0; height: 0; border: 0; border-left: 11px solid #F3F5F6;
+                                       border-top: 7px solid transparent; border-bottom: 7px solid transparent; margin-left: 3px; }
+.cin-cap { display: flex; gap: 12px; align-items: baseline; font-size: 13.5px; color: #D0D7DB;
+           border-top: 1px solid rgba(243,245,246,.28); padding-top: 14px; }
+
+/* Scrolling away: the title lifts and fades as the photograph is left
+   behind. Scroll-driven, so it costs the main thread nothing. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cin-in, .cin-ctl { animation: cin-leave linear both; animation-timeline: scroll(root block); animation-range: 0 70vh; }
+  }
+}
+@keyframes cin-leave { to { opacity: 0; transform: translateY(-70px); } }
+
+/* Service pages and the 404 keep their breadcrumb above the photograph. */
+.hero.cin.cin-page { margin-top: 0; height: calc(100svh - var(--hd-h) - 48px); min-height: 560px; max-height: 1000px; }
+.hero.cin.nf-hero { height: 70svh; min-height: 480px; }
+
+@media (max-width: 900px) {
+  .cin-dots .cin-t { display: none; }
+  .cin-dots button[aria-current] .cin-t { display: inline; }
+  .cin-dots { grid-template-columns: repeat(4, auto) ; }
+  .cin-dots li:has(button[aria-current]) { flex: 1; }
+}
+@media (max-width: 760px) {
+  .hero.cin { min-height: 560px; }
+  .cin .hero-title { font-size: 11.4vw; }
+  .cin .hero-title.sp-title { font-size: clamp(32px, 9vw, 44px); }
+  .cin-in { padding-bottom: 96px; }
+  .cin .hero-eyebrow { font-size: 11px; }
+  /* Four numbered rules, the progress running along the one showing. The
+     captions stay in each button's accessible name. */
+  .cin-dots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 10px; }
+  .cin-dots .cin-t, .cin-dots button[aria-current] .cin-t { display: none; }
+  .hero.cin.cin-page { height: auto; min-height: 88svh; }
+}
+
+/* ── cinema: the rest of the page on the dark ground ───────────────────────── */
+.skip { color: var(--bg); }
+.sent[data-state="ok"] { background: #0F2418; border-color: #3DAA6A; }
+.sent[data-state="ok"] h3 { color: #6FD39A; }
+.enq-card { background: var(--surface); box-shadow: 0 40px 80px -40px rgba(0,0,0,.8); }
+.field input, .field textarea, .field select { background: var(--bg); border-color: var(--line-strong); }
+.enq-bg { opacity: .42; }
+/* The capability index: a hovered row lights red, the colour of the one
+   thing you can press. */
+.cx-hit::before { background: var(--accent); }
+.cx-hit:hover .cx-n, .cx-hit:focus-visible .cx-n { color: #fff; }
+.cx-hit:hover .cx-lead span, .cx-hit:hover .cx-body,
+.cx-hit:focus-visible .cx-lead span, .cx-hit:focus-visible .cx-body { color: rgba(255,255,255,.88); }
+.cx-hit:hover .cx-go, .cx-hit:focus-visible .cx-go { background: #fff; border-color: #fff; color: var(--accent); }
+.cx-hit:focus-visible { outline-color: #fff; }
+.cx { border-top-color: var(--fg); }
+.cx-plate { background: #1E252A; }
+
+/* ── the crane, full bleed ──────────────────────────────────────────────────── */
+.band-ch { position: relative; padding: 0; overflow: hidden; isolation: isolate;
+           min-height: 100vh; min-height: 100svh; display: flex; align-items: flex-end; }
+.band-img { position: absolute; inset: -5% 0; z-index: -2; }
+.band-img .zoom, .band-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.band-ch::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(0deg, #07090A 0, rgba(7,9,10,.82) 24%, rgba(7,9,10,.2) 55%, rgba(7,9,10,.45) 100%),
+              linear-gradient(90deg, rgba(7,9,10,.7) 0, rgba(7,9,10,0) 60%); }
+.band-in { width: 100%; padding-block: clamp(80px, 12vh, 140px) clamp(56px, 8vh, 96px); pointer-events: none; }
+.band-in > * { pointer-events: auto; }
+.band-fig { font: 800 clamp(120px, 22vw, 360px)/.78 Archivo, "Archivo Fallback", sans-serif; font-stretch: 62%;
+            letter-spacing: -.02em; color: #F3F5F6; margin: 0 0 8px -.04em; text-shadow: 0 4px 40px rgba(0,0,0,.4); }
+.band-fig span { display: inline-block; }
+.band-title { font-size: clamp(30px, 3.6vw, 56px); line-height: .95; letter-spacing: -.04em; text-transform: uppercase; margin-bottom: 16px; }
+.band-lede { color: #D0D7DB; font-size: var(--t-lede); max-width: 46ch; margin-bottom: 8px; }
+.band-ch .ch-more a { color: var(--red-on-dark); }
+
+/* ── the capability index, photographs at rest ──────────────────────────────── */
+@media (hover: hover) and (min-width: 901px) {
+  .cx-hit { grid-template-columns: minmax(0, .34fr) minmax(0, 1.9fr) minmax(0, 1.1fr) minmax(0, 1fr) 176px 56px; }
+  .cx-hit > .cx-media {
+    display: block; grid-column: 5; grid-row: 1; order: 0; position: relative; overflow: hidden;
+    height: 104px; background: #1E252A;
+  }
+  .cx-go { grid-column: 6; }
+  .cx-media img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) brightness(.75);
+                  transform: scale(1.02); transition: filter 420ms var(--ease), transform 900ms var(--ease); }
+  .cx-hit:hover .cx-media img, .cx-hit:focus-visible .cx-media img { filter: none; transform: scale(1.12); }
+  .cx-hit > .cx-media.cx-plate { display: flex; padding: 10px 12px; border-bottom-width: 2px; }
+  .cx-media.cx-plate b { font-size: 30px; }
+  .cx-media.cx-plate span { font-size: 11.5px; line-height: 1.3; }
+}
+@media (hover: hover) and (min-width: 901px) and (max-width: 1180px) {
+  .cx-hit { grid-template-columns: minmax(0, .3fr) minmax(0, 1.8fr) minmax(0, 1.1fr) 150px 50px; }
+  .cx-hit > .cx-media { grid-column: 4; }
+  .cx-go { grid-column: 5; }
+}
+@media (prefers-reduced-motion: reduce) { .cx-media img { transition: none; } .cx-hit:hover .cx-media img { transform: none; } }
+/* Two ghost buttons share a row on a phone; the stamped lettering is wider
+   than the old face, so they give up side padding before the label. */
+@media (max-width: 760px) { .hero-act .btn-ghost { padding: 0 12px; } }

@@ -21,7 +21,7 @@ import { section as profileSection, flashings, bed } from '../scenes/profiles.js
 import { pageGraph, pickFaq, pickSpecs, serviceId } from './schema.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryBlock, callBtn, waBtn, quoteBtn, bleedPhoto, serviceChooser, ICON_ARROW
+  enquiryBlock, callBtn, waBtn, quoteBtn, bleedPhoto, serviceChooser, cinemaHero, ICON_ARROW
 } from './layout.js';
 import { CAPABILITIES } from '../content/copy.js';
 
@@ -47,29 +47,12 @@ const zoomable = (key, inner) =>
    title at the width of the grid, then the photograph as the detail it calls
    out, opening to the screen edges as the page scrolls. One helper for the
    five service pages and the 404, so they cannot drift from each other. */
-const BUBBLES = '  <div class="gl-bub" aria-hidden="true"><i>A</i><i>B</i><i>C</i><i>D</i><i>E</i></div>';
 
-function sheetHero({ id, eyebrow, meta, h1, lede, photoKey, zoom = true, cls = '' }) {
-  const img = bleedPhoto(photoKey, { eager: true, abs: true, decorative: !zoom });
-  const cap = ASSETS[photoKey].alt.split(/[:,]/)[0];
-  return `  <section class="hero sp-hero gl${cls}" aria-labelledby="${id}">
-${BUBBLES}
-    <div class="wrap hero-in">
-      <div class="hero-top">
-        <p class="hero-eyebrow">${esc(eyebrow)}</p>${meta ? `
-        <p class="hero-meta">${meta}</p>` : ''}
-      </div>
-      <h1 class="display sp-title" id="${id}">${esc(h1)}</h1>
-      <div class="hero-foot">
-        <p class="hero-lede">${esc(lede)}</p>
-        <div class="hero-act sp-act">${quoteBtn(false, '#enquiry')}${callBtn(NAV.call, true)}${waBtn(true)}</div>
-      </div>
-    </div>
-    <div class="hero-plate">
-      <div class="hero-zoom">${zoom ? zoomable(photoKey, img) : img}</div>
-      <p class="hero-cap" aria-hidden="true"><b>Detail 1</b><span>${esc(cap)}</span></p>
-    </div>
-  </section>`;
+function sheetHero({ id, eyebrow, meta, h1, lede, photoKey, cls = '' }) {
+  return `  <section class="hero cin cin-page${cls}" aria-labelledby="${id}">${cinemaHero({
+    id, eyebrow, meta, lede, titleHtml: esc(h1), cls: ' sp-title', abs: true,
+    slides: [photoKey], captions: { [photoKey]: ASSETS[photoKey].alt.split(/[:,]/)[0] }
+  })}</section>`;
 }
 
 /* ── the pieces ─────────────────────────────────────────────────────────── */
@@ -400,7 +383,7 @@ ${chromeTop({ home: false, current: '404' })}
 <main id="main" tabindex="-1">
 ${sheetHero({
     id: 'nf-h', eyebrow: NOT_FOUND.eyebrow, h1: NOT_FOUND.h1, lede: NOT_FOUND.lede,
-    photoKey: NOT_FOUND.hero, zoom: false, cls: ' nf-hero'
+    photoKey: NOT_FOUND.hero, cls: ' nf-hero'
   })}
 
   <section class="svc nf-svc gl" id="services" aria-labelledby="nf-svc-h">

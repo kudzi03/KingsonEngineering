@@ -230,7 +230,15 @@
    1100,
    1440
   ],
-  "cropped": false
+  "cropped": false,
+  "wide": {
+   "w": 1440,
+   "h": 810,
+   "sizes": [
+    900,
+    1320
+   ]
+  }
  },
  "material-tube": {
   "source": "structure.jpeg",

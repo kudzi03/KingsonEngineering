@@ -23,12 +23,20 @@
       <image:title>Portal frame under erection</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/roof-trusses-1320.webp</image:loc>
-      <image:title>Long-span trusses and purlins</image:title>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-sparks-1440.webp</image:loc>
+      <image:title>The head cutting, sparks off the nozzle</image:title>
     </image:image>
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/crane-1320.webp</image:loc>
       <image:title>Our telescopic mobile crane</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/welding-bay-1920.webp</image:loc>
+      <image:title>Welding in the fabrication bay</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/roof-trusses-1320.webp</image:loc>
+      <image:title>Long-span trusses and purlins</image:title>
     </image:image>
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/welding-hands-1920.webp</image:loc>
@@ -49,10 +57,6 @@
     <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/gantry-1350.webp</image:loc>
       <image:title>Gantry and cable chain over the bed</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-sparks-1440.webp</image:loc>
-      <image:title>The head cutting, sparks off the nozzle</image:title>
     </image:image>
   </url>
   <url>
