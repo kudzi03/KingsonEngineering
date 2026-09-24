@@ -56,7 +56,7 @@
 
 export const CHAPTERS = [
   {
-    id: 'cut', route: 'fiber-laser-cutting-harare', name: 'Cut', ground: 'dark',
+    id: 'cut', route: 'fiber-laser-cutting-harare', name: 'Fiber laser', ground: 'dark',
     covers: ['Fiber laser cutting'],
     title: 'Straight from your file.',
     body: 'Plate and sheet cut on a DXTECH fiber laser — nested from the drawing you send and cut on a 3 000 × 1 500 mm bed. Mild steel, stainless, aluminium and galvanised sheet.',

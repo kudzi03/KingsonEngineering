@@ -16,7 +16,7 @@
    carry a phone number simply has no phone number in it.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { NAV, ENQUIRY, CONTACT, CAPABILITIES, SERVICES_BLOCK } from '../content/copy.js';
+import { NAV, ENQUIRY, CONTACT, CAPABILITIES } from '../content/copy.js';
 import { hasProjects } from '../content/projects.js';
 import { SERVICES } from '../content/services.js';
 import { publish } from '../content/company.js';
@@ -192,37 +192,31 @@ export function menuNav(home, current) {
 export function serviceChooser({ reveal = true } = {}) {
   const r = reveal ? ' data-reveal="lift" data-reveal-stagger="60"' : '';
   /* Four of the six have a photograph Kingson supplied of that work. The other
-     two have none, and they do not borrow one: their media panel is a plain
-     steel plate carrying the figure instead. The photograph is decorative here
-     (alt="") because the card's own words already name the service; the same
-     images carry full descriptions where they appear as content. */
+     two have none, and they do not borrow one: their media is a plain steel
+     plate carrying the figure instead. Decorative here (alt="", aria-hidden)
+     because the row's own words already name the service; the same images
+     carry full descriptions where they appear as content. The media is shown
+     inline on touch and narrow screens, and cloned into the cursor preview on
+     a wide screen with a mouse — see scenes/index-preview.js. */
   const media = (c) => {
     if (!c.photo) {
-      return `<span class="svc-media svc-plate" aria-hidden="true">
-            <span class="svc-plate-fig num">${esc(c.lead[0])}</span>
-            <span class="svc-plate-cap">${esc(c.lead[1])}</span>
-          </span>`;
+      return `<span class="cx-media cx-plate" aria-hidden="true"><b class="num">${esc(c.lead[0])}</b><span>${esc(c.lead[1])}</span></span>`;
     }
     const a = ASSETS[c.photo];
-    return `<span class="svc-media">
-            <img src="/${src(c.photo, 720)}" srcset="${srcset(c.photo).split(', ').map((x) => '/' + x).join(', ')}"
-                 sizes="(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 420px"
+    return `<span class="cx-media" aria-hidden="true"><img src="/${src(c.photo, 720)}" srcset="${srcset(c.photo).split(', ').map((x) => '/' + x).join(', ')}"
+                 sizes="(max-width: 900px) 28vw, 340px"
                  width="${a.w}" height="${a.h}" loading="lazy" decoding="async"
-                 style="object-position:${position(c.photo)}" alt="">
-            <span class="svc-media-fig num" aria-hidden="true">${esc(c.lead[0])}</span>
-          </span>`;
+                 style="object-position:${position(c.photo)}" alt=""></span>`;
   };
-  return `    <ol class="svc-grid"${r}>
-${CAPABILITIES.map((c, i) => `      <li class="svc-card${c.photo ? '' : ' svc-card-plate'}">
-        <a class="svc-hit" href="/${c.route}">
+  return `    <ol class="cx" data-cx${r}>
+${CAPABILITIES.map((c, i) => `      <li class="cx-row">
+        <a class="cx-hit" href="/${c.route}">
+          <span class="cx-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+          <span class="cx-name">${esc(c.title)}</span>
+          <span class="cx-lead"><b class="num">${esc(c.lead[0])}</b><span>${esc(c.lead[1])}</span></span>
+          <span class="cx-body">${esc(c.body)}</span>
+          <span class="cx-go" aria-hidden="true">${ICON_ARROW}</span>
           ${media(c)}
-          <span class="svc-text">
-            <span class="svc-idx num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
-            <span class="svc-name">${esc(c.title)}</span>
-            <span class="svc-lead-label"><b class="num">${esc(c.lead[0])}</b> ${esc(c.lead[1])}</span>
-            <span class="svc-body">${esc(c.body)}</span>
-            <span class="svc-go">${esc(SERVICES_BLOCK.go)}${ICON_ARROW}</span>
-          </span>
         </a>
       </li>`).join('\n')}
     </ol>`;
@@ -231,15 +225,10 @@ ${CAPABILITIES.map((c, i) => `      <li class="svc-card${c.photo ? '' : ' svc-ca
 /* ── chrome ─────────────────────────────────────────────────────────────── */
 
 export function chromeTop({ home = false, current = '' } = {}) {
-  /* The home page header sits over the hero, so it carries both marks and the
-     stylesheet shows whichever the ground calls for. The anchor already names
-     itself, so the second image is decorative rather than a repeat of the
-     accessible name. Only the home page pays for it, and the reverse mark is
-     on that page regardless — the footer uses it. */
-  const mark = home
-    ? `      <span class="mark-lit">${logo('light', '46px', '(max-width:760px) 116px, 134px')}</span>
-      <span class="mark-rev">${logo('reverse', '46px', '(max-width:760px) 116px, 134px', '', true)}</span>`
-    : '      ' + logo('light', '46px', '(max-width:760px) 116px, 134px');
+  /* One mark on every page. The home page's first sheet is the same light
+     ground as the bar, so the reverse artwork it used to carry for a dark
+     photographic hero has nothing left to do. */
+  const mark = '      ' + logo('light', '46px', '(max-width:760px) 116px, 134px');
 
   return `<a class="skip" href="#main">Skip to content</a>
 
@@ -505,6 +494,18 @@ export function privacyNote() {
     ? `<a href="mailto:${esc(mail)}">${esc(mail)}</a>.` : ''} ${esc(ENQUIRY.analytics)}</p>`;
 }
 
+/* Beside the form: the other way in. Every value through publish(), so an
+   unconfirmed one produces no line; with no phone at all the panel is empty
+   rather than wrong. */
+export function enquiryAside() {
+  const hours = publish('hours');
+  const person = publish('contactPerson');
+  return `      <p class="enq-aside-k">Rather talk it through?</p>
+      <p class="enq-aside-t">${esc(CONTACT.lede)}</p>
+      <div class="enq-aside-act">${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}</div>
+      <p class="enq-aside-meta">${hours ? `<span>Open <b>${esc(hours)}</b></span>` : ''}${person ? `<span>Ask for <b>${esc(person)}</b></span>` : ''}</p>`;
+}
+
 export function enquiryBlock(preselectService, { title, lede } = {}) {
   return `    <div class="sec-head">
       <p class="eyebrow">${esc(NAV.quote)}</p>
@@ -512,6 +513,10 @@ export function enquiryBlock(preselectService, { title, lede } = {}) {
       <p>${esc(lede || ENQUIRY.lede)}</p>
     </div>
 
+    <div class="enq-body">
+    <aside class="enq-aside" aria-label="Call instead">
+${enquiryAside()}
+    </aside>
     <div class="enq-card">
     <form class="form" data-form novalidate>
       <div class="error-summary" data-error-summary tabindex="-1" hidden></div>
@@ -533,6 +538,7 @@ ${enquiryForm(preselectService)}
       <div class="draft-body" data-draft-body></div>
       <div class="draft-actions" data-draft-actions></div>
       <p class="draft-status" data-draft-status></p>
+    </div>
     </div>
     </div>`;
 }

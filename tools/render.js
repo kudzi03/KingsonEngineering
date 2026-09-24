@@ -39,7 +39,7 @@ import { pageGraph, serviceId } from './schema.js';
 import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryForm, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
+  enquiryForm, enquiryAside, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
   ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote
 } from './layout.js';
 
@@ -58,17 +58,51 @@ const file = root + 'index.html';
    aria-labelledby, so a screen reader announces the region by its heading
    rather than as an unnamed group. A dangling reference is announced as
    nothing at all, which is worse than having left the attribute off. */
+/* Every section is a numbered sheet. The numbers are the order of the page,
+   and the sheet index down the left edge (see `sheets` below) uses the same
+   ones, so the two cannot disagree. */
+const SHEETS = [
+  ['services', '01', 'Capabilities'],
+  ['cut',      '02', 'Fiber laser'],
+  ['workshop', '03', 'Workshop'],
+  ['specs',    '04', 'Specifications'],
+  ['how',      '05', 'Programme'],
+  ['enquiry',  '06', 'Get a price'],
+  ['faq',      '07', 'Questions'],
+  ['contact',  '08', 'Contact']
+];
+const SHEET_OF = { services: 'services', specs: 'specs', process: 'how',
+  enquiry: 'enquiry', faq: 'faq', contact: 'contact' };
+const sheetNo = (id) => SHEETS.find(([s]) => s === id)[1];
+
 const head = (key, title, lede, id) =>
-  `    <p class="eyebrow">${esc(EYEBROWS[key])}</p>\n` +
+  `    <p class="eyebrow"><span class="sn">${sheetNo(SHEET_OF[key])}</span>${esc(EYEBROWS[key])}</p>\n` +
   `    <h2 class="display"${id ? ` id="${id}"` : ''} data-reveal="rise"><span>${esc(title)}</span></h2>\n` +
   (lede ? `    <p>${esc(lede)}</p>` : '');
 
+/* The sheet index: a ruler down the left edge of a wide screen, one tick per
+   sheet, the current one named. Real links, so it is also a way to move. */
+const sheets = SHEETS.map(([id, n, name]) =>
+  `    <a href="#${id}" data-sheet="${id}"><span class="si-n">${n}</span><span class="si-t">${esc(name)}</span></a>`).join('\n');
+
 /* ── hero and the strip under it ─────────────────────────────────────────── */
 
-const hero = `    <p class="hero-eyebrow">${esc(HERO.eyebrow)}</p>
-    <h1 class="display hero-title">${esc(HERO.title)}</h1>
-    <p class="hero-lede">${esc(HERO.lede)}</p>
-    <div class="hero-act">${quoteBtn()}${callBtn(NAV.call, true)}${waBtn(true)}</div>`;
+/* The headline is set one sentence to a line, each line in its own mask so it
+   can rise from behind the line above. The full stops are the accent: the
+   text is exactly HERO.title, so the h1 reads the same to anything that is
+   not looking at it. */
+const heroLines = HERO.title.split(/(?<=\.)\s+/).map((s) =>
+  `<span class="ln"><span>${esc(s).replace(/\.$/, '<span class="pt">.</span>')}</span></span>`).join(' ');
+
+const hero = `    <div class="hero-top">
+      <p class="hero-eyebrow">${esc(HERO.eyebrow)}</p>
+      <p class="hero-meta">${HERO.disciplines.map((d) => `<span>${esc(d)}</span>`).join('')}</p>
+    </div>
+    <h1 class="display hero-title" id="hero-h">${heroLines}</h1>
+    <div class="hero-foot">
+      <p class="hero-lede">${esc(HERO.lede)}</p>
+      <div class="hero-act">${quoteBtn()}${callBtn(NAV.call, true)}${waBtn(true)}</div>
+    </div>`;
 
 const strip = STRIP.map(([label, fig, value]) =>
   `    <li><span class="strip-k">${esc(label)}</span><span class="strip-f">${esc(fig)}</span><span class="strip-v">${esc(value)}</span></li>`
@@ -180,7 +214,7 @@ function heroFigure(h) {
    that used to sit beside the numeral stays — it is what separates the
    chapter's label from the heading under it. */
 const chapterLead = (c) =>
-  `      <p class="ch-mark"><span class="ch-name">${esc(c.name)}</span></p>
+  `      <p class="eyebrow"><span class="sn">${sheetNo(c.id)}</span>${esc(c.name)}</p>
       <h2 class="display ch-title" data-reveal="rise"><span>${esc(c.title)}</span></h2>
       <p class="ch-lede">${esc(c.body)}</p>`;
 
@@ -206,10 +240,10 @@ const SECTION_CLASS = {
 
 /* The four dark-to-light handovers, alternating direction. Named here rather
    than in the stylesheet so the sequence is visible in one place. */
-const SCENE_CUT = { cut: ' scene-cut-r', lift: ' scene-cut-l' };
+const SCENE_CUT = {};
 
 function chapter(c) {
-  const g = (c.ground === 'dark' ? ' ch-dark on-dark' : ' ch-light') + (SCENE_CUT[c.id] || '');
+  const g = (c.ground === 'dark' ? ' ch-dark on-dark gl' : ' ch-light gl') + (SCENE_CUT[c.id] || '');
   const head = `  <section class="ch ${SECTION_CLASS[c.media.kind]}${g}" id="${c.id}" aria-labelledby="ch-${c.id}-h">`;
 
   if (c.media.kind === 'bleed') {
@@ -337,7 +371,7 @@ const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
       ${zoomable(WORKSHOP.photo, photo(WORKSHOP.photo, { sizes: '(max-width:900px) 100vw, 52vw', w: 1100 }))}
     </div>
     <div class="ws-copy">
-      <p class="eyebrow">${esc(WORKSHOP.eyebrow)}</p>
+      <p class="eyebrow"><span class="sn">${sheetNo('workshop')}</span>${esc(WORKSHOP.eyebrow)}</p>
       <p class="ws-place" data-reveal="rise"><span>${esc(WORKSHOP.place)}<b>${esc(WORKSHOP.city)}</b></span></p>
       <h2 class="display" id="ws-h">${esc(WORKSHOP.title)}</h2>
       <p class="ws-lede">${esc(WORKSHOP.body)}</p>
@@ -561,7 +595,7 @@ const BLOCKS = {
   chromebottom: chromeBottom(),
 
   /* the homepage's own composition */
-  hero, strip, chapters, workshop, specs,
+  hero, strip, chapters, workshop, specs, sheets,
   steps, gantt, procClose, form, faq, faqask, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
@@ -573,6 +607,7 @@ const BLOCKS = {
   review:     esc(ENQUIRY.actions.review),
   filesnote:  esc(ENQUIRY.filesNote),
   privacy:    privacyNote(),
+  enqaside:   enquiryAside(),
   drafttitle: esc(ENQUIRY.draftTitle)
 };
 

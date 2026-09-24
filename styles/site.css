@@ -16,73 +16,125 @@
 
 .wrap { max-width: var(--page); margin: 0 auto; padding: 0 var(--margin); }
 
-section { padding: clamp(56px, 6.4vw, 96px) 0; }
+section { padding: clamp(72px, 8.4vw, 144px) 0; }
 .sec-alt  { background: var(--bg-soft); }
 .sec-dark { background: var(--bg-dark); color: var(--fg-on-dark); }
 
-/* A section opens like a drawing sheet's title band: a full-width rule, the
-   label on it, the heading left and the lede answering it on the right. Left
-   aligned, on the grid — not a centred block floating over the page. */
+/* ── the structural grid ──────────────────────────────────────────────────────
+   Four bays, five gridlines, running the length of the page the way the
+   gridlines of a general-arrangement drawing run the length of a building.
+   Each line sits in the middle of a gutter, so the content of every bay
+   starts half a gutter to the right of its line — on the grid, not on top
+   of it. A section opts in with .gl; the photographs cover it, which is the
+   point: the grid is the drawing, the photograph is the steel.
+
+   Behind the content (z-index -1 inside an isolated section), decorative
+   and pointer-transparent. Two lines — the page edges — below a tablet,
+   where a line through the middle of the text column would cut the copy. */
+.gl { position: relative; isolation: isolate; --gl-c: var(--gl-ink); }
+.gl.on-dark, .gl.sec-dark, .on-dark .gl { --gl-c: var(--gl-ink-dark); }
+.gl::before {
+  content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 50%;
+  width: calc(min(100%, var(--page)) - 2 * var(--margin) + var(--gut));
+  transform: translateX(-50%); pointer-events: none;
+  border-right: 1px solid var(--gl-c);
+  background: repeating-linear-gradient(90deg, var(--gl-c) 0 1px, transparent 1px 25%);
+}
+@media (max-width: 900px) {
+  .gl::before { background: linear-gradient(90deg, var(--gl-c) 0 1px, transparent 1px); }
+}
+
+/* Grid bubbles: the circled letters at the head of each gridline. Only at
+   the two ends of the page — the top of the first sheet and the foot of the
+   footer — as on a drawing. */
+.gl-bub {
+  position: relative; left: 50%; transform: translateX(-50%);
+  width: calc(min(100%, var(--page)) - 2 * var(--margin) + var(--gut));
+  height: 34px; pointer-events: none;
+}
+.gl-bub i {
+  position: absolute; top: 4px; width: 26px; height: 26px; margin-left: -13px;
+  border: 1px solid currentColor; border-radius: var(--pill);
+  display: grid; place-items: center;
+  font: 600 11px/1 Archivo, sans-serif; font-style: normal; letter-spacing: .02em;
+  color: var(--fg-faint); background: var(--bg);
+}
+.gl-bub i:nth-child(1) { left: 0; }
+.gl-bub i:nth-child(2) { left: 25%; }
+.gl-bub i:nth-child(3) { left: 50%; }
+.gl-bub i:nth-child(4) { left: 75%; }
+.gl-bub i:nth-child(5) { left: 100%; }
+@media (max-width: 900px) {
+  .gl-bub i:nth-child(2), .gl-bub i:nth-child(3), .gl-bub i:nth-child(4) { display: none; }
+}
+
+/* A section opens like a drawing sheet's title band: a heavy rule, the
+   sheet number and its name on it, then the heading at scale with the lede
+   answering it on the right. */
 .sec-head {
-  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
-  column-gap: clamp(24px, 4vw, 72px); align-items: end;
-  margin: 0 0 clamp(36px, 4.4vw, 60px); padding-top: 16px;
-  border-top: 1.5px solid var(--fg);
+  display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr);
+  column-gap: var(--gut); align-items: end;
+  margin: 0 0 clamp(40px, 5vw, 80px); padding-top: 14px;
+  border-top: 2px solid var(--fg);
 }
 .sec-head .eyebrow { grid-column: 1 / -1; }
-.sec-head > p { max-width: 46ch; padding-bottom: 6px; }
-.sec-dark .sec-head, .on-dark .sec-head { border-top-color: rgba(250, 250, 250, .5); }
-@media (max-width: 760px) {
+.sec-head > p { max-width: 42ch; padding-bottom: .5em; }
+.sec-dark .sec-head, .on-dark .sec-head { border-top-color: var(--fg-on-dark); }
+@media (max-width: 900px) {
   .sec-head { grid-template-columns: 1fr; }
-  .sec-head h2 { margin-bottom: 12px; }
+  .sec-head h2 { margin-bottom: 16px; }
 }
+/* The label on the title band: the sheet number in red, then the name. */
 .eyebrow {
   /* `align-self: start` because an inline-flex element is blockified when it
      becomes a flex item, and in the workshop's flex column it stretched to
      476px — leaving its trailing dot sitting in the middle of the block. */
-  display: inline-flex; align-self: start; align-items: center; gap: 9px;
-  font-size: var(--t-small); font-weight: 500; color: var(--fg-faint);
-  margin-bottom: 16px; text-transform: none;
+  display: inline-flex; align-self: start; align-items: baseline; gap: 14px;
+  font: 600 13.5px/1.2 Archivo, sans-serif; font-stretch: 112%;
+  letter-spacing: .15em; text-transform: uppercase; color: var(--fg-muted);
+  margin-bottom: clamp(26px, 3vw, 44px);
 }
-/* One mark, not two. There was a red dot before every eyebrow and a green one
-   after it — the logo's two colours, used as bookends. At 7px they read as
-   artefacts rather than as brand, and bracketing a two-word label with
-   punctuation on both sides is decoration doing no work. A single rule before
-   the label points at it. */
-.eyebrow::before {
-  content: ""; width: 18px; height: 2px; border-radius: var(--pill); flex: none;
-  background: var(--accent);
-}
-.sec-dark .eyebrow::before, .on-dark .eyebrow::before { background: var(--accent-on-dark); }
+.eyebrow .sn { color: var(--accent-ink); letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+.sec-dark .eyebrow .sn, .on-dark .eyebrow .sn { color: var(--accent-on-dark); }
 .sec-dark .eyebrow, .on-dark .eyebrow { color: var(--fg-on-dark-muted); }
 
-.sec-head h2 { font-size: var(--t-h2); margin-bottom: 15px; }
-.sec-head p  { font-size: var(--t-lede); color: var(--fg-muted); }
-.sec-dark .sec-head p { color: var(--fg-on-dark-muted); }
+.sec-head h2 {
+  font-size: var(--t-h2); line-height: .92; letter-spacing: -.045em;
+  margin-bottom: 0; max-width: 14ch;
+}
+@media (max-width: 900px) { .sec-head h2 { margin-bottom: 18px; } }
+.sec-head p:not(.eyebrow) { font-size: var(--t-lede); color: var(--fg-muted); line-height: 1.5; }
+.sec-head > .eyebrow { max-width: none; padding-bottom: 0; }
+.sec-dark .sec-head p, .on-dark .sec-head p { color: var(--fg-on-dark-muted); }
 
 /* ── buttons ────────────────────────────────────────────────────────────── */
 
+/* Archivo, not Inter: the page's own lettering, a touch expanded, so a
+   button reads as a stamped label rather than as interface chrome. */
 .btn, .btn-ghost {
-  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-  min-height: 48px; padding: 0 24px;
-  border: 1px solid transparent; border-radius: var(--r-sm);
-  font-size: var(--t-ui); font-weight: 500; letter-spacing: .005em; cursor: pointer; text-decoration: none;
-  white-space: nowrap;
-  transition: background-color 150ms var(--ease), border-color 150ms var(--ease),
-              color 150ms var(--ease), transform 150ms var(--ease);
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 50px; padding: 0 26px;
+  border: 1.5px solid transparent; border-radius: 0;
+  font: 700 15px/1 Archivo, sans-serif; font-stretch: 108%; letter-spacing: .01em;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: background-color 180ms var(--ease), border-color 180ms var(--ease),
+              color 180ms var(--ease), transform 150ms var(--ease);
 }
 .btn:active, .btn-ghost:active { transform: translateY(1px); }
 
 .btn { background: var(--accent); color: var(--accent-on); }
 .btn:hover { background: var(--accent-hover); }
+/* The primary action carries an arrow that travels on hover. */
+.btn > span + svg, .btn .go { transition: transform 220ms var(--ease); }
+.btn:hover > span + svg, .btn:hover .go { transform: translateX(4px); }
 
-.btn-ghost { background: transparent; color: var(--fg); border-color: var(--line-strong); }
-.btn-ghost:hover { background: var(--bg-soft); border-color: var(--fg-faint); }
-.on-dark .btn-ghost, .sec-dark .btn-ghost, .hero .btn-ghost {
-  color: var(--fg-on-dark); border-color: rgba(250, 250, 250, .34);
+.btn-ghost { background: transparent; color: var(--fg); border-color: var(--fg); }
+.btn-ghost:hover { background: var(--fg); color: var(--bg); }
+.on-dark .btn-ghost, .sec-dark .btn-ghost {
+  color: var(--fg-on-dark); border-color: rgba(243, 245, 246, .5);
 }
-.on-dark .btn-ghost:hover, .sec-dark .btn-ghost:hover, .hero .btn-ghost:hover {
-  background: rgba(250, 250, 250, .12); border-color: rgba(250, 250, 250, .6);
+.on-dark .btn-ghost:hover, .sec-dark .btn-ghost:hover {
+  background: var(--fg-on-dark); color: var(--bg-dark); border-color: var(--fg-on-dark);
 }
 
 /* Every art-directed photograph on the site is a <picture>: a 16:9 cut above
@@ -101,70 +153,28 @@ picture { display: contents; }
 
 .hd {
   position: sticky; top: 0; z-index: 120;
-  background: rgba(255, 255, 255, .88);
-  backdrop-filter: saturate(180%) blur(12px);
+  background: rgba(236, 238, 239, .9);
+  backdrop-filter: saturate(160%) blur(14px);
   border-bottom: 1px solid var(--line);
   transition: background 260ms var(--ease), border-color 260ms var(--ease);
 }
 .hd-in {
-  display: flex; align-items: center; gap: 30px;
+  display: flex; align-items: center; gap: 34px;
   min-height: calc(var(--hd-h) - 1px);
   max-width: var(--page); margin: 0 auto; padding: 0 var(--margin);
 }
 
-/* ── the header over the hero ─────────────────────────────────────────────────
-   A near-white bar above a dark cinematic hero cuts the opening in two. Over
-   the hero the bar becomes part of the scene: a dark field continuous with the
-   photograph behind it, carrying the reverse logo and on-dark navigation. Once
-   the hero has passed under it the bar returns to the solid state it has on
-   every other page, which is also the state it has with JavaScript off — the
-   class below is only ever ADDED by an IntersectionObserver that ran.
-
-   No scroll listener is involved. See main.js.                              */
-
-/* Fully transparent, not a darker bar: a bar of any shade still draws a line
-   across the opening. The hero's own top vignette below is what carries the
-   navigation, which is why that gradient is part of this change and not
-   decoration. */
+/* ── the header at the top of the home page ───────────────────────────────────
+   The first sheet is the same ground as the bar, so at the top of the page
+   the bar has no edge at all — it is the head of the sheet, not a strip laid
+   across it. It gains its rule the moment the hero passes under it. The class
+   is only ever ADDED by an observer that ran (and by the inline script in
+   <head> before first paint), so with JavaScript off the bar is simply the
+   solid bar it is on every other page. See main.js. */
 html.hd-over .hd {
-  background: transparent;
+  background: var(--bg);
   backdrop-filter: none;
   border-bottom-color: transparent;
-}
-html.hd-over .hd-nav a { color: rgba(250, 250, 250, .86); }
-html.hd-over .hd-nav a:hover { color: #fff; }
-/* The Call button takes the on-dark pair the rest of the site uses — left as
-   `--fg` it was near-black type on a dark sky — AND a translucent ground of
-   its own. The vignette alone is not a guarantee: the top right of this
-   photograph is cloud, and white type measured 2.79:1 over it. Darkening the
-   whole band to rescue one control would cost the photograph far more than the
-   control is worth, so the control carries its own ground. The hover state
-   lifts the fill rather than replacing it, because a hover that goes lighter
-   than the rest would undo exactly what this is for. */
-html.hd-over .hd-act .btn-ghost {
-  color: var(--fg-on-dark); border-color: rgba(250, 250, 250, .38);
-  background: rgba(8, 10, 9, .46);
-}
-html.hd-over .hd-act .btn-ghost:hover {
-  background: rgba(8, 10, 9, .66); border-color: rgba(250, 250, 250, .64);
-}
-html.hd-over .hd-menu { color: var(--fg-on-dark); }
-html.hd-over .hd-menu-bars,
-html.hd-over .hd-menu-bars::before,
-html.hd-over .hd-menu-bars::after { background: var(--fg-on-dark); }
-
-/* One artwork swapped, not two designs: the wordmark is Kingson's red and
-   green on both variants and carries either ground — only the signature above
-   it changes colour. Neither brand colour is light, though, so over a
-   photograph the letters lose their edge even through the vignette; the shadow
-   gives them a ground tight to the glyphs without drawing a box and without
-   lightening colours that are not ours to lighten. */
-.hd-mark .mark-rev { display: none; }
-html.hd-over .hd-mark .mark-rev { display: block; }
-html.hd-over .hd-mark .mark-lit { display: none; }
-html.hd-over .hd-mark img {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .9))
-          drop-shadow(0 0 7px rgba(0, 0, 0, .7));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -175,30 +185,105 @@ html.hd-over .hd-mark img {
 .hd-mark { margin-right: auto; display: inline-flex; align-items: center; min-height: 48px; }
 .hd-mark img { width: auto; }
 
-.hd-nav { display: flex; gap: 28px; }
-.hd-nav a { font-size: var(--t-ui); color: var(--fg-muted); white-space: nowrap; }
+/* Navigation: an underline drawn from the left on hover, in the accent, on
+   the baseline — the same stroke the red-pencil markup uses. */
+.hd-nav { display: flex; gap: 30px; }
+.hd-nav a {
+  position: relative; font-size: var(--t-ui); font-weight: 500;
+  color: var(--fg-muted); white-space: nowrap; padding: 6px 0;
+}
+.hd-nav a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px;
+  background: var(--accent); transform: scaleX(0); transform-origin: 100% 50%;
+  transition: transform 300ms var(--ease);
+}
+.hd-nav a:hover { color: var(--fg); }
+.hd-nav a:hover::after, .hd-nav a[aria-current]::after { transform: scaleX(1); transform-origin: 0 50%; }
 /* Between the phone menu (760px) and a full desktop bar the four links and
    two buttons do not fit: at 768 "What we do" broke onto two lines. The
    phone number is one tap away in the hero and the phone bar, so the header
    drops its Call button here and keeps Get a price. */
 @media (min-width: 761px) and (max-width: 1000px) { .hd-act .btn-ghost { display: none; } }
-.hd-nav a:hover { color: var(--fg); }
 
 .hd-act { display: flex; gap: 10px; }
-.hd-act .btn, .hd-act .btn-ghost { min-height: 42px; padding: 0 18px; }
+.hd-act .btn, .hd-act .btn-ghost { min-height: 44px; padding: 0 20px; font-size: 14px; }
+.hd-act .btn-ghost { border-color: var(--line-strong); }
+.hd-act .btn-ghost:hover { border-color: var(--fg); }
 .hd-menu { display: none; }
 
 /* ── hero ───────────────────────────────────────────────────────────────── */
 
-.hero {
-  position: relative; background: var(--bg-dark); color: var(--fg-on-dark);
-  /* Pulled up under the header and grown by the same amount, so the scene the
-     visitor actually sees is the height it has always been. */
-  margin-top: calc(var(--hd-h) * -1);
-  min-height: calc(min(90vh, 860px) + var(--hd-h));
-  display: flex; align-items: flex-end;
-  padding: 0; overflow: hidden;
+/* The first sheet. The headline is set at the full width of the grid, as the
+   title of a drawing is; the photograph under it is the detail the drawing
+   calls out, and as the page scrolls that detail opens from the grid to the
+   full width of the screen. */
+.hero { position: relative; padding: 0; background: var(--bg); color: var(--fg); overflow: hidden; }
+.hero .gl-bub { margin-top: clamp(8px, 1.1vw, 16px); }
+.hero-in { position: relative; padding-top: clamp(14px, 1.6vw, 24px); }
+
+.hero-top {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px 28px;
+  flex-wrap: wrap; margin-bottom: clamp(14px, 1.8vw, 28px);
 }
+.hero-eyebrow, .hero-meta {
+  font: 600 var(--t-label)/1.3 Archivo, sans-serif; font-stretch: 112%;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fg-muted);
+}
+.hero-eyebrow::before {
+  content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 12px;
+  background: var(--accent); vertical-align: 0;
+}
+.hero-meta { display: flex; flex-wrap: wrap; gap: 6px 26px; }
+
+/* Sized to the grid: the longer line spans the four bays. */
+.hero-title {
+  font-size: clamp(50px, 11.2vw, 178px); line-height: .84; letter-spacing: -.05em;
+  margin: 0 0 clamp(22px, 2.4vw, 36px); margin-left: -.045em;
+}
+.hero-title .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+.hero-title .ln > span { display: inline-block; }
+.hero-title .ln + .ln { text-align: right; }
+.hero-title .pt { color: var(--accent); }
+
+.hero-foot {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--gut);
+  align-items: end;
+}
+.hero-lede { grid-column: 1 / span 2; font-size: var(--t-lede); line-height: 1.5;
+             color: var(--fg-muted); max-width: 46ch; }
+.hero-act { grid-column: 3 / span 2; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+@media (max-width: 900px) {
+  .hero-foot { grid-template-columns: minmax(0, 1fr); row-gap: 22px; }
+  .hero-lede, .hero-act { grid-column: 1; }
+  .hero-act { justify-content: flex-start; }
+}
+@media (max-width: 760px) {
+  /* The four disciplines are in the lede directly below; on a phone the
+     reference line would only push the headline down. */
+  .hero-meta { display: none; }
+  .hero-title { margin-bottom: 18px; }
+  /* Taller on a phone, where the frame is narrow: the uncut file and the
+     portrait markup (see .hero-mark-tall). */
+  .hero-plate { aspect-ratio: 4 / 5; max-height: 72svh; }
+  .hero-cap { padding: 10px 14px 10px 0; font-size: 12.5px; }
+  .hero-cap span:last-child { display: none; }
+}
+
+/* ── the plate ────────────────────────────────────────────────────────────────
+   Full width in the layout, clipped to the grid at rest. As the page scrolls
+   the clip opens to the screen edges and the photograph eases back from a
+   close crop — the technique of the "scroll reveal image" pattern, done in
+   CSS on the compositor's timeline rather than with a width animated from
+   script. Browsers without scroll-driven animation get the plate at rest:
+   clipped to the grid, which is the composition as designed. */
+.hero-plate {
+  --pi: max(var(--margin), calc((100% - var(--page)) / 2 + var(--margin)));
+  position: relative; margin-top: clamp(28px, 3.4vw, 52px);
+  aspect-ratio: 16 / 9; max-height: calc(100vh - var(--hd-h));
+  overflow: hidden; background: var(--bg-dark);
+  clip-path: inset(0 var(--pi));
+}
+.hero-zoom { position: absolute; inset: 0; transform-origin: 50% 40%; }
 /* Centred, because the markup over it can only be registered to a centred
    crop (SVG slice has no 54% / 47%). */
 .hero-img { position: absolute; inset: 0; width: 100%; height: 100%;
@@ -207,6 +292,43 @@ html.hd-over .hd-mark img {
 /* The photograph arrives already visible and eases a few percent back to
    rest. No opacity fade: the first paint is the finished picture. */
 @keyframes hero-settle { from { transform: scale(1.07); } to { transform: none; } }
+
+/* ── the first sheet being drawn ──────────────────────────────────────────────
+   Once, on load, in the order a drawing is made: the gridlines run down the
+   sheet, the bubbles are set at their heads, the title is lettered one line
+   at a time from behind its own datum, then the notes. About a second in
+   all; the photograph under it is never held back. Reduce Motion gets the
+   finished sheet. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero.gl::before { transform-origin: 50% 0; animation: gl-draw 1500ms var(--ease-power) both; }
+  .hero .gl-bub i { animation: bub-in 520ms var(--ease) both; }
+  .hero .gl-bub i:nth-child(2) { animation-delay: 70ms; }
+  .hero .gl-bub i:nth-child(3) { animation-delay: 140ms; }
+  .hero .gl-bub i:nth-child(4) { animation-delay: 210ms; }
+  .hero .gl-bub i:nth-child(5) { animation-delay: 280ms; }
+  .hero-title .ln > span { animation: ln-rise 1000ms var(--ease-heavy) 120ms both; }
+  .hero-title .ln + .ln > span { animation-delay: 240ms; }
+  .hero-top, .hero-foot { animation: note-in 800ms var(--ease) 420ms both; }
+}
+@keyframes gl-draw { from { transform: translateX(-50%) scaleY(0); } to { transform: translateX(-50%) scaleY(1); } }
+@keyframes bub-in { from { opacity: 0; transform: scale(.6); } }
+@keyframes ln-rise { from { transform: translateY(104%); } }
+@keyframes note-in { from { opacity: 0; transform: translateY(10px); } }
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 761px) {
+    .hero-plate {
+      animation: plate-open linear both;
+      animation-timeline: scroll(root block); animation-range: 0 75vh;
+    }
+    .hero-zoom {
+      animation: plate-zoom linear both;
+      animation-timeline: scroll(root block); animation-range: 0 90vh;
+    }
+  }
+}
+@keyframes plate-open { from { clip-path: inset(0 var(--pi)); } to { clip-path: inset(0 0); } }
+@keyframes plate-zoom { from { transform: scale(1.16); } to { transform: none; } }
 
 /* ── the markup: red pencil on the photograph ─────────────────────────────
    Same box and same settle as the image, so it stays registered while the
@@ -249,72 +371,44 @@ html.hd-over .hd-mark img {
   .hero-mark circle, .hero-mark path, .hero-mark text { animation: none; }
 }
 
-/* A plate caption, the way a technical journal labels a photograph. */
+/* A plate caption, the way a drawing labels a detail: number, title, note.
+   On its own dark field at the foot of the frame, so it does not depend on
+   what the photograph is doing behind it. */
 .hero-cap {
-  position: absolute; z-index: 3; right: var(--margin); bottom: clamp(44px, 5.5vw, 68px);
-  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
-  font-size: var(--t-small); color: rgba(250, 250, 250, .72); text-align: right;
-  padding-right: 14px; border-right: 2px solid var(--accent);
+  position: absolute; z-index: 3; left: var(--pi); bottom: 0;
+  display: flex; align-items: baseline; gap: 6px 18px; flex-wrap: wrap;
+  padding: 12px 18px 12px 0; background: var(--bg-dark);
+  font-size: var(--t-small); color: var(--fg-on-dark-muted);
 }
-.hero-cap span:first-child { color: #fff; font-weight: 600; }
-@media (max-width: 1100px) { .hero-cap { display: none; } }
-/* Two layers. The lower one is the copy's ground and has not changed. The
-   upper one is a short vignette across the top: the header now sits on the
-   photograph, and this is what guarantees the navigation a dark ground
-   whatever the sky is doing behind it. Measured, not guessed — see the
-   contrast probe in the verification notes. */
-.hero::after {
-  content: ""; position: absolute; inset: 0;
-  background:
-    linear-gradient(to bottom,
-      rgba(10, 12, 11, .80) 0%, rgba(10, 12, 11, .66) 6%,
-      rgba(10, 12, 11, .42) 12%, rgba(10, 12, 11, .16) 19%,
-      rgba(10, 12, 11, 0) 27%),
-    linear-gradient(to top,
-      rgba(10, 12, 11, .95) 0%,  rgba(10, 12, 11, .92) 26%, rgba(10, 12, 11, .84) 48%,
-      rgba(10, 12, 11, .58) 68%, rgba(10, 12, 11, .20) 85%, rgba(10, 12, 11, 0) 100%);
+.hero-cap b {
+  font: 600 var(--t-label)/1 Archivo, sans-serif; font-stretch: 112%;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--red-on-dark);
 }
-.hero-in {
-  position: relative; z-index: 3; width: 100%;
-  max-width: var(--page); margin: 0 auto;
-  padding: calc(clamp(72px, 9vw, 120px) + var(--hd-h)) var(--margin) clamp(44px, 5.5vw, 68px);
-}
-.hero-body { max-width: 740px; }
-.hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 9px;
-  font-size: var(--t-small); font-weight: 500;
-  color: var(--fg-on-dark-muted); margin-bottom: 18px;
-}
-.hero-eyebrow::before { content: ""; width: 7px; height: 7px; flex: none;
-                        border-radius: var(--pill); background: var(--accent); }
-.hero h1 { font-size: clamp(46px, 7.4vw, 104px); line-height: .96; letter-spacing: -.04em;
-           margin-bottom: 22px; max-width: 11ch; }
-.hero-lede { font-size: var(--t-lede); color: var(--fg-on-dark-muted);
-             max-width: 58ch; margin-bottom: 28px; }
-.hero-act { display: flex; flex-wrap: wrap; gap: 12px; }
+.hero-cap span:first-of-type { color: var(--fg-on-dark); font-weight: 500; }
 
-/* ── the strip of confirmed facts ────────────────────────────────────────────
-   Four facts on a dark bar directly under the hero, so a buyer has the machine,
-   the crane, the address and the acknowledgement before scrolling once. */
+/* ── the title block ─────────────────────────────────────────────────────────
+   Four facts on the steel band directly under the photograph, one to a bay,
+   so a buyer has the machine, the crane, the address and the hours before
+   scrolling once. Read like the title block of a drawing: a small label, the
+   figure large in Archivo's condensed width, then the detail. */
 
-.strip { background: var(--bg-dark-2); color: var(--fg-on-dark);
-         border-top: 1px solid var(--line-dark); }
+.strip { background: var(--bg-dark); color: var(--fg-on-dark); }
 .strip-in {
   max-width: var(--page); margin: 0 auto; padding: 0 var(--margin);
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--gut);
 }
 .strip-in li {
-  padding: 22px 28px 24px 0; display: grid; gap: 4px; align-content: start;
-  border-left: 1px solid var(--line-dark); padding-left: 26px;
+  padding: clamp(24px, 2.6vw, 40px) 0 clamp(26px, 2.8vw, 44px);
+  display: grid; gap: 6px; align-content: start;
 }
-.strip-in li:first-child { border-left: 0; padding-left: 0; }
-/* A ruled figures band, read like the title block of a data sheet: label,
-   the figure set large in Archivo's condensed width, then the detail. */
-.strip-k { font-size: var(--t-small); color: var(--fg-on-dark-muted); font-weight: 500; }
+.strip-k {
+  font: 600 var(--t-label)/1.2 Archivo, sans-serif; font-stretch: 112%;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fg-on-dark-muted);
+}
 .strip-f { font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
-           font-size: clamp(34px, 3.3vw, 48px); line-height: 1; color: var(--fg-on-dark);
-           letter-spacing: -.01em; margin: 4px 0 2px; }
-.strip-v { font-size: 14px; color: var(--fg-on-dark-muted); line-height: 1.45; }
+           font-size: clamp(40px, 4.4vw, 72px); line-height: .95; color: var(--fg-on-dark);
+           letter-spacing: -.01em; margin: 6px 0 4px; }
+.strip-v { font-size: 14px; color: var(--fg-on-dark-muted); line-height: 1.45; max-width: 30ch; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CAPABILITY CHAPTERS
@@ -348,8 +442,9 @@ html.hd-over .hd-mark img {
 .ch-dark .ch-mark::after { background: var(--line-dark); }
 
 .ch-copy { max-width: 44ch; }
-.ch-title { font-size: var(--t-h2); margin-bottom: 18px; }
-.ch-lede { font-size: var(--t-lede); color: var(--fg-muted); margin-bottom: 28px; }
+.ch-title { font-size: clamp(38px, 4.9vw, 80px); line-height: .92; letter-spacing: -.045em;
+            margin-bottom: 22px; }
+.ch-lede { font-size: var(--t-lede); color: var(--fg-muted); margin-bottom: 28px; line-height: 1.5; }
 .ch-dark .ch-lede { color: var(--fg-on-dark-muted); }
 
 /* ── the large figure ─────────────────────────────────────────────────────────
@@ -564,15 +659,21 @@ html.hd-over .hd-mark img {
 .cut-tol .ch-big { margin-bottom: 8px; max-width: 12ch; }
 .cut-tol .ch-big-label { margin-bottom: 0; max-width: 32ch; }
 
-.ch-cut-head { padding-top: clamp(40px, 5.2vw, 76px); }
-/* The head is a two-column split so the tolerance sits BESIDE the prose
-   rather than under it, where it read as just another paragraph. */
+.ch-cut-head { padding-top: clamp(56px, 6.4vw, 104px); }
+/* On the grid: the copy takes bays A–B, the cutting data bays C–D, so the
+   figures start on gridline C rather than wherever the prose ended. */
 .ch-cut-head {
-  padding-bottom: clamp(34px, 4vw, 56px);
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(30px, 5vw, 72px); align-items: end;
+  padding-bottom: clamp(44px, 5vw, 80px);
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--gut); row-gap: 36px; align-items: end;
 }
-.ch-cut-data { max-width: 40ch; }
+.ch-cut-head > .ch-copy { grid-column: 1 / span 2; max-width: none; }
+.ch-cut-head .ch-lede { max-width: 46ch; }
+.ch-cut-data { grid-column: 3 / span 2; max-width: none; }
+@media (max-width: 900px) {
+  .ch-cut-head { grid-template-columns: minmax(0, 1fr); }
+  .ch-cut-head > .ch-copy, .ch-cut-data { grid-column: 1; }
+}
 .ch-cut-data .ch-big { margin-top: -.1em; }
 
 /* Every rule here is scoped to the list, not to the section. */
@@ -610,27 +711,32 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
+/* The copy on the grid's left half, the photograph running off the right edge
+   of the screen from gridline C. The place name is set the way it is
+   stencilled on the overalls in the photograph beside it. */
 .ws { padding: 0; }
 .ws .ws-img, .ws .ws-copy { min-width: 0; }
 .ws {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: stretch;
 }
-.ws-img { overflow: hidden; }
-.ws-img img { width: 100%; height: 100%; min-height: clamp(360px, 58vh, 680px); object-fit: cover; }
+.ws-img { overflow: hidden; order: 2; }
+.ws-img img { width: 100%; height: 100%; min-height: clamp(420px, 70vh, 820px); object-fit: cover; }
 .ws-copy {
-  padding: clamp(48px, 6vw, 92px) clamp(24px, 5vw, 76px);
+  padding: clamp(64px, 7vw, 120px) var(--gut)
+           clamp(64px, 7vw, 120px) max(var(--margin), calc((100vw - var(--page)) / 2 + var(--margin)));
   display: flex; flex-direction: column; justify-content: center;
-  max-width: 620px;
 }
 .ws-place {
-  font-family: Archivo, sans-serif; font-weight: 700; line-height: 1.02;
-  font-size: clamp(26px, 3vw, 42px); letter-spacing: -.03em; margin-bottom: 16px;
+  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 125%; line-height: .95;
+  font-size: clamp(30px, 3.4vw, 56px); letter-spacing: -.02em; text-transform: uppercase;
+  margin-bottom: 26px;
 }
-.ws-place b { display: block; color: var(--accent); font-weight: 700; }
-.ws-copy h2 { font-size: clamp(26px, 2.6vw, 38px); margin-bottom: 14px; }
-.ws-lede { color: var(--fg-muted); margin-bottom: 26px; }
-.ws-figures { margin-bottom: 26px; }
+.ws-place b { display: block; color: var(--accent); font-weight: 800; }
+.ws-copy h2 { font-size: clamp(22px, 1.9vw, 30px); letter-spacing: -.02em; line-height: 1.15;
+              margin-bottom: 14px; max-width: 24ch; }
+.ws-lede { color: var(--fg-muted); margin-bottom: 26px; max-width: 48ch; }
+.ws-figures { margin-bottom: 30px; max-width: 520px; }
 .ws-act { display: flex; flex-wrap: wrap; gap: 12px; }
 
 /* ── specifications ─────────────────────────────────────────────────────────
@@ -679,6 +785,24 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .spec-rows dt { color: var(--fg-muted); font-size: var(--t-ui); }
 .spec-rows dd { font-weight: 500; text-align: right;
                 font-variant-numeric: tabular-nums; }
+
+/* A drawing schedule: each group opens on a black title bar carrying its
+   schedule number, and the rows under it are ruled, not boxed. */
+.spec-list { counter-reset: sg; }
+.spec-group { counter-increment: sg; background: var(--surface); border: 0; box-shadow: none; }
+.spec-group > summary {
+  background: var(--fg); color: var(--surface);
+  font-size: 13px; font-stretch: 112%; letter-spacing: .12em; text-transform: uppercase;
+  padding: 15px 20px;
+}
+.spec-group > summary:hover { background: #1F2529; }
+.spec-group > summary > span { display: flex; }
+.spec-group > summary > span::before {
+  content: "S" counter(sg); flex: none; min-width: 3.2em;
+  color: var(--red-on-dark); letter-spacing: .06em;
+}
+.spec-group .spec-rows { padding: 0 20px 6px; }
+.spec-group .spec-rows > div:first-child { border-top: 0; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    PROOF — site work, at size
@@ -868,26 +992,55 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 }
 .enq > .wrap { position: relative; z-index: 1; }
 
+/* The brief is a request-for-quotation sheet: the form takes bays B–D, and
+   bay A carries the other way in — the phone — for anyone who would rather
+   talk it through. */
+.enq-body {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--gut); row-gap: 28px; align-items: start;
+}
+.enq-aside { grid-column: 1; display: grid; gap: 14px; padding-top: 4px; }
+.enq-aside-k { font-family: Archivo, sans-serif; font-weight: 700; font-size: 20px;
+               letter-spacing: -.01em; line-height: 1.2; }
+.enq-aside-t { color: var(--fg-on-dark-muted); font-size: var(--t-ui); }
+.enq-aside-act { display: grid; gap: 10px; margin-top: 6px; }
+.enq-aside-act .btn-ghost { justify-content: flex-start; }
+.enq-aside-meta { display: grid; gap: 2px; font-size: var(--t-small); color: var(--fg-on-dark-muted);
+                  border-top: 1px solid var(--line-dark); padding-top: 14px; margin-top: 8px; }
+.enq-aside-meta b { color: var(--fg-on-dark); font-weight: 500; }
+
 .enq-card {
-  max-width: 860px; margin: 0 auto;
-  background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-xl);
-  padding: clamp(26px, 3.6vw, 44px); box-shadow: var(--shadow);
-  /* The card is white but the section around it is dark, so without this the
+  grid-column: 2 / span 3; margin: 0;
+  background: var(--bg); border: 0; border-top: 3px solid var(--accent); border-radius: 0;
+  padding: clamp(26px, 3.4vw, 52px); box-shadow: var(--shadow-lg);
+  /* The card is light but the section around it is dark, so without this the
      card inherits --fg-on-dark. Everything inside used to name its own colour
      and get away with it; "Ready to send." did not, and was white on white. */
   color: var(--fg);
 }
-.form { display: grid; gap: 20px; }
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.field { display: grid; gap: 8px; align-content: start; }
+@media (max-width: 1100px) {
+  .enq-body { grid-template-columns: minmax(0, 1fr); }
+  .enq-aside, .enq-card { grid-column: 1; }
+  .enq-aside { order: 2; }
+  .enq-aside-act { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+}
+/* Every field on the sheet is numbered, the way an RFQ's items are. */
+.form { display: grid; gap: 22px; counter-reset: fld; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.field { display: grid; gap: 8px; align-content: start; counter-increment: fld; }
 .field label { font-size: var(--t-small); font-weight: 500; color: var(--fg-muted); }
+.field > label::before {
+  content: counter(fld, decimal-leading-zero); display: inline-block; min-width: 2.3em;
+  font: 600 11.5px/1 Archivo, sans-serif; letter-spacing: .06em; color: var(--accent-ink);
+}
 .field label .opt { font-weight: 400; color: var(--fg-faint); }
 .field input, .field textarea, .field select {
-  width: 100%; background: var(--bg); color: var(--fg);
-  border: 1px solid var(--line-strong); border-radius: var(--r);
-  padding: 13px 15px; min-height: 48px;
+  width: 100%; background: var(--surface); color: var(--fg);
+  border: 1px solid var(--line-strong); border-radius: 0;
+  padding: 13px 15px; min-height: 50px;
   transition: border-color 140ms var(--ease), box-shadow 140ms var(--ease);
 }
+.field input:hover, .field textarea:hover, .field select:hover { border-color: var(--fg-faint); }
 .field textarea { min-height: 142px; resize: vertical; }
 .field input:focus, .field textarea:focus, .field select:focus {
   outline: none; border-color: var(--accent);
@@ -943,9 +1096,11 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
    questions scroll on the right. Numbered, because a phone call often goes
    "the fourth one on your site". */
 .faq-wrap {
-  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: clamp(32px, 6vw, 96px); align-items: start;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--gut); row-gap: 32px; align-items: start;
 }
+.faq-side { grid-column: 1 / span 2; padding-right: clamp(0px, 4vw, 72px); }
+.faq-list { grid-column: 3 / span 2; }
 .faq-side { position: sticky; top: calc(var(--hd-h) + 32px); }
 .faq-side .sec-head { text-align: left; margin: 0 0 28px; max-width: none; }
 .faq-side .sec-head h2 { font-size: clamp(34px, 4.2vw, 58px); line-height: 1.02; }
@@ -974,6 +1129,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
                 max-width: 64ch; font-size: var(--t-body, 16px); line-height: 1.7; }
 @media (max-width: 900px) {
   .faq-wrap { grid-template-columns: 1fr; }
+  .faq-side, .faq-list { grid-column: 1; padding-right: 0; }
   /* On one column the questions come first and the "ask us" panel follows
      them, so a phone reader meets the answers before the fallback. */
   .faq-side { display: contents; }
@@ -984,22 +1140,33 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 
 /* ── contact (dark) ─────────────────────────────────────────────────────── */
 
+/* A directory on the grid: the four ways to reach a person across the four
+   bays, set large enough to read across a room; then the two addresses, the
+   workshop and the hours at two bays each. */
 .ct-list {
   /* minmax(0, 1fr), not 1fr: a bare `1fr` track has an `auto` minimum, so one
      unbreakable 34-character email address widened the column past the page
      and pushed the whole document into horizontal scroll at 768px. */
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(24px, 4vw, 56px);
-  max-width: 1000px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--gut);
+  max-width: none; margin: 0;
 }
 .ct-list dd { overflow-wrap: anywhere; }
 .ct-list li { border-top: 1px solid var(--line-dark); }
-.ct-list dl {
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 20px; padding: 17px 0;
+.ct-list li:nth-child(n+5) { grid-column: span 2; }
+.ct-list dl { display: grid; gap: 12px; padding: 18px 0 30px; }
+.ct-list dt {
+  font: 600 var(--t-label)/1.2 Archivo, sans-serif; font-stretch: 112%;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fg-on-dark-muted);
 }
-.ct-list dt { font-size: var(--t-small); color: var(--fg-on-dark-muted); flex: none; }
-.ct-list dd { font-size: 16.5px; font-weight: 500; text-align: right; }
+.ct-list dd {
+  font-family: Archivo, sans-serif; font-weight: 700; font-stretch: 104%;
+  font-size: clamp(19px, 1.75vw, 27px); line-height: 1.2; letter-spacing: -.01em; text-align: left;
+}
+@media (max-width: 1100px) {
+  .ct-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ct-list li:nth-child(n+5) { grid-column: span 2; }
+}
 /* WCAG 2.5.8 wants a 24px minimum pointer target; on a phone these get 44px
    (see the small-screen block). A bare inline link measured 21px. */
 .ct-list a, .ft a { display: inline-flex; align-items: center; min-height: 24px; }
@@ -1108,8 +1275,9 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   .pf { margin-bottom: -18px; }
 
   .ws { grid-template-columns: minmax(0, 1fr); }
+  .ws-img { order: 0; }
   .ws-img img { min-height: clamp(280px, 44vh, 420px); }
-  .ws-copy { max-width: none; }
+  .ws-copy { max-width: none; padding: clamp(48px, 9vw, 72px) var(--margin); }
   /* Below 900 the establishing frame serves the uncut portrait file, so the
      wash comes up from the bottom instead of across from the left — a
      left-to-right scrim on a 390px frame covers the machine, which is the
@@ -1219,10 +1387,13 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   .faq-item > p { padding-left: 0; padding-right: 0; }
 
   .ct-list { grid-template-columns: 1fr; }
+  .ct-list li:nth-child(n+5) { grid-column: auto; }
   /* Stacked, the label and the value each get a full line — a long email
      address has no room to break mid-word beside its label. */
-  .ct-list dl { flex-direction: column; gap: 3px; padding: 14px 0; }
-  .ct-list dd { text-align: left; overflow-wrap: anywhere; }
+  .ct-list dl { gap: 6px; padding: 14px 0 18px; }
+  .ct-list dd { text-align: left; overflow-wrap: anywhere; font-size: 20px; }
+  /* The addresses are the longest unbroken strings on the site. */
+  .ct-list dd a[href^="mailto"] { font-size: 16.5px; }
   /* The contact values are the most-tapped links on the page. */
   .ct-list a, .ft a { display: inline-flex; align-items: center; min-height: 44px; }
 
@@ -1262,10 +1433,10 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 
 /* ── breadcrumb ─────────────────────────────────────────────────────────── */
 
-.crumbs { background: var(--bg); border-bottom: 1px solid var(--line); }
+.crumbs { background: var(--bg); padding: 0; }
 .crumbs ol {
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
-  padding-block: 13px; font-size: var(--t-small); color: var(--fg-faint);
+  padding-block: 14px 0; font-size: var(--t-small); color: var(--fg-faint);
 }
 .crumbs li { display: flex; align-items: center; gap: 8px; }
 .crumbs li + li::before { content: "/"; color: var(--line-strong); }
@@ -1275,10 +1446,16 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 
 /* ── the service hero ─────────────────────────────────────────────────────── */
 
-.sp-hero { min-height: min(78vh, 720px); }
-.sp-hero .ch-title { font-size: clamp(30px, 3.7vw, 54px); }
-.sp-hero .ch-copy { width: min(100%, 880px); }
-.sp-act { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+/* The service pages open on the same sheet as the home page (.hero, .gl-bub,
+   .hero-plate): only the title is set smaller, because it is a sentence,
+   not two words. */
+.sp-title {
+  font-size: clamp(34px, 6.4vw, 104px); line-height: .9; letter-spacing: -.045em;
+  max-width: 15ch; margin: 0 0 clamp(26px, 3vw, 44px); margin-left: -.04em;
+}
+.hero-plate .zoom { position: absolute; inset: 0; }
+.hero-plate .zoom img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero-plate .zoom-cue { top: auto; bottom: 14px; right: calc(var(--pi) + 14px); }
 
 /* ── the brief: what is confirmed, and what we need ─────────────────────── */
 
@@ -1440,8 +1617,6 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   .sp-brief-in, .sp-proc-in { grid-template-columns: minmax(0, 1fr); }
   .sp-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sp-strip > li img { height: clamp(240px, 34vh, 340px); }
-  .sp-hero { min-height: 0; }
-  .sp-hero .ch-copy { width: 100%; }
 }
 
 @media (max-width: 760px) {
@@ -1882,16 +2057,14 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
    scrim, same copy column. It only needs to be shorter, because the six
    services sit directly under it and a lost visitor should see them without
    scrolling on a laptop. */
-.nf-hero { min-height: min(46vh, 400px); }
-/* A 404 does not deserve a full service-page hero. Cutting the frame's own
-   padding brings the first row of service tiles up to the fold on a 900px
-   laptop instead of a full screen below it. */
-.nf-hero .ch-over { padding-block: clamp(36px, 4vw, 56px); }
+/* A 404 does not deserve a full photograph: a thin band of it, so the index
+   of services under it is one short scroll away on a laptop. */
+.nf-hero .hero-plate { aspect-ratio: 32 / 9; }
 /* The chooser under it is the whole point of the page, so it gets the tighter
    of the two section rhythms — the first row of tiles should be reachable in
    one short scroll on a laptop, not two. */
 .nf-svc { padding-block: clamp(40px, 4.4vw, 64px); }
-@media (max-width: 760px) { .nf-hero { min-height: 0; } }
+@media (max-width: 760px) { .nf-hero .hero-plate { aspect-ratio: 16 / 9; } }
 
 /* ── three actions in the phone bar ──────────────────────────────────────────
    Call, WhatsApp and Get a price. At 360px three equal thirds leave about
@@ -1985,7 +2158,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   /* Sized to the content width: the name measures 12.0 × its font size. */
   font-size: calc((min(100vw, var(--page)) - 2 * var(--margin)) / 12.1);
   line-height: .78; letter-spacing: -.035em;
-  white-space: nowrap; color: rgba(250, 250, 250, .07);
+  white-space: nowrap; color: rgba(243, 245, 246, .11);
   transform: translateY(12%); user-select: none;
 }
 
@@ -2000,3 +2173,183 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 /* On a phone the fixed action bar covers the last ~78px of the viewport; the
    footer's last line has to clear it at full scroll. */
 @media (max-width: 760px) { .ft { padding-bottom: calc(78px + env(safe-area-inset-bottom)); } }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE DRAWING SET — sheet index and capability index
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── the sheet index ──────────────────────────────────────────────────────────
+   A ruler in the left margin of a wide screen: one tick per sheet, the
+   current sheet's tick drawn long and red, and its name set up the margin
+   the way a drawing's title runs up its border. Real links. Hidden while the
+   first sheet is on screen (it has nothing to index yet) and wherever the
+   margin is too narrow to hold it clear of the content. main.js sets
+   aria-current and the ground; without it the ruler is never shown. */
+.si { display: none; }
+@media (min-width: 1280px) {
+  html.si-ready .si {
+    display: flex; flex-direction: column; gap: 9px;
+    position: fixed; z-index: 90; left: clamp(14px, 1.3vw, 26px); top: 50%;
+    transform: translateY(-50%);
+    opacity: 0; visibility: hidden;
+    transition: opacity 300ms var(--ease), visibility 0s linear 300ms;
+    --si-c: var(--fg-faint); --si-on: var(--accent-ink);
+  }
+  html.si-ready .si.is-on { opacity: 1; visibility: visible; transition: opacity 300ms var(--ease); }
+  html.si-ready .si[data-ground="dark"] { --si-c: var(--fg-on-dark-muted); --si-on: var(--red-on-dark); }
+  .si a {
+    display: flex; align-items: center; gap: 7px;
+    height: 16px; color: var(--si-c);
+    font: 600 10px/1 Archivo, sans-serif; letter-spacing: .06em; font-variant-numeric: tabular-nums;
+    transition: color 240ms var(--ease);
+  }
+  .si a::after {
+    content: ""; width: 12px; height: 1.5px; background: currentColor;
+    transition: width 320ms var(--ease);
+  }
+  .si a:hover, .si a[aria-current] { color: var(--si-on); }
+  .si a[aria-current]::after { width: 22px; }
+  /* The current sheet's name, up the margin under the ruler. Every label
+     sits in the same place; only the current one is shown. */
+  .si-t {
+    position: absolute; left: 1px; top: calc(100% + 18px);
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap;
+    opacity: 0; transition: opacity 240ms var(--ease); pointer-events: none;
+  }
+  .si a[aria-current] .si-t { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .si, .si a, .si a::after, .si-t { transition: none !important; }
+}
+
+/* ── the capability index ─────────────────────────────────────────────────────
+   Six services as a schedule, not six cards: a ruled list read across — the
+   number, the name at size, the one figure a buyer of that work asks about,
+   and the way through to the page. Hovered or focused, a row inverts to
+   steel and the arrow fills; with a fine pointer a photograph of that work
+   rides beside the cursor (scenes/index-preview.js). A touch screen has no
+   hover to reveal anything with, so there every row carries its photograph
+   inline — nothing on this list is only visible to a mouse. */
+.svc { background: var(--bg); }
+.cx { border-top: 2px solid var(--fg); position: relative; }
+.cx-row { border-bottom: 1px solid var(--line-strong); }
+.cx-hit {
+  position: relative; display: grid; align-items: center;
+  grid-template-columns: minmax(0, .42fr) minmax(0, 2.1fr) minmax(0, 1.25fr) minmax(0, 1.05fr) 64px;
+  column-gap: var(--gut);
+  padding: clamp(20px, 2.2vw, 34px) 0; color: var(--fg);
+  isolation: isolate;
+}
+/* The inversion is a panel that rises from the row's baseline, so the
+   change reads as a plate slid under the line, not a colour flip. */
+.cx-hit::before {
+  content: ""; position: absolute; z-index: -1; inset: -1px calc(var(--gut) / -2);
+  background: var(--bg-dark); transform: scaleY(0); transform-origin: 50% 100%;
+  transition: transform 420ms var(--ease-heavy);
+}
+.cx-n {
+  font: 600 13px/1 Archivo, sans-serif; letter-spacing: .08em;
+  color: var(--accent-ink); font-variant-numeric: tabular-nums; align-self: start;
+  padding-top: .6em; transition: color 260ms var(--ease);
+}
+.cx-name {
+  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 118%;
+  font-size: clamp(26px, 2.9vw, 46px); line-height: .98; letter-spacing: -.035em;
+  transition: transform 420ms var(--ease-heavy);
+}
+.cx-lead { display: grid; gap: 4px; }
+.cx-lead b {
+  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
+  font-size: clamp(30px, 2.8vw, 46px); line-height: .9; letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums;
+}
+.cx-lead span, .cx-body { font-size: 14px; line-height: 1.45; color: var(--fg-muted);
+                          transition: color 260ms var(--ease); }
+.cx-body { max-width: 36ch; }
+.cx-go {
+  justify-self: end; width: 56px; height: 56px; display: grid; place-items: center;
+  border: 1.5px solid var(--fg); color: var(--fg);
+  transition: background-color 260ms var(--ease), border-color 260ms var(--ease), color 260ms var(--ease);
+}
+.cx-go svg { width: 20px; height: 20px; transition: transform 320ms var(--ease); }
+/* Photographs and the two figure plates: hidden in the row where the
+   preview carries them, shown inline on touch and narrow screens. */
+.cx-hit > .cx-media { display: none; }
+
+.cx-hit:hover, .cx-hit:focus-visible { color: var(--fg-on-dark); }
+.cx-hit:hover::before, .cx-hit:focus-visible::before { transform: none; }
+.cx-hit:hover .cx-n, .cx-hit:focus-visible .cx-n { color: var(--red-on-dark); }
+.cx-hit:hover .cx-lead span, .cx-hit:hover .cx-body,
+.cx-hit:focus-visible .cx-lead span, .cx-hit:focus-visible .cx-body { color: var(--fg-on-dark-muted); }
+.cx-hit:hover .cx-go, .cx-hit:focus-visible .cx-go {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+.cx-hit:hover .cx-go svg, .cx-hit:focus-visible .cx-go svg { transform: rotate(-45deg); }
+.cx-hit:hover .cx-name, .cx-hit:focus-visible .cx-name { transform: translateX(10px); }
+.cx-hit:focus-visible { outline-offset: -3px; }
+
+/* The preview that rides beside the cursor. aria-hidden: the row's own
+   words already name the service; this is only the picture of it. */
+.cx-pv {
+  position: fixed; z-index: 100; left: 0; top: 0; transform-origin: 50% 100%;
+  width: clamp(240px, 22vw, 340px); aspect-ratio: 4 / 3;
+  pointer-events: none; overflow: hidden; background: var(--bg-dark);
+  opacity: 0; visibility: hidden;
+  transition: opacity 220ms var(--ease), visibility 0s linear 220ms;
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .6);
+}
+.cx-pv.is-on { opacity: 1; visibility: visible; transition: opacity 220ms var(--ease); }
+.cx-pv > * { position: absolute; inset: 0; }
+.cx-pv img { width: 100%; height: 100%; object-fit: cover; animation: pv-in 420ms var(--ease) both; }
+@keyframes pv-in { from { transform: scale(1.12); opacity: .4; } }
+
+.cx-plate {
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 6px;
+  padding: 18px; background: var(--bg-dark-2); color: var(--fg-on-dark);
+  border-bottom: 3px solid var(--accent);
+}
+.cx-plate b {
+  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
+  font-size: clamp(40px, 4vw, 64px); line-height: .9;
+}
+.cx-plate span { font-size: 13px; color: var(--fg-on-dark-muted); }
+/* In the preview the plate sits on an inverted (steel) row, so it takes a
+   lighter steel and a hairline to stay a separate object. */
+.cx-pv .cx-plate { background: #283036; box-shadow: inset 0 0 0 1px rgba(243, 245, 246, .14); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-hit::before, .cx-name, .cx-go, .cx-go svg, .cx-pv, .cx-pv img { transition: none; animation: none; }
+  .cx-hit:hover .cx-name, .cx-hit:focus-visible .cx-name { transform: none; }
+}
+
+/* A laptop: the description gives way before the name has to. */
+@media (max-width: 1180px) {
+  .cx-hit { grid-template-columns: minmax(0, .36fr) minmax(0, 2fr) minmax(0, 1.2fr) 56px; }
+  .cx-body { display: none; }
+  .cx-go { width: 50px; height: 50px; }
+}
+
+/* Touch, and anything narrower than a laptop: the photograph moves into the
+   row. There is no hover here to reveal it with, and none is needed. */
+@media (hover: none), (max-width: 900px) {
+  .cx-hit {
+    grid-template-columns: minmax(0, 1fr) clamp(104px, 28vw, 180px);
+    grid-template-areas: "n media" "name media" "lead media";
+    align-items: start; align-content: start; row-gap: 8px; padding: 22px 0;
+  }
+  .cx-n { grid-area: n; padding-top: 0; }
+  .cx-name { grid-area: name; font-size: clamp(24px, 6.4vw, 34px); }
+  .cx-lead { grid-area: lead; margin-top: 4px; }
+  .cx-lead b { font-size: clamp(26px, 7vw, 36px); }
+  .cx-body, .cx-go { display: none; }
+  .cx-hit > .cx-media {
+    display: block; grid-area: media; position: relative; overflow: hidden;
+    aspect-ratio: 4 / 5; background: var(--bg-dark);
+  }
+  .cx-media img { width: 100%; height: 100%; object-fit: cover; }
+  .cx-hit > .cx-media.cx-plate { display: flex; padding: 12px; }
+  .cx-media.cx-plate b { font-size: clamp(24px, 6.6vw, 34px); }
+  .cx-media.cx-plate span { font-size: 11.5px; line-height: 1.3; }
+  .cx-hit:hover .cx-name, .cx-hit:focus-visible .cx-name { transform: none; }
+}

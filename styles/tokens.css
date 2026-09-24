@@ -2,34 +2,38 @@
    styles/tokens.css — the design system
    ═══════════════════════════════════════════════════════════════════════════
 
-   Structure from the reference build the owner supplied
-   (pastel-pixie-lab.lovable.app): a light Tailwind/shadcn theme — white page,
-   near-black text, soft grey cards, 1rem corners, pill buttons, and a dark
-   hero and footer bookending the light body.
+   The page is a drawing sheet. A cool light-steel ground with structural
+   gridlines running its full length (see .gl in site.css), steel-dark
+   chapters, near-black ink, and one accent: the red from Kingson's own
+   wordmark. Square corners throughout — steel is cut, not moulded.
 
-   Colour from Kingson's own logo. The reference's flat red is replaced by the
-   red in the wordmark and the green in the tagline, both sampled from the
-   supplied artwork.
+   Every text pairing below was measured, not eyeballed; the ratios are in
+   the comments.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
   /* ── ground ─────────────────────────────────────────────────────────── */
-  --bg:          #ffffff;   /* the page                                    */
-  --bg-soft:     #fafafa;   /* alternating section, card fill              */
-  --bg-dark:     #0f1211;   /* hero, footer, contact                       */
-  --bg-dark-2:   #1a1e1c;   /* a card on the dark ground                   */
+  --bg:          #ECEEEF;   /* the sheet: light steel, not white           */
+  --bg-soft:     #E2E5E7;   /* an alternating sheet                        */
+  --surface:     #F7F8F8;   /* a panel, a field, a table on the sheet      */
+  --bg-dark:     #111518;   /* steel: chapters, contact, footer            */
+  --bg-dark-2:   #181D21;   /* a band or panel on the steel ground         */
 
   /* ── ink ────────────────────────────────────────────────────────────── */
-  --fg:          #0a0a0a;
-  --fg-muted:    #57575e;   /* body copy beside a heading: 6.6:1 on white  */
-  --fg-faint:    #71717a;   /* captions, labels: 4.8:1 on white            */
-  --fg-on-dark:  #fafafa;
-  --fg-on-dark-muted: rgba(250, 250, 250, .72);
+  --fg:          #0C0F11;   /* 16.5:1 on the sheet                         */
+  --fg-muted:    #464E54;   /* 7.3:1 on the sheet, 6.7:1 on the alt sheet  */
+  --fg-faint:    #59626A;   /* 5.3:1 on the sheet, 4.9:1 on the alt sheet  */
+  --fg-on-dark:  #F3F5F6;
+  --fg-on-dark-muted: #A9B2B8;   /* 8.5:1 on steel                         */
 
   /* ── lines ──────────────────────────────────────────────────────────── */
-  --line:        #e4e4e7;
-  --line-strong: #d4d4d8;
-  --line-dark:   #27272a;
+  --line:        #CDD3D6;
+  --line-strong: #AEB6BB;
+  --line-dark:   #2A3237;
+
+  /* ── the structural grid ─────────────────────────────────────────────── */
+  --gl-ink:      rgba(12, 15, 17, .085);
+  --gl-ink-dark: rgba(243, 245, 246, .065);
 
   /* ── brand ──────────────────────────────────────────────────────────────
      Measured off the logo artwork Kingson supplied, not invented. The red is
@@ -45,12 +49,10 @@
   --red-soft:  #FDEAEA;
   --red-on:    #ffffff;
 
-  /* The brand red is 3.57:1 on the dark card — fine for a 46px figure, not for
-     a 12px label. This is the same hue and saturation lifted in lightness until
-     it clears 4.5:1 on EVERY dark ground the page uses, including the chapter
-     grounds (#0f1211, #1a1e1c) and the photographic scrims (rgb(8,10,9) and
-     up). Measured, not eyeballed: 4.59:1 at the tightest of them. */
-  --red-on-dark: #E95156;
+  /* The brand red is 3.9:1 on steel — fine for a large figure, not for a
+     12px label. This is the same hue lifted until it clears 4.5:1 on every
+     dark ground the page uses: 5.5:1 on steel, 4.5:1 on the darkest panel. */
+  --red-on-dark: #EF5A5F;
 
   --green:     #039647;   /* brand tagline                                      */
   --green-ink: #02803C;   /* green as text                      5.05:1 on white  */
@@ -75,31 +77,35 @@
   --dot-b: var(--green);
 
   /* ── shape ──────────────────────────────────────────────────────────── */
-  /* Industrial, not SaaS: corners are eased, not rounded. Circles (step
-     balloons, dots) still use --pill. */
-  --r-sm: 2px;
-  --r:    3px;
-  --r-lg: 4px;
-  --r-xl: 6px;
+  /* Square. Only the grid bubbles and the step balloons are round, because
+     on a drawing those are circles. */
+  --r-sm: 0;
+  --r:    0;
+  --r-lg: 0;
+  --r-xl: 0;
   --pill: 9999px;
 
-  --shadow-sm: 0 1px 2px rgba(9, 9, 11, .05);
-  --shadow:    0 4px 6px -1px rgba(9, 9, 11, .07), 0 2px 4px -2px rgba(9, 9, 11, .05);
-  --shadow-lg: 0 10px 15px -3px rgba(9, 9, 11, .08), 0 4px 6px -4px rgba(9, 9, 11, .05);
+  --shadow-sm: none;
+  --shadow:    0 1px 0 rgba(12, 15, 17, .06);
+  --shadow-lg: 0 24px 48px -28px rgba(12, 15, 17, .45);
 
   /* ── measure ────────────────────────────────────────────────────────── */
-  --margin: clamp(20px, 5vw, 64px);
-  --page:   1200px;
+  /* The page runs wide. Long text is held to its own measure (ch) inside
+     it; what the width buys is scale for the type and the photographs. */
+  --margin: clamp(20px, 4.4vw, 64px);
+  --page:   1440px;
+  --gut:    clamp(16px, 2.2vw, 32px);
   --ease:   cubic-bezier(.22, 1, .36, 1);
 
   /* ── type ───────────────────────────────────────────────────────────── */
   --t-body:  16px;
-  --t-lede:  clamp(17px, 1.25vw, 19px);
-  --t-h1:    clamp(40px, 5.4vw, 76px);
-  --t-h2:    clamp(32px, 3.9vw, 56px);
+  --t-lede:  clamp(17px, 1.3vw, 20px);
+  --t-h1:    clamp(44px, 6.4vw, 104px);
+  --t-h2:    clamp(38px, 5.9vw, 96px);
   --t-h3:    clamp(19px, 1.5vw, 22px);
   --t-ui:    15px;
   --t-small: 13.5px;
+  --t-label: 12px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }

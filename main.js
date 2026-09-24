@@ -19,6 +19,7 @@ import { mountViewer } from './interface/image-viewer.js';
 import { mountEnquiry } from './interface/enquiry.js';
 import { mountReveals } from './scenes/reveal.js';
 import { mountParallax } from './scenes/parallax.js';
+import { mountIndexPreview } from './scenes/index-preview.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -110,6 +111,33 @@ mountReveals();
 /* Depth on the scenes that fill a viewport. Reads scrollY, writes transform,
    and stops its own loop when nothing is in view. See scenes/parallax.js. */
 mountParallax();
+
+/* The photograph beside the cursor on the capability index. */
+mountIndexPreview();
+
+/* ── the sheet index ────────────────────────────────────────────────────────
+   Which sheet is under a line across the middle of the screen. One observer,
+   a zero-height root, no scroll listener. The ruler stays away while the
+   first sheet (the hero) is on that line, and takes the ground of the sheet
+   it is over so it reads on steel as well as on paper. */
+const si = $('.si');
+if (si && 'IntersectionObserver' in window) {
+  document.documentElement.classList.add('si-ready');
+  const links = new Map($$('a[data-sheet]', si).map((a) => [a.dataset.sheet, a]));
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const a = links.get(e.target.id);
+      links.forEach((l) => l.removeAttribute('aria-current'));
+      si.classList.toggle('is-on', !!a);
+      if (!a) continue;
+      a.setAttribute('aria-current', 'location');
+      si.dataset.ground = e.target.matches('.on-dark, .sec-dark') ? 'dark' : 'light';
+    }
+  }, { rootMargin: '-50% 0px -50% 0px' });
+  [hero, ...[...links.keys()].map((id) => document.getElementById(id))]
+    .filter(Boolean).forEach((s) => io.observe(s));
+}
 
 /* ── the photograph viewer ──────────────────────────────────────────────── */
 

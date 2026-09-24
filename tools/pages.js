@@ -42,6 +42,36 @@ const zoomable = (key, inner) =>
   `<button type="button" class="zoom" data-open="${key}"
               aria-label="${esc(ASSETS[key].alt)} Select to view full size.">${inner}<span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>`;
 
+/* ── the first sheet ─────────────────────────────────────────────────────────
+   The same sheet the home page opens on: gridlines with their bubbles, the
+   title at the width of the grid, then the photograph as the detail it calls
+   out, opening to the screen edges as the page scrolls. One helper for the
+   five service pages and the 404, so they cannot drift from each other. */
+const BUBBLES = '  <div class="gl-bub" aria-hidden="true"><i>A</i><i>B</i><i>C</i><i>D</i><i>E</i></div>';
+
+function sheetHero({ id, eyebrow, meta, h1, lede, photoKey, zoom = true, cls = '' }) {
+  const img = bleedPhoto(photoKey, { eager: true, abs: true, decorative: !zoom });
+  const cap = ASSETS[photoKey].alt.split(/[:,]/)[0];
+  return `  <section class="hero sp-hero gl${cls}" aria-labelledby="${id}">
+${BUBBLES}
+    <div class="wrap hero-in">
+      <div class="hero-top">
+        <p class="hero-eyebrow">${esc(eyebrow)}</p>${meta ? `
+        <p class="hero-meta">${meta}</p>` : ''}
+      </div>
+      <h1 class="display sp-title" id="${id}">${esc(h1)}</h1>
+      <div class="hero-foot">
+        <p class="hero-lede">${esc(lede)}</p>
+        <div class="hero-act sp-act">${quoteBtn(false, '#enquiry')}${callBtn(NAV.call, true)}${waBtn(true)}</div>
+      </div>
+    </div>
+    <div class="hero-plate">
+      <div class="hero-zoom">${zoom ? zoomable(photoKey, img) : img}</div>
+      <p class="hero-cap" aria-hidden="true"><b>Detail 1</b><span>${esc(cap)}</span></p>
+    </div>
+  </section>`;
+}
+
 /* ── the pieces ─────────────────────────────────────────────────────────── */
 
 const crumbs = (s) => `  <nav class="crumbs" aria-label="Breadcrumb">
@@ -206,22 +236,14 @@ ${chromeTop({ home: false, current: s.slug })}
 ${crumbs(s)}
 
   <!-- ═══ the service, at scale ═══ -->
-  <section class="sp-hero ch ch-bleed ch-dark on-dark">
-    <div class="ch-bleed-img" data-parallax data-reveal="settle">
-      ${zoomable(s.hero, bleedPhoto(s.hero, { eager: true, abs: true }))}
-    </div>
-    <div class="wrap ch-over">
-      <div class="ch-copy">
-        <p class="ch-mark"><span class="ch-name">${esc(s.eyebrow)}</span></p>
-        <h1 class="display ch-title">${esc(s.h1)}</h1>
-        <p class="ch-lede">${esc(s.intro)}</p>
-        <div class="sp-act">${quoteBtn(false, '#enquiry')}${callBtn(NAV.call, true)}${waBtn(true)}</div>
-      </div>
-    </div>
-  </section>
+${sheetHero({
+    id: 'sp-h', eyebrow: s.eyebrow, h1: s.h1, lede: s.intro, photoKey: s.hero,
+    /* The one figure a buyer of this work asks about, from the chooser. */
+    meta: cap ? `<span>${esc(cap.lead[0] + ' ' + cap.lead[1])}</span>` : ''
+  })}
 
   <!-- ═══ what we can do, and what we need from you ═══ -->
-  <section class="sp-brief">
+  <section class="sp-brief gl">
     <div class="wrap sp-brief-in">
       <div class="sp-brief-col">
         <h2 class="display" data-reveal="rise"><span>${esc(SERVICE_PAGE.figuresTitle)}</span></h2>
@@ -236,12 +258,12 @@ ${s.send.map((line) => `          <li>${esc(line)}</li>`).join('\n')}
     </div>
   </section>
 ${aside ? `
-  <section class="sp-photo">
+  <section class="sp-photo gl">
     <div class="wrap">
 ${aside}
     </div>
   </section>` : ''}${draw ? `
-  <section class="sp-drawing sec-alt">
+  <section class="sp-drawing sec-alt gl">
     <div class="wrap">
 ${draw}
     </div>
@@ -251,7 +273,7 @@ ${strip}
   </section>` : ''}${s.parts ? `
 
   <!-- ═══ the work this covers ═══ -->
-  <section class="sp-parts">
+  <section class="sp-parts gl">
     <div class="wrap">
       <div class="sp-parts-list">
 ${s.parts.map((p) => `        <article id="${p.id}">
@@ -263,7 +285,7 @@ ${s.parts.map((p) => `        <article id="${p.id}">
   </section>` : ''}
 
   <!-- ═══ the transcript ═══ -->
-  <section class="spec sec-alt" id="specifications">
+  <section class="spec sec-alt gl" id="specifications">
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">${esc((s.spec && s.spec.eyebrow) || SERVICE_PAGE.specTitle)}</p>
@@ -277,7 +299,7 @@ ${specBlock(s.specGroups)}
   </section>
 
   <!-- ═══ process and place ═══ -->
-  <section class="sp-proc">
+  <section class="sp-proc gl">
     <div class="wrap sp-proc-in">
       <div>
         <h2 class="display" data-reveal="rise"><span>${esc(SERVICE_PAGE.processTitle)}</span></h2>
@@ -297,7 +319,7 @@ ${[['address', publish('address')], ['hours', publish('hours')], ['contactPerson
   </section>
 
   <!-- ═══ questions ═══ -->
-  <section class="faq" id="faq">
+  <section class="faq gl" id="faq">
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">Questions</p>
@@ -310,7 +332,7 @@ ${faqBlock(faq)}
   </section>
 
   <!-- ═══ the brief ═══ -->
-  <section class="enq sec-dark on-dark" id="enquiry">
+  <section class="enq sec-dark on-dark gl" id="enquiry">
     ${bleedPhoto(s.hero, { abs: true, cls: 'enq-bg', decorative: true })}
     <div class="wrap">
 ${enquiryBlock(s.serviceName, { title: SERVICE_PAGE.ctaTitle, lede: SERVICE_PAGE.ctaLede })}
@@ -318,7 +340,7 @@ ${enquiryBlock(s.serviceName, { title: SERVICE_PAGE.ctaTitle, lede: SERVICE_PAGE
   </section>
 
   <!-- ═══ where else to go ═══ -->
-  <section class="sp-related sec-alt">
+  <section class="sp-related sec-alt gl">
     <div class="wrap">
       <h2 class="display" data-reveal="rise"><span>${esc(SERVICE_PAGE.relatedTitle)}</span></h2>
 ${relatedBlock(s.related)}
@@ -376,21 +398,12 @@ ${head}
 ${chromeTop({ home: false, current: '404' })}
 
 <main id="main" tabindex="-1">
-  <section class="sp-hero nf-hero ch ch-bleed ch-dark on-dark">
-    <div class="ch-bleed-img">
-      ${bleedPhoto(NOT_FOUND.hero, { eager: true, abs: true, decorative: true })}
-    </div>
-    <div class="wrap ch-over">
-      <div class="ch-copy">
-        <p class="ch-mark"><span class="ch-name">${esc(NOT_FOUND.eyebrow)}</span></p>
-        <h1 class="display ch-title">${esc(NOT_FOUND.h1)}</h1>
-        <p class="ch-lede">${esc(NOT_FOUND.lede)}</p>
-        <div class="sp-act">${quoteBtn(false, '#enquiry')}${callBtn(NAV.call, true)}${waBtn(true)}</div>
-      </div>
-    </div>
-  </section>
+${sheetHero({
+    id: 'nf-h', eyebrow: NOT_FOUND.eyebrow, h1: NOT_FOUND.h1, lede: NOT_FOUND.lede,
+    photoKey: NOT_FOUND.hero, zoom: false, cls: ' nf-hero'
+  })}
 
-  <section class="svc nf-svc" id="services" aria-labelledby="nf-svc-h">
+  <section class="svc nf-svc gl" id="services" aria-labelledby="nf-svc-h">
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">${esc(SERVICES_BLOCK.eyebrow)}</p>
@@ -401,7 +414,7 @@ ${serviceChooser()}
     </div>
   </section>
 
-  <section class="enq sec-dark on-dark" id="enquiry">
+  <section class="enq sec-dark on-dark gl" id="enquiry">
     ${bleedPhoto(NOT_FOUND.hero, { abs: true, cls: 'enq-bg', decorative: true })}
     <div class="wrap">
 ${enquiryBlock(null, { title: NOT_FOUND.ctaTitle, lede: NOT_FOUND.ctaLede })}
