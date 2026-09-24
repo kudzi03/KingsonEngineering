@@ -324,7 +324,7 @@ ${chapterLead(c)}
 ${chapterData(c, { hero: !c.media.scene })}
       </div>
     </div>
-    <ul class="ch-strip" tabindex="0" role="group"
+    <ul class="ch-strip" tabindex="0"
         aria-label="Photographs of the fiber laser. On a narrow screen this row scrolls sideways.">
 ${plates}
     </ul>

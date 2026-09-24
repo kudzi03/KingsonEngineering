@@ -205,7 +205,7 @@ export function servicePage(s) {
   const joins = s.aside && s.strip && s.strip.length && s.strip.length < 5;
   const plates = s.strip && s.strip.length ? [...s.strip, ...(joins ? [s.aside] : [])] : [];
   const strip = plates.length
-    ? `  <ul class="ch-strip sp-strip" tabindex="0" role="group"
+    ? `  <ul class="ch-strip sp-strip" tabindex="0"
        aria-label="Photographs of this work. On a narrow screen this row scrolls sideways.">
 ${plates.map((k, i) => `    <li data-reveal="plate" data-from="below" style="--d:${i * 110}ms">
       ${zoomable(k, photo(k, { sizes: '(max-width:900px) 62vw, 32vw', w: 720 })

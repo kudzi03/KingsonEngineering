@@ -123,7 +123,7 @@ export function logo(kind, height, sizes, base = '', decorative = false) {
   const alt = decorative ? '' : `${publish('name')} — ${publish('tagline')}`;
   /* A reverse mark in the header is the first thing painted, so it is not
      deferred there the way the footer's is. */
-  const lazy = kind === 'reverse' && !decorative ? ' loading="lazy"' : '';
+  const lazy = kind === 'reverse' ? ' loading="lazy" fetchpriority="low"' : '';
   return `<img src="${base}assets/brand/${stem}-560.png"` +
     ` srcset="${base}assets/brand/${stem}-320.png 320w, ${base}assets/brand/${stem}-560.png 560w"` +
     ` sizes="${sizes}" width="560" height="229" style="height:${height}"` +
@@ -253,9 +253,9 @@ ${headerNav(home, current)}
   </div>
 </header>
 
-<div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" inert>
+<div class="menu on-dark" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" inert>
   <div class="menu-top">
-    <span class="menu-logo">${logo('light', '40px', '116px')}</span>
+    <span class="menu-logo">${logo('reverse', '40px', '116px', '', true)}</span>
     <button type="button" class="menu-close" data-menu-close aria-label="Close menu">Close</button>
   </div>
   <nav class="menu-list" aria-label="Sections">
@@ -312,7 +312,7 @@ ${reach}
   <div class="ft-in">
 ${meta}
   </div>
-  <p class="ft-mark" aria-hidden="true">${esc(publish('name'))}</p>
+  <p class="ft-mark" aria-hidden="true" data-mark="${esc(publish('name'))}"></p>
 </footer>`;
 }
 
@@ -339,7 +339,7 @@ export function chromeBottom() {
      piece of the page that is reachable at every scroll depth, so the three
      ways to reach us all live here rather than only in a hero somebody has
      already scrolled past. -->
-<div class="bar">${callBtn(NAV.call, true)}${waBtn(true)}${quoteBtn(false, '#enquiry')}</div>
+<nav class="bar" aria-label="Call, WhatsApp or get a price">${callBtn(NAV.call, true)}${waBtn(true)}${quoteBtn(false, '#enquiry')}</nav>
 
 <script type="module" src="/main.js?v=${BUILD}"></script>`;
 }
@@ -405,6 +405,12 @@ ${index ? `<meta property="og:url" content="${canonical}">\n` : ''}<meta propert
 ${pre}<!-- --svh is set before first paint so a phone's address bar collapsing
      mid-scroll cannot resize a full-height scene under the reader. From
      main.js it arrived after layout and cost a measured 0.021 CLS.
+
+     The script after fonts.css holds the title of the first sheet back until
+     Archivo is in (2.5s at most). It has to come after that stylesheet: before
+     it, the face is not declared yet and the check passes at once. Set in the fallback it is a different width, and the
+     right-set second line jumped sideways when the face swapped: the whole of
+     the page's layout shift. Nothing is held with JavaScript off.
 ${home ? `
      The second line puts the header into its over-the-hero state before the
      first paint. Left to main.js it arrived after the module graph had loaded
@@ -417,6 +423,7 @@ ${home ? `
 <script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')${home ? `
 if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-over')` : ''}</script>
 <link rel="stylesheet" href="/assets/fonts.css?v=${BUILD}">
+<script>if(document.fonts&&document.fonts.load&&!document.fonts.check('800 1em Archivo')){var h=document.documentElement;h.classList.add('fl');Promise.race([document.fonts.load('800 1em Archivo'),new Promise(function(r){setTimeout(r,2500)})]).then(function(){h.classList.remove('fl')},function(){h.classList.remove('fl')})}</script>
 <link rel="stylesheet" href="/styles/tokens.css?v=${BUILD}">
 <link rel="stylesheet" href="/styles/site.css?v=${BUILD}">
 <!-- Vercel Web Analytics: page views only, no cookies, no personal data.

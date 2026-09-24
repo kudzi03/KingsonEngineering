@@ -56,7 +56,7 @@ section { padding: clamp(72px, 8.4vw, 144px) 0; }
   position: absolute; top: 4px; width: 26px; height: 26px; margin-left: -13px;
   border: 1px solid currentColor; border-radius: var(--pill);
   display: grid; place-items: center;
-  font: 600 11px/1 Archivo, sans-serif; font-style: normal; letter-spacing: .02em;
+  font: 600 11px/1 Archivo, "Archivo Fallback", sans-serif; font-style: normal; letter-spacing: .02em;
   color: var(--fg-faint); background: var(--bg);
 }
 .gl-bub i:nth-child(1) { left: 0; }
@@ -90,7 +90,7 @@ section { padding: clamp(72px, 8.4vw, 144px) 0; }
      becomes a flex item, and in the workshop's flex column it stretched to
      476px — leaving its trailing dot sitting in the middle of the block. */
   display: inline-flex; align-self: start; align-items: baseline; gap: 14px;
-  font: 600 13.5px/1.2 Archivo, sans-serif; font-stretch: 112%;
+  font: 600 13.5px/1.2 Archivo, "Archivo Fallback", sans-serif; font-stretch: 112%;
   letter-spacing: .15em; text-transform: uppercase; color: var(--fg-muted);
   margin-bottom: clamp(26px, 3vw, 44px);
 }
@@ -115,7 +115,7 @@ section { padding: clamp(72px, 8.4vw, 144px) 0; }
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   min-height: 50px; padding: 0 26px;
   border: 1.5px solid transparent; border-radius: 0;
-  font: 700 15px/1 Archivo, sans-serif; font-stretch: 108%; letter-spacing: .01em;
+  font: 700 15px/1 Archivo, "Archivo Fallback", sans-serif; font-stretch: 108%; letter-spacing: .01em;
   cursor: pointer; text-decoration: none; white-space: nowrap;
   transition: background-color 180ms var(--ease), border-color 180ms var(--ease),
               color 180ms var(--ease), transform 150ms var(--ease);
@@ -207,6 +207,10 @@ html.hd-over .hd {
 
 .hd-act { display: flex; gap: 10px; }
 .hd-act .btn, .hd-act .btn-ghost { min-height: 44px; padding: 0 20px; font-size: 14px; }
+/* Widths that hold whichever face is drawing them, so the navigation beside
+   them does not move when the webfont swaps in. */
+.hd-act .btn { min-width: 132px; }
+.hd-act .btn-ghost { min-width: 104px; }
 .hd-act .btn-ghost { border-color: var(--line-strong); }
 .hd-act .btn-ghost:hover { border-color: var(--fg); }
 .hd-menu { display: none; }
@@ -226,7 +230,7 @@ html.hd-over .hd {
   flex-wrap: wrap; margin-bottom: clamp(14px, 1.8vw, 28px);
 }
 .hero-eyebrow, .hero-meta {
-  font: 600 var(--t-label)/1.3 Archivo, sans-serif; font-stretch: 112%;
+  font: 600 var(--t-label)/1.3 Archivo, "Archivo Fallback", sans-serif; font-stretch: 112%;
   letter-spacing: .14em; text-transform: uppercase; color: var(--fg-muted);
 }
 .hero-eyebrow::before {
@@ -310,6 +314,10 @@ html.hd-over .hd {
   .hero-title .ln + .ln > span { animation-delay: 240ms; }
   .hero-top, .hero-foot { animation: note-in 800ms var(--ease) 420ms both; }
 }
+/* Held back until Archivo is in — see the inline script in <head>. The
+   title's own rise starts when it is released, not before. */
+html.fl .hero-title, html.fl .sp-title { visibility: hidden; }
+html.fl .hero-title .ln > span { animation: none; }
 @keyframes gl-draw { from { transform: translateX(-50%) scaleY(0); } to { transform: translateX(-50%) scaleY(1); } }
 @keyframes bub-in { from { opacity: 0; transform: scale(.6); } }
 @keyframes ln-rise { from { transform: translateY(104%); } }
@@ -344,7 +352,7 @@ html.hd-over .hd {
   stroke-dasharray: 1.05 1; stroke-dashoffset: 0;
 }
 .hero-mark text {
-  font-family: Archivo, sans-serif; font-size: 12px; font-weight: 600; fill: #fff;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-size: 12px; font-weight: 600; fill: #fff;
   paint-order: stroke; stroke: rgba(10, 12, 11, .82); stroke-width: 4px; stroke-linejoin: round;
 }
 .hero-mark .mk-k { fill: #ff4d53; }
@@ -381,7 +389,7 @@ html.hd-over .hd {
   font-size: var(--t-small); color: var(--fg-on-dark-muted);
 }
 .hero-cap b {
-  font: 600 var(--t-label)/1 Archivo, sans-serif; font-stretch: 112%;
+  font: 600 var(--t-label)/1 Archivo, "Archivo Fallback", sans-serif; font-stretch: 112%;
   letter-spacing: .14em; text-transform: uppercase; color: var(--red-on-dark);
 }
 .hero-cap span:first-of-type { color: var(--fg-on-dark); font-weight: 500; }
@@ -402,10 +410,10 @@ html.hd-over .hd {
   display: grid; gap: 6px; align-content: start;
 }
 .strip-k {
-  font: 600 var(--t-label)/1.2 Archivo, sans-serif; font-stretch: 112%;
+  font: 600 var(--t-label)/1.2 Archivo, "Archivo Fallback", sans-serif; font-stretch: 112%;
   letter-spacing: .14em; text-transform: uppercase; color: var(--fg-on-dark-muted);
 }
-.strip-f { font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
+.strip-f { font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-stretch: 62%;
            font-size: clamp(40px, 4.4vw, 72px); line-height: .95; color: var(--fg-on-dark);
            letter-spacing: -.01em; margin: 6px 0 4px; }
 .strip-v { font-size: 14px; color: var(--fg-on-dark-muted); line-height: 1.45; max-width: 30ch; }
@@ -425,22 +433,6 @@ html.hd-over .hd {
 .ch-dark  { background: var(--bg-dark); color: var(--fg-on-dark);
             --plate-cover: var(--bg-dark); }
 
-/* The chapter mark: a number, a rule, and one word. Same object every time,
-   so the sequence is legible even though the compositions differ. */
-.ch-mark {
-  display: flex; align-items: center; gap: 14px; margin-bottom: 22px;
-  font-size: var(--t-small); font-weight: 600;
-  letter-spacing: .16em; text-transform: uppercase;
-}
-.ch-n { color: var(--accent); font-variant-numeric: tabular-nums; }
-.ch-dark .ch-n { color: var(--accent-on-dark); }
-.ch-name { color: var(--fg-faint); }
-.ch-dark .ch-name { color: var(--fg-on-dark-muted); }
-.ch-mark::after {
-  content: ""; flex: 1; height: 1px; background: var(--line);
-}
-.ch-dark .ch-mark::after { background: var(--line-dark); }
-
 .ch-copy { max-width: 44ch; }
 .ch-title { font-size: clamp(38px, 4.9vw, 80px); line-height: .92; letter-spacing: -.045em;
             margin-bottom: 22px; }
@@ -451,7 +443,7 @@ html.hd-over .hd {
    Only where the capability earned one. Tabular numerals so a tolerance does
    not wobble, and the unit set smaller than the number it qualifies. */
 .ch-big {
-  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-stretch: 62%;
   font-size: clamp(64px, 9.4vw, 148px); line-height: .88;
   letter-spacing: -.02em; font-variant-numeric: tabular-nums;
   color: var(--accent); margin-bottom: 10px;
@@ -485,75 +477,6 @@ html.hd-over .hd {
   border-radius: var(--pill); background: var(--accent);
 }
 .ch-dark .ch-ask::before { background: var(--accent-on-dark); }
-
-/* ── 01 · full bleed ────────────────────────────────────────────────────────── */
-
-.ch-bleed { display: flex; align-items: flex-end; min-height: min(92vh, 860px); padding: 0; }
-.ch-bleed-img { position: absolute; inset: 0; }
-.ch-bleed-img img { width: 100%; height: 100%; object-fit: cover; }
-/* One gradient, weighted to the lower left where the copy is. Two stacked
-   gradients multiplied out to near-opaque and buried the photograph — which is
-   the opposite of the point of a full-bleed chapter. */
-/* Two layers with different jobs. The horizontal one is a masthead field
-   bleeding off the left edge — dense where the copy is, gone by mid-frame, so
-   the photograph keeps its brightness across most of the viewport. The
-   vertical one only grounds the bottom edge. Measured against the rendered
-   pixels: the roof in this photograph runs to rgb(255,255,253) in the
-   rooflights, and white copy needs the field to be genuinely opaque. */
-/* Only a light grounding at the bottom edge. The copy no longer relies on
-   this: two passes of scrim-strengthening both failed the pixel probe, because
-   this photograph is a white-painted roof with rooflights in it and runs to
-   rgb(255,255,253). A scrim heavy enough to carry white type over that is
-   heavy enough to destroy the photograph — so the type gets its own field
-   instead, and the picture is left bright. */
-.ch-bleed::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(to top, rgba(8, 10, 9, .55) 0%,
-                              rgba(8, 10, 9, .14) 34%, rgba(8, 10, 9, 0) 62%);
-}
-/* The scrim above and this overlay both used to sit across the whole frame and
-   swallow every click, so the photograph underneath could not be opened at
-   all — measured at 0% of the button reachable on all five service routes and
-   on the bleed chapters of the home page. The overlay passes pointer events
-   through; only the copy panel itself takes them back, which is the one part
-   of the frame that really is on top of the picture. */
-.ch-over {
-  position: relative; z-index: 1; padding-block: clamp(56px, 7vw, 96px);
-  pointer-events: none;
-}
-.ch-over .ch-copy { pointer-events: auto; }
-
-/* A masthead block, not a card: it runs off the left edge of the viewport and
-   its text still lines up with the page gutter, so it reads as architecture
-   sitting on the photograph rather than a panel floating over it. */
-/* The width has to allow for the breakout padding, which is ~184px at 1440.
-   `width: 56ch` measured the whole box, so the text column came out at about
-   264px and the heading broke over four lines. */
-.ch-bleed .ch-copy {
-  max-width: none; width: min(100%, 860px);
-  background: rgba(8, 10, 9, .93);
-  margin-left: calc(50% - 50vw);
-  padding: clamp(30px, 3.4vw, 52px) clamp(30px, 3.4vw, 52px)
-           clamp(30px, 3.4vw, 52px) calc(50vw - 50% + var(--margin));
-  border-radius: 0 var(--r-lg) var(--r-lg) 0;
-  border-top: 3px solid var(--accent);
-}
-.ch-bleed .ch-ask { border-bottom: 0; }
-
-/* ── 02 / 04 / 05 · split ───────────────────────────────────────────────────── */
-
-.ch-sections, .ch-folds, .ch-plate { padding: clamp(64px, 8vw, 120px) 0; }
-.ch-split {
-  display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(34px, 5vw, 76px); align-items: center;
-}
-/* The drawings ARE the content of these two chapters, not an illustration
-   beside it, so they get the larger share. */
-.ch-sections .ch-split, .ch-folds .ch-split {
-  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
-}
-.ch-split-wide { grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr); }
-.ch-split .ch-copy { max-width: 46ch; }
 
 /* ── drawn geometry — the engineering-drawing register ─────────────────────── */
 
@@ -591,20 +514,15 @@ html.hd-over .hd {
   background: var(--bg-soft); border: 1px solid var(--line);
   border-radius: var(--r-lg);
 }
-.ch-folds .pf-folds { background: #fff; }
 .pf-fold { display: grid; gap: 10px; }
 .pf-fold svg { width: 100%; height: auto; min-height: clamp(96px, 11vw, 152px); }
 .pf-fold figcaption {
   font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
   color: var(--fg-faint); font-weight: 600;
 }
-
-.ch-aside { border-radius: var(--r-lg); overflow: hidden; }
-.ch-aside img { width: 100%; height: clamp(240px, 28vw, 420px); object-fit: cover; }
 /* The drawings are the subject of this chapter; the photograph supports them,
    so it goes first and the sections read as the detail drawn off it. */
 .ch-draw { grid-auto-flow: row; }
-.ch-sections .ch-draw > .ch-aside { order: -1; }
 
 /* ── 03 · the laser strip ─────────────────────────────────────────────────────
    Four 3:4 photographs stood upright. A portrait source cropped into a 16:9
@@ -699,16 +617,6 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
     rgba(8, 10, 9, .62) 84%, rgba(8, 10, 9, 0) 100%);
 }
 
-/* ── 05 · the crane plate ────────────────────────────────────────────────────
-   The one photograph that has to communicate physical capability. It is a 3:4
-   source, so it is given its full height rather than a letterbox crop. */
-
-.ch-tall { border-radius: var(--r-lg); overflow: hidden; align-self: stretch; }
-.ch-tall img {
-  width: 100%; height: 100%; min-height: clamp(400px, 62vh, 720px);
-  object-fit: cover; display: block;
-}
-
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
 /* The copy on the grid's left half, the photograph running off the right edge
@@ -728,7 +636,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   display: flex; flex-direction: column; justify-content: center;
 }
 .ws-place {
-  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 125%; line-height: .95;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-stretch: 125%; line-height: .95;
   font-size: clamp(30px, 3.4vw, 56px); letter-spacing: -.02em; text-transform: uppercase;
   margin-bottom: 26px;
 }
@@ -761,7 +669,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .spec-group > summary, .faq-item > summary {
   display: flex; align-items: center; justify-content: space-between; gap: 20px;
   padding: 19px 24px; cursor: pointer; list-style: none;
-  font-family: Archivo, sans-serif; font-weight: 700; font-size: 17px;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 700; font-size: 17px;
   letter-spacing: -.008em;
 }
 .spec-group > summary::-webkit-details-marker,
@@ -803,41 +711,6 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 }
 .spec-group .spec-rows { padding: 0 20px 6px; }
 .spec-group .spec-rows > div:first-child { border-top: 0; }
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   PROOF — site work, at size
-   ═══════════════════════════════════════════════════════════════════════════
-   Three bands, each close to a full viewport. The eight-tile grid this
-   replaced showed the same photographs at 232px, after every one of them had
-   already appeared large in a chapter: length without information.
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.pr { padding: clamp(64px, 8vw, 112px) 0 0; }
-.pr-bands { display: grid; }
-.pr-band { position: relative; }
-.pr-band .zoom { height: clamp(340px, 62vh, 700px); }
-.pr-band img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.pr-band figcaption {
-  position: absolute; left: 0; right: 0; bottom: 0; pointer-events: none;
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px;
-  padding: clamp(44px, 6vw, 84px) var(--margin) clamp(20px, 2.4vw, 34px);
-  background: linear-gradient(to top,
-    rgba(8, 10, 9, .94) 0%, rgba(8, 10, 9, .88) 44%,
-    rgba(8, 10, 9, .5) 74%, rgba(8, 10, 9, 0) 100%);
-}
-.pr-band figcaption b {
-  font-family: Archivo, sans-serif; font-weight: 700;
-  font-size: clamp(21px, 2.2vw, 31px); letter-spacing: -.02em;
-  color: var(--fg-on-dark);
-}
-.pr-band figcaption span {
-  font-size: var(--t-ui); color: var(--fg-on-dark-muted);
-}
-/* A hairline between bands so three photographs do not run into one another. */
-.pr-band + .pr-band { border-top: 1px solid var(--line-dark); }
-
-.pr-cases:empty { display: none; }
-.pr-cases { padding-top: clamp(48px, 6vw, 88px); display: grid; gap: 28px; }
 
 /* ── the zoom control ─────────────────────────────────────────────────────────
    Every photograph on the page is cropped to its composition, so the whole
@@ -884,7 +757,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   display: inline-flex; align-items: center; justify-content: center;
   width: 74px; height: 74px; border-radius: var(--pill);
   background: var(--bg); border: 2px solid var(--line);
-  font-family: Archivo, sans-serif; font-weight: 800; font-size: 26px;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-size: 26px;
   letter-spacing: -.03em; color: var(--fg); position: relative; z-index: 1;
   transition: background-color 200ms var(--ease), color 200ms var(--ease), border-color 200ms var(--ease);
 }
@@ -892,7 +765,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .step:hover .step-n { border-color: var(--accent); color: var(--accent-ink); }
 .step:first-child:hover .step-n { color: var(--accent-on); }
 .step-body { padding-top: 22px; }
-.step h3 { font-family: Archivo, sans-serif; font-weight: 700;
+.step h3 { font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 700;
            font-size: clamp(17px, 1.5vw, 20px); letter-spacing: -.018em; line-height: 1.25; margin-bottom: 8px; }
 .step p { color: var(--fg-muted); font-size: var(--t-ui); }
 
@@ -1000,7 +873,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   column-gap: var(--gut); row-gap: 28px; align-items: start;
 }
 .enq-aside { grid-column: 1; display: grid; gap: 14px; padding-top: 4px; }
-.enq-aside-k { font-family: Archivo, sans-serif; font-weight: 700; font-size: 20px;
+.enq-aside-k { font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 700; font-size: 20px;
                letter-spacing: -.01em; line-height: 1.2; }
 .enq-aside-t { color: var(--fg-on-dark-muted); font-size: var(--t-ui); }
 .enq-aside-act { display: grid; gap: 10px; margin-top: 6px; }
@@ -1031,7 +904,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .field label { font-size: var(--t-small); font-weight: 500; color: var(--fg-muted); }
 .field > label::before {
   content: counter(fld, decimal-leading-zero); display: inline-block; min-width: 2.3em;
-  font: 600 11.5px/1 Archivo, sans-serif; letter-spacing: .06em; color: var(--accent-ink);
+  font: 600 11.5px/1 Archivo, "Archivo Fallback", sans-serif; letter-spacing: .06em; color: var(--accent-ink);
 }
 .field label .opt { font-weight: 400; color: var(--fg-faint); }
 .field input, .field textarea, .field select {
@@ -1078,7 +951,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .draft { display: none; margin-top: 28px; padding-top: 28px;
          border-top: 1px solid var(--line); }
 .draft[data-open="true"] { display: block; }
-.draft h3 { font-family: Archivo, sans-serif; font-weight: 700;
+.draft h3 { font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 700;
             font-size: var(--t-h3); margin-bottom: 14px; }
 .draft-body {
   white-space: pre-wrap; font-size: 14.5px; line-height: 1.65; color: var(--fg-muted);
@@ -1110,7 +983,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   border-radius: var(--r-lg); padding: clamp(20px, 2.4vw, 28px);
   border-left: 3px solid var(--accent);
 }
-.faq-ask-k { font-family: Archivo, sans-serif; font-weight: 700; font-size: 19px; margin-bottom: 6px; }
+.faq-ask-k { font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 700; font-size: 19px; margin-bottom: 6px; }
 .faq-ask-t { color: var(--fg-on-dark-muted); font-size: var(--t-ui); margin-bottom: 18px; }
 .faq-ask-act { display: flex; flex-wrap: wrap; gap: 10px; }
 .faq-ask .btn-ghost { color: var(--fg-on-dark); border-color: rgba(250, 250, 250, .34); }
@@ -1156,11 +1029,11 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .ct-list li:nth-child(n+5) { grid-column: span 2; }
 .ct-list dl { display: grid; gap: 12px; padding: 18px 0 30px; }
 .ct-list dt {
-  font: 600 var(--t-label)/1.2 Archivo, sans-serif; font-stretch: 112%;
+  font: 600 var(--t-label)/1.2 Archivo, "Archivo Fallback", sans-serif; font-stretch: 112%;
   letter-spacing: .14em; text-transform: uppercase; color: var(--fg-on-dark-muted);
 }
 .ct-list dd {
-  font-family: Archivo, sans-serif; font-weight: 700; font-stretch: 104%;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 700; font-stretch: 104%;
   font-size: clamp(19px, 1.75vw, 27px); line-height: 1.2; letter-spacing: -.01em; text-align: left;
 }
 @media (max-width: 1100px) {
@@ -1188,23 +1061,53 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 
 /* ── menu ───────────────────────────────────────────────────────────────── */
 
+/* The phone menu is a sheet of steel dropped over the page: the sections in
+   large numbered type, the six services one level in, and the three ways to
+   reach the workshop at the foot. It drops in with the heavy ease and its
+   rows arrive in order; Reduce Motion gets it in place. */
 .menu {
-  position: fixed; inset: 0; z-index: 200; background: var(--bg);
-  padding: 14px var(--margin) 24px; display: flex; flex-direction: column;
-  transform: translateY(-100%); transition: transform 220ms var(--ease);
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--bg-dark); color: var(--fg-on-dark);
+  padding: 14px var(--margin) calc(24px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column;
+  transform: translateY(-100%); transition: transform 460ms var(--ease-heavy);
+  counter-reset: mi;
 }
 .menu[data-open="true"] { transform: none; }
 .menu-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .menu-logo img { width: auto; }
 .menu-close { background: none; border: 0; cursor: pointer; font-size: var(--t-ui);
-              font-weight: 500; min-height: 44px; padding: 0 6px; }
-.menu-list { display: grid; margin-top: 2vh; overflow-y: auto; }
+              font-weight: 500; min-height: 44px; padding: 0 6px; color: var(--fg-on-dark); }
+.menu-list { display: grid; margin-top: 3vh; overflow-y: auto; border-top: 1px solid var(--line-dark); }
 .menu-list a {
-  font-family: Archivo, sans-serif; font-weight: 700;
-  font-size: clamp(22px, 6vw, 32px); letter-spacing: -.022em;
-  padding: 11px 0; border-bottom: 1px solid var(--line);
+  display: flex; align-items: baseline; gap: 14px;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-stretch: 118%;
+  font-size: clamp(24px, 7vw, 36px); letter-spacing: -.03em; line-height: 1.1;
+  padding: 12px 0; border-bottom: 1px solid var(--line-dark);
+}
+.menu-list a:not(.menu-sub) { counter-increment: mi; }
+.menu-list a:not(.menu-sub)::before {
+  content: counter(mi, decimal-leading-zero); flex: none; min-width: 1.9em;
+  font: 600 12px/1 Archivo, "Archivo Fallback", sans-serif; letter-spacing: .08em; color: var(--red-on-dark);
 }
 .menu-contact { margin-top: auto; padding-top: 20px; display: grid; gap: 10px; }
+.menu .btn-ghost { color: var(--fg-on-dark); border-color: rgba(243, 245, 246, .5); }
+@media (prefers-reduced-motion: no-preference) {
+  .menu-list a, .menu-contact > * {
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 360ms var(--ease), transform 460ms var(--ease-power);
+  }
+  .menu[data-open="true"] .menu-list a, .menu[data-open="true"] .menu-contact > * { opacity: 1; transform: none; }
+  .menu[data-open="true"] .menu-list a:nth-child(1) { transition-delay: 120ms; }
+  .menu[data-open="true"] .menu-list a:nth-child(2) { transition-delay: 150ms; }
+  .menu[data-open="true"] .menu-list a:nth-child(3) { transition-delay: 180ms; }
+  .menu[data-open="true"] .menu-list a:nth-child(4) { transition-delay: 210ms; }
+  .menu[data-open="true"] .menu-list a:nth-child(5) { transition-delay: 240ms; }
+  .menu[data-open="true"] .menu-list a:nth-child(6) { transition-delay: 270ms; }
+  .menu[data-open="true"] .menu-list a:nth-child(7) { transition-delay: 300ms; }
+  .menu[data-open="true"] .menu-list a:nth-child(n+8) { transition-delay: 330ms; }
+  .menu[data-open="true"] .menu-contact > * { transition-delay: 360ms; }
+}
 
 /* ── viewer ─────────────────────────────────────────────────────────────── */
 
@@ -1249,9 +1152,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 @media (max-width: 900px) {
   .hd-nav { gap: 20px; }
 
-  .ch-split, .ch-split-wide,
-  .ch-sections .ch-split, .ch-folds .ch-split,
-  .ch-cut-head {
+    .ch-cut-head {
     grid-template-columns: minmax(0, 1fr);
     gap: clamp(28px, 5vw, 44px); align-items: start;
   }
@@ -1295,10 +1196,6 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   }
   .cut-tol { justify-content: flex-end; padding-bottom: clamp(22px, 4vw, 34px); }
   .cut-tol .ch-big, .cut-tol .ch-big-label { max-width: none; }
-
-  .ch-tall img { min-height: clamp(320px, 52vh, 520px); }
-  .ch-bleed { min-height: 0; }
-  .ch-bleed .ch-copy { width: 100%; }
 }
 
 /* ── small screens ──────────────────────────────────────────────────────── */
@@ -1353,12 +1250,6 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 
   .proc-close .btn { width: 100%; }
 
-  .band { min-height: 64svh; min-height: calc(64 * var(--svh, 1vh)); }
-
-  .pr-band .zoom { height: 48svh; height: calc(48 * var(--svh, 1vh)); max-height: 440px; }
-  .pr-band figcaption { padding-top: clamp(32px, 9vw, 56px); }
-  .pr-band figcaption b { font-size: 20px; }
-
   /* One column of plates on a phone: two 170px tiles lose the machine. */
   .ch-strip { grid-template-columns: 1fr; gap: 8px; }
   .ch-strip > li img { height: 54svh; height: calc(54 * var(--svh, 1vh)); max-height: 460px; }
@@ -1367,10 +1258,8 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   .pf-fold figcaption { font-size: 10.5px; letter-spacing: .1em; }
 
   .ch-big { font-size: clamp(44px, 13vw, 64px); }
-  .ch-mark { margin-bottom: 16px; }
   .ch-figures > div { flex-direction: column; gap: 2px; padding: 10px 0; }
   .ch-figures dd { text-align: left; }
-  .ch-bleed .ch-copy { border-radius: 0; }
   .enq-bg { opacity: .22; }
 
 
@@ -1414,7 +1303,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ch-aside:hover, .zoom:hover { transform: none; }
+   .zoom:hover { transform: none; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1528,7 +1417,7 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   background: var(--bg-soft); border: 1px solid var(--line);
   border-radius: var(--r-lg); padding: clamp(24px, 2.6vw, 34px);
 }
-.sp-area h2 { font-family: Archivo, sans-serif; font-weight: 700;
+.sp-area h2 { font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 700;
               font-size: var(--t-h3); letter-spacing: -.012em; margin-bottom: 12px; }
 .sp-area p { color: var(--fg-muted); margin-bottom: 20px; }
 .sp-area .sp-rail > div:first-child { border-top: 0; padding-top: 0; }
@@ -1537,19 +1426,34 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
 
 .sp-related { padding: clamp(48px, 5.5vw, 80px) 0; }
 .sp-related > .wrap > h2 { font-size: clamp(21px, 2vw, 28px); margin-bottom: 22px; }
-.sp-related-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+/* The same object as the capability index, three to a row: a heavy rule,
+   the name at size, an arrow box that fills on hover. */
+.sp-related-list {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--gut);
+  border-top: 2px solid var(--fg);
+}
 .sp-related-list a {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  min-height: 66px; padding: 0 22px;
-  background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg);
-  box-shadow: var(--shadow-sm);
-  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
+  min-height: 92px; padding: 18px 0;
+  border-bottom: 1px solid var(--line-strong);
 }
-.sp-related-list a:hover { border-color: var(--accent); box-shadow: var(--shadow); }
-.sp-related-name { font-weight: 500; }
-.sp-related-go { color: var(--accent); display: inline-flex; }
-.sp-related-list a:hover .sp-related-go { transform: translateX(3px); }
-.sp-related-go svg { transition: transform 160ms var(--ease); }
+.sp-related-name {
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-stretch: 115%;
+  font-size: clamp(20px, 1.9vw, 28px); letter-spacing: -.03em; line-height: 1.05;
+  transition: transform 360ms var(--ease-heavy);
+}
+.sp-related-go {
+  flex: none; width: 48px; height: 48px; display: grid; place-items: center;
+  border: 1.5px solid var(--fg); color: var(--fg);
+  transition: background-color 220ms var(--ease), border-color 220ms var(--ease), color 220ms var(--ease);
+}
+.sp-related-go svg { width: 18px; height: 18px; transition: transform 300ms var(--ease); }
+.sp-related-list a:hover .sp-related-name { transform: translateX(6px); }
+.sp-related-list a:hover .sp-related-go { background: var(--accent); border-color: var(--accent); color: #fff; }
+.sp-related-list a:hover .sp-related-go svg { transform: rotate(-45deg); }
+@media (prefers-reduced-motion: reduce) {
+  .sp-related-list a:hover .sp-related-name { transform: none; }
+}
 .sp-back { margin-top: 22px; }
 .sp-back a {
   display: inline-flex; align-items: center; gap: 9px; min-height: 44px;
@@ -1594,10 +1498,13 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
 .ft-logo img { width: auto; }
 
 /* The service list in the menu, one level in. */
-.menu-sub { font-size: clamp(17px, 4.4vw, 22px) !important; padding-left: 18px !important; }
-.menu-sub::before {
-  content: ""; display: inline-block; width: 10px; height: 1px;
-  background: var(--accent); margin-right: 12px; vertical-align: middle;
+.menu-list .menu-sub {
+  font-size: clamp(16px, 4.4vw, 20px); font-weight: 600; font-stretch: 100%; letter-spacing: -.01em;
+  padding: 9px 0 9px calc(1.9em + 14px); color: var(--fg-on-dark-muted); align-items: center;
+}
+.menu-list .menu-sub::before {
+  content: ""; width: 10px; height: 1.5px; flex: none;
+  background: var(--red-on-dark); margin-left: -24px; margin-right: 0;
 }
 
 /* ── service routes and the footer, below a laptop ─────────────────────────────
@@ -1632,7 +1539,7 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   .sp-aside img { height: 34svh; height: calc(34 * var(--svh, 1vh)); max-height: 320px; }
   .crumbs ol { padding-block: 1px; font-size: 12.5px; }
   .crumbs a { min-height: 44px; min-width: 44px; }
-  .sp-related-list a { min-height: 60px; padding: 0 18px; }
+  .sp-related-list a { min-height: 72px; padding: 14px 0; }
 }
 
 /* A long address has to be allowed to break, wherever it appears. */
@@ -1658,20 +1565,12 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
 
 :root { --cut: 34px; }
 
-.scene-cut-r { clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), 0 100%); }
-.scene-cut-l { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - var(--cut))); }
-/* The next section closes the wedge the cut opens, so there is no gap. */
-.scene-cut-r + *, .scene-cut-l + * { margin-top: calc(var(--cut) * -1); }
-
 @media (max-width: 760px) {
   /* A 34px drop across 390px is 5°, which starts to look like a mistake.
      Narrow screens get a smaller cut rather than a steeper one. */
   :root { --cut: 20px; }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  /* nothing here moves; the cut is static geometry, not an animation */
-}
 
 /* ── depth ──────────────────────────────────────────────────────────────────
    A parallax element needs somewhere to travel, so the ones that move are
@@ -1679,12 +1578,6 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
    of travel each way plus a margin, so an edge can never be exposed. */
 
 [data-parallax] { will-change: transform; }
-.ch-bleed-img[data-parallax] { top: -4.5%; bottom: -4.5%; height: auto; }
-/* The zoom cue is an affordance, so it has to sit inside the frame the reader
-   can actually see. Pinned 12px from the top of a container that starts 4.5%
-   ABOVE its section, it landed under the breadcrumb bar on every service
-   route. This inset absorbs the overshoot. */
-.ch-bleed-img[data-parallax] .zoom-cue { top: calc(4.5% + 14px); }
 .ws-img[data-parallax] { overflow: hidden; }
 .ws-img[data-parallax] img { height: 109%; margin-top: -4.5%; }
 .enq-bg[data-parallax] { height: 109%; top: -4.5%; }
@@ -1693,31 +1586,6 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   [data-parallax] { transform: none !important; will-change: auto; }
 }
 
-/* ── the crane, vertically ───────────────────────────────────────────────────
-   The one photograph whose job is to say "this thing is physically large".
-   It is given the full height of the section — past the padding, top and
-   bottom — so it reads as a vertical element passing through the frame rather
-   than a picture sitting inside a box.
-
-   The typography is NOT occluded by it. Running a photograph over "25 TONNES"
-   would look like depth and read like a rendering bug, and a figure half
-   hidden behind an image is a figure a screen reader announces and a sighted
-   reader cannot check. Scale comes from the plate's height instead. */
-
-.ch-plate .ch-tall {
-  /* Past the section padding top and bottom, and off the right edge of the
-     viewport. A vertical element that stops at a container edge is a picture
-     in a box; one that leaves the frame is the thing itself, passing through. */
-  margin-block: calc(clamp(64px, 8vw, 120px) * -1);
-  margin-right: calc(50% - 50vw);
-  border-radius: 0;
-}
-.ch-plate .ch-tall img { min-height: clamp(460px, 76vh, 860px); }
-
-@media (max-width: 900px) {
-  .ch-plate .ch-tall { margin-block: 0; margin-right: 0; border-radius: var(--r-lg); }
-  .ch-plate .ch-tall img { min-height: clamp(320px, 52vh, 520px); }
-}
 
 /* ── the plate strip on a phone ───────────────────────────────────────────────
    Four full-width portraits stacked came to 2 849px — 3.4 screens for one
@@ -1777,7 +1645,7 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
 .sent:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .sent h3 {
-  font-family: Archivo, sans-serif; font-weight: 700;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 700;
   font-size: var(--t-h3); margin-bottom: 8px;
 }
 .sent p { color: var(--fg-muted); font-size: var(--t-ui); max-width: 62ch; }
@@ -1887,93 +1755,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
    already found. Tabular numerals so the six line up down the grid. */
 
 .svc { background: var(--bg); }
-/* Six cards, photograph first. The figure a buyer is scanning for sits on
-   the photograph itself, large, so the grid reads as six pieces of work and
-   six numbers before anybody reads a sentence. */
-.svc-grid {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(14px, 1.6vw, 22px);
-}
-.svc-card { display: flex; }
-.svc-hit {
-  display: flex; flex-direction: column; width: 100%;
-  text-decoration: none; color: inherit; background: var(--bg);
-  border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden;
-  transition: border-color 200ms var(--ease), box-shadow 260ms var(--ease), transform 260ms var(--ease);
-}
-.svc-hit:hover {
-  border-color: var(--line-strong, #d4d4d8);
-  box-shadow: 0 18px 40px -22px rgba(10, 12, 11, .45);
-  transform: translateY(-3px);
-}
-.svc-media {
-  position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden;
-  background: var(--bg-dark);
-}
-.svc-media img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform 700ms var(--ease);
-}
-.svc-hit:hover .svc-media img { transform: scale(1.045); }
-.svc-media::after {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(10, 12, 11, .78) 0%, rgba(10, 12, 11, .28) 38%, rgba(10, 12, 11, 0) 62%);
-}
-.svc-media-fig {
-  position: absolute; left: clamp(18px, 2vw, 24px); bottom: clamp(14px, 1.6vw, 20px); z-index: 1;
-  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%; color: #fff;
-  font-size: clamp(42px, 4.2vw, 58px); line-height: 1; letter-spacing: -.015em;
-  font-variant-numeric: tabular-nums;
-}
-/* The two services with no photograph: a plate of dark steel with a red edge,
-   carrying the figure. Honest about being a panel rather than a picture. */
-.svc-plate {
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: clamp(18px, 2vw, 24px);
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, .05) 0 1px, transparent 1px 100%) 0 0 / 22px 22px,
-    linear-gradient(160deg, #1c201e 0%, #0d0f0e 100%);
-  border-bottom: 3px solid var(--accent);
-}
-.svc-plate::after { display: none; }
-.svc-plate-fig {
-  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%; color: #fff;
-  font-size: clamp(46px, 4.8vw, 68px); line-height: 1; letter-spacing: -.015em;
-}
-.svc-plate-cap { color: var(--fg-on-dark-muted); font-size: var(--t-small); margin-top: 8px; }
-.svc-text {
-  display: flex; flex-direction: column; align-items: flex-start; flex: 1;
-  padding: clamp(18px, 2vw, 24px) clamp(18px, 2vw, 24px) clamp(18px, 2vw, 22px);
-}
-.svc-idx {
-  font-size: var(--t-small); font-weight: 600; color: var(--accent-ink);
-  letter-spacing: .06em; margin-bottom: 8px;
-}
-.svc-name {
-  font-family: Archivo, sans-serif; font-weight: 700;
-  font-size: clamp(19px, 1.7vw, 22px); letter-spacing: -.02em; line-height: 1.2;
-  margin-bottom: 6px;
-}
-.svc-lead-label { font-size: var(--t-small); color: var(--fg-faint); margin-bottom: 12px; }
-.svc-lead-label b { color: var(--fg); font-weight: 600; }
-.svc-body { font-size: var(--t-ui); color: var(--fg-muted); line-height: 1.6; max-width: 40ch; }
-.svc-go {
-  display: inline-flex; align-items: center; gap: 7px;
-  margin-top: auto; padding-top: 16px;
-  font-size: var(--t-small); font-weight: 600; color: var(--accent-ink);
-}
-.svc-go svg { transition: transform 160ms var(--ease); }
-.svc-hit:hover .svc-go svg { transform: translateX(4px); }
-@media (prefers-reduced-motion: reduce) {
-  .svc-hit, .svc-media img { transition: none; }
-  .svc-hit:hover { transform: none; }
-  .svc-hit:hover .svc-media img { transform: none; }
-}
-@media (max-width: 1000px) { .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 640px)  {
-  .svc-grid { grid-template-columns: 1fr; }
-  .svc-media { aspect-ratio: 16 / 9; }
-}
+
 
 /* ── the portfolio ──────────────────────────────────────────────────────────
    Styled and unused. content/projects.js is empty until the office says which
@@ -2154,13 +1936,17 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
    into a base plate. Decorative (aria-hidden); the logo above is the name. */
 .ft-mark {
   max-width: var(--page); margin: clamp(28px, 4vw, 56px) auto 0; padding: 0 var(--margin);
-  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 125%;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-stretch: 125%;
   /* Sized to the content width: the name measures 12.0 × its font size. */
   font-size: calc((min(100vw, var(--page)) - 2 * var(--margin)) / 12.1);
   line-height: .78; letter-spacing: -.035em;
   white-space: nowrap; color: rgba(243, 245, 246, .11);
   transform: translateY(12%); user-select: none;
 }
+/* Drawn from an attribute rather than written as text: it is a logotype set
+   as texture, and text in the document would be read, copied and measured
+   for contrast as if it were copy. */
+.ft-mark::before { content: attr(data-mark); }
 
 /* The figures band on a phone: two by two, not one long column. */
 @media (max-width: 760px) {
@@ -2200,7 +1986,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   .si a {
     display: flex; align-items: center; gap: 7px;
     height: 16px; color: var(--si-c);
-    font: 600 10px/1 Archivo, sans-serif; letter-spacing: .06em; font-variant-numeric: tabular-nums;
+    font: 600 10px/1 Archivo, "Archivo Fallback", sans-serif; letter-spacing: .06em; font-variant-numeric: tabular-nums;
     transition: color 240ms var(--ease);
   }
   .si a::after {
@@ -2249,18 +2035,18 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   transition: transform 420ms var(--ease-heavy);
 }
 .cx-n {
-  font: 600 13px/1 Archivo, sans-serif; letter-spacing: .08em;
+  font: 600 13px/1 Archivo, "Archivo Fallback", sans-serif; letter-spacing: .08em;
   color: var(--accent-ink); font-variant-numeric: tabular-nums; align-self: start;
   padding-top: .6em; transition: color 260ms var(--ease);
 }
 .cx-name {
-  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 118%;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-stretch: 118%;
   font-size: clamp(26px, 2.9vw, 46px); line-height: .98; letter-spacing: -.035em;
   transition: transform 420ms var(--ease-heavy);
 }
 .cx-lead { display: grid; gap: 4px; }
 .cx-lead b {
-  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-stretch: 62%;
   font-size: clamp(30px, 2.8vw, 46px); line-height: .9; letter-spacing: -.01em;
   font-variant-numeric: tabular-nums;
 }
@@ -2310,7 +2096,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   border-bottom: 3px solid var(--accent);
 }
 .cx-plate b {
-  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
+  font-family: Archivo, "Archivo Fallback", sans-serif; font-weight: 800; font-stretch: 62%;
   font-size: clamp(40px, 4vw, 64px); line-height: .9;
 }
 .cx-plate span { font-size: 13px; color: var(--fg-on-dark-muted); }
