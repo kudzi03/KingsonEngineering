@@ -36,7 +36,7 @@ the fallback if anything in the DNS is wrong.
 
 ## 2 · One constant in the repository
 
-- [ ] `tools/layout.js` line 25 — `export const SITE = 'https://kingson-engineering.vercel.app';`
+- [ ] `tools/layout.js` — `SITE` (or render with `SITE_URL=https://…`). This is now the only place the origin is written: canonicals, OG, JSON-LD, sitemap, robots.txt and the truth gate all derive from it.
       becomes `'https://kingsonengineering.co.zw'` (no trailing slash).
 
 That single edit regenerates, on the next `node tools/render.js`:

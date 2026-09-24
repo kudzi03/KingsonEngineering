@@ -681,12 +681,17 @@ const smBefore = readFileSync(smFile, 'utf8');
 const routes = [...allServicePages(), ...portfolioRoutes(), notFoundPage()]
   .map((r) => ({ ...r, html: bindFigures(r.html) }));
 
+/* robots.txt names the sitemap by absolute URL, so it follows SITE too. */
+const robotsFile = readFileSync(root + 'robots.txt', 'utf8');
+const robots = robotsFile.replace(/^Sitemap: .*$/m, `Sitemap: ${SITE}/sitemap.xml`);
+
 const readIf = (f) => { try { return readFileSync(root + f, 'utf8'); } catch { return null; } };
 
 if (process.argv.includes('--check')) {
   const stale = [
     html !== before && 'index.html',
     sitemap !== smBefore && 'sitemap.xml',
+    robots !== robotsFile && 'robots.txt',
     ...routes.filter((r) => readIf(r.file) !== r.html).map((r) => r.file)
   ].filter(Boolean);
   if (stale.length) {
@@ -697,6 +702,7 @@ if (process.argv.includes('--check')) {
 } else {
   writeFileSync(file, html);
   writeFileSync(smFile, sitemap);
+  writeFileSync(root + 'robots.txt', robots);
   for (const r of routes) writeFileSync(root + r.file, r.html);
   console.log(`index.html rendered from content/ — ${Object.keys(BLOCKS).length} regions, ` +
     `${CHAPTERS.length} chapters covering ${CAPABILITIES.length} services, ` +

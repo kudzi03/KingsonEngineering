@@ -40,7 +40,11 @@ export const BUILD = createHash('sha256')
   .update(STAMPED.map((f) => readFileSync(ROOT + f)).join('\u0000'))
   .digest('hex').slice(0, 10);
 
-export const SITE = 'https://kingson-engineering.vercel.app';
+/* The one place the production origin is written. Canonicals, Open Graph,
+   structured data, the sitemap and robots.txt all derive from it. For the
+   .co.zw move: set SITE_URL when rendering (SITE_URL=https://… node
+   tools/render.js), or change the default here — see DOMAIN_MIGRATION.md. */
+export const SITE = (process.env.SITE_URL || 'https://kingson-engineering.vercel.app').replace(/\/+$/, '');
 
 export const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;');

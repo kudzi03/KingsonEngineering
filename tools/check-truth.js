@@ -33,6 +33,7 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VALUES, unverifiedKeys } from '../content/company.js';
 import { ASSETS, PAGE_IMAGES, BAND_IMAGE } from '../content/assets.js';
+import { SITE } from './layout.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const SERVED = ['.html', '.js', '.css', '.xml', '.txt', '.json'];
@@ -434,7 +435,7 @@ const sitemapXml = readFileSync(root + 'sitemap.xml', 'utf8');
 const listed = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 const expected = pages.map((f) => {
   const rel = f.slice(root.length);
-  return 'https://kingson-engineering.vercel.app/' + (rel === 'index.html' ? '' : rel.replace(/\.html$/, ''));
+  return SITE + '/' + (rel === 'index.html' ? '' : rel.replace(/\.html$/, ''));
 });
 for (const url of expected) {
   if (!listed.includes(url)) fail(`sitemap.xml does not list ${url}, which is a committed page`);

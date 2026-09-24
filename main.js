@@ -121,6 +121,17 @@ $$('[data-open]').forEach((b) =>
 
 mountEnquiry();
 
+/* ── the phone bar steps aside while somebody is typing ─────────────────────
+   With the keyboard up the bar sits right against the field being filled in,
+   and its Get a price button points at the form they are already in. */
+const form = $('[data-form]');
+if (form) {
+  form.addEventListener('focusin', () => document.documentElement.classList.add('form-active'));
+  form.addEventListener('focusout', (e) => {
+    if (!form.contains(e.relatedTarget)) document.documentElement.classList.remove('form-active');
+  });
+}
+
 /* ── the specification sheet on a phone ─────────────────────────────────────
    The HTML ships every group open — a data sheet on a wide screen, and the
    honest default with JavaScript off. On a narrow screen that is a very long

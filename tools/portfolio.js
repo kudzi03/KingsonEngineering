@@ -18,9 +18,7 @@ import { PROJECTS, publishable, hasProjects, credit } from '../content/projects.
 import { ASSETS, src, srcset, position } from '../content/assets.js';
 import { CONTACT, NAV } from '../content/copy.js';
 import { headHtml, chromeTop, chromeBottom, siteFooter, enquiryBlock,
-         ICON_ARROW, esc } from './layout.js';
-
-const SITE = 'https://kingson-engineering.vercel.app';
+         ICON_ARROW, esc, SITE } from './layout.js';
 
 export const PORTFOLIO = {
   slug: 'projects',

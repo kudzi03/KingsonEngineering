@@ -1913,7 +1913,7 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
    reflows when it leaves or returns. */
 @media (max-width: 760px) {
   .bar { transition: transform .22s cubic-bezier(.4, 0, .2, 1); }
-  html.cta-near .bar { transform: translateY(115%); }
+  html.cta-near .bar, html.form-active .bar { transform: translateY(115%); }
 }
 @media (prefers-reduced-motion: reduce) {
   .bar { transition: none; }
