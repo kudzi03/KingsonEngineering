@@ -888,6 +888,8 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   font-size: var(--t-small); color: var(--fg-faint);
   border-top: 1px solid var(--line); padding-top: 18px;
 }
+.privacy-note { font-size: var(--t-small); color: var(--fg-faint); margin-top: -6px; }
+.privacy-note a { color: var(--fg-muted); text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
 .form-actions { display: flex; }
 .form-actions .btn { min-width: 220px; }
 

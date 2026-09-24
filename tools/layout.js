@@ -423,6 +423,9 @@ if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-ov
 <link rel="stylesheet" href="/assets/fonts.css?v=${BUILD}">
 <link rel="stylesheet" href="/styles/tokens.css?v=${BUILD}">
 <link rel="stylesheet" href="/styles/site.css?v=${BUILD}">
+<!-- Vercel Web Analytics: page views only, no cookies, no personal data.
+     Same origin, deferred, and nothing on the page depends on it. -->
+<script defer src="/_vercel/insights/script.js"></script>
 ${ld ? `
 <script type="application/ld+json">
 ${ld}
@@ -437,8 +440,9 @@ ${ld}
 
 /* Three of seven fields are required, so the four that are not say so — a
    visitor should not have to fail a submit to find out which is which. The
-   list matches REQUIRED in interface/enquiry.js. */
-const REQUIRED = new Set(['name', 'contact', 'service']);
+   list matches REQUIRED in interface/enquiry.js. No field asks for a person's
+   name: the enquiry is about a business, not an individual. */
+const REQUIRED = new Set(['company', 'contact', 'service']);
 
 export function enquiryForm(preselectService) {
   const label = (id, key) => `          <label for="f-${id}">${esc(ENQUIRY.fields[key])}${
@@ -471,11 +475,11 @@ ${err(id)}
         </div>`;
 
   return `      <div class="field-row">
-${text('name', 'name', ' autocomplete="name"')}
 ${text('company', 'company', ' autocomplete="organization"')}
+${text('orgdetails', 'orgdetails')}
       </div>
       <div class="field-row">
-${text('contact', 'contact', ' autocomplete="tel"')}
+${text('contact', 'contact', ' autocomplete="off"')}
 ${select('service', 'service', ENQUIRY.serviceOptions, preselectService)}
       </div>
 ${text('location', 'location')}
@@ -485,6 +489,13 @@ ${select('drawings', 'drawings', ENQUIRY.drawingOptions, null)}
         <label for="f-website">Leave this field empty</label>
         <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>`;
+}
+
+/* The short privacy notice under every enquiry form. */
+export function privacyNote() {
+  const mail = publish('email');
+  return `<p class="privacy-note">${esc(ENQUIRY.privacy)} ${mail
+    ? `<a href="mailto:${esc(mail)}">${esc(mail)}</a>.` : ''} ${esc(ENQUIRY.analytics)}</p>`;
 }
 
 export function enquiryBlock(preselectService, { title, lede } = {}) {
@@ -499,6 +510,7 @@ export function enquiryBlock(preselectService, { title, lede } = {}) {
       <div class="error-summary" data-error-summary tabindex="-1" hidden></div>
 ${enquiryForm(preselectService)}
       <p class="files-note">${esc(ENQUIRY.filesNote)}</p>
+      ${privacyNote()}
       <div class="form-actions">
         <button type="submit" class="btn" data-review><span>${esc(ENQUIRY.actions.review)}</span></button>
       </div>

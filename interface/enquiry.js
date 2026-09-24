@@ -34,15 +34,15 @@ import { canSubmit } from '../content/crm.js';
 /* Field id → the label the composed message uses. Order is the message's
    order, which is the order an estimator reads in. */
 const LINES = [
-  ['name',        'Name'],
-  ['company',     'Company'],
-  ['contact',     'Phone or email'],
+  ['company',     'Organisation'],
+  ['orgdetails',  'About the organisation'],
+  ['contact',     'Business contact'],
   ['service',     'Needs'],
   ['location',    'Site'],
   ['drawings',    'Drawings']
 ];
 
-const REQUIRED = ['name', 'contact', 'service'];
+const REQUIRED = ['company', 'contact', 'service'];
 
 export function mountEnquiry() {
   const form = document.querySelector('[data-form]');
@@ -205,7 +205,7 @@ export function mountEnquiry() {
         if (url.length < 1800) draftActions.appendChild(link(ENQUIRY.actions.whatsapp, url, true));
       }
       if (r.email) {
-        const subject = `Enquiry — ${p.service || p.name}`;
+        const subject = `Enquiry — ${p.company}${p.service ? ' — ' + p.service : ''}`;
         const to = drawingsAttached(p) && r.emailTechnical ? r.emailTechnical : r.email;
         const href = `mailto:${to}?subject=${encodeURIComponent(subject)}` +
                      `&body=${encodeURIComponent(message)}`;
@@ -228,7 +228,7 @@ export function mountEnquiry() {
 
     draftActions.appendChild(button(ENQUIRY.edit, () => {
       draft.dataset.open = 'false';
-      field('name')?.focus();
+      field('company')?.focus();
     }));
   }
 

@@ -40,10 +40,13 @@ export const WORK = {
 export const ENQUIRY = {
   title: 'Send us the brief.',
   lede: 'Tell us what you need. Enquiries are acknowledged the same working day.',
+  /* The form asks about the business, not the person: an organisation name,
+     what it does, and a business phone or email. Nothing asks for a person's
+     name, so an enquiry is not tied to an individual by design. */
   fields: {
-    name:        'Your name',
-    company:     'Company or organisation',
-    contact:     'Phone or email',
+    company:     'Business or organisation',
+    orgdetails:  'About the organisation',
+    contact:     'Business phone or email',
     service:     'What do you need?',
     location:    'Where is the site?',
     description: 'Describe the job',
@@ -51,6 +54,9 @@ export const ENQUIRY = {
   },
   optional: 'optional',
   placeholders: {
+    company: 'Registered or trading name',
+    orgdetails: 'e.g. building contractor, farm, school, property developer',
+    contact: 'An office number or a work email address',
     location: 'Town or suburb, and access if it is tight',
     description: 'Spans, heights, quantities — anything already decided.'
   },
@@ -65,6 +71,11 @@ export const ENQUIRY = {
   ],
   /* §5 confirms the formats the laser accepts. Saying so up front saves a
      round trip, and the note is honest about what this page does with files. */
+  /* The privacy notice states only what the system does: what is collected,
+     where it goes, who sees it, how to have it removed. Wording for Kingson
+     to approve. */
+  privacy: 'Privacy: we ask about your business, not about you. What you send is saved in Kingson’s enquiry system (hosted by Supabase), seen only by Kingson staff, used to reply and quote, and never for marketing. To see or remove it, email',
+  analytics: 'Visits are counted without cookies and without identifying you.',
   filesNote: 'Your enquiry is logged with Kingson when you send it. Drawings are not — there is no upload here. Attach your DXF, DWG, STEP or PDF to the WhatsApp or email message this page prepares and it reaches the same estimator.',
   actions: {
     review: 'Send my enquiry',
@@ -97,8 +108,8 @@ export const ENQUIRY = {
   ack: 'Kingson acknowledges enquiries the same working day.',
   noRecipient: 'Contact details are being confirmed. Copy your enquiry and send it once they are published.',
   errors: {
-    name:    'We need a name to reply to.',
-    contact: 'A phone number or an email address, so we can come back to you.',
+    company: 'The name of the business or organisation, so we know who we are quoting.',
+    contact: 'A business phone number or email address, so we can come back to you.',
     contactFormat: 'That does not look like a full phone number or email address.',
     service: 'Pick the closest one — "not sure yet" is fine.',
     summary: 'A few things are missing.',

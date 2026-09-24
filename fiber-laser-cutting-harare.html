@@ -44,9 +44,12 @@
 
      -->
 <script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')</script>
-<link rel="stylesheet" href="/assets/fonts.css?v=84e48c228e">
-<link rel="stylesheet" href="/styles/tokens.css?v=84e48c228e">
-<link rel="stylesheet" href="/styles/site.css?v=84e48c228e">
+<link rel="stylesheet" href="/assets/fonts.css?v=b3d0ccb1d6">
+<link rel="stylesheet" href="/styles/tokens.css?v=b3d0ccb1d6">
+<link rel="stylesheet" href="/styles/site.css?v=b3d0ccb1d6">
+<!-- Vercel Web Analytics: page views only, no cookies, no personal data.
+     Same origin, deferred, and nothing on the page depends on it. -->
+<script defer src="/_vercel/insights/script.js"></script>
 
 <script type="application/ld+json">
 {
@@ -757,20 +760,20 @@
       <div class="error-summary" data-error-summary tabindex="-1" hidden></div>
       <div class="field-row">
         <div class="field">
-          <label for="f-name">Your name</label>
-          <input id="f-name" name="name" type="text" aria-required="true" autocomplete="name">
-          <span class="field-error" data-error-for="f-name" hidden></span>
+          <label for="f-company">Business or organisation</label>
+          <input id="f-company" name="company" type="text" aria-required="true" autocomplete="organization" placeholder="Registered or trading name">
+          <span class="field-error" data-error-for="f-company" hidden></span>
         </div>
         <div class="field">
-          <label for="f-company">Company or organisation <span class="opt">optional</span></label>
-          <input id="f-company" name="company" type="text" autocomplete="organization">
-          <span class="field-error" data-error-for="f-company" hidden></span>
+          <label for="f-orgdetails">About the organisation <span class="opt">optional</span></label>
+          <input id="f-orgdetails" name="orgdetails" type="text" placeholder="e.g. building contractor, farm, school, property developer">
+          <span class="field-error" data-error-for="f-orgdetails" hidden></span>
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="f-contact">Phone or email</label>
-          <input id="f-contact" name="contact" type="text" aria-required="true" autocomplete="tel">
+          <label for="f-contact">Business phone or email</label>
+          <input id="f-contact" name="contact" type="text" aria-required="true" autocomplete="off" placeholder="An office number or a work email address">
           <span class="field-error" data-error-for="f-contact" hidden></span>
         </div>
         <div class="field">
@@ -820,6 +823,7 @@
         <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
       <p class="files-note">Your enquiry is logged with Kingson when you send it. Drawings are not — there is no upload here. Attach your DXF, DWG, STEP or PDF to the WhatsApp or email message this page prepares and it reaches the same estimator.</p>
+      <p class="privacy-note">Privacy: we ask about your business, not about you. What you send is saved in Kingson’s enquiry system (hosted by Supabase), seen only by Kingson staff, used to reply and quote, and never for marketing. To see or remove it, email <a href="mailto:admin1@kingsonengineering.co.zw">admin1@kingsonengineering.co.zw</a>. Visits are counted without cookies and without identifying you.</p>
       <div class="form-actions">
         <button type="submit" class="btn" data-review><span>Send my enquiry</span></button>
       </div>
@@ -931,6 +935,6 @@
      already scrolled past. -->
 <div class="bar"><a class="btn-ghost" href="tel:+263772262869"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg><span>Call</span></a><a class="btn-ghost" href="https://wa.me/263772262869" target="_blank" rel="noopener"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.5.1-.6.8-.7 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/></svg><span>WhatsApp</span></a><a class="btn" href="#enquiry"><span>Get a price</span></a></div>
 
-<script type="module" src="/main.js?v=84e48c228e"></script>
+<script type="module" src="/main.js?v=b3d0ccb1d6"></script>
 </body>
 </html>

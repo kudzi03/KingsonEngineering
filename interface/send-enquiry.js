@@ -45,23 +45,28 @@ const clip = (v, n) => {
  * @returns {Promise<{ok: boolean, reason?: string}>}
  */
 export async function sendEnquiry(p) {
+  /* The form asks about the business, not a person. The database's `name`
+     column (which its insert policy requires) therefore carries the
+     organisation's name, and what the organisation does leads the message. */
+  const about = clip(p.orgdetails, 300);
   const body = {
-    name:     clip(p.name, LIMITS.name),
+    name:     clip(p.company, LIMITS.name),
     company:  clip(p.company, LIMITS.company),
     contact:  clip(p.contact, LIMITS.contact),
     service:  clip(p.service, LIMITS.service),
     location: clip(p.location, LIMITS.location),
     drawings: clip(p.drawings, LIMITS.drawings),
-    message:  clip(p.description, LIMITS.message),
+    message:  clip([about && `About the organisation: ${about}`, p.description].filter(Boolean).join('\n\n'), LIMITS.message),
     source:   'website',
     page:     clip(location.pathname, LIMITS.page),
-    honeypot: clip(p.honeypot, 200),
-    user_agent: clip(navigator.userAgent, 400)
+    honeypot: clip(p.honeypot, 200)
+    /* No user agent: the privacy notice says we collect the business, the
+       contact and the job. Device details are not part of that. */
   };
 
   /* The two the policy requires. Caught here it is a field error; caught there
      it is a 403 with nothing useful to show anybody. */
-  if (!body.name || body.name.length < 2)  return { ok: false, reason: 'name' };
+  if (!body.name || body.name.length < 2)  return { ok: false, reason: 'company' };
   if (!body.contact || body.contact.length < 5) return { ok: false, reason: 'contact' };
 
   const ctl = new AbortController();

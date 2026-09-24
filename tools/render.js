@@ -40,7 +40,7 @@ import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
   enquiryForm, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
-  ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures
+  ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote
 } from './layout.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -572,6 +572,7 @@ const BLOCKS = {
   cthead:    head('contact', CONTACT.title, CONTACT.lede),
   review:     esc(ENQUIRY.actions.review),
   filesnote:  esc(ENQUIRY.filesNote),
+  privacy:    privacyNote(),
   drafttitle: esc(ENQUIRY.draftTitle)
 };
 
