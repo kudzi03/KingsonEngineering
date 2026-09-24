@@ -329,7 +329,11 @@ html.fl .hero-title .ln > span { animation: none; }
       animation: plate-open linear both;
       animation-timeline: scroll(root block); animation-range: 0 75vh;
     }
+    /* The resting scale is also the static style: a scroll timeline attaches
+       after the first frame, and a plate that painted at 1 and then jumped
+       to 1.16 was scored as a layout shift even though its clip hid it. */
     .hero-zoom {
+      transform: scale(1.16);
       animation: plate-zoom linear both;
       animation-timeline: scroll(root block); animation-range: 0 90vh;
     }
