@@ -126,6 +126,8 @@ async function buildAck(row: { opportunity_id: string; recipient: string }) {
 
 /* ── the outbox ──────────────────────────────────────────────────────────── */
 
+const MAX_AGE_H = { new_enquiry: 24, acknowledgement: 24, digest: 12 };
+
 async function workOutbox() {
   const s = await settings();
   const mode = String(s.email_mode || 'manual');
@@ -134,6 +136,14 @@ async function workOutbox() {
 
   for (const row of rows) {
     try {
+      /* Queued long before email was switched on (or while it was broken):
+         "we have received your enquiry" a week later is worse than nothing,
+         and an alert that old is already on the dashboard. */
+      const ageH = (Date.now() - Date.parse(row.created_at)) / 3.6e6;
+      if (ageH > MAX_AGE_H[row.kind as keyof typeof MAX_AGE_H]) {
+        await patchOutbox(row.id, { status: 'skipped', last_error: `too old to send (${Math.round(ageH)} h)` });
+        report.skipped++; continue;
+      }
       const enabled = row.kind === 'new_enquiry' ? s.notify_new_enquiry !== false
                     : row.kind === 'acknowledgement' ? s.send_acknowledgement !== false
                     : s.digest_enabled !== false;
