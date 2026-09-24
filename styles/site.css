@@ -743,52 +743,64 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
            font-size: clamp(17px, 1.5vw, 20px); letter-spacing: -.018em; line-height: 1.25; margin-bottom: 8px; }
 .step p { color: var(--fg-muted); font-size: var(--t-ui); }
 
-/* ── the chain dimension (home page, desktop) ──────────────────────────────
-   Steps 01–04 dimensioned in time, each span to scale in days: extension
-   lines, 45° ticks, one dimension figure over the long span, the range drawn
-   dashed. The short spans' labels hang on staggered leaders (render.js sets
-   --at and --row). Below 901px the list is the vertical rail above. */
-.chain { display: none; }
+/* ── the programme chart (home page, desktop) ──────────────────────────────
+   One row per commitment, a numbered balloon, and a bar on a broken axis:
+   the first working week in days, a break for the customer's decision to
+   order, then weeks from order with the range hatched. Positions come from
+   render.js (--x0/--x1 as % of the chart column). Below 901px the list is the
+   vertical rail above and the chart is not drawn. */
+.g-axis, .g-lines, .g-bar { display: none; }
 @media (min-width: 901px) {
-  .chain { display: block; position: relative; margin-top: clamp(28px, 3.4vw, 44px); --plate-cover: var(--bg-soft); }
-  /* The reveal cover needs overflow: hidden; the padding keeps the end ticks
-     inside it, the negative margin keeps the spans aligned with the labels. */
-  .chain-reveal { padding: 0 8px; margin: 0 -8px; }
-  .chain-line { position: relative; display: flex; height: 60px; }
-  .cs { flex: 0 0 var(--w); position: relative; border-left: 1.5px solid var(--accent); }
-  .cs::after { content: ""; position: absolute; left: 0; right: 0; bottom: 14px; border-top: 1.5px solid var(--accent); }
-  .cs-range { border-left-width: 1px; border-right: 1.5px solid var(--accent); }
-  .cs-range::after { border-top-style: dashed; }
-  .cs::before, .cs-end {
-    content: ""; position: absolute; left: -6px; bottom: 8px; width: 12px;
-    border-top: 1.5px solid var(--accent); transform: rotate(-45deg);
-  }
-  .cs-end { left: auto; right: -6px; }
-  .chain-fig {
-    position: absolute; left: var(--at); bottom: 20px; transform: translateX(-50%);
-    padding: 0 12px; background: var(--bg-soft); white-space: nowrap;
-    font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
-    font-size: clamp(28px, 2.6vw, 38px); line-height: 1; color: var(--accent-ink);
-  }
-  .chain-note { position: absolute; right: 0; top: -30px; font-size: var(--t-small); color: var(--fg-faint); }
+  .gantt { position: relative; margin-top: clamp(32px, 4vw, 52px);
+           --ball: 38px; --gap: 28px; --lab: 30%;
+           --chart: calc(var(--ball) + var(--lab) + 2 * var(--gap)); }
+  .g-axis { display: block; position: relative; margin-left: var(--chart); height: 64px;
+            border-bottom: 1.5px solid var(--fg); }
+  .g-zone { position: absolute; top: 0; left: var(--x0); width: calc(var(--x1) - var(--x0));
+            font-size: 13px; font-weight: 600; color: var(--fg); }
+  .g-zone { padding-left: 8px; border-left: 2px solid var(--accent); line-height: 1.2; }
+  /* Under the break, at the foot of the chart: the one place it never collides. */
+  .g-gap-label { position: absolute; bottom: -26px; left: calc((var(--x0) + var(--x1)) / 2); transform: translateX(-50%);
+                 white-space: nowrap; color: var(--fg-faint); font-weight: 500; font-size: 12px; }
+  .g-tick { position: absolute; left: var(--x); bottom: 8px; padding-left: 7px;
+            font-size: 12px; color: var(--fg-faint); white-space: nowrap; }
+  .g-tick-end { transform: translateX(-100%); padding: 0 7px 0 0; }
+  .g-lines { display: block; position: absolute; top: 0; bottom: 0; left: var(--chart); right: 0; pointer-events: none; }
+  .g-lines i { position: absolute; top: 34px; bottom: 0; left: var(--x); border-left: 1px solid var(--line); }
+  /* The break: the time between quotation and order is the customer's, so
+     the axis does not pretend to measure it. A drawing's break line. */
+  .g-gap { position: absolute; top: 34px; bottom: 0; left: var(--x0); width: calc(var(--x1) - var(--x0));
+           background:
+             url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='24'%3E%3Cpath d='M8 0 L3 8 L13 16 L8 24' fill='none' stroke='%2371717a' stroke-width='1.2'/%3E%3C/svg%3E") center top / 16px 24px repeat-y,
+             var(--bg-soft); }
 
-  .steps-chain { display: block; height: 196px; }
-  .steps-chain::before { display: none; }
-  .steps-chain .step {
-    position: absolute; left: var(--at); top: calc(var(--row) * 58px + 16px);
-    padding: 0 0 0 14px; white-space: nowrap;
+  .steps-gantt { display: block; }
+  .steps-gantt::before { display: none; }
+  .steps-gantt .step {
+    display: grid; grid-template-columns: var(--ball) var(--lab) 1fr; column-gap: var(--gap);
+    align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line);
   }
-  .steps-chain .step::before {
-    content: ""; position: absolute; left: 0; bottom: calc(100% - 8px);
-    height: calc(var(--row) * 58px + 38px); border-left: 1px solid var(--accent);
-  }
-  .steps-chain .step-n { display: none; }
-  .steps-chain .step-body { padding-top: 0; }
-  .steps-chain .step h3 { font-size: 16px; margin-bottom: 2px; }
-  .steps-chain .step p { font-size: 14px; }
-  .steps-chain .step-after { left: auto; right: 0; top: 74px; padding: 0; text-align: right; }
-  .steps-chain .step-after::before { display: none; }
+  .steps-gantt .step-n { width: var(--ball); height: var(--ball); font-size: 14px; border-width: 1.5px;
+                         font-stretch: 62%; font-size: 16px; }
+  .steps-gantt .step-body { padding-top: 0; }
+  .steps-gantt .step h3 { font-size: 16px; margin-bottom: 2px; }
+  .steps-gantt .step p { font-size: 14px; }
+  .g-bar { display: block; position: relative; height: 16px; }
+  .g-fill { position: absolute; top: 0; bottom: 0; left: var(--x0); width: calc(var(--x1) - var(--x0));
+            background: var(--accent); transform-origin: 0 50%; }
+  .g-range { background: repeating-linear-gradient(135deg, var(--accent) 0 2px, transparent 2px 7px);
+             box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .g-ms { position: absolute; top: 50%; left: var(--x0); width: 14px; height: 14px; background: var(--accent);
+          transform: translate(-7px, -50%) rotate(45deg); }
+  /* The bars run out once, in order, when the list arrives. */
+  html.reveal-ready .steps-gantt .g-fill { transform: scaleX(0); transition: transform 700ms var(--ease-power); }
+  html.reveal-ready .steps-gantt.is-revealed .g-fill { transform: none; }
+  .steps-gantt .step:nth-child(2) .g-fill { transition-delay: 150ms; }
+  .steps-gantt .step:nth-child(3) .g-fill { transition-delay: 300ms; }
+  .steps-gantt .step:nth-child(4) .g-fill { transition-delay: 450ms; }
+  .steps-gantt .step:nth-child(4) .g-range { transition-delay: 800ms; }
 }
+@media (prefers-reduced-motion: reduce) { html.reveal-ready .steps-gantt .g-fill { transform: none; transition: none; } }
 
 /* The rail ends on the action it describes, rather than in white space. */
 .proc-close {

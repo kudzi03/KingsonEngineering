@@ -363,46 +363,47 @@ ${g.rows.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></d
 
 /* ── how it works ────────────────────────────────────────────────────────── */
 
-/* The chain dimension: steps with a duration become spans, each as wide as
-   its days (a range is drawn solid to its low end, dashed to its high end).
-   Everything is computed from PROCESS, so the drawing cannot disagree with
-   the words. Each list item is placed under the middle of its own span; the
-   three short spans stagger their labels on leaders, rightmost highest, so
-   no leader crosses a label — the way a draughtsman dimensions a crowded
-   corner. The chain itself is decorative; the <ol> below it is the content. */
-const timed = PROCESS.steps.filter((st) => st.days);
-const total = timed.reduce((n, st) => n + st.days[st.days.length - 1], 0);
-const pc = (d) => +(d / total * 100).toFixed(3);
-let at = 0;
-const spans = timed.map((st) => {
-  const [lo, hi = lo] = st.days;
-  const s = { start: pc(at), solid: pc(lo), range: pc(hi - lo) };
-  at += hi;
-  return s;
-});
-const longest = spans.length - 1;
-const chain = `      <div class="chain-reveal" data-reveal="plate"><div class="chain-line">
-${spans.map((s, i) => `        <span class="cs${i === longest ? ' cs-long' : ''}" style="--w:${s.solid}%"></span>${
-  s.range ? `<span class="cs cs-range" style="--w:${s.range}%"></span>` : ''}`).join('\n')}
-        <span class="cs-end"></span>
-        <span class="chain-fig" style="--at:${mid(spans[longest], true)}%">${esc(PROCESS.chainFigure)}</span>
-      </div></div>
-      <p class="chain-note">${esc(PROCESS.chainNote)}</p>`;
-function mid(s, whole) { return +(s.start + (whole ? s.solid + s.range : s.solid) / 2).toFixed(3); }
-/* Each label sits under the middle of its span. The long span's label takes
-   the top row; the short ones stagger below it, rightmost highest. */
-const place = (i) => {
-  if (i >= timed.length) return ' class="step step-after"';     // no duration
-  const row = i === longest ? 0 : longest - 1 - i;
-  return ` class="step" style="--at:${mid(spans[i], i === longest)}%;--row:${row}"`;
+/* The programme chart (home page, desktop). A construction programme is issued
+   as a bar chart, so the commitments are drawn as one: one row per step, a
+   numbered balloon, and a broken axis — the first working week in days, a
+   break line for the customer's own decision to order, then weeks from order
+   with the six-to-ten-week range hatched. All positions come from PROCESS, so
+   the bars cannot disagree with the words beside them. Decorative: each row's
+   text is the content, the bar is aria-hidden. */
+const AX = PROCESS.axis;
+const WEEK_END = 36, ORDER_START = 44;                 // % of the chart column
+const wx = (d) => +(d / 6 * WEEK_END).toFixed(2);      // Mon–Sat working week
+const ox = (w) => +(ORDER_START + w / 10 * (100 - ORDER_START)).toFixed(2);
+const tick = (x, label, end) => `<span class="g-tick${end ? ' g-tick-end' : ''}" style="--x:${x}%">${esc(label)}</span>`;
+const gantt = `      <div class="g-axis" aria-hidden="true">
+        <span class="g-zone" style="--x0:0%;--x1:${WEEK_END}%">${esc(AX.week)}</span>
+        <span class="g-zone" style="--x0:${ORDER_START}%;--x1:100%">${esc(AX.order)}</span>
+        ${AX.weekTicks.map(([d, l], i, all) => tick(wx(d), l, i === all.length - 1)).join('')}
+        ${AX.orderTicks.map(([w, l], i, all) => tick(ox(w), l, i === all.length - 1)).join('')}
+      </div>
+      <div class="g-lines" aria-hidden="true">${[...AX.weekTicks.map(([d]) => wx(d)), ...AX.orderTicks.map(([w]) => ox(w))]
+        .map((x) => `<i style="--x:${x}%"></i>`).join('')}<span class="g-gap" style="--x0:${WEEK_END}%;--x1:${ORDER_START}%"></span><span class="g-gap-label" style="--x0:${WEEK_END}%;--x1:${ORDER_START}%">${esc(AX.gap)}</span></div>`;
+
+const bar = (st) => {
+  if (!st.bar) return '';
+  if ('week' in st.bar) {
+    return st.bar.week === 0
+      ? `
+        <span class="g-bar" aria-hidden="true"><span class="g-ms" style="--x0:0%"></span></span>`
+      : `
+        <span class="g-bar" aria-hidden="true"><span class="g-fill" style="--x0:0%;--x1:${wx(st.bar.week)}%"></span></span>`;
+  }
+  const [lo, hi] = st.bar.order;
+  return `
+        <span class="g-bar" aria-hidden="true"><span class="g-fill" style="--x0:${ox(0)}%;--x1:${ox(lo)}%"></span><span class="g-fill g-range" style="--x0:${ox(lo)}%;--x1:${ox(hi)}%"></span></span>`;
 };
 
-const steps = PROCESS.steps.map((st, i) => `      <li${place(i)}>
+const steps = PROCESS.steps.map((st) => `      <li class="step">
         <span class="step-n">${esc(st.n)}</span>
         <div class="step-body">
           <h3>${esc(st.title)}</h3>
           <p>${esc(st.body)}</p>
-        </div>
+        </div>${bar(st)}
       </li>`).join('\n');
 
 const procClose = `    <p>${esc(PROCESS.close)}</p>
@@ -561,7 +562,7 @@ const BLOCKS = {
 
   /* the homepage's own composition */
   hero, strip, chapters, workshop, specs,
-  steps, chain, procClose, form, faq, faqask, contact,
+  steps, gantt, procClose, form, faq, faqask, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
   svchead:   head('services', SERVICES_BLOCK.title, SERVICES_BLOCK.lede, 'svc-h'),
