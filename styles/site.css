@@ -2262,7 +2262,9 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
   .cin .hero-title { font-size: 11.4vw; }
   .cin .hero-title.sp-title { font-size: clamp(32px, 9vw, 44px); }
   .cin-in { padding-bottom: 96px; }
-  .cin .hero-eyebrow { font-size: 11px; }
+  /* Two lines in Archivo at this width, one in the fallback: the space is
+     reserved so the swap does not move the title (measured 0.0105 CLS). */
+  .cin .hero-eyebrow { font-size: 11px; min-height: 2.6em; }
   /* Four numbered rules, the progress running along the one showing. The
      captions stay in each button's accessible name. */
   .cin-dots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 10px; }
