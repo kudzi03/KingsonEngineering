@@ -6,6 +6,8 @@
 --             already flagged demo, so only the opportunity side is real.
 --   ENQ-2453  23 Sept, "AUDIT TEST – ignore" / "Claude pre-client audit" — the
 --             end-to-end test from the pre-client audit.
+--   (24 Sept) "AUDIT TEST 2 – ignore" — the test of the organisation-only form,
+--             matched by its unique contact address.
 --
 -- Flag both as demonstration data, with everything hanging off them, so
 -- dashboard_metrics(false) is back to zero real opportunities and
@@ -18,9 +20,11 @@
 
 begin;
 
-with t(opp) as (values
-  ('9941160f-dfa0-4346-a973-4dbc5613a4a4'::uuid),   -- ENQ-2452
-  ('1e582fd7-34ac-407c-a663-9c5d8a6cc521'::uuid)    -- ENQ-2453
+with t(opp) as (
+  select '9941160f-dfa0-4346-a973-4dbc5613a4a4'::uuid          -- ENQ-2452
+  union select '1e582fd7-34ac-407c-a663-9c5d8a6cc521'::uuid    -- ENQ-2453
+  union select opportunity_id from public.enquiries           -- 24 Sept, organisation-only form test
+   where contact = 'audit-test-2-20260924@example.invalid' and opportunity_id is not null
 )
 , o as (update public.opportunities set is_demo = true where id in (select opp from t)
         returning contact_id, company_id)
