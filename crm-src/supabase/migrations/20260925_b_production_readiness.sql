@@ -2,9 +2,15 @@
 -- 20260925_b_production_readiness.sql
 -- ═══════════════════════════════════════════════════════════════════════════
 --
+-- Reconciled against the live schema exported 2026-09-25
+-- (supabase/baseline/live-schema-2026-09-25.csv).
+--
 -- What this adds, in order:
 --
---   1. Deactivated staff are refused by the DATABASE, not only the screen.
+--   1. Security: nobody can change their own role or active flag (live, a
+--      staff user can make themselves admin); users can read their own
+--      profile; the website can insert only the form's columns; surplus
+--      grants removed.
 --   2. Phone and email normalisation on contacts, for duplicate matching.
 --   3. find_contact_matches()  — "Existing customer found" in the quick form.
 --   4. create_enquiry()        — the one way a person or a future channel
@@ -14,36 +20,77 @@
 --                                index-backed, row-level-security respected.
 --   7. tasks.task_type         — Won/Lost/Reply close tasks by what they are
 --                                FOR, not by their title.
---   8. files.quote_id          — a quotation version can carry its PDF.
+--   8. convert_enquiry         — website intake matches phones however they
+--                                are written, and types its task.
 --   9. The notification outbox — staff alert, customer acknowledgement and
 --                                the daily digest; each sent at most once.
 --  10. management_summary()    — the reporting foundation.
 --
 -- Additive only: no table is dropped, no column removed, no row deleted. Every
 -- statement is re-runnable. Existing quote/follow-up/Won/Lost behaviour is
--- kept; the three lifecycle functions below are re-issued with ONE change
--- each (task_type instead of title matching), marked `CHANGED`.
+-- kept; the four live functions re-issued below differ from the live source
+-- only where marked `CHANGED`.
 --
 -- Run 20260925_a_sources.sql first.
 -- ═══════════════════════════════════════════════════════════════════════════
 
--- ── 1. active staff only ─────────────────────────────────────────────────────
--- Every row-level policy and every lifecycle function asks is_staff() or
--- is_admin(). Checking `active` here closes the window in which a
--- deactivated account's unexpired token could still read and write.
--- RECONCILE: signatures must match the live functions (both take no args).
+-- ── 1. security ──────────────────────────────────────────────────────────────
+-- Live, `profiles_update_self` lets anybody signed in update their own row,
+-- every column, so a staff user can PATCH their own role to admin (verified
+-- against the live baseline in tests/run-local.mjs). A deactivated user is
+-- only saved by profiles_read hiding their own row from them — which the
+-- self-read policy below would undo. The role and active columns now change
+-- only when an administrator changes SOMEBODY ELSE; the two ship together.
+-- Direct database sessions (dashboard, service role: no auth.uid()) are not
+-- restricted, so an administrator can always be restored by hand.
 
-create or replace function public.is_staff()
-returns boolean language sql stable security definer set search_path = public as $$
-  select exists (select 1 from public.profiles
-                  where id = auth.uid() and active is true);
-$$;
+create or replace function public.profiles_guard()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is null then return new; end if;
+  if new.id is distinct from old.id then
+    raise exception 'A profile cannot be moved to another account.' using errcode = '42501';
+  end if;
+  if new.role is distinct from old.role or new.active is distinct from old.active then
+    if new.id = auth.uid() then
+      raise exception 'You cannot change your own role or status. Ask another administrator.'
+        using errcode = '42501';
+    end if;
+    if not public.is_admin() then
+      raise exception 'Only an administrator can change a role or status.' using errcode = '42501';
+    end if;
+  end if;
+  return new;
+end $$;
+drop trigger if exists profiles_guard on public.profiles;
+create trigger profiles_guard before update on public.profiles
+  for each row execute function public.profiles_guard();
 
-create or replace function public.is_admin()
-returns boolean language sql stable security definer set search_path = public as $$
-  select exists (select 1 from public.profiles
-                  where id = auth.uid() and active is true and role = 'admin');
-$$;
+-- is_staff() is false for a deactivated account, so today they cannot read
+-- their own profile and the CRM can only say "no profile". Reading your own
+-- row (and nothing else) lets it say "deactivated".
+drop policy if exists profiles_read_self on public.profiles;
+create policy profiles_read_self on public.profiles
+  for select to authenticated using (id = auth.uid());
+
+-- The website may fill in the form's columns and nothing else: not spam,
+-- is_demo, opportunity_id or contact_id, which only the conversion writes.
+revoke insert on public.enquiries from anon;
+grant insert (name, company, contact, service, location, drawings, message, source, page, honeypot)
+  on public.enquiries to anon;
+
+-- The timeline is the record of who said what and when. The CRM only ever
+-- adds to it, but live any staff member could rewrite an entry. Staff now
+-- append; correcting an entry is for an administrator.
+drop policy if exists activities_staff_update on public.activities;
+drop policy if exists activities_admin_update on public.activities;
+create policy activities_admin_update on public.activities
+  for update to authenticated using (public.is_admin()) with check (public.is_admin());
+
+-- Surplus privileges the API never uses. The view is read-only.
+revoke truncate, trigger, references on public.crm_settings from anon, authenticated;
+revoke insert, update, delete, truncate, trigger, references on public.v_opportunity_state
+  from anon, authenticated;
 
 -- ── 2. normalised phone and email ────────────────────────────────────────────
 -- The same rules as normPhone() in crm-src/core/model.js. Zimbabwe numbers in
@@ -246,9 +293,14 @@ begin
     returning id into v_contact;
   else
     -- Fill gaps on a reused contact; never overwrite what is already there.
+    -- The email is only filled in when nobody else already has it (it is
+    -- unique), so choosing a customer can never fail on somebody else's row.
     update public.contacts c
        set company_id = coalesce(c.company_id, v_company),
-           email = coalesce(c.email, v_em),
+           email = case when nullif(c.email, '') is null
+                         and not exists (select 1 from public.contacts x
+                                          where x.email_norm = v_em and x.id <> c.id)
+                        then v_em else c.email end,
            phone = coalesce(c.phone, nullif(trim(coalesce(p_phone, '')), '')),
            preferred_channel = coalesce(nullif(trim(coalesce(p_preferred_channel, '')), ''), c.preferred_channel)
      where c.id = v_contact;
@@ -295,9 +347,9 @@ end $$;
 -- ── 5. submit_enquiry — the website ─────────────────────────────────────────
 -- The public form keeps INSERT-only access to `enquiries` and cannot read
 -- anything back. This function does the same insert with the same limits
+-- (the live enquiries_public_insert policy and the enquiries_*_len checks)
 -- and returns ONE thing: the reference, so the visitor can quote it. A row
 -- the honeypot catches is accepted silently and gets no reference.
--- RECONCILE: column list and limits against the live enquiries insert policy.
 
 create or replace function public.submit_enquiry(p jsonb)
 returns jsonb language plpgsql security definer set search_path = public as $$
@@ -414,21 +466,124 @@ update public.tasks set task_type = 'enquiry_response'
 update public.tasks set task_type = 'quote_followup'
  where task_type = 'general' and (title ilike 'follow up%' or title ilike 'chase%');
 
--- The website's task is written by convert_enquiry, which predates the
--- column. Rather than rely on its title, type it the moment it is inserted.
--- RECONCILE: replace with task_type in convert_enquiry's own INSERT once the
--- live function source is in the baseline, then drop this trigger.
-create or replace function public.tasks_type_from_origin()
-returns trigger language plpgsql set search_path = public as $$
+-- ── 8. convert_enquiry ───────────────────────────────────────────────────────
+-- The live website conversion, re-issued with two changes, both marked:
+--   · an existing contact is found by NORMALISED email and phone, on the
+--     phone or WhatsApp number, so "+263 77 123 4567" finds "0771234567"
+--     (live compared raw digits on `phone` only, and made a duplicate);
+--   · its follow-up task carries task_type = 'enquiry_response'.
+-- Everything else — spam handling, company, gap-filling, title, due date,
+-- timeline text, task text — is the live source unchanged.
+create or replace function public.convert_enquiry()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare
+  v_email      text;
+  v_phone      text;
+  v_company_id uuid;
+  v_contact_id uuid;
+  v_opp_id     uuid;
+  v_title      text;
+  v_due        date;
+  v_digits     text;
 begin
-  if new.task_type = 'general' and new.title like 'Respond to website enquiry%' then
-    new.task_type := 'enquiry_response';
+  if coalesce(trim(new.honeypot), '') <> '' then
+    new.spam := true;
+    new.processed_at := now();
+    return new;
   end if;
+
+  if new.contact ~* '^[^@[:space:]]+@[^@[:space:]]+\.[a-z]{2,}$' then
+    v_email := lower(trim(new.contact));
+  else
+    v_digits := regexp_replace(new.contact, '[^0-9+]', '', 'g');
+    if char_length(regexp_replace(v_digits, '[^0-9]', '', 'g')) >= 7 then
+      v_phone := v_digits;
+    end if;
+  end if;
+
+  if v_email is null and v_phone is null then
+    v_phone := left(new.contact, 60);
+  end if;
+
+  new.email := v_email;
+  new.phone := v_phone;
+
+  if coalesce(trim(new.company), '') <> '' then
+    select id into v_company_id from public.companies
+      where lower(name) = lower(trim(new.company)) limit 1;
+    if v_company_id is null then
+      insert into public.companies (name) values (trim(new.company))
+      returning id into v_company_id;
+    end if;
+  end if;
+
+  if v_email is not null then                                          -- CHANGED
+    select id into v_contact_id from public.contacts
+     where email_norm = public.norm_email(v_email)
+     order by created_at limit 1;
+  end if;
+  if v_contact_id is null and public.norm_phone(v_phone) is not null then  -- CHANGED
+    select id into v_contact_id from public.contacts
+     where phone_norm = public.norm_phone(v_phone) or whatsapp_norm = public.norm_phone(v_phone)
+     order by created_at limit 1;
+  end if;
+
+  if v_contact_id is null then
+    insert into public.contacts (company_id, full_name, email, phone, whatsapp, preferred_channel)
+    values (v_company_id, trim(new.name), v_email, v_phone, v_phone,
+            case when v_email is not null then 'Email' else 'Phone' end)
+    returning id into v_contact_id;
+  else
+    update public.contacts set
+      company_id = coalesce(company_id, v_company_id),
+      email      = coalesce(nullif(email, ''), v_email),
+      phone      = coalesce(nullif(phone, ''), v_phone),
+      whatsapp   = coalesce(nullif(whatsapp, ''), v_phone)
+    where id = v_contact_id;
+  end if;
+
+  v_title := coalesce(nullif(trim(new.service), ''), 'Website enquiry');
+  if coalesce(trim(new.location), '') <> '' then
+    v_title := v_title || ' — ' || trim(new.location);
+  end if;
+
+  v_due := (now() at time zone 'Africa/Harare')::date + 1;
+  if extract(isodow from v_due) = 7 then v_due := v_due + 1; end if;
+
+  insert into public.opportunities (
+    title, company_id, contact_id, stage, priority, source, service,
+    description, location, site_visit_required, next_action, next_action_due)
+  values (
+    v_title, v_company_id, v_contact_id, 'new', 'normal', new.source,
+    nullif(trim(new.service), ''),
+    nullif(trim(new.message), ''),
+    nullif(trim(new.location), ''),
+    coalesce(new.drawings, '') !~* '^yes',
+    'Respond to the website enquiry',
+    v_due)
+  returning id into v_opp_id;
+
+  insert into public.activities (opportunity_id, contact_id, kind, body, occurred_at)
+  values (v_opp_id, v_contact_id, 'enquiry',
+    'Website enquiry received.'
+      || case when coalesce(trim(new.service), '')  <> '' then ' Needs: '    || trim(new.service)  else '' end
+      || case when coalesce(trim(new.location), '') <> '' then ' Site: '     || trim(new.location) else '' end
+      || case when coalesce(trim(new.drawings), '') <> '' then ' Drawings: ' || trim(new.drawings) else '' end
+      || case when coalesce(trim(new.message), '')  <> '' then ' — '         || trim(new.message)  else '' end,
+    new.created_at);
+
+  insert into public.tasks (title, opportunity_id, contact_id, due_date, priority, channel, notes, task_type)
+  values ('Respond to website enquiry from ' || trim(new.name),
+          v_opp_id, v_contact_id, v_due, 'high',
+          case when v_email is not null then 'Email' else 'Phone' end,
+          'Auto-created when the enquiry arrived. Acknowledge the same working day.',
+          'enquiry_response');                                         -- CHANGED
+
+  new.contact_id     := v_contact_id;
+  new.opportunity_id := v_opp_id;
+  new.processed_at   := now();
   return new;
 end $$;
-drop trigger if exists tasks_type_from_origin on public.tasks;
-create trigger tasks_type_from_origin before insert on public.tasks
-  for each row execute function public.tasks_type_from_origin();
 
 -- CHANGED (log_stage_change): leaving New completes enquiry_response tasks by
 -- type. Everything else is identical to 20260922_quote_lifecycle.sql.
@@ -545,10 +700,10 @@ begin
    where id = o.id;
 end $$;
 
--- CHANGED (decide_opportunity): Won and Lost close the SALES tasks by type —
--- responding to the enquiry, chasing the quotation, answering a reply. A
--- manual task ("return the drawings", "invoice the deposit") is left alone.
--- Lost also cancels any open site-visit task, which no longer has a purpose.
+-- CHANGED (decide_opportunity): Won closes the SALES tasks by type instead of
+-- by title — responding to the enquiry, chasing the quotation, answering a
+-- reply. A manual task ("return the drawings", "invoice the deposit") is
+-- left alone, as it was live. Lost is unchanged: every open task is cancelled.
 create or replace function public.decide_opportunity(
   p_opportunity_id uuid,
   p_outcome text,
@@ -613,10 +768,10 @@ begin
     if lq.id is not null and lq.status in ('sent', 'discussed') then
       update public.quotes set status = 'rejected' where id = lq.id;
     end if;
-    update public.tasks set status = 'cancelled',                    -- CHANGED
+    -- Lost cancels every open task, exactly as live.
+    update public.tasks set status = 'cancelled',
            notes = coalesce(notes || E'\n', '') || 'Cancelled: enquiry lost.'
-     where opportunity_id = o.id and status = 'open'
-       and task_type in ('enquiry_response', 'quote_followup', 'customer_reply', 'site_visit');
+     where opportunity_id = o.id and status = 'open';
   elsif p_outcome = 'on_hold' then
     if coalesce(trim(p_reason), '') = '' then raise exception 'Give a reason for the hold'; end if;
     if p_review_on is null then raise exception 'Choose a review date'; end if;
@@ -629,9 +784,9 @@ begin
   perform set_config('kingson.decision_notes', '', true);
 end $$;
 
--- ── 8. a quotation version's own document ────────────────────────────────────
-alter table public.files add column if not exists quote_id uuid
-  references public.quotes(id) on delete set null;
+-- ── a quotation version's own document ──────────────────────────────────────
+-- files.quote_id already exists live (on delete cascade, and counted by the
+-- files_attached check); the CRM now uses it. It only lacked an index.
 create index if not exists files_quote_idx on public.files (quote_id) where quote_id is not null;
 
 -- ── 9. notifications ─────────────────────────────────────────────────────────
@@ -719,8 +874,8 @@ end $$;
 -- address. Spam and demonstration rows produce nothing. AFTER INSERT, so
 -- convert_enquiry (BEFORE INSERT) has already created the opportunity; the
 -- outbox row is in the same transaction, so nothing is queued for a save
--- that rolls back.
--- RECONCILE: enquiries.spam / opportunity_id / is_demo names.
+-- that rolls back. new.email is the address convert_enquiry parsed out of the
+-- form's single "phone or email" field (null when it was a phone number).
 create or replace function public.enquiry_queue_notifications()
 returns trigger language plpgsql security definer set search_path = public as $$
 declare v_email text;
@@ -729,7 +884,7 @@ begin
     return new;
   end if;
   perform public.queue_new_enquiry_alert(new.opportunity_id);
-  v_email := public.norm_email(new.contact);
+  v_email := public.norm_email(new.email);
   if v_email ~ '^[^@\s]+@[^@\s]+\.[a-z]{2,}$' then
     insert into public.notification_outbox (kind, dedupe_key, opportunity_id, enquiry_id, recipient)
     values ('acknowledgement', 'ack:' || new.id, new.opportunity_id, new.id, v_email)
@@ -820,9 +975,21 @@ returns jsonb language sql stable security invoker set search_path = public as $
 $$;
 
 -- ── grants ───────────────────────────────────────────────────────────────────
--- The project revokes execute from anon by default (20260922_quote_lifecycle).
--- Staff functions to `authenticated`; the website's one function to `anon`.
-revoke execute on function public.norm_phone(text), public.norm_email(text) from public, anon;
+-- Live, no public function is executable by PUBLIC or anon. A new function
+-- is executable by PUBLIC unless revoked, so every one is revoked first and
+-- then granted to exactly who needs it. The website gets submit_enquiry and
+-- nothing else.
+revoke execute on function
+  public.profiles_guard(), public.norm_phone(text), public.norm_email(text),
+  public.find_contact_matches(text, text, text, text),
+  public.create_enquiry(text, text, text, text, text, text, uuid, text, text, text,
+                        text, text, uuid, text, date, boolean, text, boolean),
+  public.submit_enquiry(jsonb), public.global_search(text, boolean, integer),
+  public.management_summary(date, date, boolean),
+  public.kick_dispatcher(), public.queue_new_enquiry_alert(uuid),
+  public.enquiry_queue_notifications(), public.claim_outbox(integer)
+  from public, anon, authenticated;
+
 grant execute on function public.norm_phone(text), public.norm_email(text) to authenticated, service_role;
 grant execute on function public.find_contact_matches(text, text, text, text) to authenticated;
 grant execute on function public.create_enquiry(text, text, text, text, text, text, uuid, text, text, text,
@@ -830,7 +997,15 @@ grant execute on function public.create_enquiry(text, text, text, text, text, te
   to authenticated, service_role;
 grant execute on function public.global_search(text, boolean, integer) to authenticated;
 grant execute on function public.management_summary(date, date, boolean) to authenticated;
-grant execute on function public.submit_enquiry(jsonb) to anon, authenticated;
-revoke execute on function public.kick_dispatcher(), public.queue_new_enquiry_alert(uuid),
-                           public.enquiry_queue_notifications(), public.tasks_type_from_origin()
-  from public, anon, authenticated;
+grant execute on function public.submit_enquiry(jsonb) to anon;
+grant execute on function public.claim_outbox(integer) to service_role;
+
+-- The outbox is read by administrators in the CRM and written only by the
+-- functions above and the dispatcher.
+revoke all on public.notification_outbox from anon, authenticated;
+grant select on public.notification_outbox to authenticated;
+grant all on public.notification_outbox to service_role;
+
+-- The stop-gap from the first draft of this file, if it was ever applied.
+drop trigger if exists tasks_type_from_origin on public.tasks;
+drop function if exists public.tasks_type_from_origin();

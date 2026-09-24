@@ -12,12 +12,15 @@
 --   <DISPATCH_SECRET>  the same long random value set as the function secret
 -- The secret is stored in Supabase Vault (encrypted at rest), not in a table,
 -- and never reaches the browser. Do NOT commit a copy with the real value.
+-- Better still: create the two secrets (dispatch_url, dispatch_secret) in
+-- Dashboard → Project Settings → Vault, and delete the DO block before
+-- running, so the secret never sits in the SQL editor's history.
 --
 -- Re-runnable: each schedule is replaced, each secret is updated in place.
 -- ═══════════════════════════════════════════════════════════════════════════
 
-create extension if not exists pg_net;
-create extension if not exists pg_cron;
+create extension if not exists pg_net with schema extensions;   -- creates its own `net` schema
+create extension if not exists pg_cron with schema pg_catalog;
 
 do $$
 declare
