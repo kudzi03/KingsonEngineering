@@ -213,7 +213,7 @@ export const processFor = (slug) => PROCESS.steps
 
 export const SPECS = {
   title: 'The numbers we work to.',
-  lede: 'By material and profile. Open the group you need.',
+  lede: 'Every figure Kingson confirmed, by material and profile.',
   groups: [
     { id: 'ibr', title: 'IBR sheeting', rows: [
       ['Cover width', '686 mm, five ribs'],
@@ -262,11 +262,13 @@ export const SPECS = {
    returned document. There is no project count, no years-in-business and no
    customer number here, because Kingson has confirmed none of those.          */
 
+/* Label, headline figure, detail. Every figure is one confirmed elsewhere on
+   the site; the band only states them large. */
 export const STRIP = [
-  ['Fiber laser',  'DXTECH · 3 000 × 1 500 mm bed'],
-  ['Cranage',      'One 25-tonne telescopic mobile crane'],
-  ['Workshop',     'Tynwald Industries, Harare'],
-  ['Enquiries',    'Acknowledged the same working day']
+  ['Fiber laser',  '±0.1 mm',  'DXTECH · 3 000 × 1 500 mm bed'],
+  ['Cranage',      '25 t',     'Our own telescopic mobile crane'],
+  ['Workshop',     'Harare',   'No. 1262 Tynwald Industries'],
+  ['Open',         'Mon–Sat',  '07:30 – 17:00 · enquiries acknowledged the same working day']
 ];
 
 

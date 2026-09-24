@@ -61,7 +61,7 @@ ${rows.map(([k, v]) => `        <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`
    group is open or not — a crawler and a screen reader both get all of it. */
 const specBlock = (ids) => {
   const groups = pickSpecs(ids);
-  return groups.map((g, i) => `      <details class="spec-group" id="spec-${g.id}"${i === 0 ? ' open' : ''}>
+  return groups.map((g, i) => `      <details class="spec-group" id="spec-${g.id}" open>
         <summary><span>${esc(g.title)}</span></summary>
         <dl class="spec-rows">
 ${g.rows.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('\n')}
@@ -168,20 +168,25 @@ export function servicePage(s) {
     ogType: 'website'
   });
 
-  const strip = s.strip && s.strip.length
+  /* The page's close-up photograph joins the plate row where there is one;
+     otherwise it is a captioned plate after the brief. It used to sit alone
+     between 'related services' and the footer, uncaptioned. */
+  const plates = s.strip && s.strip.length ? [...s.strip, ...(s.aside ? [s.aside] : [])] : [];
+  const strip = plates.length
     ? `  <ul class="ch-strip sp-strip" tabindex="0" role="group"
        aria-label="Photographs of this work. On a narrow screen this row scrolls sideways.">
-${s.strip.map((k, i) => `    <li data-reveal="plate" data-from="below" style="--d:${i * 110}ms">
+${plates.map((k, i) => `    <li data-reveal="plate" data-from="below" style="--d:${i * 110}ms">
       ${zoomable(k, photo(k, { sizes: '(max-width:900px) 62vw, 32vw', w: 720 })
         + `<span>${esc(ASSETS[k].alt.split(/[:,]/)[0])}</span>`)}
     </li>`).join('\n')}
   </ul>`
     : '';
 
-  const aside = s.aside
-    ? `      <div class="sp-aside" data-reveal="plate" data-from="below">
-        ${zoomable(s.aside, photo(s.aside, { sizes: '(max-width:900px) 100vw, 46vw', w: 1100 }))}
-      </div>`
+  const aside = s.aside && !plates.length
+    ? `      <figure class="sp-aside frame" data-reveal="plate" data-from="below">
+        ${zoomable(s.aside, photo(s.aside, { sizes: '(max-width:900px) 100vw, 1200px', w: 1100 }))}
+        <figcaption>${esc(ASSETS[s.aside].alt.split(/[:,]/)[0])}</figcaption>
+      </figure>`
     : '';
 
   const draw = drawing(s);
@@ -228,7 +233,12 @@ ${s.send.map((line) => `          <li>${esc(line)}</li>`).join('\n')}
       </div>
     </div>
   </section>
-${draw ? `
+${aside ? `
+  <section class="sp-photo">
+    <div class="wrap">
+${aside}
+    </div>
+  </section>` : ''}${draw ? `
   <section class="sp-drawing sec-alt">
     <div class="wrap">
 ${draw}
@@ -272,7 +282,7 @@ ${specBlock(s.specGroups)}
         <p class="sp-lede">${esc(processLede(s.slug))}</p>
 ${processBlock(s.slug)}
       </div>
-      <aside class="sp-area">
+      <aside class="sp-area frame">
         <h2>${esc(SERVICE_PAGE.areaTitle)}</h2>
         <p>${esc(SERVICE_PAGE.areaBody)}</p>
         <dl class="sp-rail">
@@ -313,12 +323,6 @@ ${relatedBlock(s.related)}
       <p class="sp-back"><a href="/#services">${esc(SERVICE_PAGE.backHome)}${ICON_ARROW}</a></p>
     </div>
   </section>
-${aside ? `
-  <section class="sp-tail sec-alt">
-    <div class="wrap">
-${aside}
-    </div>
-  </section>` : ''}
 </main>
 
 ${siteFooter()}

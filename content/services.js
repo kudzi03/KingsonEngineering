@@ -198,7 +198,7 @@ export const SERVICE_PAGE = {
   breadcrumbServices: 'What we do',
   figuresTitle: 'What we can do',
   specTitle: 'Full specification',
-  specLede: 'The figures we work to. Open the group you need.',
+  specLede: 'Every figure Kingson confirmed for this work.',
   processTitle: 'What happens after you send it',
   /* `{n}` is the number of commitments this particular page shows. A service
      with no confirmed programme shows four, not five — see PROCESS in

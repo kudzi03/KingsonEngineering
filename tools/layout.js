@@ -317,6 +317,7 @@ ${reach}
   <div class="ft-in">
 ${meta}
   </div>
+  <p class="ft-mark" aria-hidden="true">${esc(publish('name'))}</p>
 </footer>`;
 }
 

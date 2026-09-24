@@ -20,7 +20,22 @@ section { padding: clamp(56px, 6.4vw, 96px) 0; }
 .sec-alt  { background: var(--bg-soft); }
 .sec-dark { background: var(--bg-dark); color: var(--fg-on-dark); }
 
-.sec-head { text-align: center; max-width: 700px; margin: 0 auto clamp(38px, 4.6vw, 64px); }
+/* A section opens like a drawing sheet's title band: a full-width rule, the
+   label on it, the heading left and the lede answering it on the right. Left
+   aligned, on the grid — not a centred block floating over the page. */
+.sec-head {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  column-gap: clamp(24px, 4vw, 72px); align-items: end;
+  margin: 0 0 clamp(36px, 4.4vw, 60px); padding-top: 16px;
+  border-top: 1.5px solid var(--fg);
+}
+.sec-head .eyebrow { grid-column: 1 / -1; }
+.sec-head > p { max-width: 46ch; padding-bottom: 6px; }
+.sec-dark .sec-head, .on-dark .sec-head { border-top-color: rgba(250, 250, 250, .5); }
+@media (max-width: 760px) {
+  .sec-head { grid-template-columns: 1fr; }
+  .sec-head h2 { margin-bottom: 12px; }
+}
 .eyebrow {
   /* `align-self: start` because an inline-flex element is blockified when it
      becomes a flex item, and in the workshop's flex column it stretched to
@@ -50,8 +65,8 @@ section { padding: clamp(56px, 6.4vw, 96px) 0; }
 .btn, .btn-ghost {
   display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   min-height: 48px; padding: 0 24px;
-  border: 1px solid transparent; border-radius: var(--pill);
-  font-size: var(--t-ui); font-weight: 500; cursor: pointer; text-decoration: none;
+  border: 1px solid transparent; border-radius: var(--r-sm);
+  font-size: var(--t-ui); font-weight: 600; letter-spacing: .005em; cursor: pointer; text-decoration: none;
   white-space: nowrap;
   transition: background-color 150ms var(--ease), border-color 150ms var(--ease),
               color 150ms var(--ease), transform 150ms var(--ease);
@@ -293,9 +308,13 @@ html.hd-over .hd-mark img {
   border-left: 1px solid var(--line-dark); padding-left: 26px;
 }
 .strip-in li:first-child { border-left: 0; padding-left: 0; }
-.strip-k { font-size: 12px; letter-spacing: .11em; text-transform: uppercase;
-           color: var(--accent-on-dark); font-weight: 600; }
-.strip-v { font-size: 15px; color: var(--fg-on-dark); line-height: 1.45; }
+/* A ruled figures band, read like the title block of a data sheet: label,
+   the figure set large in Archivo's condensed width, then the detail. */
+.strip-k { font-size: var(--t-small); color: var(--fg-on-dark-muted); font-weight: 500; }
+.strip-f { font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 62%;
+           font-size: clamp(34px, 3.3vw, 48px); line-height: 1; color: var(--fg-on-dark);
+           letter-spacing: -.01em; margin: 4px 0 2px; }
+.strip-v { font-size: 14px; color: var(--fg-on-dark-muted); line-height: 1.45; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CAPABILITY CHAPTERS
@@ -618,7 +637,14 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
    Native <details>. They work with JavaScript off, and every figure is in the
    DOM whether the group is open or shut. */
 
-.spec-list { max-width: 860px; margin: 0 auto; display: grid; gap: 14px; }
+/* A data sheet: every group open, flowing down two columns on a wide screen
+   so all the figures are on view at once. On a phone main.js folds all but
+   the first; with JavaScript off everything stays open. */
+.spec-list { display: grid; gap: 14px; }
+@media (min-width: 1024px) {
+  .spec-list { display: block; columns: 2; column-gap: 14px; }
+  .spec-list > .spec-group { break-inside: avoid; margin-bottom: 14px; }
+}
 .spec-group {
   background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg);
   box-shadow: var(--shadow-sm); overflow: hidden;
@@ -979,8 +1005,8 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 
 .ft {
   background: var(--bg-dark); color: var(--fg-on-dark-muted);
-  border-top: 1px solid var(--line-dark); padding: 34px 0 42px;
-  font-size: var(--t-small);
+  border-top: 1px solid var(--line-dark); padding: 34px 0 0;
+  font-size: var(--t-small); overflow: hidden;
 }
 .ft-in {
   max-width: var(--page); margin: 0 auto; padding: 0 var(--margin);
@@ -1023,7 +1049,7 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 }
 .viewer-head button {
   background: none; border: 1px solid rgba(250, 250, 250, .34);
-  border-radius: var(--pill); color: var(--fg-on-dark);
+  border-radius: var(--r-sm); color: var(--fg-on-dark);
   padding: 0 18px; min-height: 44px; cursor: pointer; font-size: var(--t-ui);
 }
 .viewer-caption { font-size: var(--t-small); color: var(--fg-on-dark-muted); }
@@ -1376,8 +1402,7 @@ html.reveal-ready [data-reveal="draw"] .bed-part { transition-delay: var(--d, 0m
   margin-bottom: clamp(22px, 2.6vw, 32px);
 }
 .ft-col h2 {
-  font-size: 12px; letter-spacing: .15em; text-transform: uppercase;
-  color: var(--fg-on-dark-muted); font-weight: 600; margin-bottom: 14px;
+  font-size: var(--t-small); color: var(--fg-on-dark-muted); font-weight: 500; margin-bottom: 14px;
 }
 .ft-col ul { display: grid; gap: 2px; }
 .ft-col a {
@@ -1892,4 +1917,79 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 }
 @media (prefers-reduced-motion: reduce) {
   .bar { transition: none; }
+}
+
+/* The questions header sits in a side column: one column, no rule-top band. */
+.faq-side .sec-head { grid-template-columns: 1fr; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INDUSTRIAL SYSTEM — frames, plates and rails
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Crop marks: the four L-shaped corners a drawing or a proof is trimmed to.
+   They frame a panel without boxing it in. Ink, not red — the accent is kept
+   for the things you can press. */
+.frame {
+  --mk: var(--fg); --mk-len: 18px; --mk-w: 1.5px;
+  background:
+    linear-gradient(var(--mk), var(--mk)) 0 0 / var(--mk-len) var(--mk-w) no-repeat,
+    linear-gradient(var(--mk), var(--mk)) 0 0 / var(--mk-w) var(--mk-len) no-repeat,
+    linear-gradient(var(--mk), var(--mk)) 100% 0 / var(--mk-len) var(--mk-w) no-repeat,
+    linear-gradient(var(--mk), var(--mk)) 100% 0 / var(--mk-w) var(--mk-len) no-repeat,
+    linear-gradient(var(--mk), var(--mk)) 0 100% / var(--mk-len) var(--mk-w) no-repeat,
+    linear-gradient(var(--mk), var(--mk)) 0 100% / var(--mk-w) var(--mk-len) no-repeat,
+    linear-gradient(var(--mk), var(--mk)) 100% 100% / var(--mk-len) var(--mk-w) no-repeat,
+    linear-gradient(var(--mk), var(--mk)) 100% 100% / var(--mk-w) var(--mk-len) no-repeat;
+}
+.on-dark .frame, .sec-dark .frame { --mk: rgba(250, 250, 250, .7); }
+.proc-close.frame, .sp-area.frame { border: 0; border-radius: 0; background-color: transparent; }
+
+/* The page's close-up photograph, captioned, after the brief. */
+.sp-photo { padding: 0 0 clamp(48px, 5.5vw, 80px); }
+.sp-aside.frame { padding: 12px; margin: 0; }
+.sp-aside.frame img { width: 100%; height: clamp(300px, 52vh, 580px); object-fit: cover; display: block; }
+.sp-aside figcaption { margin-top: 12px; font-size: var(--t-small); color: var(--fg-faint); }
+
+/* Plates on a wide screen: one row, and the plate under the pointer or the
+   keyboard opens out. It shows the photograph you are looking at at a useful
+   width without a carousel. Touch and reduced motion get the even row. */
+@media (min-width: 901px) {
+  .sp-strip { display: flex; gap: 10px; }
+  .sp-strip > li { flex: 1 1 0; min-width: 0; }
+  .sp-strip > li img { height: clamp(360px, 58vh, 620px); }
+}
+@media (min-width: 901px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .sp-strip > li { transition: flex-grow 520ms var(--ease-power); }
+  .sp-strip > li:hover, .sp-strip > li:focus-within { flex-grow: 2.4; }
+}
+
+/* On a service page the commitments sit in a half-width column: a vertical
+   rail there, at every width. Four columns in that space ran the labels
+   into each other ("acknowledgedarranged"). */
+.sp-proc .steps { grid-template-columns: 1fr; gap: 22px; }
+.sp-proc .steps::before { left: 27px; right: auto; top: 10px; bottom: 10px; width: 2px; height: auto;
+  background: linear-gradient(to bottom, var(--accent) 0 18%, var(--line) 18% 100%); }
+.sp-proc .step { display: flex; gap: 18px; padding: 0; }
+.sp-proc .step-n { width: 56px; height: 56px; font-size: 20px; flex: none; }
+.sp-proc .step-body { padding-top: 6px; }
+
+/* The name, set once at plate-lettering scale across the foot of every page
+   and cropped by the page edge — the way a fabricator's name is stamped
+   into a base plate. Decorative (aria-hidden); the logo above is the name. */
+.ft-mark {
+  max-width: var(--page); margin: clamp(28px, 4vw, 56px) auto 0; padding: 0 var(--margin);
+  font-family: Archivo, sans-serif; font-weight: 800; font-stretch: 125%;
+  /* Sized to the content width: the name measures 12.0 × its font size. */
+  font-size: calc((min(100vw, var(--page)) - 2 * var(--margin)) / 12.1);
+  line-height: .78; letter-spacing: -.035em;
+  white-space: nowrap; color: rgba(250, 250, 250, .07);
+  transform: translateY(12%); user-select: none;
+}
+
+/* The figures band on a phone: two by two, not one long column. */
+@media (max-width: 760px) {
+  .strip-in { grid-template-columns: 1fr 1fr; column-gap: 20px; }
+  .strip-in li { border-left: 0; padding: 16px 0; border-top: 1px solid var(--line-dark); }
+  .strip-in li:nth-child(-n+2) { border-top: 0; border-bottom: 0; }
+  .strip-f { font-size: 32px; }
 }

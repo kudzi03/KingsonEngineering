@@ -121,6 +121,16 @@ $$('[data-open]').forEach((b) =>
 
 mountEnquiry();
 
+/* ── the specification sheet on a phone ─────────────────────────────────────
+   The HTML ships every group open — a data sheet on a wide screen, and the
+   honest default with JavaScript off. On a narrow screen that is a very long
+   wall, so all but the first fold away; a linked group (#spec-…) stays open. */
+if (matchMedia('(max-width: 1023.98px)').matches) {
+  $$('.spec-list .spec-group').forEach((d, i) => {
+    if (i > 0 && location.hash !== '#' + d.id) d.open = false;
+  });
+}
+
 /* ── the small-screen menu ──────────────────────────────────────────────── */
 
 const menu = $('[data-menu]');

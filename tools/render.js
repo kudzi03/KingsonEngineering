@@ -70,8 +70,8 @@ const hero = `    <p class="hero-eyebrow">${esc(HERO.eyebrow)}</p>
     <p class="hero-lede">${esc(HERO.lede)}</p>
     <div class="hero-act">${quoteBtn()}${callBtn(NAV.call, true)}${waBtn(true)}</div>`;
 
-const strip = STRIP.map(([label, value]) =>
-  `    <li><span class="strip-k">${esc(label)}</span><span class="strip-v">${esc(value)}</span></li>`
+const strip = STRIP.map(([label, fig, value]) =>
+  `    <li><span class="strip-k">${esc(label)}</span><span class="strip-f">${esc(fig)}</span><span class="strip-v">${esc(value)}</span></li>`
 ).join('\n');
 
 /* ── the six services ────────────────────────────────────────────────────────
@@ -352,7 +352,7 @@ ${figures(WORKSHOP.figures, 'ch-figures ws-figures')}
    in the DOM for anything that reads the page without running scripts.
    The first group starts open so the section is never a row of shut doors.   */
 
-const specs = SPECS.groups.map((g, i) => `      <details class="spec-group" id="spec-${g.id}"${i === 0 ? ' open' : ''}>
+const specs = SPECS.groups.map((g, i) => `      <details class="spec-group" id="spec-${g.id}" open>
         <summary><span>${esc(g.title)}</span></summary>
         <dl class="spec-rows">
 ${g.rows.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('\n')}
