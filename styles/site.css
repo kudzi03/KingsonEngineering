@@ -1052,6 +1052,18 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 .ct-list a, .ft a { display: inline-flex; align-items: center; min-height: 24px; }
 .ct-list a { border-bottom: 1px solid rgba(250, 250, 250, .32); }
 .ct-list a:hover { border-bottom-color: var(--fg-on-dark); }
+.ct-map { margin: 40px 0 0; border-top: 1px solid var(--line-dark); padding-top: 24px; }
+.ct-map iframe {
+  display: block; width: 100%; height: clamp(280px, 38vw, 460px); border: 0;
+  filter: grayscale(1) contrast(1.05); background: #1a1a1a;
+}
+.ct-map figcaption {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 14px 0 0;
+  font: 600 var(--t-label)/1.2 Archivo, "Archivo Fallback", sans-serif; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--fg-on-dark-muted);
+}
+.ct-map figcaption a { display: inline-flex; align-items: center; min-height: 44px; color: var(--fg-on-dark); border-bottom: 1px solid rgba(250, 250, 250, .32); }
+.ct-map figcaption a:hover { border-bottom-color: var(--fg-on-dark); }
 
 .ft {
   background: var(--bg-dark); color: var(--fg-on-dark-muted);
