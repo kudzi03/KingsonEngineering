@@ -63,7 +63,7 @@ const file = root + 'index.html';
    ones, so the two cannot disagree. */
 const SHEETS = [
   ['services', '01', 'Capabilities'],
-  ['cut',      '02', 'Fiber laser'],
+  ['cut',      '02', 'Fibre laser'],
   ['workshop', '03', 'Workshop'],
   ['crane',    '04', 'Cranage'],
   ['specs',    '05', 'Specifications'],
@@ -332,7 +332,7 @@ ${chapterData(c, { hero: !c.media.scene })}
       </div>
     </div>
     <ul class="ch-strip" tabindex="0"
-        aria-label="Photographs of the fiber laser. On a narrow screen this row scrolls sideways.">
+        aria-label="Photographs of the fibre laser. On a narrow screen this row scrolls sideways.">
 ${plates}
     </ul>
   </section>`;
@@ -596,7 +596,7 @@ const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph },
    cannot reach five pages and miss the sixth. */
 
 const HOME_TITLE = 'Steel Fabrication, Roofing & Cranage in Harare | Kingson';
-const HOME_DESC = 'Steelwork specialists in Tynwald, Harare. Structural steel, roof trusses and sheeting, fiber laser cutting to \u00b1 0.1 mm, and a 25-tonne mobile crane.';
+const HOME_DESC = 'Steelwork specialists in Tynwald, Harare. Structural steel, roof trusses and sheeting, fibre laser cutting to \u00b1 0.1 mm, and a 25-tonne mobile crane.';
 
 const homeHead = headHtml({
   home: true,

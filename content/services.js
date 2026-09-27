@@ -66,7 +66,7 @@ export const SERVICES = [
     },
     faq: ['How long does a steel structure take?', 'How long does a quotation take?',
           'Do you deliver outside Harare?', 'How big a lift can you do?'],
-    related: ['roofing-and-trusses', 'mobile-cranage-harare', 'fiber-laser-cutting-harare'],
+    related: ['roofing-and-trusses', 'mobile-cranage-harare', 'fibre-laser-cutting-harare'],
     aside: 'roofFrame'
   },
 
@@ -98,18 +98,18 @@ export const SERVICES = [
   },
 
   {
-    slug: 'fiber-laser-cutting-harare',
-    nav: 'Fiber laser cutting',
-    serviceName: 'Fiber laser cutting',
-    title: 'Fiber Laser Cutting in Harare — DXTECH | Kingson',
-    description: 'Plate and sheet cut up to 20 mm thick on a DXTECH fiber laser in Harare. 3 000 × 1 500 mm bed, ± 0.1 mm. Send DXF, DWG, STEP or PDF.',
-    h1: 'Fiber laser cutting in Harare',
+    slug: 'fibre-laser-cutting-harare',
+    nav: 'Fibre laser cutting',
+    serviceName: 'Fibre laser cutting',
+    title: 'Fibre Laser Cutting in Harare — DXTECH | Kingson',
+    description: 'Plate and sheet cut up to 20 mm thick on a DXTECH fibre laser in Harare. 3 000 × 1 500 mm bed, ± 0.1 mm. Send DXF, DWG, STEP or PDF.',
+    h1: 'Fibre laser cutting in Harare',
     eyebrow: 'Laser cutting',
     /* The machine cutting, not the machine parked. This is the page somebody
        lands on having searched for laser cutting in Harare, and until now the
        first thing it showed them was a switched-off bed. */
     hero: 'laserCutting',
-    intro: 'Plate and sheet up to 20 mm thick, cut on a DXTECH fiber laser at our Tynwald workshop and nested from the drawing you send. Mild steel, stainless, aluminium and galvanised sheet, cut to ± 0.1 mm on a 3 000 × 1 500 mm bed.',
+    intro: 'Plate and sheet up to 20 mm thick, cut on a DXTECH fibre laser at our Tynwald workshop and nested from the drawing you send. Mild steel, stainless, aluminium and galvanised sheet, cut to ± 0.1 mm on a 3 000 × 1 500 mm bed.',
     figures: [['Cutting thickness', 'up to 20 mm'],
               ['Bed size', '3 000 × 1 500 mm'],
               ['Cutting tolerance', '± 0.1 mm, repeating to ± 0.03 mm']],
@@ -157,13 +157,13 @@ export const SERVICES = [
       { id: 'balustrades', title: 'Balustrades, handrails and roller shutter doors',
         body: 'Fabricated to your opening and finish. Send the opening dimensions and a photograph of the site, or a sketch, and we will price it.' },
       { id: 'general', title: 'General metal fabrication',
-        body: 'Sheet, plate and section work in mild steel, galvanised, stainless and aluminium, cut, folded and fabricated to drawing. Plate is cut on the fiber laser up to 20 mm thick — stainless to 10 mm on nitrogen — and folded to 3 000 mm.' },
+        body: 'Sheet, plate and section work in mild steel, galvanised, stainless and aluminium, cut, folded and fabricated to drawing. Plate is cut on the fibre laser up to 20 mm thick — stainless to 10 mm on nitrogen — and folded to 3 000 mm.' },
       { id: 'flashings', title: 'Flashings and custom folding',
         body: 'Ridge, barge and valley are standard items. Custom folds run to 3 000 mm across the full material range, and a stock gauge is three to five days.' }
     ],
     faq: ['Can you make flashings to match?', 'Can you cut stainless steel?',
           'What thickness can you laser cut?', 'Can I get a price without drawings?'],
-    related: ['fiber-laser-cutting-harare', 'roofing-and-trusses', 'structural-steel-harare']
+    related: ['fibre-laser-cutting-harare', 'roofing-and-trusses', 'structural-steel-harare']
   },
 
   {

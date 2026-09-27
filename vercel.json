@@ -121,6 +121,11 @@
       ],
       "destination": "/crm",
       "permanent": false
+    },
+    {
+      "source": "/fiber-laser-cutting-harare",
+      "destination": "/fibre-laser-cutting-harare",
+      "permanent": true
     }
   ]
 }

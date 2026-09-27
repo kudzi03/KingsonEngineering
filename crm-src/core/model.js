@@ -38,7 +38,7 @@ export const PRIORITIES = ['low', 'normal', 'high', 'urgent'];
    the site file under the same names. Older records may still say "Balustrades
    and gates" or "Stainless fabrication"; the edit dialog keeps those as they
    are rather than blanking them. */
-export const SERVICES = ['Structural steelwork', 'Roof steelwork and trusses', 'Fiber laser cutting',
+export const SERVICES = ['Structural steelwork', 'Roof steelwork and trusses', 'Fibre laser cutting',
   'Balustrades and roller shutter doors', 'General metal fabrication', 'Mobile cranage', 'Other'];
 export const SOURCES = ['phone', 'whatsapp', 'email', 'walk_in', 'referral',
   'existing_customer', 'social_media', 'website', 'other'];

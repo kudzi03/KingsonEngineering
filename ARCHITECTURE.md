@@ -72,7 +72,7 @@ layer.
 | `/` | who Kingson is and everything they do |
 | `/structural-steel-harare` | portal frames, columns, rafters, erection |
 | `/roofing-and-trusses` | trusses, purlins, sheeting, flashings |
-| `/fiber-laser-cutting-harare` | the DXTECH laser, bed size, tolerance, what to send |
+| `/fibre-laser-cutting-harare` | the DXTECH laser, bed size, tolerance, what to send |
 | `/steel-fabrication` | balustrades, gates, stainless, folding |
 | `/mobile-cranage-harare` | the 25-tonne telescopic mobile crane |
 
