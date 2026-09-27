@@ -2208,6 +2208,14 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 }
 .cin .hero-title .ln { white-space: nowrap; }
 .cin .hero-title .ln + .ln { text-align: left; }
+/* "Structural steelwork. Fabricated here." is four words where the first
+   title was two, so it is set smaller: one sentence to a line from a tablet
+   up, and one word to a line on a phone, sized so "STRUCTURAL" fills it. */
+.cin .hero-title:not(.sp-title) { font-size: clamp(38px, 5.3vw, 78px); line-height: .88; }
+@media (max-width: 760px) {
+  .cin .hero-title:not(.sp-title) { font-size: 10.2vw; }
+  .cin .hero-title:not(.sp-title) .ln { white-space: normal; }
+}
 .cin .hero-lede { color: #D0D7DB; }
 .cin .hero-act .btn-ghost { color: #F3F5F6; border-color: rgba(243,245,246,.6); background: rgba(7,9,10,.25); }
 .cin .hero-act .btn-ghost:hover { background: #F3F5F6; color: #07090A; }
