@@ -62,7 +62,7 @@ export const ENQUIRY = {
   },
   serviceOptions: [
     'Structural steelwork', 'Roof steelwork and trusses', 'Fiber laser cutting',
-    'Balustrades and gates', 'Stainless fabrication', 'Mobile cranage',
+    'Balustrades and roller shutter doors', 'General metal fabrication', 'Mobile cranage',
     'More than one of these', 'Not sure yet'
   ],
   drawingOptions: [

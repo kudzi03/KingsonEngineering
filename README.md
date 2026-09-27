@@ -65,7 +65,8 @@ confirmed capability for that one service, says plainly what to send, shows the
 specification transcript for the groups that apply, and carries its own enquiry
 form with that service already selected.
 
-There are five, not seven. Balustrades and stainless have four confirmed
+There are five, not seven. Balustrades and roller shutter doors, and general
+metal fabrication, have four confirmed
 figures between them and no photograph; separate pages would have been thin
 duplicates, so both live inside `/steel-fabrication` under their own headings.
 The reasoning is in the header comment of `content/services.js`.

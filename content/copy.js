@@ -109,48 +109,48 @@ export const NOT_FOUND = {
 export const CAPABILITIES = [
   {
     id: 'structural', photo: 'portalFrame', route: 'structural-steel-harare',
-    lead: ['6–10 weeks', 'portal frame programme'],
+    lead: ['Made here', 'fabricated at our Tynwald workshop'],
     title: 'Structural steelwork',
-    body: 'Portal frames, columns, rafters and purlins — fabricated in the workshop and erected on site with our own crane.',
+    body: 'Portal frames, columns, rafters and purlins — fabricated here in our own workshop and erected on site with our own crane.',
     ask: 'Send drawings, or the span, height and bay spacing.',
     facts: [['Programme', 'six to ten weeks'],
             ['Erection', 'Harare and nationally']]
   },
   {
     id: 'roofing', photo: 'roofTrusses', route: 'roofing-and-trusses',
-    lead: ['12 m', 'maximum sheet length'],
+    lead: ['Any span', 'and any height'],
     title: 'Roof steelwork and trusses',
-    body: 'Trusses, purlins and sheeting for long-span roofs, new build or re-roof. IBR and corrugated profiles, galvanised or pre-painted.',
+    body: 'Trusses, purlins and sheeting for a roof of any span and height, new build or re-roof. IBR and corrugated profiles, cut to 12 m, galvanised or pre-painted.',
     ask: 'Send the floor area, the pitch you want, and whether the walls are up.',
-    facts: [['IBR cover', '686 mm, five ribs'],
-            ['Corrugated cover', '762 mm, 10.5 corrugations']]
+    facts: [['Span and height', 'any'],
+            ['Maximum sheet length', '12 m']]
   },
   {
     id: 'cutting', photo: 'laserFloor', route: 'fiber-laser-cutting-harare',
-    lead: ['±0.1 mm', 'cutting tolerance'],
+    lead: ['20 mm', 'maximum cutting thickness'],
     title: 'Fiber laser cutting',
-    body: 'Plate and sheet cut on a DXTECH fiber laser, straight from your file. Mild steel, stainless, aluminium and galvanised sheet.',
+    body: 'Plate and sheet up to 20 mm thick, cut on a DXTECH fiber laser straight from your file. Mild steel, stainless, aluminium and galvanised sheet.',
     ask: 'Send a DXF, DWG, STEP or PDF with the material and thickness.',
     facts: [['Bed size', '3 000 × 1 500 mm'],
-            ['Mild steel', 'to 20 mm']]
+            ['Tolerance', '± 0.1 mm']]
   },
   {
     id: 'balustrades', photo: null, route: 'steel-fabrication',
     lead: ['3 000 mm', 'maximum fold length'],
     plate: ['3 000 mm', 'maximum fold length'],
-    title: 'Balustrades and gates',
-    body: 'Balustrading, handrails and gates, fabricated to your opening and finish.',
+    title: 'Balustrades and roller shutter doors',
+    body: 'Balustrading, handrails and roller shutter doors, fabricated to your opening and finish.',
     ask: 'Send the opening dimensions and a photograph of the site, or a sketch.',
     facts: [['Material', '0.4 – 3.0 mm sheet'],
             ['Also in', 'galvanised, stainless, aluminium']]
   },
   {
-    id: 'stainless', photo: null, route: 'steel-fabrication',
-    lead: ['10 mm', 'stainless, cut on nitrogen'],
-    plate: ['10 mm', 'stainless, cut on nitrogen'],
-    title: 'Stainless fabrication',
-    body: 'Stainless sheet and section work — cut, folded and fabricated to drawing.',
-    ask: 'Send a drawing with the grade and thickness you need.',
+    id: 'general', photo: null, route: 'steel-fabrication',
+    lead: ['4 metals', 'mild, galvanised, stainless, aluminium'],
+    plate: ['4 metals', 'steel to aluminium'],
+    title: 'General metal fabrication',
+    body: 'Sheet, plate and section work in mild steel, galvanised, stainless and aluminium — cut, folded and fabricated to drawing.',
+    ask: 'Send a drawing with the material and thickness you need.',
     facts: [['Laser bed', '3 000 × 1 500 mm'],
             ['Folding', 'to 3 000 mm']]
   },
@@ -334,7 +334,7 @@ export const FAQ = {
     { q: 'Do you hire out the crane on its own?',
       a: 'Yes. The 25-tonne telescopic mobile crane works Kingson\u2019s own erection contracts and is hired out for other jobs. Tell us the load, the site access and the date.' },
     { home: true, q: 'What can Kingson Engineering do?',
-      a: 'Six things: structural steelwork, roof steelwork and trusses, fiber laser cutting, balustrades and gates, stainless fabrication, and mobile cranage. All of it is fabricated at the Tynwald workshop and erected with Kingson\u2019s own crane.' }
+      a: 'Six things: structural steelwork, roof steelwork and trusses, fiber laser cutting, balustrades and roller shutter doors, general metal fabrication, and mobile cranage. All of it is fabricated at the Tynwald workshop and erected with Kingson\u2019s own crane.' }
   ]
 };
 
