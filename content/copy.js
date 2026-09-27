@@ -29,7 +29,8 @@ export const EYEBROWS = {
 };
 
 /* The h1 carries the authority and the lede carries the comprehension. Both
-   are needed: "Steelwork. Built here." says who this is in two words — and
+   are needed: "Structural steelwork. Fabricated here." (Kingson's wording,
+   27 Sept 2026) says who this is in four words — and
    "here" is a confirmed fact, the workshop at No. 1262 Tynwald Industries —
    while the line under it still names all four things a buyer might be
    searching for. The full service list also sits in the title tag, the meta
@@ -38,7 +39,7 @@ export const EYEBROWS = {
 
 export const HERO = {
   eyebrow: 'Steelwork specialists · Tynwald, Harare',
-  title: 'Steelwork. Built here.',
+  title: 'Structural steelwork. Fabricated here.',
   lede: 'Structural steel, roofing, fibre laser cutting and cranage — fabricated in our own workshop and erected with our own crane. Send drawings or a description; enquiries are acknowledged the same working day.',
   /* The four the lede names, set as the sheet's reference line. */
   disciplines: ['Structural steel', 'Roofing', 'Fibre laser', 'Cranage'],
