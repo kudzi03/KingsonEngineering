@@ -5,7 +5,7 @@
    that touches nearly every column on the table. */
 
 import { api } from '../core/api.js';
-import { PRIORITIES, SOURCES, SOURCE_LABEL } from '../core/model.js';
+import { PRIORITIES, SOURCES, SOURCE_LABEL, SERVICES } from '../core/model.js';
 import { esc } from '../core/fmt.js';
 import { dialog, field, text, textarea, select, nul, toast, fieldError, after } from './form.js';
 
@@ -21,8 +21,8 @@ export async function editOpportunity({ opp, me, onDone }) {
     body: `
       ${field('title', 'What is the job?', text('title', opp.title, 'required'), { wide: true })}
       <div class="field-row">
-        ${field('service', 'Service', select('service', ['', 'Structural steelwork', 'Roof steelwork and trusses',
-          'Fiber laser cutting', 'Balustrades and gates', 'Stainless fabrication', 'Mobile cranage', 'Other'], opp.service || ''))}
+        ${field('service', 'Service', select('service', ['', ...SERVICES,
+          ...(opp.service && !SERVICES.includes(opp.service) ? [opp.service] : [])], opp.service || ''))}
         ${field('source', 'Source', select('source', SOURCES.map((s) => [s, SOURCE_LABEL[s]]), opp.source))}
       </div>
       ${field('location', 'Site', text('location', opp.location || ''), { wide: true })}

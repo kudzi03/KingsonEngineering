@@ -13,7 +13,7 @@
 
 import { api } from '../core/api.js';
 import {
-  PRIORITIES, SOURCES, SOURCE_LABEL, DRAWINGS, CONTACT_METHODS, TASK_TYPES,
+  PRIORITIES, SOURCES, SOURCE_LABEL, SERVICES, DRAWINGS, CONTACT_METHODS, TASK_TYPES,
   LOGGABLE, ACTIVITY_LABEL, PROJECT_STATUSES, PROJECT_LABEL,
   today, nextWorkingDay, addDays, normPhone, normEmail
 } from '../core/model.js';
@@ -61,8 +61,7 @@ export async function newOpportunity({ me, contact = null, onDone }) {
       ${field('description', 'What do they need?', textarea('description', '', 2, 'placeholder="Structural steel for a warehouse in Msasa. Has drawings, wants a price."'), { wide: true })}
       <div class="field-row">
         ${field('source', 'How did it come in?', select('source', SOURCES.map((s) => [s, SOURCE_LABEL[s]]), 'phone'))}
-        ${field('service', 'Service', select('service', [['', 'Not sure yet'], 'Structural steelwork', 'Roof steelwork and trusses',
-          'Fiber laser cutting', 'Balustrades and gates', 'Stainless fabrication', 'Mobile cranage', 'Other']))}
+        ${field('service', 'Service', select('service', [['', 'Not sure yet'], ...SERVICES]))}
       </div>
       <details class="qe-more">
         <summary>More detail (optional)</summary>

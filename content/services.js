@@ -13,7 +13,8 @@
 
    WHY FIVE AND NOT SEVEN
 
-   Balustrades and gates, and stainless fabrication, are both confirmed
+   Balustrades and roller shutter doors, and general metal fabrication (which
+   Kingson's note of 27 Sept 2026 renamed from "stainless fabrication"), are both confirmed
    services — but the only figures Kingson has confirmed for either are the
    3 000 mm fold length, the 0.4–3.0 mm material range and the 10 mm stainless
    laser capacity, and there is no photograph of either. Three pages sharing
@@ -37,12 +38,13 @@ export const SERVICES = [
        schema on this page and the one on the homepage describe one thing. */
     serviceName: 'Structural steelwork',
     title: 'Structural Steel Fabrication & Erection, Harare | Kingson',
-    description: 'Portal frames, columns, rafters and purlins fabricated in our Harare workshop and erected with our own 25-tonne crane. Six to ten weeks from order.',
+    description: 'Portal frames, columns, rafters and purlins fabricated here in our Harare workshop and erected with our own 25-tonne crane. Six to ten weeks from order.',
     h1: 'Structural steel fabrication and erection in Harare',
     eyebrow: 'Structural steelwork',
     hero: 'portalFrame',
     intro: 'Kingson Engineering fabricates structural steelwork at No. 1262 Tynwald Industries in Harare and erects it on site with its own mobile crane. Portal frames, columns, rafters and purlins, set out from your drawings and put up by the same company that made them.',
-    figures: [['Portal frame programme', 'six to ten weeks from order'],
+    figures: [['Fabricated', 'here, at No. 1262 Tynwald Industries'],
+              ['Portal frame programme', 'six to ten weeks from order'],
               ['Erection', 'Harare and nationally'],
               ['Own crane', '25 tonnes, telescopic mobile']],
     sendTitle: 'What to send for a structural steel quotation',
@@ -64,7 +66,7 @@ export const SERVICES = [
     },
     faq: ['How long does a steel structure take?', 'How long does a quotation take?',
           'Do you deliver outside Harare?', 'How big a lift can you do?'],
-    related: ['roofing-and-trusses', 'mobile-cranage-harare', 'fiber-laser-cutting-harare'],
+    related: ['roofing-and-trusses', 'mobile-cranage-harare', 'fibre-laser-cutting-harare'],
     aside: 'roofFrame'
   },
 
@@ -73,12 +75,13 @@ export const SERVICES = [
     nav: 'Roofing and trusses',
     serviceName: 'Roof steelwork and trusses',
     title: 'Roof Trusses, IBR & Corrugated Sheeting, Harare | Kingson',
-    description: 'Roof trusses, purlins and sheeting. IBR at 686 mm cover, corrugated at 762 mm, cut to 12 m, galvanised or pre-painted. Flashings folded to match.',
+    description: 'Roof trusses, purlins and sheeting for any span and height. IBR and corrugated, cut to 12 m, galvanised or pre-painted. Flashings folded to match.',
     h1: 'Roof steelwork, trusses and sheeting',
     eyebrow: 'Roofing',
     hero: 'roofTrusses',
-    intro: 'Trusses, purlins and sheeting for long-span roofs — new build or re-roof. Both profiles are cut to length in the workshop before they leave it, and the flashings are folded to match the roof they go on.',
-    figures: [['IBR cover width', '686 mm over five ribs'],
+    intro: 'Trusses, purlins and sheeting for a roof of any span and any height — new build or re-roof. Both profiles are cut to length in the workshop before they leave it, and the flashings are folded to match the roof they go on.',
+    figures: [['Span and height', 'any'],
+              ['IBR cover width', '686 mm over five ribs'],
               ['Corrugated cover width', '762 mm over 10.5 corrugations'],
               ['Maximum sheet length', 'cut to 12 m']],
     sendTitle: 'What to send for a roofing quotation',
@@ -95,20 +98,20 @@ export const SERVICES = [
   },
 
   {
-    slug: 'fiber-laser-cutting-harare',
-    nav: 'Fiber laser cutting',
-    serviceName: 'Fiber laser cutting',
-    title: 'Fiber Laser Cutting in Harare — DXTECH | Kingson',
-    description: 'Plate and sheet cut on a DXTECH fiber laser in Harare. 3 000 × 1 500 mm bed, mild steel to 20 mm, ± 0.1 mm. Send DXF, DWG, STEP or PDF.',
-    h1: 'Fiber laser cutting in Harare',
+    slug: 'fibre-laser-cutting-harare',
+    nav: 'Fibre laser cutting',
+    serviceName: 'Fibre laser cutting',
+    title: 'Fibre Laser Cutting in Harare — DXTECH | Kingson',
+    description: 'Plate and sheet cut up to 20 mm thick on a DXTECH fibre laser in Harare. 3 000 × 1 500 mm bed, ± 0.1 mm. Send DXF, DWG, STEP or PDF.',
+    h1: 'Fibre laser cutting in Harare',
     eyebrow: 'Laser cutting',
     /* The machine cutting, not the machine parked. This is the page somebody
        lands on having searched for laser cutting in Harare, and until now the
        first thing it showed them was a switched-off bed. */
     hero: 'laserCutting',
-    intro: 'Plate and sheet cut on a DXTECH fiber laser at our Tynwald workshop, nested from the drawing you send. Mild steel, stainless, aluminium and galvanised sheet, cut to ± 0.1 mm on a 3 000 × 1 500 mm bed.',
-    figures: [['Bed size', '3 000 × 1 500 mm'],
-              ['Mild steel', 'to 20 mm on oxygen'],
+    intro: 'Plate and sheet up to 20 mm thick, cut on a DXTECH fibre laser at our Tynwald workshop and nested from the drawing you send. Mild steel, stainless, aluminium and galvanised sheet, cut to ± 0.1 mm on a 3 000 × 1 500 mm bed.',
+    figures: [['Cutting thickness', 'up to 20 mm'],
+              ['Bed size', '3 000 × 1 500 mm'],
               ['Cutting tolerance', '± 0.1 mm, repeating to ± 0.03 mm']],
     sendTitle: 'What to send for a laser cutting quotation',
     send: ['A DXF, DWG, STEP or PDF of the part. A flat DXF cuts fastest.',
@@ -129,38 +132,38 @@ export const SERVICES = [
   {
     slug: 'steel-fabrication',
     nav: 'Fabrication',
-    serviceName: 'Balustrades and gates',
+    serviceName: 'Balustrades and roller shutter doors',
     /* This page covers two confirmed services. The Service schema names both
        rather than pretending it is one. */
-    alsoServes: ['Stainless fabrication'],
-    title: 'Steel Fabrication, Balustrades & Gates, Harare | Kingson',
-    description: 'Balustrading, handrails, gates, stainless work and custom flashings, folded in Harare to 3 000 mm in 0.4 – 3.0 mm steel or aluminium.',
-    h1: 'Steel fabrication, balustrades, gates and stainless',
+    alsoServes: ['General metal fabrication'],
+    title: 'Metal Fabrication, Balustrades & Roller Doors | Kingson',
+    description: 'Balustrades, handrails, roller shutter doors and general metal fabrication in Harare, folded to 3 000 mm in 0.4 – 3.0 mm steel or aluminium.',
+    h1: 'Balustrades, roller shutter doors and general metal fabrication',
     eyebrow: 'Fabrication',
     hero: 'weldingBay',
-    intro: 'Balustrading, handrails, gates and stainless work, fabricated to your opening and finish. Sheet is folded in-house to 3 000 mm, and flashings are made to match the roof they go on rather than ordered in a standard length.',
+    intro: 'Balustrading, handrails, roller shutter doors and general metal fabrication in mild steel, galvanised, stainless and aluminium, made to your opening and finish. Sheet is folded in-house to 3 000 mm, and flashings are made to match the roof they go on rather than ordered in a standard length.',
     figures: [['Maximum fold length', '3 000 mm'],
               ['Material range', '0.4 – 3.0 mm'],
               ['In', 'mild steel · galvanised · stainless · aluminium']],
     sendTitle: 'What to send for a fabrication quotation',
     send: ['The opening dimensions, and a photograph of the site or a sketch.',
-           'The grade and thickness for stainless work, and the finish you want.',
+           'The material, grade and thickness, and the finish you want.',
            'A drawing if one exists — DXF, DWG, STEP or PDF all cut straight from file.'],
     specGroups: ['flashings'],
     folds: true,
     /* Two confirmed services get their own heading and anchor here rather
        than a thin page each. See the note at the top of this file. */
     parts: [
-      { id: 'balustrades', title: 'Balustrades, handrails and gates',
+      { id: 'balustrades', title: 'Balustrades, handrails and roller shutter doors',
         body: 'Fabricated to your opening and finish. Send the opening dimensions and a photograph of the site, or a sketch, and we will price it.' },
-      { id: 'stainless', title: 'Stainless fabrication',
-        body: 'Stainless sheet and section work, cut, folded and fabricated to drawing. Stainless is cut on the fiber laser to 10 mm on nitrogen and folded to the same 3 000 mm as everything else.' },
+      { id: 'general', title: 'General metal fabrication',
+        body: 'Sheet, plate and section work in mild steel, galvanised, stainless and aluminium, cut, folded and fabricated to drawing. Plate is cut on the fibre laser up to 20 mm thick — stainless to 10 mm on nitrogen — and folded to 3 000 mm.' },
       { id: 'flashings', title: 'Flashings and custom folding',
         body: 'Ridge, barge and valley are standard items. Custom folds run to 3 000 mm across the full material range, and a stock gauge is three to five days.' }
     ],
     faq: ['Can you make flashings to match?', 'Can you cut stainless steel?',
           'What thickness can you laser cut?', 'Can I get a price without drawings?'],
-    related: ['fiber-laser-cutting-harare', 'roofing-and-trusses', 'structural-steel-harare']
+    related: ['fibre-laser-cutting-harare', 'roofing-and-trusses', 'structural-steel-harare']
   },
 
   {

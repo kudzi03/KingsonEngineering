@@ -7,6 +7,10 @@ document wins.**
 
 Secondary source: the Kingson logo artwork supplied 12 September 2026.
 
+Later correction: Kingson's service note of 27 September 2026 (see §B). It
+renames two services and sets the headline for four; it overrides the returned
+document on those points only.
+
 Everything on the public site must trace to a row in this file. Nothing else
 gets published.
 
@@ -54,13 +58,22 @@ closed.
 
 1. Structural steelwork
 2. Roof steelwork and trusses
-3. Fiber laser cutting
-4. Balustrades and gates
-5. Stainless fabrication
+3. Fibre laser cutting
+4. Balustrades and roller shutter doors
+5. General metal fabrication
 6. Mobile cranage
 
-**The live site currently shows only four.** Balustrades and gates, and
-stainless fabrication, are missing and must be added.
+**Service note, 27 September 2026.** Kingson sent these corrections, and the
+site now uses them:
+
+| Service | Note says | On the site |
+|---|---|---|
+| Structural steelwork | Fabricated here | Headline "Made here — fabricated at our Tynwald workshop" |
+| Balustrades and gates | Balustrades and roller shutter doors | Service renamed; gates removed |
+| Stainless fabrication | = general metal fabrication | Renamed "General metal fabrication" — mild steel, galvanised, stainless, aluminium |
+| Fibre laser cutting | cutting up to 20 mm thickness | Headline "20 mm maximum cutting thickness" (the §5 rows are unchanged: mild steel 20 mm, stainless 10 mm) |
+| Spelling | (instruction, 27 Sept 2026) | British spelling "fibre" throughout; the page moved to `/fibre-laser-cutting-harare` and the old `/fiber-…` address redirects to it permanently |
+| Roof steelwork | any span and height (maximum sheet length) | Headline "Any span and any height" replaces "12 m maximum sheet length"; the 12 m sheet figure stays in the specification |
 
 ---
 
@@ -97,7 +110,7 @@ Every row below was ticked. These are publishable as fact.
 | Standard items | ridge, barge, valley |
 | Lead time | 3 – 5 days on a stock gauge |
 
-### Fiber laser
+### Fibre laser
 | Specification | Confirmed value |
 |---|---|
 | Machine | DXTECH |
@@ -180,10 +193,10 @@ project, not a customer-facing contact. **Do not put these on the website.**
 | `portal-frame` | portal frame under erection, outdoors | hero, structural steelwork |
 | `roof-trusses` | long-span red-oxide trusses and purlins | roof steelwork |
 | `roof-frame` | white-painted roof structure from inside | roof steelwork |
-| `cutting-head` | cutting head over plate on the slat bed | fiber laser, macro |
-| `laser-machine` | the DXTECH laser in the brick workshop | fiber laser |
+| `cutting-head` | cutting head over plate on the slat bed | fibre laser, macro |
+| `laser-machine` | the DXTECH laser in the brick workshop | fibre laser |
 | `laser-floor` | the laser from the opposite side | workshop |
-| `nesting-station` | the control station and nesting screen | fiber laser, process |
+| `nesting-station` | the control station and nesting screen | fibre laser, process |
 | `gantry` | the laser gantry, wide | workshop |
 | `crane` (from `craneyard`) | the Kingson telescopic mobile crane, in livery | cranage |
 
@@ -201,8 +214,8 @@ published. They may only ever be used as clearly-labelled material reference.
 
 **Two of the six confirmed services have no photograph at all:**
 
-- Balustrades and gates — none supplied
-- Stainless fabrication — none supplied
+- Balustrades and roller shutter doors — none supplied
+- General metal fabrication — none supplied
 
 They are still listed, because Kingson confirmed them. They are presented with
 type and specification rather than a borrowed or stock image. **Request

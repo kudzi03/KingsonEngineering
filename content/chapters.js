@@ -56,10 +56,10 @@
 
 export const CHAPTERS = [
   {
-    id: 'cut', route: 'fiber-laser-cutting-harare', name: 'Fiber laser', ground: 'dark',
-    covers: ['Fiber laser cutting'],
+    id: 'cut', route: 'fibre-laser-cutting-harare', name: 'Fibre laser', ground: 'dark',
+    covers: ['Fibre laser cutting'],
     title: 'Straight from your file.',
-    body: 'Plate and sheet cut on a DXTECH fiber laser — nested from the drawing you send and cut on a 3 000 × 1 500 mm bed. Mild steel, stainless, aluminium and galvanised sheet.',
+    body: 'Plate and sheet cut on a DXTECH fibre laser — nested from the drawing you send and cut on a 3 000 × 1 500 mm bed. Mild steel, stainless, aluminium and galvanised sheet.',
     ask: 'Send a DXF, DWG, STEP or PDF with the material and thickness.',
     hero: { value: '±0.1 MM', label: 'cutting tolerance, repeating to ± 0.03 mm' },
     figures: [['Mild steel', '20 mm on oxygen'],

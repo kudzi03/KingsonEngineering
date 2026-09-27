@@ -197,7 +197,7 @@ export function bed() {
   ).join('\n');
 
   return `<svg class="bed" viewBox="0 0 ${W} ${H}" role="img"
-     aria-label="The fiber laser bed drawn to scale at 3 000 by 1 500 millimetres, with indicative fabrication parts nested inside it."
+     aria-label="The fibre laser bed drawn to scale at 3 000 by 1 500 millimetres, with indicative fabrication parts nested inside it."
      preserveAspectRatio="xMidYMid meet">
       <path class="bed-plate" d="${rect(x0, y0, BED_W, BED_H)}"/>
       <g transform="translate(${x0} ${y0})">

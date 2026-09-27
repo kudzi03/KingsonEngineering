@@ -47,20 +47,20 @@ export const ASSETS = {
     /* A wide crop centred lower than this loses the head itself and shows
        only bare plate and slats. Measured against the 16:9 service card. */
     focal: [0.60, 0.45],
-    alt: 'The cutting head of a fiber laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it.',
+    alt: 'The cutting head of a fibre laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it.',
     status: 'observed_photo'
   },
   laserMachine: {
     slug: 'laser-machine', w: 1536, h: 2048, widths: [440, 720, 900, 1100, 1536],
     focal: [0.50, 0.53],
-    alt: 'A fiber laser cutting machine in a workshop, with a brick pier, yellow sheeting and a control screen beside the bed.',
+    alt: 'A fibre laser cutting machine in a workshop, with a brick pier, yellow sheeting and a control screen beside the bed.',
     status: 'observed_photo'
   },
   laserFloor: {
     slug: 'laser-floor', w: 1350, h: 1800, widths: [440, 720, 900, 1100, 1350],
     wide: { w: 1349, h: 759, widths: [900, 1320] },
     focal: [0.45, 0.52],
-    alt: 'The whole fiber laser on the workshop floor, badged DXTECH LASER: enclosed bed with cutting slats, cable chain along the side, swing-arm control screen and an extraction duct, with a brick pier and timber pallets beside it.',
+    alt: 'The whole fibre laser on the workshop floor, badged DXTECH LASER: enclosed bed with cutting slats, cable chain along the side, swing-arm control screen and an extraction duct, with a brick pier and timber pallets beside it.',
     status: 'observed_photo'
   },
   nestingStation: {
@@ -83,7 +83,7 @@ export const ASSETS = {
        the window behind the gantry; anchoring on those would centre the crop on
        an empty wall and cut the one thing the photograph is here for. */
     focal: [0.46, 0.44],
-    alt: 'A DXTECH fiber laser cutting steel sheet, sparks thrown from the nozzle across the plate, with the slatted bed below and gas cylinders against the workshop wall behind.',
+    alt: 'A DXTECH fibre laser cutting steel sheet, sparks thrown from the nozzle across the plate, with the slatted bed below and gas cylinders against the workshop wall behind.',
     status: 'observed_photo'
   },
   laserSparks: {
@@ -93,7 +93,7 @@ export const ASSETS = {
        matter, not the head. */
     wide: { w: 1440, h: 810, widths: [900, 1320] },
     focal: [0.38, 0.43],
-    alt: 'The cutting head of the DXTECH fiber laser close up, sparks off the nozzle and the cut line running out across the sheet.',
+    alt: 'The cutting head of the DXTECH fibre laser close up, sparks off the nozzle and the cut line running out across the sheet.',
     status: 'observed_photo'
   },
   weldingBay: {

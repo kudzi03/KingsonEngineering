@@ -55,7 +55,7 @@ root is served without its extension. That is the entire routing layer.
 | `index.html` | `/` |
 | `structural-steel-harare.html` | `/structural-steel-harare` |
 | `roofing-and-trusses.html` | `/roofing-and-trusses` |
-| `fiber-laser-cutting-harare.html` | `/fiber-laser-cutting-harare` |
+| `fibre-laser-cutting-harare.html` | `/fibre-laser-cutting-harare` |
 | `steel-fabrication.html` | `/steel-fabrication` |
 | `mobile-cranage-harare.html` | `/mobile-cranage-harare` |
 
@@ -65,7 +65,8 @@ confirmed capability for that one service, says plainly what to send, shows the
 specification transcript for the groups that apply, and carries its own enquiry
 form with that service already selected.
 
-There are five, not seven. Balustrades and stainless have four confirmed
+There are five, not seven. Balustrades and roller shutter doors, and general
+metal fabrication, have four confirmed
 figures between them and no photograph; separate pages would have been thin
 duplicates, so both live inside `/steel-fabrication` under their own headings.
 The reasoning is in the header comment of `content/services.js`.
@@ -115,7 +116,7 @@ than cropped by CSS**: `tools/build-images.py` writes a second derivative,
 already showing, and the frame becomes a `<picture>` — wide cut above 900px,
 uncut original below it. Same frame, same moment, composed for the shape it is
 shown in. It is also the single largest performance win in the build: the laser
-hero fell from 405 KB to 144 KB, `/fiber-laser-cutting-harare` from 1 103 KB to
+hero fell from 405 KB to 144 KB, `/fibre-laser-cutting-harare` from 1 103 KB to
 843 KB and the home page from 1 475 KB to 1 313 KB on a laptop.
 
 The crop anchor is **derived** from the `focal` coordinate already in

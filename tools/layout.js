@@ -70,7 +70,7 @@ export const wa = () => (publish('whatsapp') ? `https://wa.me/${publish('whatsap
    the frame is genuinely portrait and the uncut file is the right one — the
    wide cut squeezed into a 390 x 700 frame would show a third of its width.
 
-   Measured on /fiber-laser-cutting-harare at 1440: the hero went from 405 KB
+   Measured on /fibre-laser-cutting-harare at 1440: the hero went from 405 KB
    to 144 KB, and the whole route from 1103 KB to 842 KB.                    */
 
 export function bleedPhoto(key, { eager = false, abs = false, cls = '',
