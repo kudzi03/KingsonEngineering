@@ -11,10 +11,11 @@
   it is not taken from `git log`.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://kingson-engineering.vercel.app/</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
 
@@ -43,6 +44,10 @@
       <image:title>Grating welded up on the workshop floor</image:title>
     </image:image>
     <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/steel-roof-structure-540.webp</image:loc>
+      <image:title>Completed steel roof, from the floor</image:title>
+    </image:image>
+    <image:image>
       <image:loc>https://kingson-engineering.vercel.app/assets/img/laser-cutting-1440.webp</image:loc>
       <image:title>Cutting sheet on the DXTECH laser</image:title>
     </image:image>
@@ -61,7 +66,7 @@
   </url>
   <url>
     <loc>https://kingson-engineering.vercel.app/structural-steel-harare</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 
@@ -76,7 +81,7 @@
   </url>
   <url>
     <loc>https://kingson-engineering.vercel.app/roofing-and-trusses</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 
@@ -91,7 +96,7 @@
   </url>
   <url>
     <loc>https://kingson-engineering.vercel.app/fibre-laser-cutting-harare</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 
@@ -126,7 +131,7 @@
   </url>
   <url>
     <loc>https://kingson-engineering.vercel.app/steel-fabrication</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 
@@ -137,7 +142,7 @@
   </url>
   <url>
     <loc>https://kingson-engineering.vercel.app/mobile-cranage-harare</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 
@@ -145,5 +150,43 @@
       <image:loc>https://kingson-engineering.vercel.app/assets/img/crane-1320.webp</image:loc>
       <image:title>Our telescopic mobile crane</image:title>
     </image:image>
+  </url>
+  <url>
+    <loc>https://kingson-engineering.vercel.app/projects</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kingson-engineering.vercel.app/projects/steel-roof-structure</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/steel-roof-structure-540.webp</image:loc>
+      <image:title>Completed steel roof, from the floor</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/steel-roof-structure-trusses-540.webp</image:loc>
+      <image:title>Lattice trusses overhead</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/steel-roof-structure-columns-540.webp</image:loc>
+      <image:title>Trusses on the columns, open side</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://kingson-engineering.vercel.app/assets/img/steel-roof-structure-edge-540.webp</image:loc>
+      <image:title>The roof edge against the sky</image:title>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://kingson-engineering.vercel.app/assets/img/steel-roof-structure-540.webp</video:thumbnail_loc>
+      <video:title>Steel roof structure — site footage</video:title>
+      <video:description>The footage has no sound. It opens on the concrete floor under the roof, with the open side of the building and brick structures beyond, then tilts up to the lattice trusses and purlins and follows them to the edge of the roof against the sky.</video:description>
+      <video:content_loc>https://kingson-engineering.vercel.app/assets/video/steel-roof-structure.mp4</video:content_loc>
+      <video:duration>14</video:duration>
+      <video:publication_date>2026-10-02</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
   </url>
 </urlset>

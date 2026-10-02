@@ -22,7 +22,8 @@
    then asserts that over the rendered output.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   UPDATED, EYEBROWS, HERO, STRIP, CAPABILITIES, SPECS, PROCESS,
@@ -32,15 +33,15 @@ import { ASSETS, PAGE_IMAGES, BAND_IMAGE, src, srcset, position } from '../conte
 import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
 import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
-import { SERVICES } from '../content/services.js';
+import { SERVICES, BY_SLUG } from '../content/services.js';
 import { portfolioRoutes, PORTFOLIO } from './portfolio.js';
 import { hasProjects, publishable as publishableProjects, problems as projectProblems } from '../content/projects.js';
-import { pageGraph, serviceId } from './schema.js';
+import { pageGraph } from './schema.js';
 import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryForm, enquiryAside, cinemaHero, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
-  ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote
+  enquiryForm, enquiryAside, cinemaHero, callBtn, waBtn, quoteBtn, bleedPhoto, serviceChooser,
+  ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote, projectFilm
 } from './layout.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -61,17 +62,22 @@ const file = root + 'index.html';
 /* Every section is a numbered sheet. The numbers are the order of the page,
    and the sheet index down the left edge (see `sheets` below) uses the same
    ones, so the two cannot disagree. */
+/* The completed-work sheet exists only while there is a job to show, so the
+   numbers are derived from the order rather than written in: take the sheet
+   out and every later sheet closes up, with the index down the left edge
+   agreeing. */
 const SHEETS = [
-  ['services', '01', 'Capabilities'],
-  ['cut',      '02', 'Fibre laser'],
-  ['workshop', '03', 'Workshop'],
-  ['crane',    '04', 'Cranage'],
-  ['specs',    '05', 'Specifications'],
-  ['how',      '06', 'Programme'],
-  ['enquiry',  '07', 'Get a price'],
-  ['faq',      '08', 'Questions'],
-  ['contact',  '09', 'Contact']
-];
+  ['services', 'Capabilities'],
+  ...(hasProjects() ? [['work', 'Completed work']] : []),
+  ['cut',      'Fibre laser'],
+  ['workshop', 'Workshop'],
+  ['crane',    'Cranage'],
+  ['specs',    'Specifications'],
+  ['how',      'Programme'],
+  ['enquiry',  'Get a price'],
+  ['faq',      'Questions'],
+  ['contact',  'Contact']
+].map(([id, name], i) => [id, String(i + 1).padStart(2, '0'), name]);
 const SHEET_OF = { services: 'services', specs: 'specs', process: 'how',
   enquiry: 'enquiry', faq: 'faq', contact: 'contact' };
 const sheetNo = (id) => SHEETS.find(([s]) => s === id)[1];
@@ -114,39 +120,6 @@ const hero = cinemaHero({
 const strip = STRIP.map(([label, fig, value]) =>
   `    <li><span class="strip-k">${esc(label)}</span><span class="strip-f">${esc(fig)}</span><span class="strip-v">${esc(value)}</span></li>`
 ).join('\n');
-
-/* ── the six services ────────────────────────────────────────────────────────
-   Two of the six have no photograph, because Kingson supplied none of that
-   work. They get a different card rather than a borrowed picture: the facts
-   move up into the space the image would have taken.                        */
-
-const facts = (rows) => rows.map(([k, v]) =>
-  `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('\n');
-
-const services = CAPABILITIES.map((c) => {
-  const a = c.photo ? ASSETS[c.photo] : null;
-  const media = a
-    ? `      <div class="svc-media">
-        <img src="${src(c.photo, 720)}" srcset="${srcset(c.photo)}"
-             sizes="(max-width:760px) 100vw, (max-width:1100px) 50vw, 33vw"
-             width="${a.w}" height="${a.h}" loading="lazy" decoding="async"
-             style="object-position:${position(c.photo)}" alt="${esc(a.alt)}">
-      </div>\n`
-    : `      <div class="svc-media svc-plate">
-        <b>${esc(c.plate[0])}</b>
-        <span>${esc(c.plate[1])}</span>
-      </div>\n`;
-  return `    <li class="svc-item${a ? '' : ' svc-plain'}" id="${c.id}">
-${media}      <div class="svc-body">
-        <h3>${esc(c.title)}</h3>
-        <p class="svc-lede">${esc(c.body)}</p>
-        <dl class="svc-facts">
-${facts(c.facts)}
-        </dl>
-        <p class="svc-ask">${esc(c.ask)}</p>
-      </div>
-    </li>`;
-}).join('\n');
 
 /* ── the capability chapters ──────────────────────────────────────────────────
    Five compositions, not five cards. Each one decides its own ground, its own
@@ -401,6 +374,44 @@ const crane = `    <div class="band-img" data-parallax>
       <p class="ch-more"><a href="/${CRANE.route}">More on cranage${ICON_ARROW}</a></p>
     </div>`;
 
+/* ── built by Kingson ────────────────────────────────────────────────────────
+   The proof sheet: the latest completed job, at the scale it was filmed, with
+   almost nothing written beside it. The footage is portrait and about 540 px
+   wide in truth, so it stands upright at no more than that width beside the
+   type rather than being stretched across the screen — enlarged, it would
+   show the compression, not the steel. Nothing about the job is said here
+   that its entry in content/projects.js does not carry. */
+const work = (() => {
+  if (!hasProjects()) return '';
+  const all = publishableProjects();
+  const p = all[0];
+  const lead = BY_SLUG[p.services[0]];
+  const facts = [
+    ['Service', `<a href="/${lead.slug}">${esc(lead.nav)}</a>`],
+    ...(p.state ? [['Status', esc(p.state)]] : [])
+  ];
+  return `<section class="bk sec-dark on-dark gl" id="work" aria-labelledby="bk-h">
+  <div class="wrap bk-in">
+    <div class="bk-copy">
+      <p class="eyebrow"><span class="sn">${sheetNo('work')}</span>Completed work</p>
+      <h2 class="display bk-title" id="bk-h" data-reveal="rise"><span>Built by Kingson<span class="pt">.</span></span></h2>
+      <p class="bk-lede">${esc(p.summary || p.description)}</p>
+      <dl class="sp-rail bk-facts">
+${facts.map(([k, v]) => `        <div><dt>${k}</dt><dd>${v}</dd></div>`).join('\n')}
+      </dl>
+      <div class="bk-act">
+        <a class="btn" href="/projects/${p.id}"><span>View the project</span>${ICON_ARROW}</a>${all.length > 1 ? `
+        <a class="btn-ghost" href="/projects"><span>All completed projects</span></a>` : ''}
+      </div>
+    </div>
+    <figure class="bk-film" data-reveal="settle">
+      ${p.video ? projectFilm(p, { id: 'bk', lazy: true }) : `<img src="/${src(p.hero, 540)}" width="${ASSETS[p.hero].w}" height="${ASSETS[p.hero].h}" loading="lazy" decoding="async" alt="${esc(ASSETS[p.hero].alt)}">`}
+      <figcaption>${esc(p.title)}</figcaption>
+    </figure>
+  </div>
+</section>`;
+})();
+
 /* The enquiry is set over the fabrication bay, dimmed right down. The same
    file as the last photograph of the first screen, so no new download. */
 const enqbg = bleedPhoto('weldingBay', { cls: 'enq-bg', decorative: true });
@@ -514,83 +525,6 @@ const contact = CT_ORDER.map((k) => [k, publish(k)]).filter(([, v]) => v).map(([
   return `    <li><dl><dt>${esc(CONTACT.labels[k])}</dt><dd>${inner}</dd></dl></li>`;
 }).join('\n');
 
-const foot = [
-  publish('legalName'),
-  publish('address'),
-  publish('facebook')
-    ? `<a href="${esc(publish('facebook'))}" target="_blank" rel="noopener">Facebook</a>`
-    : null
-].filter(Boolean).map((v) => `      <span>${v}</span>`).join('\n');
-
-/* ── structured data ─────────────────────────────────────────────────────────
-   One @graph: the business, the six services it confirmed, and the questions
-   with their answers. Every value comes through publish(), so an unverified
-   one is absent from the graph rather than guessed into it.                  */
-
-const hoursSpec = publish('hoursSpec');
-const BIZ = SITE + '#business';
-
-const graph = [
-  {
-    '@type': 'LocalBusiness', '@id': BIZ,
-    name: publish('name'),
-    ...(publish('legalName') ? { legalName: publish('legalName') } : {}),
-    ...(publish('tagline') ? { slogan: publish('tagline') } : {}),
-    description: HERO.lede,
-    url: SITE,
-    image: SITE + src('portalFrame'),
-    logo: SITE + 'assets/brand/kingson-logo-560.png',
-    ...(publish('phone') ? { telephone: publish('phone') } : {}),
-    ...(publish('email') ? { email: publish('email') } : {}),
-    ...(publish('address') ? {
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: publish('address').replace(/,\s*Harare$/, ''),
-        addressLocality: 'Harare', addressCountry: 'ZW'
-      }
-    } : {}),
-    ...(hoursSpec ? {
-      openingHoursSpecification: [{
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: hoursSpec.days, opens: hoursSpec.opens, closes: hoursSpec.closes
-      }]
-    } : {}),
-    ...(publish('contactPerson') ? {
-      contactPoint: {
-        '@type': 'ContactPoint', contactType: 'sales',
-        name: publish('contactPerson'),
-        ...(publish('phone') ? { telephone: publish('phone') } : {}),
-        ...(publish('email') ? { email: publish('email') } : {}),
-        availableLanguage: 'en'
-      }
-    } : {}),
-    areaServed: { '@type': 'Country', name: 'Zimbabwe' },
-    ...(publish('facebook') ? { sameAs: [publish('facebook')] } : {})
-  },
-  ...CAPABILITIES.map((c) => ({
-    '@type': 'Service', '@id': `${SITE}#${c.id}`,
-    name: c.title, serviceType: c.title, description: c.body,
-    provider: { '@id': BIZ },
-    areaServed: { '@type': 'Country', name: 'Zimbabwe' },
-    additionalProperty: c.facts.map(([k, v]) => ({
-      '@type': 'PropertyValue', name: k, value: v
-    }))
-  })),
-  {
-    '@type': 'FAQPage', '@id': SITE + '#faq',
-    /* The seven the page shows, not the seventeen that exist. A FAQPage that
-       declares answers the page does not display is the structured-data
-       version of lying about content. */
-    mainEntity: homeFaq().map((it) => ({
-      '@type': 'Question', name: it.q,
-      acceptedAnswer: { '@type': 'Answer', text: it.a }
-    }))
-  }
-];
-
-const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, null, 2);
-
-
 /* ── the homepage's <head> ───────────────────────────────────────────────────
    Through the same function the service routes use, so a metadata change
    cannot reach five pages and miss the sixth. */
@@ -621,7 +555,7 @@ const BLOCKS = {
   chromebottom: chromeBottom(),
 
   /* the homepage's own composition */
-  hero, strip, chapters, workshop, specs, sheets, crane, enqbg,
+  hero, strip, work, chapters, workshop, specs, sheets, crane, enqbg,
   steps, gantt, procClose, form, faq, faqask, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
@@ -658,19 +592,34 @@ const sitemapImages = [BAND_IMAGE, ...PAGE_IMAGES].filter(Boolean).map((k) =>
 /* /projects, with every photograph the portfolio carries. Empty string while
    the portfolio is empty, so the sitemap never declares a page that the build
    did not write. */
+const smImage = (k, title) => `    <image:image>
+      <image:loc>${SITE}/${src(k)}</image:loc>
+      <image:title>${esc(title || WORK.captions[k] || ASSETS[k].alt.slice(0, 90))}</image:title>
+    </image:image>`;
 const sitemapProjects = hasProjects() ? `
   <url>
     <loc>${SITE}/${PORTFOLIO.slug}</loc>
     <lastmod>${UPDATED}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-${publishableProjects().flatMap((p) => [p.hero, ...(p.gallery || [])])
-    .filter((k, i, all) => all.indexOf(k) === i && ASSETS[k])
-    .map((k) => `    <image:image>
-      <image:loc>${SITE}/${src(k)}</image:loc>
-      <image:title>${esc(ASSETS[k].alt.slice(0, 90))}</image:title>
-    </image:image>`).join('\n')}
-  </url>` : '';
+  </url>
+${publishableProjects().map((p) => `  <url>
+    <loc>${SITE}/projects/${p.id}</loc>
+    <lastmod>${UPDATED}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+
+${[p.hero, ...(p.gallery || [])].filter((k, i, all) => all.indexOf(k) === i && ASSETS[k]).map((k) => smImage(k)).join('\n')}${p.video ? `
+    <video:video>
+      <video:thumbnail_loc>${SITE}/${src(p.video.poster, p.video.w)}</video:thumbnail_loc>
+      <video:title>${esc(p.title)} — site footage</video:title>
+      <video:description>${esc(p.video.shows)}</video:description>
+      <video:content_loc>${SITE}/assets/video/${p.video.file}.mp4</video:content_loc>
+      <video:duration>${Math.floor(p.video.seconds)}</video:duration>
+      <video:publication_date>${p.video.published}</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>` : ''}
+  </url>`).join('\n')}` : '';
 
 /* Each service route, with the photographs that route actually shows. */
 const sitemapServices = SERVICES.map((sv) => {
@@ -703,7 +652,8 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   it is not taken from \`git log\`.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"${hasProjects() && publishableProjects().some((p) => p.video) ? `
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"` : ''}>
   <url>
     <loc>${SITE}/</loc>
     <lastmod>${UPDATED}</lastmod>
@@ -765,7 +715,7 @@ if (process.argv.includes('--check')) {
   writeFileSync(file, html);
   writeFileSync(smFile, sitemap);
   writeFileSync(root + 'robots.txt', robots);
-  for (const r of routes) writeFileSync(root + r.file, r.html);
+  for (const r of routes) { mkdirSync(dirname(root + r.file), { recursive: true }); writeFileSync(root + r.file, r.html); }
   console.log(`index.html rendered from content/ — ${Object.keys(BLOCKS).length} regions, ` +
     `${CHAPTERS.length} chapters covering ${CAPABILITIES.length} services, ` +
     `${SPECS.groups.reduce((n, g) => n + g.rows.length, 0)} specification rows, ` +

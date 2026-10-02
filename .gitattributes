@@ -9,3 +9,5 @@
 *.woff2 binary
 *.zip binary
 *.pdf binary
+*.mp4 binary
+*.webm binary

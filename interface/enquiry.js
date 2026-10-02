@@ -152,6 +152,7 @@ export function mountEnquiry() {
     if (label) label.textContent = ENQUIRY.sending;
     if (submitBtn) submitBtn.disabled = true;
 
+    /** @type {{ok: boolean, ref?: string|null, reason?: string}} */
     let result = { ok: false, reason: 'unconfigured' };
     if (canSubmit()) {
       try { result = await sendEnquiry(p); }

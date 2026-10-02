@@ -265,5 +265,51 @@
    1298
   ],
   "cropped": false
+ },
+ "steel-roof-structure": {
+  "source": "video:c3b06b74-ScreenRecording_10-02-2026_15-14-05_1.mp4",
+  "kind": "video-poster",
+  "w": 540,
+  "h": 900,
+  "sizes": [
+   360,
+   540
+  ],
+  "cropped": true,
+  "duration": 14.5,
+  "fps": 30
+ },
+ "steel-roof-structure-trusses": {
+  "source": "video:c3b06b74-ScreenRecording_10-02-2026_15-14-05_1.mp4@5.75s",
+  "kind": "video-still",
+  "w": 540,
+  "h": 900,
+  "sizes": [
+   360,
+   540
+  ],
+  "cropped": true
+ },
+ "steel-roof-structure-columns": {
+  "source": "video:c3b06b74-ScreenRecording_10-02-2026_15-14-05_1.mp4@7.75s",
+  "kind": "video-still",
+  "w": 540,
+  "h": 900,
+  "sizes": [
+   360,
+   540
+  ],
+  "cropped": true
+ },
+ "steel-roof-structure-edge": {
+  "source": "video:c3b06b74-ScreenRecording_10-02-2026_15-14-05_1.mp4@11.75s",
+  "kind": "video-still",
+  "w": 540,
+  "h": 900,
+  "sizes": [
+   360,
+   540
+  ],
+  "cropped": true
  }
 }

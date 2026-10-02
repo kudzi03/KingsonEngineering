@@ -417,16 +417,17 @@ dupes(seenDescs, 'meta description');
 const imageRefs = new Set();
 for (const f of pages) {
   const html = readFileSync(f, 'utf8');
-  for (const m of html.matchAll(/(?:src|srcset|imagesrcset|property="og:image" content|name="twitter:image" content)="([^"]+)"/g)) {
+  /* `poster` too: a missing poster is a black frame where the first sight of
+     a job should be, and the browser reports nothing. */
+  for (const m of html.matchAll(/(?:src|srcset|imagesrcset|poster|property="og:image" content|name="twitter:image" content)="([^"]+)"/g)) {
     for (const part of m[1].split(',')) {
       const url = part.trim().split(/\s+/)[0].replace(/^https?:\/\/[^/]+/, '');
       if (/^assets\/img\/|^\/assets\/img\//.test(url)) imageRefs.add(url.replace(/^\//, ''));
     }
   }
 }
-let missing = 0;
 for (const url of imageRefs) {
-  if (!existsSync(root + url)) { fail(`${url} is referenced by a page but is not in the repository`); missing++; }
+  if (!existsSync(root + url)) fail(`${url} is referenced by a page but is not in the repository`);
 }
 
 /* ── the sitemap must list every route that exists, and nothing that does not ─ */
@@ -464,3 +465,4 @@ console.log(`  ${allowedHits} confirmed figure${allowedHits === 1 ? '' : 's'} pu
             `each citing the returned document.`);
 console.log(`  ${held.length} value${held.length === 1 ? '' : 's'} held back: ${held.join(', ') || 'none'}.`);
 console.log(`  ${imageRefs.size} image files referenced, all present.`);
+console.log(`  ${linksChecked} links, fragments and asset paths resolved.`);

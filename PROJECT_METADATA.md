@@ -63,10 +63,41 @@ photograph is clear, and there is something specific to say about it.
 
 ## What happens to it
 
-Each block becomes one entry in `content/projects.js`. The `/projects` page,
-the navigation link, the sitemap entry and the structured data all appear
-automatically as soon as the first entry is added — the page is built and
-tested, it is simply empty.
+Each block becomes one entry in `content/projects.js`. The job's own page
+(`/projects/<id>`), its row on `/projects`, the "Built by Kingson" sheet on the
+home page, the completed-work block on each service page it used, the sitemap
+entries and the structured data all follow from that entry. Adding a job is
+typing; nothing has to be designed.
 
-Until then there is no Projects page and no link to one, which is correct: an
-empty portfolio is better than an invented one.
+---
+
+## Job 1 on the site — steel roof structure (`/projects/steel-roof-structure`)
+
+Published 2 October 2026 from site footage the owner supplied, with only what
+the owner said about it: **it is Kingson's work, and it is a completed steel
+roof / truss structure.** Everything below is unknown and is therefore not on
+the page. Please fill in whatever the records hold:
+
+```
+Job title             currently "Steel roof structure" — a better name?
+Client or site name   only if we may publish it
+  — or —
+Anonymous descriptor  e.g. "a Harare school", "a Mashonaland farm"
+Location              town or suburb
+Year completed
+Building type         what the building is for
+Scope                 did we fabricate, erect, or both? Sheeting and flashings too?
+Clear span
+Eaves / apex height
+Floor or roof area
+Steel tonnage
+Truss type / steel sections   only as written on the drawings
+Anything worth mentioning     programme, access, site conditions
+More media            the original video file (not a screen recording),
+                      photographs of the same building, during or after
+```
+
+The original video, sent as a file rather than shown as a WhatsApp Status,
+would roughly double the picture quality on the page: the footage on the site
+is cut from a phone recording of the Status, whose picture is about 512 px
+wide.

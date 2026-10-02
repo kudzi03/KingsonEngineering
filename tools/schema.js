@@ -165,11 +165,12 @@ const questions = (list) => list.map((it) => ({
    gets a question its rich result — a separate FAQPage node sharing the same
    URL describes two pages at one address.                                   */
 
-export function pageGraph({ path, name, description, image, trail, faq, about, extra = [] }) {
+export function pageGraph({ path, name, description, image, trail, faq, about, extra = [],
+                           pageType = 'WebPage', mainEntity = null }) {
   const url = SITE + (path === '/' ? '/' : path);
   const img = ASSETS[image];
   const page = {
-    '@type': faq && faq.length ? ['WebPage', 'FAQPage'] : 'WebPage',
+    '@type': faq && faq.length ? [pageType, 'FAQPage'] : pageType,
     '@id': url + '#webpage',
     url,
     name,
@@ -185,7 +186,7 @@ export function pageGraph({ path, name, description, image, trail, faq, about, e
     inLanguage: 'en-ZW',
     dateModified: UPDATED,
     ...(trail ? { breadcrumb: { '@id': url + '#breadcrumb' } } : {}),
-    ...(faq && faq.length ? { mainEntity: questions(faq) } : {})
+    ...(faq && faq.length ? { mainEntity: questions(faq) } : mainEntity ? { mainEntity } : {})
   };
 
   return JSON.stringify({
@@ -217,6 +218,29 @@ export function pickSpecs(ids) {
     if (!g) { console.error(`unknown spec group: ${id}`); process.exit(2); }
     return g;
   });
+}
+
+/* ── a job's footage ──────────────────────────────────────────────────────────
+   VideoObject carries exactly what is on the page and nothing more: the
+   title, the visible description of what the footage shows, its real length,
+   the poster, and the day it was published on this site — not the day the
+   job was finished, which nobody has told us. */
+export function videoObject(p, pageUrl) {
+  const v = p.video;
+  return {
+    '@type': 'VideoObject',
+    '@id': pageUrl + '#video',
+    name: `${p.title} — site footage`,
+    description: v.shows,
+    thumbnailUrl: [`${SITE}/${src(v.poster, v.w)}`, `${SITE}/assets/img/og-${ASSETS[v.poster].slug}.jpg`],
+    uploadDate: v.published,
+    duration: `PT${v.seconds}S`,
+    contentUrl: `${SITE}/assets/video/${v.file}.mp4`,
+    encodingFormat: 'video/mp4',
+    width: v.w, height: v.h,
+    publisher: { '@id': ORG },
+    inLanguage: 'en-ZW'
+  };
 }
 
 export { serviceId, ORG, WEB };

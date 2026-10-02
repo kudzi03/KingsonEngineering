@@ -12,6 +12,7 @@
 import { ASSETS, src } from '../content/assets.js';
 import { WORK } from '../content/runtime-copy.js';
 
+/** @param {{ onOpen?: Function, onClose?: Function }} [hooks] */
 export function mountViewer({ onOpen, onClose } = {}) {
   const dialog = document.querySelector('[data-viewer]');
   const img = dialog.querySelector('[data-viewer-img]');
@@ -53,7 +54,7 @@ export function mountViewer({ onOpen, onClose } = {}) {
 
   /* aria-modal promises focus stays inside. Removing `inert` from the dialog
      does not put it back on the page behind, so the trap has to be explicit. */
-  dialog.addEventListener('keydown', (e) => {
+  dialog.addEventListener('keydown', (/** @type {KeyboardEvent} */ e) => {
     if (e.key !== 'Tab' || dialog.dataset.open !== 'true') return;
     const items = [...dialog.querySelectorAll('a[href], button')]
       .filter((n) => n.offsetParent !== null);

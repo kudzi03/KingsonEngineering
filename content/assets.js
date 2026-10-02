@@ -2,7 +2,7 @@
    content/assets.js — the photographs, described
    ═══════════════════════════════════════════════════════════════════════════
 
-   Thirteen photographs. Every one was supplied by Kingson and shows Kingson's
+   Thirteen photographs and four frames from site footage. Every one was supplied by Kingson and shows Kingson's
    own workshop, plant or site work. `focal` is a normalised source coordinate: the
    point a `cover` crop keeps in frame when the container's ratio does not
    match the photograph's.
@@ -115,6 +115,37 @@ export const ASSETS = {
     alt: 'Two workers crouched over a steel grating panel, one holding a welding shield and striking an arc, the other steadying the panel; the overalls are lettered KINGSON ENGINEERING.',
     status: 'observed_photo'
   },
+  /* ── frames from project footage ─────────────────────────────────────────
+     Cut by tools/build-video.py from the site video of the completed steel
+     roof (content/projects.js). The footage reached us as a phone recording
+     of a WhatsApp Status; these are 540 px wide because that is the real
+     resolution of the picture inside it, and the page never shows them
+     larger than that. The alt text, as everywhere, says only what is in the
+     frame. */
+  roofStructure: {
+    slug: 'steel-roof-structure', w: 540, h: 900, widths: [360, 540],
+    focal: [0.50, 0.50],
+    alt: 'Looking across a concrete floor under a steel roof: lattice trusses and purlins carry the sheeting overhead, and one side of the building stands open to brick structures, scaffolding and trees.',
+    status: 'observed_photo'
+  },
+  roofStructureTrusses: {
+    slug: 'steel-roof-structure-trusses', w: 540, h: 900, widths: [360, 540],
+    focal: [0.50, 0.50],
+    alt: 'Steel lattice trusses and purlins seen straight up from below, with the roof sheeting behind them.',
+    status: 'observed_photo'
+  },
+  roofStructureColumns: {
+    slug: 'steel-roof-structure-columns', w: 540, h: 900, widths: [360, 540],
+    focal: [0.50, 0.50],
+    alt: 'Roof trusses meeting the steel columns along the open side of the building, with trees beyond.',
+    status: 'observed_photo'
+  },
+  roofStructureEdge: {
+    slug: 'steel-roof-structure-edge', w: 540, h: 900, widths: [360, 540],
+    focal: [0.50, 0.50],
+    alt: 'The edge of the roof against the sky: lattice trusses and purlins under the sheeting, with pendant lights hanging between them.',
+    status: 'observed_photo'
+  },
   crane: {
     slug: 'crane', w: 1320, h: 1757, widths: [440, 720, 900, 1100, 1320],
     wide: { w: 1319, h: 742, widths: [900, 1319] },
@@ -196,7 +227,7 @@ export function position(key) {
    In the order the page reads, after BAND_IMAGE which opens chapter 01.     */
 export const PAGE_IMAGES = [
   'portalFrame', 'laserSparks', 'crane', 'weldingBay', 'roofTrusses',
-  'weldingHands',
+  'weldingHands', 'roofStructure',
   'laserCutting', 'nestingStation', 'laserFloor', 'gantry'
 ];
 

@@ -33,7 +33,11 @@ export const WORK = {
     weldingBay:     'Welding in the fabrication bay',
     weldingHands:   'Grating welded up on the workshop floor',
     laserMachine:   'The machine from the loading side',
-    crane:          'Our telescopic mobile crane'
+    crane:          'Our telescopic mobile crane',
+    roofStructure:        'Completed steel roof, from the floor',
+    roofStructureTrusses: 'Lattice trusses overhead',
+    roofStructureColumns: 'Trusses on the columns, open side',
+    roofStructureEdge:    'The roof edge against the sky'
   }
 };
 

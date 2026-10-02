@@ -186,7 +186,18 @@ def main():
 
         manifest[slug] = entry
 
-    with open('%s/manifest.json' % OUT_DIR, 'w') as f:
+    # Video posters and stills are written by tools/build-video.py, from footage this
+    # script never sees. Keep their entries, or a rerun here would silently
+    # drop them and the publication gate would fail for a reason nobody
+    # touched.
+    manifest_path = '%s/manifest.json' % OUT_DIR
+    if os.path.exists(manifest_path):
+        with open(manifest_path) as f:
+            for slug, entry in json.load(f).items():
+                if entry.get('kind') in ('video-poster', 'video-still') and slug not in manifest:
+                    manifest[slug] = entry
+
+    with open(manifest_path, 'w') as f:
         json.dump(manifest, f, indent=1)
 
     n = sum(len(v['sizes']) + len(v.get('wide', {}).get('sizes', [])) for v in manifest.values())

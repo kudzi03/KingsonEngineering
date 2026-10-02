@@ -36,7 +36,7 @@ content/            the only place facts and copy live
   copy.js           every customer-facing string
   chapters.js       the five scenes of the home page, and the workshop
   services.js       the five service routes, composed from confirmed data
-  projects.js       the proof bands (PROJECTS is empty on purpose)
+  projects.js       completed jobs, each with status + evidence
   assets.js         photographs, focal anchors, alt text, derivative widths
 styles/
   tokens.css        design system (brand colours, type, radius, spacing)
@@ -45,6 +45,8 @@ scenes/
   reveal.js         the reveal vocabulary — plate, rise, settle, draw, swing
   parallax.js       depth on the scenes that fill a viewport
   profiles.js       drawn sections, fold diagram and the laser bed
+  film.js           project footage: plays in view, pausable, honours
+                    Reduce Motion and Save-Data (loaded only near a film)
 interface/
   enquiry.js        local enquiry composer → WhatsApp / email handoff
   image-viewer.js   accessible full-size photograph dialog
@@ -52,9 +54,14 @@ tools/
   layout.js         the furniture every page shares — head, header, footer
   schema.js         one JSON-LD entity graph, per page
   pages.js          the service-route template
+  portfolio.js      /projects and /projects/<id>
   render.js         content/ → index.html + 5 routes + sitemap.xml
   check-truth.js    asserts the publication gate over the shipped HTML
   build-images.py   source photographs → responsive webp derivatives
+  build-video.py    phone/WhatsApp footage → cropped AV1 + H.264, poster, stills
+  quality-gate.mjs  the QA ledger: PASS / FAIL / UNKNOWN / NOT RUN per check
+  qa-browser.mjs    its browser checks (Playwright, axe-core)
+  tests/            node --test: the portfolio's rules and the gate's honesty
 main.js             interaction only — no content, no scroll listeners
 index.html          generated, static, committed
 <service>.html      five generated routes, static, committed

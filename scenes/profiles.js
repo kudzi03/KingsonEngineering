@@ -102,7 +102,6 @@ const dim = (x1, x2, y, label) => `
 /** One sheeting section, drawn to scale with its confirmed dimensions. */
 export function section(kind) {
   const p = kind === 'ibr' ? ibr() : corrugated();
-  const scale = W / 840;
   /* Heights are dimensioned clear of the sheet, to the right of where it ends,
      the way they would be on a drawing. Widths stack below the datum. */
   const vdim = (x, top, label) => `

@@ -17,8 +17,8 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { NAV, ENQUIRY, CONTACT, CAPABILITIES } from '../content/copy.js';
-import { hasProjects } from '../content/projects.js';
-import { SERVICES } from '../content/services.js';
+import { hasProjects, credit } from '../content/projects.js';
+import { SERVICES, BY_SLUG } from '../content/services.js';
 import { publish } from '../content/company.js';
 import { ASSETS, src, srcset, position, hasWide, wideSrc, wideSrcset } from '../content/assets.js';
 import { createHash } from 'node:crypto';
@@ -166,7 +166,7 @@ export function quoteBtn(ghost, to = '#enquiry') {
 
 /* ── the logo ───────────────────────────────────────────────────────────── */
 
-export function logo(kind, height, sizes, base = '', decorative = false, eager = false) {
+export function logo(kind, height, sizes, base = '/', decorative = false, eager = false) {
   const stem = kind === 'reverse' ? 'kingson-logo-reverse' : 'kingson-logo';
   const alt = decorative ? '' : `${publish('name')} — ${publish('tagline')}`;
   /* A reverse mark in the header is the first thing painted, so it is not
@@ -274,7 +274,7 @@ export function chromeTop({ home = false, current = '' } = {}) {
   /* One mark on every page. The home page's first sheet is the same light
      ground as the bar, so the reverse artwork it used to carry for a dark
      photographic hero has nothing left to do. */
-  const mark = '      ' + logo('reverse', '46px', '(max-width:760px) 116px, 134px', '', false, true);
+  const mark = '      ' + logo('reverse', '46px', '(max-width:760px) 116px, 134px', '/', false, true);
 
   return `<a class="skip" href="#main">Skip to content</a>
 
@@ -301,7 +301,7 @@ ${headerNav(home, current)}
 
 <div class="menu on-dark" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" inert>
   <div class="menu-top">
-    <span class="menu-logo">${logo('reverse', '40px', '116px', '', true)}</span>
+    <span class="menu-logo">${logo('reverse', '40px', '116px', '/', true)}</span>
     <button type="button" class="menu-close" data-menu-close aria-label="Close menu">Close</button>
   </div>
   <nav class="menu-list" aria-label="Sections">
@@ -326,8 +326,10 @@ export function siteFooter() {
       : null
   ].filter(Boolean).map((v) => `      <span>${v}</span>`).join('\n');
 
-  const services = SERVICES.map((s) =>
-    `        <li><a href="/${s.slug}">${esc(s.nav)}</a></li>`).join('\n');
+  const services = [
+    ...SERVICES.map((s) => `        <li><a href="/${s.slug}">${esc(s.nav)}</a></li>`),
+    ...(hasProjects() ? ['        <li><a href="/projects">Completed projects</a></li>'] : [])
+  ].join('\n');
 
   const reach = [['phone', publish('phone')], ['office', publish('office')],
     ['email', publish('email')], ['emailTechnical', publish('emailTechnical')]]
@@ -594,4 +596,85 @@ ${enquiryForm(preselectService)}
     </div>
     </div>
     </div>`;
+}
+
+/* ── project footage ──────────────────────────────────────────────────────────
+   One film component for every place a job's footage appears — the home
+   page's completed-work sheet and the job's own page — so its behaviour
+   cannot differ between them.
+
+   What the markup guarantees before any script runs:
+   · nothing downloads but the poster (preload="none"), so the footage costs
+     the first paint nothing and a visitor who never scrolls to it never
+     pays for it;
+   · it is muted, inline and has no autoplay attribute — playback is started
+     by scenes/film.js only when it is on screen and only when the visitor
+     has not asked for reduced motion or reduced data;
+   · width and height are set, so the frame never shifts the layout;
+   · with JavaScript off, `controls` is left on and it plays like any video.
+   AV1 first (cleaner at the same size on this footage), H.264 for browsers
+   without AV1 decode. The codec strings are the encodes' own profiles. */
+
+export function projectFilm(p, { id, label, describedBy, lazy = false } = {}) {
+  const v = p.video;
+  const a = ASSETS[v.poster];
+  /* The footage needs a text alternative (WCAG 1.2.1: a video with no sound).
+     Where the page already shows one, the video points at it; otherwise it
+     carries its own, for assistive technology only. */
+  const shows = describedBy || `${id}-shows`;
+  /* Floored, as a player shows it: 14.5 s is 0:14. */
+  const secs = Math.floor(v.seconds);
+  /* A poster attribute is never lazy: a film far down the home page would
+     fetch its poster with the first screen, in competition with the hero
+     photograph (measured: +480 ms LCP on a throttled line). Below the fold the
+     poster is therefore an ordinary lazy image behind the video, which shows
+     through until the first frame is painted — with or without script. Where
+     the film IS the first screen (a job's own page), the attribute is right. */
+  const posterAttr = lazy ? '' : `\n               poster="/${src(v.poster, v.w)}"`;
+  const posterImg = lazy
+    ? `\n        <img class="film-poster" src="/${src(v.poster, v.w)}" srcset="${srcset(v.poster).split(', ').map((x) => '/' + x).join(', ')}"
+             sizes="(max-width: 900px) 92vw, 460px" width="${a.w}" height="${a.h}" loading="lazy" decoding="async" alt="">`
+    : '';
+  return `<div class="film${lazy ? ' film-lazy' : ''}" data-film>${posterImg}
+        <video class="film-v" muted playsinline loop preload="none" controls
+               width="${v.w}" height="${v.h}"${posterAttr}
+               aria-label="${esc(label || `Site footage: ${p.title}`)}" aria-describedby="${shows}">
+          <source src="/assets/video/${v.file}.webm" type='video/webm; codecs="av01.0.04M.08"'>
+          <source src="/assets/video/${v.file}.mp4" type='video/mp4; codecs="avc1.64001F"'>
+        </video>
+        <div class="film-bar">
+          <p class="film-meta"><span class="num">0:${String(secs).padStart(2, '0')}</span><span><span class="film-what">Site footage · </span>no sound</span></p>
+          <button type="button" class="film-toggle" data-video-toggle aria-pressed="false" aria-label="Pause the footage" hidden><span aria-hidden="true"></span></button>
+        </div>
+      </div>${describedBy ? '' : `
+      <p class="sr-only" id="${shows}">${esc(v.shows)}</p>`}`;
+}
+
+/* ── projects as rows ─────────────────────────────────────────────────────────
+   The chooser's own idiom (number, name, the one thing to know, the body, a
+   picture, an arrow), because a list of finished jobs is read the same way a
+   list of services is: scan, pick one, go. Rows also stay right at one job
+   and at forty, where a card grid with one card in it reads as a gap. */
+
+export function projectRows(list, { headingLevel = 3 } = {}) {
+  const h = `h${headingLevel}`;
+  return `    <ol class="cx pj-rows" data-reveal="lift" data-reveal-stagger="60">
+${list.map((p, i) => {
+    const a = ASSETS[p.hero];
+    const line = [p.state, credit(p)].filter(Boolean).join(' · ');
+    const svc = p.services.map((sl) => BY_SLUG[sl].nav).join(' · ');
+    return `      <li class="cx-row">
+        <a class="cx-hit" href="/projects/${p.id}">
+          <span class="cx-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+          <${h} class="cx-name">${esc(p.title)}</${h}>
+          <span class="cx-lead"><b>${esc(svc)}</b>${line ? `<span>${esc(line)}</span>` : ''}</span>
+          <span class="cx-body">${esc(p.summary || p.description || '')}${p.video ? ' <span class="pj-tag">Site video</span>' : ''}</span>
+          <span class="cx-go" aria-hidden="true">${ICON_ARROW}</span>
+          <span class="cx-media" aria-hidden="true"><img src="/${src(p.hero, 360)}" srcset="${srcset(p.hero).split(', ').map((x) => '/' + x).join(', ')}"
+                 sizes="(max-width: 900px) 28vw, 180px" width="${a.w}" height="${a.h}" loading="lazy" decoding="async"
+                 style="object-position:${position(p.hero)}" alt=""></span>
+        </a>
+      </li>`;
+  }).join('\n')}
+    </ol>`;
 }

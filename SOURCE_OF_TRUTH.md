@@ -227,6 +227,21 @@ steelwork, and currently unrepresented.
 
 ---
 
+### Site footage — completed steel roof (supplied 2 October 2026)
+
+| Item | Status |
+|---|---|
+| Source | Phone screen recording of a WhatsApp Status, 1320×2868, 16.6 s. The picture inside is the WhatsApp stream, about 512 px wide |
+| What the owner said | "Real Kingson project footage" of "a completed steel roof/truss structure" — **user_context**, published |
+| Published as | `/projects/steel-roof-structure`: 14.5 s cut (1.2–15.7 s), 540×900, AV1 + H.264, no audio; poster and three stills cut from the same footage |
+| Removed before publication | The phone status bar, the WhatsApp header (a private contact's name and photograph), the reply bar, and the phone's Control Center at the end. The raw recording is **not** in the repository |
+| NOT known, NOT stated | Job name, client, location, year, scope split (fabricate / erect), span, heights, area, tonnage, steel grade or sections. Nothing is read off the footage. Requested in `PROJECT_METADATA.md` |
+
+The alt text of the four frames describes only what is visible, as for every
+photograph above.
+
+---
+
 ## I · STATUS OF THE OLD SITE'S CLAIMS
 
 | Old claim | Verdict |

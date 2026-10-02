@@ -13,17 +13,18 @@
    and carries its own enquiry form with that service already selected.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { PROCESS, processFor, SPECS, CONTACT, NAV, ENQUIRY, NOT_FOUND, SERVICES_BLOCK } from '../content/copy.js';
+import { processFor, SPECS, CONTACT, NOT_FOUND, SERVICES_BLOCK } from '../content/copy.js';
 import { SERVICES, SERVICE_PAGE, BY_SLUG } from '../content/services.js';
 import { ASSETS, src, srcset, position } from '../content/assets.js';
 import { publish } from '../content/company.js';
 import { section as profileSection, flashings, bed } from '../scenes/profiles.js';
 import { pageGraph, pickFaq, pickSpecs, serviceId } from './schema.js';
 import {
-  SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryBlock, callBtn, waBtn, quoteBtn, bleedPhoto, serviceChooser, cinemaHero, ICON_ARROW
+  SITE, esc, headHtml, chromeTop, chromeBottom, siteFooter,
+  enquiryBlock, bleedPhoto, serviceChooser, cinemaHero, projectRows, ICON_ARROW
 } from './layout.js';
 import { CAPABILITIES } from '../content/copy.js';
+import { projectsFor } from '../content/projects.js';
 
 const photo = (key, { sizes, w, eager = false }) => {
   const a = ASSETS[key];
@@ -206,6 +207,25 @@ ${plates.map((k, i) => `    <li data-reveal="plate" data-from="below" style="--d
 
   const draw = drawing(s);
 
+  /* Finished jobs that used this service: the proof for everything the page
+     has just claimed, set after the specification and the programme and
+     before the questions. Not higher: just under the brief it fell inside
+     the browser's lazy-load window and its thumbnail competed with the hero
+     — measured +150 ms LCP on a throttled line. Absent until there is one. */
+  const done = projectsFor(s.slug);
+  const work = done.length ? `
+  <!-- ═══ this work, finished ═══ -->
+  <section class="sp-work sec-dark on-dark gl" aria-labelledby="sp-work-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Completed work</p>
+        <h2 class="display" id="sp-work-h" data-reveal="rise"><span>Built by Kingson.</span></h2>
+        <p>${done.length === 1 ? 'A finished job that used this service' : 'Finished jobs that used this service'}, with what we can confirm about ${done.length === 1 ? 'it' : 'each'}.</p>
+      </div>
+${projectRows(done)}
+    </div>
+  </section>` : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -300,6 +320,8 @@ ${[['address', publish('address')], ['hours', publish('hours')], ['contactPerson
       </aside>
     </div>
   </section>
+
+${work}
 
   <!-- ═══ questions ═══ -->
   <section class="faq gl" id="faq">

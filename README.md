@@ -27,12 +27,17 @@ file, and **each allowlist entry cites the section of the document it came
 from**. Adding a figure means being able to say who confirmed it.
 
 ```
-node tools/render.js          rewrite index.html, the 5 service routes and
-                              sitemap.xml from content/
+node tools/render.js          rewrite index.html, the service routes, the
+                              project routes and sitemap.xml from content/
 node tools/render.js --check  fail if any of them has drifted
 node tools/check-truth.js     assert every gate over the shipped files
 python3 tools/build-images.py rebuild the webp derivatives from the source
                               photographs (only when a photograph changes)
+python3 tools/build-video.py <slug>=<recording>
+                              cut project footage into its web derivatives
+                              (see the job table in that file)
+node tools/quality-gate.mjs run [--browser]
+                              the full quality gate — see below
 ```
 
 Run `check-truth.js` before every push. It also runs `render.js --check`, so a
@@ -45,7 +50,7 @@ actually in the repository.
 
 ---
 
-## Six routes
+## The routes
 
 Vercel serves this project with `cleanUrls: true`, so a file at the repository
 root is served without its extension. That is the entire routing layer.
@@ -58,6 +63,8 @@ root is served without its extension. That is the entire routing layer.
 | `fibre-laser-cutting-harare.html` | `/fibre-laser-cutting-harare` |
 | `steel-fabrication.html` | `/steel-fabrication` |
 | `mobile-cranage-harare.html` | `/mobile-cranage-harare` |
+| `projects.html` | `/projects` — completed work |
+| `projects/<id>.html` | `/projects/<id>` — one page per job |
 
 A service page is not a slice of the home page. It answers a different question
 — *can you do my job, and what do you need from me* — so it leads with the
@@ -131,6 +138,56 @@ folder, arguably more useful than a photograph. The two stock-style collages in
 the repository (`structure.jpeg`, `crane.jpeg`) are not Kingson's work and must
 never be published as if they were; their derivatives have been deleted so they
 cannot be served by accident.
+
+---
+
+## Completed projects
+
+`content/projects.js` holds one entry per finished job, and everything else
+follows from it: the job's page, its row on `/projects`, the **Built by
+Kingson** sheet on the home page (the latest job), a completed-work block on
+each service page the job used, sitemap entries (with a video entry where
+there is footage), `VideoObject` and `BreadcrumbList` structured data, and the
+Projects link in the header and footer. With the list empty, none of it
+ships.
+
+An entry needs a `status` and an `evidence` line saying who said what, the
+same publication gate `company.js` puts on every business value. **Nothing is
+read off a photograph or a video**: a roof in a frame says nothing about
+whose roof, where, what span or what tonnage. `tools/tests/projects.test.mjs`
+fails the build on an entry without evidence, a draft status, a service route
+that does not exist, or a page showing a row its entry does not support.
+
+Footage arrives as phone recordings of WhatsApp Statuses. `tools/build-video.py`
+crops the phone and WhatsApp interface off (including a contact's name),
+trims, writes AV1 and H.264 at the picture's real resolution with no audio, a
+poster, stills and a 1200×630 share image. The raw recording is never
+committed. On the page the film is muted, starts only when on screen, never
+starts by itself under Reduce Motion or Save-Data, has a pause control, and
+below the fold loads nothing — not even its poster — until it is near.
+
+## The quality gate
+
+```
+node .claude/serve.mjs . 8210 &        # the local stand-in for Vercel
+node tools/quality-gate.mjs run --browser
+node tools/quality-gate.mjs record visual-mobile pass --note "what was looked at"
+node tools/quality-gate.mjs status
+```
+
+Build, publication gate, syntax, lint, typecheck, tests, SEO metadata,
+sitemap, structured data, secrets, asset budgets — and in Chromium: console
+errors, horizontal overflow at nine widths, live links, keyboard focus, the
+menu, the form, reduced motion, the film, axe-core and LCP/CLS. Four
+judgements (desktop and mobile by eye, facts, the diff) are recorded by hand
+with a required note and marked *attested*.
+
+Every result is stored against a fingerprint of the files Vercel deploys, so a
+result for different code reads **UNKNOWN**, a check never run reads **NOT
+RUN**, and only a check run against this exact code can read **PASS**. The
+ledger is `.quality/gate.json` (committed, not deployed).
+`.claude/mods/kingson-quality-gate/` is an optional Claude Code mod that shows
+the ledger's counts in the status line; it only reads.
 
 ---
 

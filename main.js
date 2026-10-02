@@ -115,6 +115,15 @@ mountParallax();
 /* The first screen's photographs. See scenes/cinema.js. */
 mountCinema();
 
+/* Project footage: plays only while on screen, never by itself under Reduce
+   Motion or Save-Data. See scenes/film.js. Fetched by a page that has
+   footage on it, straight away: an earlier version waited until the film
+   was near, which saved about 1.5 KB and left a window in which Tab reached
+   the browser's own video controls, inside a shadow DOM where our focus ring
+   cannot follow. The bytes were within measurement noise; the window was
+   not worth them. */
+if ($('[data-film]')) import('./scenes/film.js').then((m) => m.mountFilms());
+
 
 /* ── the sheet index ────────────────────────────────────────────────────────
    Which sheet is under a line across the middle of the screen. One observer,
@@ -146,6 +155,25 @@ if (si && 'IntersectionObserver' in window) {
 const viewer = mountViewer();
 $$('[data-open]').forEach((b) =>
   b.addEventListener('click', () => viewer.open(b.dataset.open)));
+
+/* ── the map's focus ring ────────────────────────────────────────────────────
+   Tab stops on the map. When the map has loaded, focus goes into its own
+   document and CSS can see it (:focus-within). When it has not — offline, a
+   blocked third party, a slow line — the frame is empty, focus stops on the
+   <iframe> itself, and Chrome then matches no focus selector at all and fires
+   no focus event on it: the keyboard user's place on the page disappears.
+   What does happen, measured, is that this window blurs with the iframe as
+   its active element. That is the signal. */
+const mapFocus = () => {
+  const a = document.activeElement;
+  if (a && a.matches('.ct-map iframe')) a.classList.add('is-focused');
+};
+const mapBlur = () => $$('.ct-map iframe.is-focused').forEach((f) => f.classList.remove('is-focused'));
+if ($('.ct-map iframe')) {
+  addEventListener('blur', mapFocus);
+  addEventListener('focus', mapBlur);
+  document.addEventListener('focusin', mapBlur);
+}
 
 /* ── the enquiry composer ───────────────────────────────────────────────── */
 

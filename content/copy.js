@@ -17,7 +17,7 @@
    hand when a figure, a service or a photograph changes — a sitemap that
    claims a change every time the renderer runs teaches a crawler to ignore
    the field anyway. */
-export const UPDATED = '2026-09-14';
+export const UPDATED = '2026-10-02';
 
 export const EYEBROWS = {
   services: 'Six services',

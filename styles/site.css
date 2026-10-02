@@ -182,7 +182,7 @@ html.hd-over .hd {
 }
 /* The logo is artwork, not type: it keeps its own proportions and the anchor
    is sized by it rather than the reverse. */
-.hd-mark { margin-right: auto; display: inline-flex; align-items: center; min-height: 48px; }
+.hd-mark { margin-right: auto; display: inline-flex; align-items: center; min-height: 48px; flex: none; }
 .hd-mark img { width: auto; }
 
 /* Navigation: an underline drawn from the left on hover, in the accent, on
@@ -204,6 +204,15 @@ html.hd-over .hd {
    phone number is one tap away in the hero and the phone bar, so the header
    drops its Call button here and keeps Get a price. */
 @media (min-width: 761px) and (max-width: 1000px) { .hd-act .btn-ghost { display: none; } }
+/* Five links since Projects joined them. Without this the bar fitted by
+   squeezing the logo — flex shrank the artwork to 22 px at 768 rather than
+   let anything wrap, which no overflow check can see. The logo is now
+   `flex: none`, and in this range the links close up instead. */
+@media (min-width: 761px) and (max-width: 1000px) {
+  .hd-in { gap: 20px; }
+  .hd .hd-nav { gap: 14px; }
+  .hd-nav a { font-size: 14px; }
+}
 
 .hd-act { display: flex; gap: 10px; }
 .hd-act .btn, .hd-act .btn-ghost { min-height: 44px; padding: 0 20px; font-size: 14px; }
@@ -1057,6 +1066,11 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
   display: block; width: 100%; height: clamp(280px, 38vw, 460px); border: 0;
   filter: grayscale(1) contrast(1.05); background: #1a1a1a;
 }
+/* Tab reaches the map, but focus then lives inside the frame's own document:
+   the <iframe> matches neither :focus-visible nor :focus, only :focus-within
+   (measured in Chrome) — and when the map fails to load, not even that, so
+   main.js adds .is-focused from the element's own focus events. */
+.ct-map iframe:focus-within, .ct-map iframe.is-focused { outline: 2px solid var(--accent-on-dark); outline-offset: 3px; }
 .ct-map figcaption {
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 14px 0 0;
   font: 600 var(--t-label)/1.2 Archivo, "Archivo Fallback", sans-serif; letter-spacing: .14em;
@@ -1220,7 +1234,10 @@ html.reveal-ready .ch-strip > li::after { transition-delay: var(--d, 0ms); }
 /* ── small screens ──────────────────────────────────────────────────────── */
 
 @media (max-width: 760px) {
-  html { scroll-padding-top: 78px; }
+  /* Bottom too: the phone action bar is fixed over the last 71 px of the
+     screen, and a control scrolled into view by keyboard focus would land
+     underneath it — hidden, which WCAG 2.2 (2.4.11) does not allow. */
+  html { scroll-padding-top: 78px; scroll-padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
 
   .hd-nav, .hd-act { display: none; }
   .hd-menu {
@@ -2351,3 +2368,205 @@ html.hd-over .hd-progress { mix-blend-mode: normal; }
 /* Two ghost buttons share a row on a phone; the stamped lettering is wider
    than the old face, so they give up side padding before the label. */
 @media (max-width: 760px) { .hero-act .btn-ghost { padding: 0 12px; } }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMPLETED WORK — the film, the home sheet, the job's own page, the rows
+   ═══════════════════════════════════════════════════════════════════════════
+   The footage is portrait and about 540 px wide in truth (it reached us as a
+   phone recording of a WhatsApp Status). So it is never stretched across a
+   screen: it stands upright, at no more than 460 CSS px, and the composition
+   is built around it — type and facts on the drawing's left bays, the
+   footage on the right, the way a detail sits beside its notes on a sheet.
+   Enlarged past that it would show the compression, not the steel. */
+
+/* ── the film ─────────────────────────────────────────────────────────────── */
+.film { position: relative; background: #000; }
+.film-v {
+  display: block; width: 100%; height: auto; aspect-ratio: 3 / 5;
+  object-fit: cover; background: #000;
+}
+/* Below the fold the poster is a lazy image under a transparent video: the
+   video paints nothing until its first frame, so the picture shows through. */
+.film-poster {
+  position: absolute; top: 0; left: 0; width: 100%; height: auto; aspect-ratio: 3 / 5; object-fit: cover;
+}
+.film-lazy .film-v { position: relative; background: transparent; }
+/* The label and the control sit under the frame, on their own ground, not
+   over the footage: the sheeting at the top of these frames is nearly white,
+   and small type laid over it would fail contrast on half of them. */
+.film-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 56px; padding: 6px 6px 6px 14px;
+  background: var(--bg-dark); border-top: 2px solid var(--accent);
+}
+.film-meta {
+  display: flex; align-items: baseline; gap: 12px; margin: 0; min-width: 0;
+  font: 600 var(--t-label)/1.2 Archivo, "Archivo Fallback", sans-serif;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fg-on-dark-muted);
+  white-space: nowrap;
+}
+/* A frame narrower than ~360 px (a tablet column, a small phone) tightens
+   the label rather than break "no sound" across two lines. */
+@container film (max-width: 360px) { .film-meta { letter-spacing: .06em; gap: 8px; } }
+@container film (max-width: 300px) { .film-what { display: none; } }
+.film { container: film / inline-size; }
+.film-meta .num { color: var(--fg-on-dark); letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.film-toggle {
+  flex: none; width: 44px; height: 44px; cursor: pointer; border-radius: var(--pill);
+  border: 1px solid rgba(243, 245, 246, .55); background: transparent;
+  display: grid; place-items: center; color: #F3F5F6;
+  transition: background-color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.film-toggle:hover { background: rgba(243, 245, 246, .12); border-color: #F3F5F6; }
+.film-toggle:focus-visible { outline: 2px solid #F3F5F6; outline-offset: 2px; }
+/* Pause bars while it plays; a play triangle while it is stopped. */
+.film-toggle span { width: 10px; height: 12px; border-left: 3px solid currentColor; border-right: 3px solid currentColor; }
+.film-toggle[aria-pressed="true"] span {
+  width: 0; height: 0; border: 0; margin-left: 3px;
+  border-left: 11px solid currentColor; border-top: 7px solid transparent; border-bottom: 7px solid transparent;
+}
+.film.is-failed .film-meta > span:last-child::after { content: " · poster only"; }
+
+/* ── home: built by Kingson ───────────────────────────────────────────────── */
+.bk { padding: clamp(72px, 8.4vw, 144px) 0; }
+.bk-in {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: var(--gut); align-items: stretch;
+}
+.bk-copy {
+  display: flex; flex-direction: column; align-items: flex-start;
+  border-top: 2px solid var(--fg-on-dark); padding-top: 14px;
+}
+.bk-title {
+  font-size: var(--t-h2); line-height: .92; letter-spacing: -.045em;
+  max-width: 6.4em; margin: 0 0 clamp(28px, 3vw, 44px);
+}
+.bk-title .pt, .pd-title .pt { color: var(--accent); }
+.bk-lede {
+  margin-top: auto; font-size: var(--t-lede); line-height: 1.5;
+  color: var(--fg-on-dark-muted); max-width: 32ch; margin-bottom: 22px;
+}
+.bk-facts { width: 100%; max-width: 480px; margin-bottom: 30px; }
+.bk-facts a, .pd-facts a {
+  color: inherit; border-bottom: 1px solid currentColor;
+  min-height: 24px; display: inline-flex; align-items: center;
+}
+.bk-facts a:hover, .pd-facts a:hover { color: var(--accent-on-dark); }
+.bk-act { display: flex; flex-wrap: wrap; gap: 12px; }
+.bk-film { margin: 0; width: min(100%, 460px); justify-self: start; }
+.bk-film figcaption, .pd-film figcaption {
+  margin-top: 12px; font-size: var(--t-small); color: var(--fg-on-dark-muted);
+}
+
+/* A tablet keeps the two columns — stacked, a 460 px frame left half the
+   width empty. Only a phone reads it as one column. */
+@media (max-width: 700px) {
+  /* One column, in the order a phone reads it: what this is, the footage,
+     then the few facts and the way through. */
+  .bk-in { grid-template-columns: 1fr; }
+  .bk-copy { display: contents; }
+  .bk-copy > .eyebrow { order: 1; border-top: 2px solid var(--fg-on-dark); padding-top: 14px; width: 100%; }
+  .bk-title { order: 2; }
+  .bk-film { order: 3; width: 100%; max-width: 460px; margin-bottom: 28px; }
+  .bk-lede { order: 4; margin-top: 0; }
+  .bk-facts { order: 5; }
+  .bk-act { order: 6; }
+}
+
+/* ── a job's own page ─────────────────────────────────────────────────────── */
+.pd { padding: clamp(28px, 4vw, 56px) 0 clamp(72px, 8vw, 128px); }
+.pd-in {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
+  grid-template-areas: "head film" "copy film";
+  grid-template-rows: auto 1fr; column-gap: clamp(32px, 6vw, 112px);
+}
+.pd-head { grid-area: head; border-top: 2px solid var(--fg); padding-top: 14px; }
+.pd-head .eyebrow { flex-wrap: wrap; column-gap: 10px; row-gap: 6px; }
+.pd-head .eyebrow span { color: var(--line-strong); }
+.pd-title {
+  font-size: clamp(40px, 6.4vw, 104px); line-height: .9; letter-spacing: -.045em;
+  max-width: 7.5em; margin: 0 0 clamp(28px, 3vw, 44px) -.04em;
+}
+.pd-film { grid-area: film; margin: 0; align-self: start; }
+.pd-photo img { display: block; width: 100%; height: auto; }
+.pd-copy { grid-area: copy; max-width: 600px; }
+.pd-lede { font-size: var(--t-lede); line-height: 1.55; color: var(--fg-muted); max-width: 46ch; margin-bottom: 28px; }
+.pd-facts { margin-bottom: 26px; }
+.pd-shows {
+  font-size: var(--t-small); line-height: 1.6; color: var(--fg-muted); max-width: 54ch;
+  margin-bottom: 32px; padding-left: 14px; border-left: 2px solid var(--line-strong);
+}
+.pd-act { display: flex; flex-wrap: wrap; gap: 12px; }
+
+@media (max-width: 900px) and (min-width: 701px) {
+  .pd-in { grid-template-columns: minmax(0, 1fr) minmax(0, 44%); column-gap: 32px; }
+}
+@media (max-width: 700px) {
+  .pd-in { grid-template-columns: 1fr; grid-template-areas: "head" "film" "copy"; }
+  .pd-film { max-width: 460px; width: 100%; margin-bottom: 32px; }
+}
+
+/* Frames from the footage. Never wider than the 540 px they really have. */
+.pd-frames { padding: clamp(56px, 6vw, 104px) 0; }
+.pd-sub {
+  font: 600 13.5px/1.2 Archivo, "Archivo Fallback", sans-serif; font-stretch: 112%;
+  letter-spacing: .15em; text-transform: uppercase; color: var(--fg-on-dark-muted);
+  padding-top: 14px; border-top: 2px solid var(--fg-on-dark); margin-bottom: clamp(24px, 3vw, 40px);
+}
+.pd-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 360px)); gap: var(--gut); }
+.pd-strip figure { margin: 0; }
+.pd-strip img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 5; object-fit: cover; background: #000; }
+.pd-strip figcaption {
+  display: flex; gap: 12px; align-items: baseline; margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--line-dark); font-size: var(--t-small); color: var(--fg-on-dark-muted);
+}
+.pd-strip figcaption .num { color: var(--red-on-dark); font-weight: 700; letter-spacing: .06em; }
+.pd-strip:focus-visible { outline: 2px solid var(--fg-on-dark); outline-offset: 6px; }
+@media (max-width: 760px) {
+  /* A row that scrolls sideways, each frame snapping into place, rather than
+     three slivers or a wall of tall pictures. */
+  .pd-strip {
+    grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 72%;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    margin-inline: calc(-1 * var(--margin)); padding-inline: var(--margin); scroll-padding-inline: var(--margin);
+  }
+  .pd-strip li { scroll-snap-align: start; }
+}
+
+/* The service behind the job — clearly the service's figures, not the job's. */
+.pd-svc { padding: clamp(56px, 6vw, 104px) 0; }
+.pd-svc-in {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gut);
+  border-top: 2px solid var(--fg); padding-top: 14px;
+}
+.pd-svc-title { font-size: clamp(30px, 3.6vw, 56px); line-height: .95; letter-spacing: -.04em; max-width: 9em; }
+.pd-svc-lead { margin: 0 0 14px; }
+.pd-svc-lead b {
+  display: block; font: 800 clamp(44px, 5vw, 76px)/.88 Archivo, "Archivo Fallback", sans-serif;
+  font-stretch: 62%; letter-spacing: -.01em;
+}
+.pd-svc-lead span { color: var(--fg-muted); }
+.pd-svc-body { color: var(--fg-muted); max-width: 46ch; margin-bottom: 14px; }
+.pd-svc-note { font-size: var(--t-small); color: var(--fg-faint); max-width: 46ch; }
+@media (max-width: 900px) {
+  .pd-svc-in { grid-template-columns: 1fr; }
+  .pd-svc-title { margin-bottom: 24px; }
+}
+
+/* ── projects as rows (the chooser's idiom) ───────────────────────────────── */
+.pj-index { padding-top: clamp(28px, 4vw, 56px); }
+.pj-index .sec-head h1 { font-size: var(--t-h2); line-height: .92; letter-spacing: -.045em; max-width: 11em; margin: 0; }
+@media (max-width: 900px) { .pj-index .sec-head h1 { margin-bottom: 18px; } }
+.pj-rows .cx-name { margin: 0; }
+/* The lead here is a service name, not a figure: set it as words. */
+.pj-rows .cx-lead b {
+  font-stretch: 100%; font-weight: 700; font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.2; letter-spacing: 0;
+}
+.pj-tag {
+  display: inline-block; margin-left: 6px; padding: 2px 8px; vertical-align: 1px;
+  border: 1px solid currentColor; font: 600 10.5px/1.4 Archivo, "Archivo Fallback", sans-serif;
+  letter-spacing: .12em; text-transform: uppercase;
+}
+.sp-work { background: var(--bg-dark); }
+.sp-work .cx { border-top-color: var(--fg-on-dark); }

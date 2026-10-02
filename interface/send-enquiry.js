@@ -43,8 +43,8 @@ const clip = (v, n) => {
  * has to keep the WhatsApp and email handoffs working either way. An enquiry
  * that cannot be saved is still an enquiry the visitor must be able to send.
  *
- * @param {object} p       the form values
- * @param {string} p.honeypot  a field no human can see; the trigger flags it
+ * @param {Record<string, any>} p  the form values, by field name — including
+ *   `honeypot`, a field no human can see; the trigger flags it
  * @returns {Promise<{ok: boolean, ref?: string|null, reason?: string}>}
  */
 export async function sendEnquiry(p) {
