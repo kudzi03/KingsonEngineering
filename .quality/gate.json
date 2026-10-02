@@ -1,0 +1,183 @@
+{
+  "checks": {
+    "build": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:30:57.139Z",
+      "by": "auto",
+      "out": "index.html, sitemap.xml and 8 service routes match the content layer."
+    },
+    "truth": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:30:57.396Z",
+      "by": "auto",
+      "out": "Publication gate holds across 26 served files.\n  134 confirmed figures published, each citing the returned document.\n  1 value held back: facebook.\n  91 image files referenced, all present.\n  820 links, fragments and asset paths resolved."
+    },
+    "syntax": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:30:58.197Z",
+      "by": "auto",
+      "out": "29 modules parse"
+    },
+    "lint": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:30:58.797Z",
+      "by": "auto",
+      "out": "no findings"
+    },
+    "typecheck": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:30:59.659Z",
+      "by": "auto",
+      "out": "0 finding(s); 46 DOM-narrowing (TS2339 on Element) suppressed"
+    },
+    "tests": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:31:00.290Z",
+      "by": "auto",
+      "out": "ok 16 - the video never autoplays, never has sound, and loads nothing before it is needed\n  ---\n  duration_ms: 2.742585\n  type: 'test'\n  ...\n1..16\n# tests 16\n# suites 0\n# pass 16\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 568.946637"
+    },
+    "seo-meta": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:31:00.699Z",
+      "by": "auto",
+      "out": "8 pages checked"
+    },
+    "sitemap": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:31:00.708Z",
+      "by": "auto",
+      "out": "8 URLs, all pages, all indexable pages listed"
+    },
+    "structured-data": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:31:00.720Z",
+      "by": "auto",
+      "out": "80 nodes across 8 pages"
+    },
+    "secrets": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:31:00.742Z",
+      "by": "auto",
+      "out": "108 files scanned"
+    },
+    "assets": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:31:00.861Z",
+      "by": "auto",
+      "out": "120 asset files within budget"
+    },
+    "console": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.732Z",
+      "by": "browser",
+      "out": "9 pages × 2 viewports, no errors (Vercel Analytics script excluded: served only on Vercel)"
+    },
+    "overflow": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.733Z",
+      "by": "browser",
+      "out": "9 pages × 9 widths, none overflow"
+    },
+    "links-live": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.733Z",
+      "by": "browser",
+      "out": "8 internal URLs answer 200; unknown URL answers 404"
+    },
+    "keyboard": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.733Z",
+      "by": "browser",
+      "out": "237 Tab stops, every one with a visible indicator"
+    },
+    "menu": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.733Z",
+      "by": "browser",
+      "out": "opens, focus on Close, 25 Tabs stay inside, Escape closes, focus returns"
+    },
+    "forms": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.733Z",
+      "by": "browser",
+      "out": "empty submit: summary shown and focused, 3 field errors, 3 aria-invalid"
+    },
+    "reduced-motion": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.733Z",
+      "by": "browser",
+      "out": "hero starts paused; 2 video page(s) do not autoplay"
+    },
+    "a11y": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.733Z",
+      "by": "browser",
+      "out": "9 pages × 2 viewports: 0 serious or critical (WCAG 2.2 AA rules); 0 minor/moderate"
+    },
+    "performance": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.733Z",
+      "by": "browser",
+      "out": "/ desktop: LCP 476 ms, CLS 0, 734 KB transferred at load\n/ mobile: LCP 504 ms, CLS 0, 478 KB transferred at load\n/projects desktop: LCP 400 ms, CLS 0, 272 KB transferred at load\n/projects mobile: LCP 364 ms, CLS 0, 272 KB transferred at load\n/projects/steel-roof-structure desktop: LCP 496 ms, CLS 0, 1399 KB transferred at load\n/projects/steel-roof-structure mobile: LCP 432 ms, CLS 0, 1399 KB transferred at load\n(local server, no network throttling — a regression signal, not a field measurement)"
+    },
+    "video": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:11.733Z",
+      "by": "browser",
+      "out": "/, /projects/steel-roof-structure at 1440 and 390: muted, inline, poster, no request until near view, plays in view, control unobscured when focused and toggles both ways by keyboard, pauses out of view. Played: 1440px → steel-roof-structure.webm; 390px → steel-roof-structure.webm; 1440px → steel-roof-structure.webm; 390px → steel-roof-structure.webm"
+    },
+    "visual-desktop": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:26.271Z",
+      "by": "attested",
+      "out": "Screenshots inspected at 1024, 1280, 1440, 1920: home Built-by-Kingson sheet (film on gridline C, facts bottom-aligned), /projects rows, /projects/steel-roof-structure (split hero, frame strip 3x360, service block), /roofing-and-trusses completed-work block, header at 761-1440 (logo 112px, 5 links, no wrap), home and service first screens identical to baseline except the Projects link. Fixed during review: tablet single-column waste, header logo squeeze, film label wrap. Last changes after inspection (film.js focus handoff, module load timing) are non-visual.",
+      "note": "Screenshots inspected at 1024, 1280, 1440, 1920: home Built-by-Kingson sheet (film on gridline C, facts bottom-aligned), /projects rows, /projects/steel-roof-structure (split hero, frame strip 3x360, service block), /roofing-and-trusses completed-work block, header at 761-1440 (logo 112px, 5 links, no wrap), home and service first screens identical to baseline except the Projects link. Fixed during review: tablet single-column waste, header logo squeeze, film label wrap. Last changes after inspection (film.js focus handoff, module load timing) are non-visual."
+    },
+    "visual-mobile": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:26.382Z",
+      "by": "attested",
+      "out": "Screenshots inspected at 320, 375, 390, 414 and 768: home sheet reads eyebrow, title, film, lede, facts, action; project page head, film, copy; frames strip scroll-snaps with a peek; eyebrow wraps cleanly; film label one line at every frame width (measured 280-460px, no clip, no overlap); focused pause control clears the fixed phone bar (scroll-padding-bottom, hit-tested). JS-off: native controls, poster, content present.",
+      "note": "Screenshots inspected at 320, 375, 390, 414 and 768: home sheet reads eyebrow, title, film, lede, facts, action; project page head, film, copy; frames strip scroll-snaps with a peek; eyebrow wraps cleanly; film label one line at every frame width (measured 280-460px, no clip, no overlap); focused pause control clears the fixed phone bar (scroll-padding-bottom, hit-tested). JS-off: native controls, poster, content present."
+    },
+    "facts": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:26.493Z",
+      "by": "attested",
+      "out": "Visible text, meta, OG alt and JSON-LD of all four new surfaces extracted and read line by line. Every statement traces to the owner's 2 Oct 2026 statement (Kingson's work; completed steel roof/truss structure) or describes only what the footage visibly shows; service figures are labelled as the service's, not this job's. No client, location, date, span, tonnage, grade or scope claim anywhere. One overstatement fixed ('shown as it was filmed'). uploadDate is the site publication date, documented as such.",
+      "note": "Visible text, meta, OG alt and JSON-LD of all four new surfaces extracted and read line by line. Every statement traces to the owner's 2 Oct 2026 statement (Kingson's work; completed steel roof/truss structure) or describes only what the footage visibly shows; service figures are labelled as the service's, not this job's. No client, location, date, span, tonnage, grade or scope claim anywhere. One overstatement fixed ('shown as it was filmed'). uploadDate is the site publication date, documented as such."
+    },
+    "diff-review": {
+      "ok": true,
+      "fingerprint": "e593cf33438a5db8",
+      "at": "2026-10-02T15:36:26.604Z",
+      "by": "attested",
+      "out": "git diff read file by file; removed lines in every generated page checked (only dateModified, ?v= stamps, logo paths, sheet numbers). Independent /code-review pass found 4 issues (undefined description fallback, preload naming wrong file, duration mismatch 15/14.5/0:14, dev-server negative range) - all fixed, regression test added. Dead code removed was verified to change no output. Raw recording and contact name not committed.",
+      "note": "git diff read file by file; removed lines in every generated page checked (only dateModified, ?v= stamps, logo paths, sheet numbers). Independent /code-review pass found 4 issues (undefined description fallback, preload naming wrong file, duration mismatch 15/14.5/0:14, dev-server negative range) - all fixed, regression test added. Dead code removed was verified to change no output. Raw recording and contact name not committed."
+    }
+  }
+}
