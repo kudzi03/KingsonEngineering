@@ -1,0 +1,5 @@
+{
+  "name": "kingson-quality-gate",
+  "version": "0.1.0",
+  "description": "Shows the Kingson quality gate's ledger (PASS / FAIL / UNKNOWN / NOT RUN for the current code) in the status line, and /kingson-gate prints it. Read-only: it never runs a check and never records a result."
+}

@@ -30,3 +30,7 @@ crm-src
 assets/img/material-*
 tools
 .gitattributes
+
+# The quality gate ledger: what was checked, against which code. For whoever
+# works on this, never for a visitor.
+.quality
