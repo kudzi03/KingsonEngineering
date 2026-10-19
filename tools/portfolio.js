@@ -16,6 +16,7 @@
 
 import { PROJECTS, publishable, hasProjects, credit } from '../content/projects.js';
 import { ASSETS, src, srcset, position } from '../content/assets.js';
+import { SERVICES } from '../content/services.js';
 import { CONTACT, NAV } from '../content/copy.js';
 import { headHtml, chromeTop, chromeBottom, siteFooter, enquiryBlock,
          ICON_ARROW, esc, SITE } from './layout.js';
@@ -23,11 +24,11 @@ import { headHtml, chromeTop, chromeBottom, siteFooter, enquiryBlock,
 export const PORTFOLIO = {
   slug: 'projects',
   nav: 'Projects',
-  title: 'Projects | Kingson Engineering',
-  h1: 'Work we have finished.',
+  title: 'Steelwork Projects in Zimbabwe | Kingson Engineering',
+  h1: 'Work, in detail.',
   eyebrow: 'Projects',
-  description: 'Structural steelwork, roofing, fabrication and cranage projects completed by Kingson Engineering in Harare and across Zimbabwe.',
-  lede: 'Jobs we have taken from drawing to erection. Every figure on this page is from our own records.'
+  description: 'Project photographs, scope and verified details from Kingson Engineering’s structural steelwork, roofing, fabrication and cranage work in Zimbabwe.',
+  lede: 'Selected work from our workshop and client sites. The scope, photographs and technical details shown for each project are verified before publication.'
 };
 
 /* A photograph, at the sizes this layout actually asks for. */
@@ -57,6 +58,7 @@ function projectArticle(p, i) {
         ${p.type ? `<p class="eyebrow">${esc(p.type)}</p>` : ''}
         <h2 class="display pj-title" data-reveal="rise"><span>${esc(p.title)}</span></h2>
         ${line ? `<p class="pj-credit">${esc(line)}</p>` : ''}
+        ${p.status ? `<p class="pj-status">${esc(p.status)}</p>` : ''}
         ${p.scope ? `<p class="pj-scope">${esc(p.scope)}</p>` : ''}
         ${p.description ? `<p class="pj-body">${esc(p.description)}</p>` : ''}
 
@@ -68,12 +70,22 @@ ${figures.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd class="num">${es
 ${p.highlights.map((h) => `          <li>${esc(h)}</li>`).join('\n')}
         </ul>` : ''}
 
-        ${p.services.length ? `<p class="pj-svc">${p.services.map((s) => esc(s)).join(' · ')}</p>` : ''}
+        ${p.services.length ? `<p class="pj-svc">${p.services.map((name) => {
+          const service = SERVICES.find((s) => s.serviceName === name || s.alsoServes?.includes(name));
+          return service ? `<a href="/${service.slug}">${esc(name)}</a>` : esc(name);
+        }).join(' · ')}</p>` : ''}
       </div>
 
       ${(p.gallery || []).length ? `<ul class="pj-gallery" data-reveal="lift" data-reveal-stagger="70">
 ${p.gallery.map((k) => `        <li>${shot(k, { sizes: '(max-width:760px) 88vw, 30vw', w: 900 })}</li>`).join('\n')}
       </ul>` : ''}
+      ${(p.videos || []).map((video) => `<figure class="pj-video">
+        <video controls playsinline preload="none" poster="/${src(video.poster, 1100)}">
+          <source src="/${esc(video.src)}" type="video/mp4">
+          ${video.captions ? `<track kind="captions" src="/${esc(video.captions)}" srclang="en" label="English" default>` : ''}
+          <a href="/${esc(video.src)}">Watch the project video</a>
+        </video><figcaption>${esc(video.caption)}</figcaption>
+      </figure>`).join('')}
     </article>`;
 }
 
@@ -106,7 +118,7 @@ export function portfolioPage() {
 
   return `<!doctype html>
 <html lang="en-ZW">
-${head}
+<head>${head}</head>
 <body>
 ${chromeTop({ current: PORTFOLIO.slug })}
 <main id="main" tabindex="-1">

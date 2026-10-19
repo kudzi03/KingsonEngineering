@@ -196,7 +196,7 @@ export function position(key) {
    In the order the page reads, after BAND_IMAGE which opens chapter 01.     */
 export const PAGE_IMAGES = [
   'portalFrame', 'laserSparks', 'crane', 'weldingBay', 'roofTrusses',
-  'weldingHands',
+  'weldingHands', 'roofFrame',
   'laserCutting', 'nestingStation', 'laserFloor', 'gantry'
 ];
 

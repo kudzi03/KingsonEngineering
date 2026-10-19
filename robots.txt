@@ -1,40 +1,7 @@
-# robots.txt — Kingson Engineering
-# Steelwork specialists — Tynwald Industries, Harare, Zimbabwe
-
+# Public services and specifications are crawlable. CRM pages also carry noindex.
+# robots.txt is crawl guidance, not an access-control boundary.
 User-agent: *
 Allow: /
-
-# ── AI answer engines ──────────────────────────────────────────────
-# Explicitly allowed: these are the crawlers that decide whether Kingson
-# appears in an assistant's answer. Remove a block below to opt that one out.
-User-agent: GPTBot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Claude-SearchBot
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: Applebot-Extended
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-# ── nothing here is private ────────────────────────────────────────
-Disallow:
+Disallow: /crm
 
 Sitemap: https://www.kingsonengineering.co.zw/sitemap.xml

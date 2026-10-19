@@ -52,7 +52,7 @@ function organisation() {
     name: publish('name'),
     ...(publish('legalName') ? { legalName: publish('legalName') } : {}),
     ...(publish('tagline') ? { slogan: publish('tagline') } : {}),
-    description: HERO.lede,
+    description: 'Kingson Engineering is a steelwork specialist based in Tynwald, Harare, Zimbabwe. Fabrication takes place at its workshop; erection and cranage are carried out at clients’ sites.',
     url: SITE + '/',
     logo: {
       '@type': 'ImageObject',
@@ -117,8 +117,8 @@ const website = () => ({
   inLanguage: 'en-ZW'
 });
 
-/* Each confirmed service, once, with the figures Kingson confirmed for it as
-   machine-readable properties rather than only as prose. */
+/* Each confirmed service, once. Technical facts remain in its description and
+   the visible specification tables; additionalProperty is not valid on Service. */
 function services() {
   return CAPABILITIES.map((c) => {
     const url = pageFor(c.title);
@@ -127,16 +127,14 @@ function services() {
       '@id': serviceId(c),
       name: c.title,
       serviceType: c.title,
-      description: c.body,
+      description: [c.body, ...c.facts.map(([name, value]) => `${name}: ${value}.`)].join(' '),
       provider: { '@id': ORG },
       areaServed: [
         { '@type': 'Country', name: 'Zimbabwe' },
         { '@type': 'City', name: 'Harare' }
       ],
       ...(url ? { url } : {}),
-      additionalProperty: c.facts.map(([name, value]) => ({
-        '@type': 'PropertyValue', name, value
-      }))
+      ...(['cranage', 'structural'].includes(c.id) ? { providerMobility: 'dynamic' } : {})
     };
   });
 }
@@ -161,9 +159,8 @@ const questions = (list) => list.map((it) => ({
 }));
 
 /* ── the page graph ─────────────────────────────────────────────────────────
-   `faq` present types the page node as both WebPage and FAQPage, which is what
-   gets a question its rich result — a separate FAQPage node sharing the same
-   URL describes two pages at one address.                                   */
+   `faq` adds the visible questions to the page node. This describes the page;
+   it is not a promise of a Google FAQ rich result or an AI citation. */
 
 export function pageGraph({ path, name, description, image, trail, faq, about, extra = [] }) {
   const url = SITE + (path === '/' ? '/' : path);

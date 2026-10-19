@@ -1,5 +1,17 @@
 # Project information needed
 
+The editorial portfolio also supports a verified `status` and short videos.
+Keep new entries as `internal: true` until approved. The public gallery currently
+shows genuine photography with descriptive captions, without claiming named,
+completed case studies.
+
+For each video, place an MP4 in `assets/video/` and add a `videos` entry with
+`src` (the local path), `poster` (a key from `content/assets.js`) and `caption`.
+If speech or meaningful audio is present, include an English WebVTT file using
+the optional `captions` path. Videos use controls, `playsinline` and
+`preload="none"`; they do not autoplay. Project service names link to the
+corresponding service pages. Original photographs remain in the asset map.
+
 The photographs are already on the website. What is missing is the information
 that says what each one **is**.
 

@@ -56,7 +56,7 @@
 
 export const CHAPTERS = [
   {
-    id: 'cut', route: 'fibre-laser-cutting-harare', name: 'Fibre laser', ground: 'dark',
+    id: 'cut', route: 'fibre-laser-cutting-harare', name: 'Fibre laser', ground: 'light',
     covers: ['Fibre laser cutting'],
     title: 'Straight from your file.',
     body: 'Plate and sheet cut on a DXTECH fibre laser — nested from the drawing you send and cut on a 3 000 × 1 500 mm bed. Mild steel, stainless, aluminium and galvanised sheet.',
@@ -99,7 +99,7 @@ export const WORKSHOP = {
   place: 'Tynwald Industries',
   city: 'Harare',
   title: 'This is where the work happens.',
-  body: 'One workshop at No. 1262 Tynwald Industries. The laser, the folder and the fabrication bays are under one roof, and the crane goes out from the same yard.',
+  body: 'Based in Tynwald, Harare, working at clients’ sites across Zimbabwe. The laser, the folder and the fabrication bays are under one roof at No. 1262 Tynwald Industries. Steelwork is fabricated here, with erection and cranage carried out on site.',
   figures: [['Open', 'Monday to Saturday, 07:30 – 17:00'],
             ['Ask for', 'Mr Murandu']],
   /* This section's headline is "This is where the work happens." It used to

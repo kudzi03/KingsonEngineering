@@ -1,0 +1,8 @@
+{
+  "esbuild": "0.28.2",
+  "sourceHash": "f27a3b11d3d11de6398089108fa9615ad10dcdeb4ba96ce0d7b4f3f9fed06435",
+  "outputs": {
+    "assets/site.min.css": "e6582e5a23db55b82c78a2cbe7e5f14d834de06184ca43e5985caaf2d67582f7",
+    "assets/site.min.js": "e8d9a6232d233fedff634db7e72862c2c2565460b1664e83494008e3f7179795"
+  }
+}

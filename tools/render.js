@@ -33,6 +33,7 @@ import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
 import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
 import { SERVICES } from '../content/services.js';
+import { EVIDENCE } from '../content/editorial.js';
 import { portfolioRoutes, PORTFOLIO } from './portfolio.js';
 import { hasProjects, publishable as publishableProjects, problems as projectProblems } from '../content/projects.js';
 import { pageGraph, serviceId } from './schema.js';
@@ -199,7 +200,7 @@ const photo = (key, { sizes, w, cls = '', eager = false }) => {
    stay reachable from wherever it appears — not only from a gallery. */
 const zoomable = (key, inner) =>
   `<button type="button" class="zoom" data-open="${key}"
-              aria-label="${esc(ASSETS[key].alt)} Select to view full size.">${inner}<span class="zoom-cue" aria-hidden="true">${ICON_EXPAND}</span></button>`;
+              aria-label="${esc(WORK.captions[key] || ASSETS[key].alt)}. Select to view full size.">${inner}<span class="zoom-cue" aria-hidden="true">${ICON_EXPAND}</span></button>`;
 
 const figures = (rows, cls = 'ch-figures') => `      <dl class="${cls}">
 ${rows.map(([k, v]) => `        <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('\n')}
@@ -372,6 +373,22 @@ const chooser = serviceChooser();
 
 const chapters = CHAPTERS.map(chapter).join('\n\n');
 
+const evidence = `  <section class="evidence" id="work" aria-labelledby="work-h">
+    <div class="wrap">
+      <div class="evidence-head">
+        <div><p class="eyebrow">On site & in the workshop</p><h2 class="display" id="work-h">The work.<br>The people.<br>The steel.</h2></div>
+        <p>Real photographs from Kingson’s workshop and site work. From the frame overhead to the weld that holds it together, see the work behind our services.</p>
+      </div>
+      <div class="evidence-grid">
+${EVIDENCE.map((item, i) => `        <figure data-reveal="lift" style="--d:${i * 80}ms">
+          ${zoomable(item.image, photo(item.image, { sizes: '(max-width:760px) 90vw, 35vw', w: 900 }))}
+          <figcaption>${esc(item.caption)}<a href="/${item.route}">${esc(item.link)} ↗</a></figcaption>
+        </figure>`).join('\n')}
+      </div>
+${hasProjects() ? '      <p class="evidence-more"><a class="btn-ghost" href="/projects">Explore the project portfolio</a></p>' : ''}
+    </div>
+  </section>`;
+
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
 const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
@@ -527,76 +544,14 @@ const foot = [
    with their answers. Every value comes through publish(), so an unverified
    one is absent from the graph rather than guessed into it.                  */
 
-const hoursSpec = publish('hoursSpec');
-const BIZ = SITE + '#business';
-
-const graph = [
-  {
-    '@type': 'LocalBusiness', '@id': BIZ,
-    name: publish('name'),
-    ...(publish('legalName') ? { legalName: publish('legalName') } : {}),
-    ...(publish('tagline') ? { slogan: publish('tagline') } : {}),
-    description: HERO.lede,
-    url: SITE,
-    image: SITE + src('portalFrame'),
-    logo: SITE + 'assets/brand/kingson-logo-560.png',
-    ...(publish('phone') ? { telephone: publish('phone') } : {}),
-    ...(publish('email') ? { email: publish('email') } : {}),
-    ...(publish('address') ? {
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: publish('address').replace(/,\s*Harare$/, ''),
-        addressLocality: 'Harare', addressCountry: 'ZW'
-      }
-    } : {}),
-    ...(hoursSpec ? {
-      openingHoursSpecification: [{
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: hoursSpec.days, opens: hoursSpec.opens, closes: hoursSpec.closes
-      }]
-    } : {}),
-    ...(publish('contactPerson') ? {
-      contactPoint: {
-        '@type': 'ContactPoint', contactType: 'sales',
-        name: publish('contactPerson'),
-        ...(publish('phone') ? { telephone: publish('phone') } : {}),
-        ...(publish('email') ? { email: publish('email') } : {}),
-        availableLanguage: 'en'
-      }
-    } : {}),
-    areaServed: { '@type': 'Country', name: 'Zimbabwe' },
-    ...(publish('facebook') ? { sameAs: [publish('facebook')] } : {})
-  },
-  ...CAPABILITIES.map((c) => ({
-    '@type': 'Service', '@id': `${SITE}#${c.id}`,
-    name: c.title, serviceType: c.title, description: c.body,
-    provider: { '@id': BIZ },
-    areaServed: { '@type': 'Country', name: 'Zimbabwe' },
-    additionalProperty: c.facts.map(([k, v]) => ({
-      '@type': 'PropertyValue', name: k, value: v
-    }))
-  })),
-  {
-    '@type': 'FAQPage', '@id': SITE + '#faq',
-    /* The seven the page shows, not the seventeen that exist. A FAQPage that
-       declares answers the page does not display is the structured-data
-       version of lying about content. */
-    mainEntity: homeFaq().map((it) => ({
-      '@type': 'Question', name: it.q,
-      acceptedAnswer: { '@type': 'Answer', text: it.a }
-    }))
-  }
-];
-
-const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, null, 2);
-
+/* Public entity graphs are generated only by tools/schema.js. */
 
 /* ── the homepage's <head> ───────────────────────────────────────────────────
    Through the same function the service routes use, so a metadata change
    cannot reach five pages and miss the sixth. */
 
-const HOME_TITLE = 'Steel Fabrication, Roofing & Cranage in Harare | Kingson';
-const HOME_DESC = 'Steelwork specialists in Tynwald, Harare. Structural steel, roof trusses and sheeting, fibre laser cutting to \u00b1 0.1 mm, and a 25-tonne mobile crane.';
+const HOME_TITLE = 'Steelwork & Fabrication in Harare | Kingson Engineering';
+const HOME_DESC = 'Structural steelwork, roofing, fabrication and fibre laser cutting up to 20 mm in Harare, Zimbabwe. Own 25-tonne crane. Send drawings for a quotation.';
 
 const homeHead = headHtml({
   home: true,
@@ -621,7 +576,7 @@ const BLOCKS = {
   chromebottom: chromeBottom(),
 
   /* the homepage's own composition */
-  hero, strip, chapters, workshop, specs, sheets, crane, enqbg,
+  hero, strip, chapters, workshop, specs, sheets, crane, enqbg, evidence,
   steps, gantt, procClose, form, faq, faqask, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),

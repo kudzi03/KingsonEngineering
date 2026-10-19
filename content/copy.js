@@ -17,7 +17,7 @@
    hand when a figure, a service or a photograph changes — a sitemap that
    claims a change every time the renderer runs teaches a crawler to ignore
    the field anyway. */
-export const UPDATED = '2026-09-14';
+export const UPDATED = '2026-10-19';
 
 export const EYEBROWS = {
   services: 'Six services',
@@ -55,8 +55,8 @@ export const HERO = {
 
 export const SERVICES_BLOCK = {
   eyebrow: 'Six services',
-  title: 'What do you need made?',
-  lede: 'Pick the one closest to your job. Each goes to a page with the full specification.',
+  title: 'From drawing. To standing.',
+  lede: 'One workshop, connected capabilities. Explore the steelwork, roofing, fabrication and lifting services behind your next project.',
   go: 'See the detail'
 };
 

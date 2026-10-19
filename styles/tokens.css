@@ -24,18 +24,15 @@
   src: local("Arial"), local("Helvetica"), local("Liberation Sans");
   ascent-override: 87.8%; descent-override: 21%; line-gap-override: 0%;
 }
-/* The display headings wrap, so their fallback has to wrap where Archivo
-   will or the lines below move when it arrives: a service title that fits on
-   one Arial line and takes two in Archivo pushed the photograph down 83px.
-   Archivo 800 at 125% width measured 1.30–1.34 × Arial Bold across every
-   heading on the site, so this is Arial Bold at 132%. It is rarely seen: the
-   first sheet's title is held back until Archivo is in (see <head>). */
+/* The editorial headings use Archivo 600 at its normal width. Measured widths
+   are 0.957–0.967 × Arial Bold across the hero and service headings. Match the
+   fallback to that design, so loading the font does not rewrap the title. */
 @font-face {
   font-family: "Archivo Display Fallback";
   src: local("Arial Bold"), local("Arial-BoldMT"), local("Helvetica Bold"), local("Liberation Sans Bold");
   font-weight: 600 900;
-  size-adjust: 132%;
-  ascent-override: 66.5%; descent-override: 15.9%; line-gap-override: 0%;
+  size-adjust: 96%;
+  ascent-override: 91.46%; descent-override: 21.88%; line-gap-override: 0%;
 }
 @font-face {
   font-family: "Inter Fallback";
