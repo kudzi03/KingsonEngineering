@@ -102,7 +102,7 @@ Lighthouse accessibility result is supplemented by the page-by-page axe tests.
 
 | Run | Performance | Accessibility | Best practices | SEO | FCP | LCP | TBT | CLS |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Desktop preset | 98 | 100 | 100 | 100 | 0.5 s | 0.7 s | 90 ms | 0 |
+| Desktop preset | 99 | 100 | 100 | 100 | 0.4 s | 0.6 s | 70 ms | 0 |
 | Mobile simulated preset | 80 | 100 | 100 | 100 | 1.3 s | 2.7 s | 650 ms | 0 |
 
 Mobile simulation remains the performance limitation: these LCP/TBT values are
