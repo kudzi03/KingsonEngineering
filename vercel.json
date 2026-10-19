@@ -112,6 +112,17 @@
   ],
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "kingson-engineering.vercel.app"
+        }
+      ],
+      "destination": "https://www.kingsonengineering.co.zw/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {

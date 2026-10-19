@@ -66,6 +66,11 @@ const config = JSON.parse(read('vercel.json'));
 const redirects = config.redirects.filter((rule) =>
   rule.has?.some((condition) => condition.type === 'host' && condition.value === oldHost));
 assert.deepEqual(redirects, [{
+  source: '/',
+  has: [{ type: 'host', value: oldHost }],
+  destination: origin + '/',
+  permanent: true
+}, {
   source: '/:path*',
   has: [{ type: 'host', value: oldHost }],
   destination: origin + '/:path*',

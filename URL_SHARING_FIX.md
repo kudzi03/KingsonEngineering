@@ -43,7 +43,7 @@ domain. No additional apex redirect was added.
   it retains `noindex` and has no canonical or `og:url`.
 - Regenerated `sitemap.xml`: all six page URLs and image URLs use the official
   origin. Regenerated `robots.txt`: the sitemap declaration uses that origin.
-- `vercel.json`: added a permanent redirect from `/:path*` on the exact host
+- `vercel.json`: added permanent redirects from `/` and `/:path*` on the exact host
   `kingson-engineering.vercel.app` to
   `https://www.kingsonengineering.co.zw/:path*`. This covers old page, asset and
   CRM paths. Existing CRM-host routing, headers, clean URLs and slash handling
@@ -74,7 +74,7 @@ node tools/check-truth.js
 git diff --check
 ```
 
-The publication gate passed over 22 served files, 125 confirmed figures and 82
+The publication gate passed over 22 served files, 122 confirmed figures and 82
 referenced image files. All six indexed pages have exactly their official
 canonical and matching `og:url`; all seven HTML files have official-domain
 preview images. The new check runs automatically inside the publication gate.
