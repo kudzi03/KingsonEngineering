@@ -31,6 +31,7 @@ node tools/render.js          rewrite index.html, the 5 service routes and
                               sitemap.xml from content/
 node tools/render.js --check  fail if any of them has drifted
 node tools/check-truth.js     assert every gate over the shipped files
+node tools/check-sharing.mjs  check official-domain metadata and redirect configuration
 python3 tools/build-images.py rebuild the webp derivatives from the source
                               photographs (only when a photograph changes)
 ```

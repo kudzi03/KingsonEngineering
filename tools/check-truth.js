@@ -453,6 +453,15 @@ try {
   fail('index.html is out of date — run: node tools/render.js');
 }
 
+/* Keep the approved origin independent of SITE so stale sharing metadata
+   cannot pass merely because the renderer and its checks agree. */
+try {
+  const { execFileSync } = await import('node:child_process');
+  execFileSync(process.execPath, [root + 'tools/check-sharing.mjs'], { stdio: 'pipe' });
+} catch (error) {
+  fail(`Sharing URL checks failed — run: node tools/check-sharing.mjs\n${error.stderr?.toString() || error.message}`);
+}
+
 if (failures) {
   console.error(`\n${failures} publication-gate violation${failures === 1 ? '' : 's'}.`);
   process.exit(1);

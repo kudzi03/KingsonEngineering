@@ -1,5 +1,12 @@
 # Moving to kingsonengineering.co.zw
 
+> Historical migration plan, superseded on 19 October 2026 by
+> [URL_SHARING_FIX.md](URL_SHARING_FIX.md). The approved production origin is
+> **https://www.kingsonengineering.co.zw**. Follow that report for the prepared
+> fix and deployment checks; do not perform the historical DNS, email or
+> service-configuration steps below as part of this fix. `robots.txt` is now
+> generated automatically, and `vercel.json` now includes the old-host redirect.
+
 Internal. Not published — `.vercelignore` excludes `*.md` except `README.md`.
 
 **Not part of the current build.** This is the list to work through on the day

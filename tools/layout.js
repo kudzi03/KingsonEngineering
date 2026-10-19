@@ -46,7 +46,7 @@ export const BUILD = createHash('sha256')
    a committed file rather than an environment variable, because the rendered
    HTML is committed and Vercel never runs the renderer. See
    DOMAIN_MIGRATION.md. */
-export const SITE = 'https://kingson-engineering.vercel.app';
+export const SITE = 'https://www.kingsonengineering.co.zw';
 
 export const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
