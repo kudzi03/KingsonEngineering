@@ -86,7 +86,7 @@ def focal_anchors():
     everywhere on the site; a second copy here would drift the moment one of
     them is nudged, and the drift would be invisible — a slightly worse crop,
     not an error."""
-    text = open('content/assets.js').read()
+    text = open('content/assets.js', encoding='utf-8').read()
     out = {}
     for block in re.finditer(r"slug:\s*'([a-z-]+)'.*?focal:\s*\[\s*([\d.]+)\s*,\s*([\d.]+)\s*\]",
                              text, re.S):
@@ -150,7 +150,7 @@ def main():
     # root photographs must not erase those already-built manifest entries.
     manifest_path = os.path.join(OUT_DIR, 'manifest.json')
     if os.path.exists(manifest_path):
-        with open(manifest_path) as existing:
+        with open(manifest_path, encoding='utf-8') as existing:
             manifest = {slug: entry for slug, entry in json.load(existing).items()
                         if entry.get('source', '').startswith('handoff/')}
 
@@ -193,7 +193,7 @@ def main():
 
         manifest[slug] = entry
 
-    with open('%s/manifest.json' % OUT_DIR, 'w') as f:
+    with open('%s/manifest.json' % OUT_DIR, 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=1)
 
     n = sum(len(v['sizes']) + len(v.get('wide', {}).get('sizes', [])) for v in manifest.values())
