@@ -21,7 +21,7 @@ import { section as profileSection, flashings, bed } from '../scenes/profiles.js
 import { pageGraph, pickFaq, pickSpecs, serviceId } from './schema.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryBlock, callBtn, waBtn, quoteBtn, bleedPhoto, serviceChooser, cinemaHero, ICON_ARROW
+  enquiryBlock, callBtn, waBtn, quoteBtn, bleedPhoto, serviceChooser, cinemaHero, ICON_ARROW, quoteSupport, processCards
 } from './layout.js';
 import { CAPABILITIES } from '../content/copy.js';
 
@@ -91,15 +91,7 @@ const processLede = (slug) => {
 /* Only the commitments that are true of this service, renumbered. See the note
    on PROCESS in content/copy.js for why the rail is not the same on every
    page — and why a service with no confirmed programme shows none. */
-const processBlock = (slug) => `      <ol class="steps">
-${processFor(slug).map((st) => `        <li class="step">
-          <span class="step-n">${esc(st.n)}</span>
-          <div class="step-body">
-            <h3>${esc(st.title)}</h3>
-            <p>${esc(st.body)}</p>
-          </div>
-        </li>`).join('\n')}
-      </ol>`;
+const processBlock = (slug) => `<ol class="steps">${processCards(slug)}</ol>`;
 
 const faqBlock = (items) => items.map((it, i) =>
   `      <details class="faq-item" id="q-${i + 1}">
@@ -153,7 +145,7 @@ function drawing(s) {
 /* ── the page ───────────────────────────────────────────────────────────── */
 
 export function servicePage(s) {
-  const faq = pickFaq(s.faq);
+  const faq = pickFaq([...new Set([...s.faq, 'How long does a quotation take?', 'Can I get a price without drawings?'])]);
   const cap = CAPABILITIES.find((c) => c.title === s.serviceName);
   const url = `${SITE}/${s.slug}`;
 
@@ -236,7 +228,7 @@ ${figureRail(s.figures)}
         <h2 class="display" data-reveal="rise"><span>${esc(s.sendTitle)}</span></h2>
         <ul class="sp-send">
 ${s.send.map((line) => `          <li>${esc(line)}</li>`).join('\n')}
-        </ul>
+        </ul>${quoteSupport({slug:s.slug})}
       </div>
     </div>
   </section>
@@ -276,7 +268,7 @@ ${s.parts.map((p) => `        <article id="${p.id}">
         <p>${esc((s.spec && s.spec.lede) || SERVICE_PAGE.specLede)}</p>
       </div>
       <div class="spec-list">
-${specBlock(s.specGroups)}
+${specBlock(s.specGroups)}${quoteSupport({slug:s.slug})}
       </div>
     </div>
   </section>

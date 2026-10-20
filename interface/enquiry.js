@@ -42,7 +42,7 @@ const LINES = [
   ['drawings',    'Drawings']
 ];
 
-const REQUIRED = ['company', 'contact', 'service'];
+const REQUIRED = ['company', 'contact', 'description'];
 
 export function mountEnquiry() {
   const form = document.querySelector('[data-form]');

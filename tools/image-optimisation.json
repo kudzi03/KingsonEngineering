@@ -1,0 +1,740 @@
+{
+  "applied": true,
+  "files_audited": 105,
+  "files_smaller": 52,
+  "before": 13146612,
+  "after": 12391550,
+  "saved_bytes": 755062,
+  "saved_percent": 5.74,
+  "images": [
+    {
+      "file": "assets/img/portal-frame-440.webp",
+      "before": 33986,
+      "after": 30878,
+      "quality": 75,
+      "block_ssim": 0.98132
+    },
+    {
+      "file": "assets/img/portal-frame-720.webp",
+      "before": 73190,
+      "after": 66646,
+      "quality": 75,
+      "block_ssim": 0.980581
+    },
+    {
+      "file": "assets/img/portal-frame-900.webp",
+      "before": 101792,
+      "after": 91062,
+      "quality": 75,
+      "block_ssim": 0.980573
+    },
+    {
+      "file": "assets/img/portal-frame-1100.webp",
+      "before": 132126,
+      "after": 119038,
+      "quality": 75,
+      "block_ssim": 0.980552
+    },
+    {
+      "file": "assets/img/portal-frame-1320.webp",
+      "before": 169080,
+      "after": 146630,
+      "quality": 72,
+      "block_ssim": 0.980603
+    },
+    {
+      "file": "assets/img/portal-frame-wide-900.webp",
+      "before": 88360,
+      "after": 79994,
+      "quality": 75,
+      "block_ssim": 0.982044
+    },
+    {
+      "file": "assets/img/portal-frame-wide-1319.webp",
+      "before": 147154,
+      "after": 127684,
+      "quality": 72,
+      "block_ssim": 0.980298
+    },
+    {
+      "file": "assets/img/crane-440.webp",
+      "before": 33478,
+      "after": 33478,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/crane-720.webp",
+      "before": 65818,
+      "after": 65818,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/crane-900.webp",
+      "before": 87578,
+      "after": 77494,
+      "quality": 75,
+      "block_ssim": 0.980555
+    },
+    {
+      "file": "assets/img/crane-1100.webp",
+      "before": 112348,
+      "after": 100460,
+      "quality": 75,
+      "block_ssim": 0.981447
+    },
+    {
+      "file": "assets/img/crane-1320.webp",
+      "before": 142040,
+      "after": 125438,
+      "quality": 75,
+      "block_ssim": 0.981358
+    },
+    {
+      "file": "assets/img/crane-wide-900.webp",
+      "before": 45134,
+      "after": 40020,
+      "quality": 75,
+      "block_ssim": 0.981159
+    },
+    {
+      "file": "assets/img/crane-wide-1319.webp",
+      "before": 72544,
+      "after": 64450,
+      "quality": 75,
+      "block_ssim": 0.980512
+    },
+    {
+      "file": "assets/img/laser-machine-440.webp",
+      "before": 61052,
+      "after": 61052,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-machine-720.webp",
+      "before": 140246,
+      "after": 140246,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-machine-900.webp",
+      "before": 207894,
+      "after": 207894,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-machine-1100.webp",
+      "before": 286558,
+      "after": 286558,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-machine-1536.webp",
+      "before": 479770,
+      "after": 479770,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-floor-440.webp",
+      "before": 60872,
+      "after": 60872,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-floor-720.webp",
+      "before": 146020,
+      "after": 146020,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-floor-900.webp",
+      "before": 215966,
+      "after": 215966,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-floor-1100.webp",
+      "before": 301050,
+      "after": 301050,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-floor-1350.webp",
+      "before": 415226,
+      "after": 415226,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-floor-wide-900.webp",
+      "before": 83478,
+      "after": 83478,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-floor-wide-1320.webp",
+      "before": 150434,
+      "after": 133944,
+      "quality": 75,
+      "block_ssim": 0.980387
+    },
+    {
+      "file": "assets/img/nesting-station-440.webp",
+      "before": 59834,
+      "after": 59834,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/nesting-station-720.webp",
+      "before": 127844,
+      "after": 127844,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/nesting-station-900.webp",
+      "before": 178420,
+      "after": 178420,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/nesting-station-1100.webp",
+      "before": 230650,
+      "after": 230650,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/nesting-station-1350.webp",
+      "before": 302504,
+      "after": 269402,
+      "quality": 75,
+      "block_ssim": 0.981051
+    },
+    {
+      "file": "assets/img/gantry-440.webp",
+      "before": 46794,
+      "after": 42156,
+      "quality": 75,
+      "block_ssim": 0.981032
+    },
+    {
+      "file": "assets/img/gantry-720.webp",
+      "before": 109080,
+      "after": 97182,
+      "quality": 75,
+      "block_ssim": 0.982523
+    },
+    {
+      "file": "assets/img/gantry-900.webp",
+      "before": 158026,
+      "after": 136850,
+      "quality": 72,
+      "block_ssim": 0.980725
+    },
+    {
+      "file": "assets/img/gantry-1100.webp",
+      "before": 215452,
+      "after": 186462,
+      "quality": 72,
+      "block_ssim": 0.981525
+    },
+    {
+      "file": "assets/img/gantry-1350.webp",
+      "before": 289214,
+      "after": 250182,
+      "quality": 72,
+      "block_ssim": 0.9823
+    },
+    {
+      "file": "assets/img/gantry-wide-900.webp",
+      "before": 78716,
+      "after": 70118,
+      "quality": 75,
+      "block_ssim": 0.980805
+    },
+    {
+      "file": "assets/img/gantry-wide-1320.webp",
+      "before": 139946,
+      "after": 121026,
+      "quality": 72,
+      "block_ssim": 0.98003
+    },
+    {
+      "file": "assets/img/cutting-head-440.webp",
+      "before": 44110,
+      "after": 38602,
+      "quality": 72,
+      "block_ssim": 0.982611
+    },
+    {
+      "file": "assets/img/cutting-head-720.webp",
+      "before": 97722,
+      "after": 87946,
+      "quality": 75,
+      "block_ssim": 0.981153
+    },
+    {
+      "file": "assets/img/cutting-head-900.webp",
+      "before": 138768,
+      "after": 138768,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/cutting-head-1100.webp",
+      "before": 189796,
+      "after": 161984,
+      "quality": 72,
+      "block_ssim": 0.980076
+    },
+    {
+      "file": "assets/img/cutting-head-1350.webp",
+      "before": 255828,
+      "after": 221300,
+      "quality": 72,
+      "block_ssim": 0.981173
+    },
+    {
+      "file": "assets/img/roof-frame-440.webp",
+      "before": 14120,
+      "after": 14120,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-frame-720.webp",
+      "before": 27196,
+      "after": 27196,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-frame-900.webp",
+      "before": 36502,
+      "after": 36502,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-frame-1100.webp",
+      "before": 47920,
+      "after": 47920,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-frame-1320.webp",
+      "before": 62890,
+      "after": 62890,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-frame-wide-900.webp",
+      "before": 37362,
+      "after": 37362,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-frame-wide-1269.webp",
+      "before": 58658,
+      "after": 58658,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-trusses-440.webp",
+      "before": 21018,
+      "after": 21018,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-trusses-720.webp",
+      "before": 47080,
+      "after": 47080,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-trusses-900.webp",
+      "before": 67846,
+      "after": 67846,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-trusses-1100.webp",
+      "before": 92488,
+      "after": 92488,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-trusses-1320.webp",
+      "before": 126762,
+      "after": 111086,
+      "quality": 72,
+      "block_ssim": 0.980348
+    },
+    {
+      "file": "assets/img/roof-trusses-wide-900.webp",
+      "before": 64696,
+      "after": 64696,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-trusses-wide-1319.webp",
+      "before": 120076,
+      "after": 106314,
+      "quality": 72,
+      "block_ssim": 0.980003
+    },
+    {
+      "file": "assets/img/welding-bay-440.webp",
+      "before": 37614,
+      "after": 37614,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/welding-bay-720.webp",
+      "before": 69062,
+      "after": 69062,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/welding-bay-900.webp",
+      "before": 92232,
+      "after": 78520,
+      "quality": 72,
+      "block_ssim": 0.980736
+    },
+    {
+      "file": "assets/img/welding-bay-1100.webp",
+      "before": 116754,
+      "after": 102158,
+      "quality": 72,
+      "block_ssim": 0.981031
+    },
+    {
+      "file": "assets/img/welding-bay-1920.webp",
+      "before": 241668,
+      "after": 213460,
+      "quality": 72,
+      "block_ssim": 0.983358
+    },
+    {
+      "file": "assets/img/welding-bay-wide-900.webp",
+      "before": 57834,
+      "after": 57834,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/welding-bay-wide-1320.webp",
+      "before": 94082,
+      "after": 82070,
+      "quality": 72,
+      "block_ssim": 0.980709
+    },
+    {
+      "file": "assets/img/welding-hands-440.webp",
+      "before": 42406,
+      "after": 42406,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/welding-hands-720.webp",
+      "before": 90466,
+      "after": 90466,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/welding-hands-900.webp",
+      "before": 129138,
+      "after": 129138,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/welding-hands-1100.webp",
+      "before": 170736,
+      "after": 170736,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/welding-hands-1920.webp",
+      "before": 384868,
+      "after": 384868,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-cutting-440.webp",
+      "before": 48458,
+      "after": 43574,
+      "quality": 75,
+      "block_ssim": 0.980674
+    },
+    {
+      "file": "assets/img/laser-cutting-720.webp",
+      "before": 96040,
+      "after": 82954,
+      "quality": 72,
+      "block_ssim": 0.980919
+    },
+    {
+      "file": "assets/img/laser-cutting-900.webp",
+      "before": 126226,
+      "after": 108580,
+      "quality": 72,
+      "block_ssim": 0.981185
+    },
+    {
+      "file": "assets/img/laser-cutting-1100.webp",
+      "before": 163180,
+      "after": 137912,
+      "quality": 72,
+      "block_ssim": 0.980503
+    },
+    {
+      "file": "assets/img/laser-cutting-1440.webp",
+      "before": 233892,
+      "after": 198012,
+      "quality": 72,
+      "block_ssim": 0.980507
+    },
+    {
+      "file": "assets/img/laser-cutting-wide-900.webp",
+      "before": 50042,
+      "after": 44628,
+      "quality": 75,
+      "block_ssim": 0.981121
+    },
+    {
+      "file": "assets/img/laser-cutting-wide-1320.webp",
+      "before": 79228,
+      "after": 70410,
+      "quality": 75,
+      "block_ssim": 0.980766
+    },
+    {
+      "file": "assets/img/laser-sparks-440.webp",
+      "before": 53540,
+      "after": 48032,
+      "quality": 75,
+      "block_ssim": 0.980545
+    },
+    {
+      "file": "assets/img/laser-sparks-720.webp",
+      "before": 104268,
+      "after": 104268,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-sparks-900.webp",
+      "before": 137096,
+      "after": 137096,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-sparks-1100.webp",
+      "before": 172956,
+      "after": 172956,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-sparks-1440.webp",
+      "before": 244634,
+      "after": 209016,
+      "quality": 72,
+      "block_ssim": 0.980765
+    },
+    {
+      "file": "assets/img/laser-sparks-wide-900.webp",
+      "before": 45644,
+      "after": 45644,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/laser-sparks-wide-1320.webp",
+      "before": 73218,
+      "after": 73218,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/roof-a-poster-440.webp",
+      "before": 47702,
+      "after": 33508,
+      "quality": 72,
+      "block_ssim": 0.983764
+    },
+    {
+      "file": "assets/img/roof-a-poster-512.webp",
+      "before": 56214,
+      "after": 38730,
+      "quality": 72,
+      "block_ssim": 0.98412
+    },
+    {
+      "file": "assets/img/roof-b-poster-440.webp",
+      "before": 47360,
+      "after": 33130,
+      "quality": 72,
+      "block_ssim": 0.983115
+    },
+    {
+      "file": "assets/img/roof-b-poster-512.webp",
+      "before": 54804,
+      "after": 38246,
+      "quality": 72,
+      "block_ssim": 0.982817
+    },
+    {
+      "file": "assets/img/roof-c-poster-440.webp",
+      "before": 58490,
+      "after": 41966,
+      "quality": 72,
+      "block_ssim": 0.982724
+    },
+    {
+      "file": "assets/img/roof-c-poster-512.webp",
+      "before": 69450,
+      "after": 49322,
+      "quality": 72,
+      "block_ssim": 0.982494
+    },
+    {
+      "file": "assets/img/workshop-poster-440.webp",
+      "before": 46148,
+      "after": 46148,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/workshop-poster-512.webp",
+      "before": 61588,
+      "after": 61588,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/architectural-glass-exterior-440.webp",
+      "before": 28056,
+      "after": 28056,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/architectural-glass-exterior-720.webp",
+      "before": 69360,
+      "after": 69360,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/architectural-glass-exterior-1100.webp",
+      "before": 153110,
+      "after": 153110,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/architectural-glass-exterior-1536.webp",
+      "before": 295002,
+      "after": 295002,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/architectural-atrium-interior-440.webp",
+      "before": 23892,
+      "after": 23892,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/architectural-atrium-interior-720.webp",
+      "before": 68210,
+      "after": 68210,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/architectural-atrium-interior-1100.webp",
+      "before": 157092,
+      "after": 157092,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/img/architectural-atrium-interior-1536.webp",
+      "before": 288944,
+      "after": 288944,
+      "quality": null,
+      "block_ssim": 1.0
+    },
+    {
+      "file": "assets/brand/kingson-logo-320.png",
+      "before": 46167,
+      "after": 46083,
+      "lossless": true
+    },
+    {
+      "file": "assets/brand/kingson-logo-560.png",
+      "before": 116290,
+      "after": 115958,
+      "lossless": true
+    },
+    {
+      "file": "assets/brand/kingson-logo-reverse-320.png",
+      "before": 48011,
+      "after": 47468,
+      "lossless": true
+    },
+    {
+      "file": "assets/brand/kingson-logo-reverse-560.png",
+      "before": 119538,
+      "after": 118205,
+      "lossless": true
+    },
+    {
+      "file": "assets/brand/kingson-logo-reverse.png",
+      "before": 390464,
+      "after": 384409,
+      "lossless": true
+    },
+    {
+      "file": "assets/brand/kingson-logo.png",
+      "before": 404926,
+      "after": 403423,
+      "lossless": true
+    }
+  ]
+}

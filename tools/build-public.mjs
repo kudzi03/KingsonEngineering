@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const version = '0.28.2';
-const inputs = ['main.js','assets/fonts.css','styles/tokens.css','styles/site.css','styles/editorial.css','styles/cinematic.css','styles/privacy.css','styles/public.css',
+const inputs = ['main.js','assets/fonts.css','styles/tokens.css','styles/site.css','styles/editorial.css','styles/cinematic.css','styles/privacy.css','styles/quote-clarity.css','styles/public.css',
   'content/assets.js','content/company.js','content/crm.js','content/runtime-copy.js','tools/build-public.mjs',
   ...['interface','scenes'].flatMap(dir=>readdirSync(root+dir).filter(f=>f.endsWith('.js')).sort().map(f=>`${dir}/${f}`))];
 const sha = data => createHash('sha256').update(data).digest('hex');
@@ -34,5 +34,7 @@ if(process.argv.includes('--check')) {
   };
   bundle(['main.js','--bundle','--minify','--format=esm','--target=es2020'],'assets/site.min.js');
   bundle(['styles/public.css','--bundle','--minify','--target=chrome100,safari15,firefox100','--external:*.woff2'],'assets/site.min.css');
-  writeFileSync(manifestFile,JSON.stringify({esbuild:version,sourceHash,outputs:Object.fromEntries(outputs.map(file=>[file,sha(readFileSync(root+file))]))},null,2)+'\n');
+  const temporaryManifest=manifestFile+`.build-${process.pid}`;
+  writeFileSync(temporaryManifest,JSON.stringify({esbuild:version,sourceHash,outputs:Object.fromEntries(outputs.map(file=>[file,sha(readFileSync(root+file))]))},null,2)+'\n');
+  renameSync(temporaryManifest,manifestFile);
 }

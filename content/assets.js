@@ -25,17 +25,17 @@ export const ASSETS = {
   roofFilmA: {
     slug: 'roof-a-poster', w: 512, h: 808, widths: [440, 512],
     focal: [0.5, 0.42], status: 'observed_photo',
-    alt: 'Steel roof trusses and purlins carrying pale sheeting, seen from inside a structure under construction.'
+    alt: 'Kingson roof steelwork with trusses and purlins supporting pale sheeting, viewed from inside the structure.'
   },
   roofFilmB: {
     slug: 'roof-b-poster', w: 512, h: 860, widths: [440, 512],
     focal: [0.5, 0.4], status: 'observed_photo',
-    alt: 'An upward view across roof trusses and sheeting towards the open edge of the structure.'
+    alt: 'Kingson roof trusses and sheeting viewed upwards towards the open edge of the structure.'
   },
   roofFilmC: {
     slug: 'roof-c-poster', w: 512, h: 910, widths: [440, 512],
     focal: [0.5, 0.4], status: 'observed_photo',
-    alt: 'Blue-painted steel roof members receding along a partially sheeted structure, with open bays against the sky.'
+    alt: 'Blue-painted Kingson roof members and purlins receding beneath partial sheeting, with open bays against the sky.'
   },
   workshopFilm: {
     slug: 'workshop-poster', w: 512, h: 910, widths: [440, 512],
@@ -45,18 +45,18 @@ export const ASSETS = {
   architecturalGlass: {
     slug: 'architectural-glass-exterior', w: 1536, h: 1152, widths: [440, 720, 1100, 1536],
     focal: [0.65, 0.55], status: 'observed_photo',
-    alt: 'A glass balustrade on a tiled staircase, with dark metal clamps and sunlight crossing the steps.'
+    alt: 'Glass balustrade on a tiled staircase with dark metal clamps, in Kingson Engineering’s supplied project photograph.'
   },
   architecturalAtrium: {
     slug: 'architectural-atrium-interior', w: 1536, h: 1152, widths: [440, 720, 1100, 1536],
     focal: [0.6, 0.55], status: 'observed_photo',
-    alt: 'Glass balustrade panels with dark metal fixings overlooking an atrium with tiled walls and tall windows.'
+    alt: 'Glass balustrade with dark metal fixings overlooking a tiled atrium and tall windows, in Kingson Engineering’s supplied project photograph.'
   },
   portalFrame: {
     slug: 'portal-frame', w: 1320, h: 888, widths: [440, 720, 900, 1100, 1320],
     wide: { w: 1319, h: 742, widths: [900, 1319] },
     focal: [0.54, 0.47],
-    alt: 'A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays.',
+    alt: 'Kingson Engineering steel portal frame under erection, with columns, rafters and purlins in place and a mobile crane inside the structure.',
     status: 'observed_photo'
   },
   roofTrusses: {
@@ -78,33 +78,33 @@ export const ASSETS = {
     /* A wide crop centred lower than this loses the head itself and shows
        only bare plate and slats. Measured against the 16:9 service card. */
     focal: [0.60, 0.45],
-    alt: 'The cutting head of a fibre laser positioned over steel plate on a slatted bed, with the machine casing and workshop wall behind it.',
+    alt: 'Fibre laser cutting head positioned over steel plate on the slatted bed in Kingson Engineering’s Tynwald workshop, Harare.',
     status: 'observed_photo'
   },
   laserMachine: {
     slug: 'laser-machine', w: 1536, h: 2048, widths: [440, 720, 900, 1100, 1536],
     focal: [0.50, 0.53],
-    alt: 'A fibre laser cutting machine in a workshop, with a brick pier, yellow sheeting and a control screen beside the bed.',
+    alt: 'Fibre laser cutting machine and control screen in Kingson Engineering’s Tynwald workshop, Harare.',
     status: 'observed_photo'
   },
   laserFloor: {
     slug: 'laser-floor', w: 1350, h: 1800, widths: [440, 720, 900, 1100, 1350],
     wide: { w: 1349, h: 759, widths: [900, 1320] },
     focal: [0.45, 0.52],
-    alt: 'The whole fibre laser on the workshop floor, badged DXTECH LASER: enclosed bed with cutting slats, cable chain along the side, swing-arm control screen and an extraction duct, with a brick pier and timber pallets beside it.',
+    alt: 'DXTECH fibre laser at Kingson Engineering’s Tynwald workshop, with the cutting bed, cable chain, control screen and extraction duct visible.',
     status: 'observed_photo'
   },
   nestingStation: {
     slug: 'nesting-station', w: 1350, h: 1800, widths: [440, 720, 900, 1100, 1350],
     focal: [0.45, 0.48],
-    alt: 'The laser control station: an upright monitor showing a nested cutting path on screen, keyboard, mouse and emergency stop on the machine shelf, with the slatted bed and the DXTECH cutting head behind it.',
+    alt: 'DXTECH laser control station showing nested cutting paths at Kingson Engineering’s Tynwald workshop, with the cutting head behind the monitor.',
     status: 'observed_photo'
   },
   gantry: {
     slug: 'gantry', w: 1350, h: 1794, widths: [440, 720, 900, 1100, 1350],
     wide: { w: 1349, h: 759, widths: [900, 1320] },
     focal: [0.46, 0.55],
-    alt: 'The laser gantry carriage seen side-on, cable chain arching over it, travelling above a slatted bed loaded with steel plate, with a brick wall and workshop sheeting behind.',
+    alt: 'Fibre laser gantry and cable chain travelling above steel plate on the slatted cutting bed at Kingson Engineering’s Tynwald workshop.',
     status: 'observed_photo'
   },
   laserCutting: {
@@ -114,7 +114,7 @@ export const ASSETS = {
        the window behind the gantry; anchoring on those would centre the crop on
        an empty wall and cut the one thing the photograph is here for. */
     focal: [0.46, 0.44],
-    alt: 'A DXTECH fibre laser cutting steel sheet, sparks thrown from the nozzle across the plate, with the slatted bed below and gas cylinders against the workshop wall behind.',
+    alt: 'DXTECH fibre laser cutting steel sheet at Kingson Engineering’s Tynwald workshop in Harare, with sparks visible beneath the nozzle.',
     status: 'observed_photo'
   },
   laserSparks: {
@@ -124,7 +124,7 @@ export const ASSETS = {
        matter, not the head. */
     wide: { w: 1440, h: 810, widths: [900, 1320] },
     focal: [0.38, 0.43],
-    alt: 'The cutting head of the DXTECH fibre laser close up, sparks off the nozzle and the cut line running out across the sheet.',
+    alt: 'Close view of the DXTECH fibre laser cutting head and sparks along the cut line at Kingson Engineering’s Tynwald workshop.',
     status: 'observed_photo'
   },
   weldingBay: {
@@ -150,7 +150,7 @@ export const ASSETS = {
     slug: 'crane', w: 1320, h: 1757, widths: [440, 720, 900, 1100, 1320],
     wide: { w: 1319, h: 742, widths: [900, 1319] },
     focal: [0.50, 0.60],
-    alt: 'A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body.',
+    alt: 'Kingson Engineering’s yellow telescopic mobile crane in a yard, with its boom raised and KINGSON lettering on the counterweight.',
     status: 'observed_photo'
   }
 };

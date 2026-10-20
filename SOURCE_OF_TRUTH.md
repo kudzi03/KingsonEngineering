@@ -140,7 +140,7 @@ struck out.** All five are ticked and therefore publishable.
 | Commitment | Confirmed |
 |---|---|
 | Enquiry acknowledged | same working day |
-| Written quotation | within the week |
+| Written quotation | within 5 working days — owner clarification, 20 October 2026; supersedes “within the week” |
 | Site visit arranged | within two working days |
 | Portal frame programme | six to ten weeks |
 | Delivery outside Harare | nationally, transport priced per load |

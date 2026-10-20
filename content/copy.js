@@ -166,45 +166,21 @@ export const CAPABILITIES = [
   }
 ];
 
-/* ── how it works ───────────────────────────────────────────────────────────
-   These five are §7 of the returned document verbatim. Kingson was asked to
-   strike out anything the office could not meet every time and struck out
-   nothing. They are the most valuable thing on this page.
-
-   `only` marks a step that is true of ONE service rather than of the office.
-   The six-to-ten-week programme is the portal frame programme — §7 says so in
-   as many words — and printing it on the laser, fabrication and cranage pages
-   told four of five visitors a lead time that has nothing to do with the work
-   they came for. Kingson has confirmed no programme for those services, so
-   those pages now show the four commitments that ARE universal and no
-   timeline at all. Inventing one to fill the row would be the worse error.
-
-   The home page still shows all five: it is the page about the whole company,
-   and the step names the service it belongs to.                             */
+/* The owner specified these four commitments on 20 October 2026. The written
+   quotation is now explicitly within five working days, superseding §7's
+   "within the week". `only` keeps the portal-frame programme off unrelated
+   service pages. National delivery remains in the coverage information. */
 
 export const PROCESS = {
-  title: 'What happens after you send it.',
-  lede: 'Five things we hold to on every job. Not targets — what the office actually does.',
+  title: 'Clear commitments. From the first enquiry.',
+  lede: 'Know when you will hear from us, when to expect your price, and how a portal frame programme runs.',
   steps: [
-    { n: '01', title: 'Enquiry acknowledged',   body: 'Same working day.', bar: { week: 0 } },
-    { n: '02', title: 'Site visit arranged',    body: 'Within two working days, where the job needs one.', bar: { week: 2 } },
-    { n: '03', title: 'Written quotation',      body: 'Within the week.', bar: { week: 6 } },
-    { n: '04', title: 'Portal frame programme', body: 'Six to ten weeks from order.', bar: { order: [6, 10] },
-      only: 'structural-steel-harare' },
-    { n: '05', title: 'Delivery outside Harare', body: 'Nationally, with transport priced per load.' }
+    { n: '01', title: 'Enquiry acknowledged', commitment: 'Same working day', body: 'Your enquiry is acknowledged by the office.' },
+    { n: '02', title: 'Written quotation', commitment: 'Within 5 working days', body: 'A written price for the work you have described.' },
+    { n: '03', title: 'Site visit arranged', commitment: 'Within 2 working days', body: 'Where the job needs a visit.' },
+    { n: '04', title: 'Portal frame programme', commitment: '6–10 weeks from order', body: 'For portal frame work. Other services are programmed in your quotation.', only: 'structural-steel-harare' }
   ],
-  /* On the home page (desktop) steps 01–04 are also drawn as a programme bar
-     chart with a broken axis, the way a construction programme is issued:
-     the first working week in days (Monday to Saturday — the confirmed
-     hours), a break line for the customer's own decision, then weeks from
-     order. `bar.week` is the working day a commitment is met by; `bar.order`
-     is the programme range in weeks. Step 05 has no duration and no bar. */
-  axis: {
-    week: 'First working week', order: 'Weeks from your order', gap: 'Your order',
-    weekTicks: [[0, 'Enquiry'], [2, 'Day 2'], [6, 'End of week']],
-    orderTicks: [[0, 'Order'], [6, 'Week 6'], [10, 'Week 10']]
-  },
-  close: 'That is the whole sequence. It starts when you send the drawings.',
+  close: 'Start with drawings, site photos or a brief description.',
   closeAction: 'Send us the brief'
 };
 
@@ -305,13 +281,13 @@ export const FAQ = {
     { q: 'What thickness can you laser cut?',
       a: 'On the DXTECH fibre laser: mild steel to 20 mm on oxygen, stainless to 10 mm on nitrogen, aluminium to 8 mm, and galvanised sheet to 4 mm. The bed is 3 000 × 1 500 mm and tolerance is ± 0.1 mm, repeating to ± 0.03 mm.' },
     { q: 'What file formats do you accept for cutting?',
-      a: 'DXF, DWG, STEP and PDF.' },
+      a: 'DXF or DWG is preferred for cutting; STEP and PDF are also accepted. Include material, thickness and quantity. Attach drawings to your email or WhatsApp message — the website form does not upload files.' },
     { q: 'Can you cut stainless steel?',
       a: 'Yes. The DXTECH fibre laser cuts stainless to 10 mm on nitrogen, and the workshop folds it to 3 000 mm and fabricates it to drawing — handrails, balustrades and sheet work.' },
     { home: true, q: 'How long does a quotation take?',
-      a: 'Enquiries are acknowledged the same working day, and a written quotation follows within the week. Where the job needs someone on site first, the site visit is arranged within two working days.' },
+      a: 'Enquiries are acknowledged the same working day, and a written quotation follows within 5 working days. Where the job needs someone on site first, the site visit is arranged within 2 working days.' },
     { home: true, q: 'How long does a steel structure take?',
-      a: 'A portal frame programme runs six to ten weeks. A written quotation comes within the week of your enquiry, and a site visit is arranged within two working days where the job needs one.' },
+      a: 'A portal frame programme runs 6–10 weeks from order. A written quotation comes within 5 working days of your enquiry, and a site visit is arranged within 2 working days where the job needs one.' },
     { q: 'Do you deliver outside Harare?',
       a: 'Yes — nationally, with transport priced per load. Erection is also covered nationally.' },
     { q: 'How big a lift can you do?',
@@ -331,7 +307,7 @@ export const FAQ = {
     { home: true, q: 'What areas do you cover?',
       a: 'Harare, and nationally across Zimbabwe. Erection is covered nationally and delivery outside Harare is priced per load.' },
     { home: true, q: 'Can I get a price without drawings?',
-      a: 'Yes. Send the measurements and a photograph of the site, or a description of what you need. Where the job needs someone on site, a site visit is arranged within two working days, and a written quotation follows within the week.' },
+      a: 'Yes. Send site photos and a brief description, with the approximate span and height or opening dimensions. Include material and thickness if known. Where the job needs someone on site, a site visit is arranged within 2 working days, and a written quotation follows within 5 working days.' },
     { q: 'Do you hire out the crane on its own?',
       a: 'Yes. The 25-tonne telescopic mobile crane works Kingson\u2019s own erection contracts and is hired out for other jobs. Tell us the load, the site access and the date.' },
     { home: true, q: 'What can Kingson Engineering do?',

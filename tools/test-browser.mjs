@@ -78,6 +78,14 @@ try {
   }
   const page = await makePage(390);
   await page.goto(base+'/',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('[data-form] .field:visible').count(),4,'Short enquiry starts with four fields');
+  for (const method of ['tel:', 'mailto:', 'https://wa.me/']) {
+    const action=page.locator(`.hd-contacts a[href^="${method}"]`);
+    assert.ok(await action.isVisible(),'Every mobile header contact method is visible');
+    const size=await action.boundingBox();
+    assert.ok(size.width>=44 && size.height>=44,'Header contact targets remain usable');
+  }
+  for(const commitment of await page.locator('#how .step-commitment').all()) assert.ok(await commitment.isVisible(),'Commitment panels must actually be visible');
   await page.locator('[data-menu-open]').click();
   assert.equal(await page.locator('[data-menu-open]').getAttribute('aria-expanded'),'true');
   await page.keyboard.press('Shift+Tab');
@@ -102,6 +110,7 @@ try {
   });
   await page.locator('#f-company').fill('Local QA organisation');
   await page.locator('#f-contact').fill('qa@example.invalid');
+  await page.locator('.form-extra summary').click();
   await page.locator('#f-service').selectOption({label:'Fibre laser cutting'});
   await page.locator('#f-drawings').selectOption({index:1});
   await page.locator('#f-description').fill('Local integration test. No live submission.');
@@ -120,6 +129,21 @@ try {
   await page.locator('[data-review]').click();
   await page.locator('[data-sent][data-state="failed"]').waitFor();
   assert.equal(await page.locator('[data-draft-actions] a').count(),2,'Handoff links survive a failed save');
+  await page.goto(base+'/',{waitUntil:'networkidle'});
+  const shortPayloads=[];
+  await page.route('**/rest/v1/rpc/submit_enquiry', async route=>{
+    shortPayloads.push(route.request().postDataJSON());
+    await route.fulfill({contentType:'application/json',body:JSON.stringify({ref:'ENQ-LOCAL-SHORT'})});
+  });
+  await page.locator('#f-company').fill('Short enquiry QA');
+  await page.locator('#f-contact').fill('+263770000000');
+  await page.locator('#f-description').fill('Roof trusses for a site in Harare. Local test only.');
+  await page.locator('[data-review]').click();
+  await page.locator('[data-sent][data-state="ok"]').waitFor();
+  assert.equal(shortPayloads.length,1,'The short form submits without expanding optional details');
+  assert.equal(shortPayloads[0].p.service,'Not sure yet');
+  assert.equal(shortPayloads[0].p.drawings,null);
+  assert.equal(shortPayloads[0].p.location,null);
   results.interactions.push('Menu opens, traps and restores focus; Escape closes menu and image dialog; FAQ disclosure works; form validation, RPC payload, reference display, duplicate prevention, technical-email and WhatsApp handoffs, and failed-save fallbacks pass. All network writes intercepted.');
   await page.close();
   const nojs = await makePage(390,{javaScriptEnabled:false});

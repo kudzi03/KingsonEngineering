@@ -43,7 +43,7 @@ import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
   enquiryForm, enquiryAside, callBtn, waBtn, emailBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
-  ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote
+  ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote, quoteSupport, processCards
 } from './layout.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -210,7 +210,7 @@ const chapterData = (c, { hero = true } = {}) =>
   `${hero ? heroFigure(c.hero) : ''}
 ${figures(c.figures)}
       <p class="ch-ask">${esc(c.ask)}</p>
-      <p class="ch-more"><a href="/${c.route}">${esc(c.moreLabel || `More on ${c.name.toLowerCase()}`)}${ICON_ARROW}</a></p>`;
+      <p class="ch-more"><a href="/${c.route}">${esc(c.moreLabel || `More on ${c.name.toLowerCase()}`)}${ICON_ARROW}</a></p>${quoteSupport({slug:c.route})}`;
 
 const chapterBody = (c) => `${chapterLead(c)}\n${chapterData(c)}`;
 
@@ -346,11 +346,11 @@ ${chapterBody(c)}
   </section>`;
 }
 
-const chooser = serviceChooser();
+const chooser = serviceChooser() + quoteSupport();
 
 const chapters = CHAPTERS.map(chapter).join('\n\n');
 
-const evidence = cinematicWork();
+const evidence = cinematicWork() + `<div class="wrap">${quoteSupport()}</div>`;
 
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
@@ -363,7 +363,7 @@ const workshop = `    <div class="ws-img project-media" data-reveal="settle">
       <h2 class="display" id="ws-h">${esc(WORKSHOP.title)}</h2>
       <p class="ws-lede">${esc(WORKSHOP.body)}</p>
 ${figures(WORKSHOP.figures, 'ch-figures ws-figures')}
-      <div class="ws-act">${quoteBtn()}</div>
+      <div class="ws-act">${quoteBtn()}${quoteSupport()}</div>
     </div>`;
 
 /* ── the crane, full bleed ───────────────────────────────────────────────────
@@ -378,7 +378,7 @@ const crane = `    <div class="band-img" data-parallax>
       <p class="band-fig num" data-reveal="rise"><span>${esc(CRANE.lead[0])}</span></p>
       <h2 class="display band-title" id="crane-h">${esc(CRANE.lead[1].replace(/^./, (c) => c.toUpperCase()))}</h2>
       <p class="band-lede">${esc(CRANE.body)}</p>
-      <p class="ch-more"><a href="/${CRANE.route}">More on cranage${ICON_ARROW}</a></p>
+      <p class="ch-more"><a href="/${CRANE.route}">More on cranage${ICON_ARROW}</a></p>${quoteSupport({slug:'mobile-cranage-harare'})}
     </div>`;
 
 /* The enquiry is set over the fabrication bay, dimmed right down. The same
@@ -397,57 +397,17 @@ const specs = SPECS.groups.map((g, i) => `      <details class="spec-group" id="
         <dl class="spec-rows">
 ${g.rows.map(([k, v]) => `          <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('\n')}
         </dl>
-      </details>`).join('\n');
+      </details>`).join('\n') + quoteSupport();
 
 /* ── work ────────────────────────────────────────────────────────────────── */
 
 /* ── how it works ────────────────────────────────────────────────────────── */
 
-/* The programme chart (home page, desktop). A construction programme is issued
-   as a bar chart, so the commitments are drawn as one: one row per step, a
-   numbered balloon, and a broken axis — the first working week in days, a
-   break line for the customer's own decision to order, then weeks from order
-   with the six-to-ten-week range hatched. All positions come from PROCESS, so
-   the bars cannot disagree with the words beside them. Decorative: each row's
-   text is the content, the bar is aria-hidden. */
-const AX = PROCESS.axis;
-const WEEK_END = 36, ORDER_START = 44;                 // % of the chart column
-const wx = (d) => +(d / 6 * WEEK_END).toFixed(2);      // Mon–Sat working week
-const ox = (w) => +(ORDER_START + w / 10 * (100 - ORDER_START)).toFixed(2);
-const tick = (x, label, end) => `<span class="g-tick${end ? ' g-tick-end' : ''}" style="--x:${x}%">${esc(label)}</span>`;
-const gantt = `      <div class="g-axis" aria-hidden="true">
-        <span class="g-zone" style="--x0:0%;--x1:${WEEK_END}%">${esc(AX.week)}</span>
-        <span class="g-zone" style="--x0:${ORDER_START}%;--x1:100%">${esc(AX.order)}</span>
-        ${AX.weekTicks.map(([d, l], i, all) => tick(wx(d), l, i === all.length - 1)).join('')}
-        ${AX.orderTicks.map(([w, l], i, all) => tick(ox(w), l, i === all.length - 1)).join('')}
-      </div>
-      <div class="g-lines" aria-hidden="true">${[...AX.weekTicks.map(([d]) => wx(d)), ...AX.orderTicks.map(([w]) => ox(w))]
-        .map((x) => `<i style="--x:${x}%"></i>`).join('')}<span class="g-gap" style="--x0:${WEEK_END}%;--x1:${ORDER_START}%"></span><span class="g-gap-label" style="--x0:${WEEK_END}%;--x1:${ORDER_START}%">${esc(AX.gap)}</span></div>`;
-
-const bar = (st) => {
-  if (!st.bar) return '';
-  if ('week' in st.bar) {
-    return st.bar.week === 0
-      ? `
-        <span class="g-bar" aria-hidden="true"><span class="g-ms" style="--x0:0%"></span></span>`
-      : `
-        <span class="g-bar" aria-hidden="true"><span class="g-fill" style="--x0:0%;--x1:${wx(st.bar.week)}%"></span></span>`;
-  }
-  const [lo, hi] = st.bar.order;
-  return `
-        <span class="g-bar" aria-hidden="true"><span class="g-fill" style="--x0:${ox(0)}%;--x1:${ox(lo)}%"></span><span class="g-fill g-range" style="--x0:${ox(lo)}%;--x1:${ox(hi)}%"></span></span>`;
-};
-
-const steps = PROCESS.steps.map((st) => `      <li class="step">
-        <span class="step-n">${esc(st.n)}</span>
-        <div class="step-body">
-          <h3>${esc(st.title)}</h3>
-          <p>${esc(st.body)}</p>
-        </div>${bar(st)}
-      </li>`).join('\n');
+const gantt = '';
+const steps = processCards();
 
 const procClose = `    <p>${esc(PROCESS.close)}</p>
-    <a class="btn" href="#enquiry"><span>${esc(PROCESS.closeAction)}</span></a>`;
+    <a class="btn" href="#enquiry"><span>${esc(PROCESS.closeAction)}</span></a>${quoteSupport()}`;
 
 /* ── the enquiry form ────────────────────────────────────────────────────────
    The field set is what the office needs to price a job: who you are, which
@@ -476,7 +436,7 @@ const faq = homeFaq().map((it, i) => `      <details class="faq-item" id="faq-${
    Same numbers as everywhere else, so nothing new is being claimed. */
 const faqask = `    <p class="faq-ask-k">Not answered here?</p>
     <p class="faq-ask-t">Ask the workshop directly. Enquiries are acknowledged the same working day.</p>
-    <div class="faq-ask-act">${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>`;
+    ${quoteSupport()}`;
 
 /* ── contact ─────────────────────────────────────────────────────────────────
    Ordered by how a customer actually reaches Kingson, and built by asking for
