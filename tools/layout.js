@@ -16,7 +16,7 @@
    carry a phone number simply has no phone number in it.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { NAV, ENQUIRY, CONTACT, CAPABILITIES } from '../content/copy.js';
+import { NAV, ENQUIRY, CONTACT, CAPABILITIES, PROCESS, processFor } from '../content/copy.js';
 import { hasProjects } from '../content/projects.js';
 import { SERVICES } from '../content/services.js';
 import { SEO } from '../content/seo.js';
@@ -128,6 +128,7 @@ ${slides.map((k, i) => `      <li><button type="button" data-go="${i}"${i === 0 
     <div class="hero-foot">
       <p class="hero-lede">${esc(lede)}</p>
       <div class="hero-act">${quoteBtn(false, quoteTo)}${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>
+      ${quoteBrief({slug: SERVICES.find(s => s.h1 === titleHtml)?.slug})}
     </div>${meta ? `
     <p class="hero-meta">${meta}</p>` : ''}
   </div>
@@ -171,6 +172,24 @@ export function emailBtn(ghost) {
    bouncing the visitor back to the homepage to convert. */
 export function quoteBtn(ghost, to = '#enquiry') {
   return `<a class="${cls(ghost)}" href="${to}"><span>${esc(NAV.quote)}</span></a>`;
+}
+
+// Native disclosures keep the quoting checklist close without obscuring the work.
+export function quoteBrief({ slug, open = false } = {}) {
+  const service = SERVICES.find(s => s.slug === slug);
+  const items = service?.send || [
+    'DXF or DWG preferred; STEP and PDF also accepted. No drawings? Send site photos or a sketch.',
+    'Material, thickness and quantity, if known.',
+    'Site or town, approximate span and height, or opening dimensions.'
+  ];
+  return `<details class="quote-brief"${open ? ' open' : ''}><summary>What we need from you</summary><ul>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul><p>Attach drawings or photos by email or WhatsApp. This form does not upload files.</p></details>`;
+}
+export function quoteSupport({ slug, open = false } = {}) {
+  return `<div class="quote-support">${quoteBrief({slug,open})}<nav class="contact-options" aria-label="Talk to Kingson">${callBtn(NAV.call,true)}${waBtn(true)}${emailBtn(true)}</nav></div>`;
+}
+export function processCards(slug) {
+  const steps = slug ? processFor(slug) : PROCESS.steps;
+  return steps.map(st => `<li class="step"><span class="step-n">${esc(st.n)}</span><div class="step-body"><h3>${esc(st.title)}</h3><p class="step-commitment"><strong>${esc(st.commitment)}</strong></p><p>${esc(st.body)}</p></div></li>`).join('\n');
 }
 
 /* ── the logo ───────────────────────────────────────────────────────────── */
@@ -304,7 +323,8 @@ ${mark}
     <nav class="hd-nav" aria-label="Primary">
 ${headerNav(home, current)}
     </nav>
-    <div class="hd-act">${callBtn(NAV.call, true)}${quoteBtn(false, '#enquiry')}</div>
+    <nav class="hd-contacts" aria-label="Contact Kingson">${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}</nav>
+    <div class="hd-act">${quoteBtn(false, '#enquiry')}</div>
     <button class="hd-menu" type="button" data-menu-open aria-expanded="false" aria-controls="menu">
       <span class="hd-menu-bars" aria-hidden="true"></span>Menu
     </button>
@@ -502,11 +522,10 @@ ${ld}
    a visitor who arrived searching for laser cutting does not have to tell the
    form what it already knows.                                               */
 
-/* Three of seven fields are required, so the four that are not say so — a
-   visitor should not have to fail a submit to find out which is which. The
-   list matches REQUIRED in interface/enquiry.js. No field asks for a person's
-   name: the enquiry is about a business, not an individual. */
-const REQUIRED = new Set(['company', 'contact', 'service']);
+/* The initial four fields need only business, reply contact and a description.
+   File status is optional; the other context remains in a native disclosure.
+   Keep required fields aligned with interface/enquiry.js. */
+const REQUIRED = new Set(['company', 'contact', 'description']);
 
 export function enquiryForm(preselectService) {
   const label = (id, key) => `          <label for="f-${id}">${esc(ENQUIRY.fields[key])}${
@@ -523,7 +542,7 @@ ${err(id)}
 
   const area = (id, key, rows) => `        <div class="field">
 ${label(id, key)}
-          <textarea id="f-${id}" name="${id}" rows="${rows}"${ph(key)}></textarea>
+          <textarea id="f-${id}" name="${id}" rows="${rows}"${req(id)}${ph(key)}></textarea>
 ${err(id)}
         </div>`;
 
@@ -540,15 +559,16 @@ ${err(id)}
 
   return `      <div class="field-row">
 ${text('company', 'company', ' autocomplete="organization"')}
-${text('orgdetails', 'orgdetails')}
+${text('contact', 'contact', ' autocomplete="tel"')}
       </div>
-      <div class="field-row">
-${text('contact', 'contact', ' autocomplete="off"')}
-${select('service', 'service', ENQUIRY.serviceOptions, preselectService)}
-      </div>
-${text('location', 'location')}
-${area('description', 'description', 5)}
+${area('description', 'description', 3)}
 ${select('drawings', 'drawings', ENQUIRY.drawingOptions, null)}
+      <details class="form-extra">
+        <summary>Add service, site or organisation details <span class="opt">optional</span></summary>
+${select('service', 'service', ENQUIRY.serviceOptions, preselectService || 'Not sure yet')}
+${text('location', 'location')}
+${text('orgdetails', 'orgdetails')}
+      </details>
       <div class="hp" aria-hidden="true">
         <label for="f-website">Leave this field empty</label>
         <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
@@ -565,12 +585,13 @@ export function privacyNote() {
 /* Beside the form: the other way in. Every value through publish(), so an
    unconfirmed one produces no line; with no phone at all the panel is empty
    rather than wrong. */
-export function enquiryAside() {
+export function enquiryAside(preselectService) {
   const hours = publish('hours');
   const person = publish('contactPerson');
   return `      <p class="enq-aside-k">Rather talk it through?</p>
       <p class="enq-aside-t">${esc(CONTACT.lede)}</p>
       <div class="enq-aside-act">${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>
+      ${quoteBrief({ slug: SERVICES.find(s => s.serviceName === preselectService)?.slug, open: true })}
       <p class="enq-aside-meta">${hours ? `<span>Open <b>${esc(hours)}</b></span>` : ''}${person ? `<span>Ask for <b>${esc(person)}</b></span>` : ''}</p>`;
 }
 
@@ -583,7 +604,7 @@ export function enquiryBlock(preselectService, { title, lede } = {}) {
 
     <div class="enq-body">
     <aside class="enq-aside" aria-label="Call instead">
-${enquiryAside()}
+${enquiryAside(preselectService)}
     </aside>
     <div class="enq-card">
     <form class="form" data-form novalidate>

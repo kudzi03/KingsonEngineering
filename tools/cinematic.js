@@ -1,7 +1,7 @@
 // Homepage composition. Captions describe the supplied work without inventing
 // project names, clients, locations, dimensions, dates or completion status.
 import { ASSETS, src, srcset, position, wideSrcset } from '../content/assets.js';
-import { esc, ICON_ARROW } from './layout.js';
+import { esc, ICON_ARROW, quoteSupport } from './layout.js';
 import { HERO } from '../content/copy.js';
 import { publish } from '../content/company.js';
 
@@ -28,7 +28,7 @@ export function cinematicHero() {
     <p class="mh-eyebrow">${esc(publish('name'))} <span>${esc(HERO.eyebrow)}</span></p>
     <h1 class="display" id="hero-h">${HERO.title.split(/(?<=\.)\s+/).map(line=>`<span>${esc(line)}</span>`).join('')}</h1>
     <p class="mh-lede">${esc(HERO.lede).replace(/\n/g,'<br>')}</p>
-    <div class="hero-act mh-actions"><a class="btn" href="#enquiry"><span>Request a quote</span>${ICON_ARROW}</a><a class="btn-ghost" href="#work">Our projects <span aria-hidden="true">↓</span></a></div>
+    <div class="hero-act mh-actions"><a class="btn" href="#enquiry"><span>Request a quote</span>${ICON_ARROW}</a><a class="btn-ghost" href="#work">Our projects <span aria-hidden="true">↓</span></a></div>${quoteSupport()}
   </div>
   <div class="wrap mh-bottom">
     <p><span class="mh-live" aria-hidden="true"></span>On site with Kingson <span class="mh-divider">/</span> Roof steelwork</p>

@@ -1,5 +1,8 @@
 # Kingson Engineering
 
+The unshipped quotation and image improvements are documented in
+`QUOTE_CLARITY_PREVIEW.md`. Review them locally before approving deployment.
+
 Search, Analytics and public policy configuration is documented in
 `SEARCH_PRIVACY_SETUP.md`. Optional Analytics waits for consent; privacy,
 cookie and website-terms pages are linked in every public footer.

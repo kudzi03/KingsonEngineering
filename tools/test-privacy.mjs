@@ -42,6 +42,7 @@ try{
   for(const width of [390,1440]){
     const {context,page,external}=await fixture(width);
     await page.goto(origin+'/?email=qa%40example.invalid#PRIVATE-FRAGMENT',{waitUntil:'networkidle'});
+    await page.locator('[data-privacy]').waitFor({state:'visible'});
     assert.ok(await page.locator('[data-privacy]').isVisible());
     assert.equal(external.length,0,'No external requests before consent or map activation');
     assert.deepEqual(await context.cookies(),[]);
@@ -64,7 +65,8 @@ try{
     const config=(await queue(page)).find(item=>item[0]==='config')[2];
     assert.equal(config.page_location,origin+'/');assert.equal(config.page_referrer,'');assert.equal(config.cookie_expires,90*86400);assert.equal(config.allow_google_signals,false);assert.equal(config.send_page_view,false);
     await page.locator('#f-company').fill('Privacy QA organisation');
-    await page.locator('#f-service').selectOption({label:'Fibre laser cutting'});
+    await page.locator('.form-extra summary').click();
+  await page.locator('#f-service').selectOption({label:'Fibre laser cutting'});
     await page.locator('#f-description').fill('PRIVATE-JOB-CONTENT-QA');
     await page.locator('[data-review]').click();
     await page.locator('[data-sent][data-state="ok"]').waitFor();

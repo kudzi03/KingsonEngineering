@@ -46,25 +46,25 @@ export const WORK = {
 export const ENQUIRY = {
   title: 'Send us the brief.',
   lede: 'Tell us what you need. Enquiries are acknowledged the same working day.',
-  /* The form asks about the business, not the person: an organisation name,
-     what it does, and a business phone or email. Nothing asks for a person's
-     name, so an enquiry is not tied to an individual by design. */
+  /* Four fields are shown initially. Service, site and organisation context
+     remain optional. Business contact details may identify an individual;
+     the linked privacy policy describes how enquiries are handled. */
   fields: {
-    company:     'Business or organisation',
+    company:     'Business name',
     orgdetails:  'About the organisation',
-    contact:     'Business phone or email',
+    contact:     'Business phone / WhatsApp or email',
     service:     'What do you need?',
     location:    'Where is the site?',
-    description: 'Describe the job',
-    drawings:    'Do you have drawings?'
+    description: 'Brief description of the job',
+    drawings:    'Drawings / file note'
   },
   optional: 'optional',
   placeholders: {
     company: 'Registered or trading name',
     orgdetails: 'e.g. building contractor, farm, school, property developer',
-    contact: 'An office number or a work email address',
+    contact: 'Full phone / WhatsApp number or work email',
     location: 'Town or suburb, and access if it is tight',
-    description: 'Spans, heights, quantities — anything already decided.'
+    description: 'What you need, town or site, approximate span / height, material and thickness if known.'
   },
   serviceOptions: [
     'Structural steelwork', 'Roof steelwork and trusses', 'Fibre laser cutting',
@@ -80,9 +80,9 @@ export const ENQUIRY = {
   /* The privacy notice states only what the system does: what is collected,
      where it goes, who sees it, how to have it removed. Wording for Kingson
      to approve. */
-  privacy: 'Privacy: your business, contact and job details are saved in Kingson’s enquiry system, hosted by Supabase, so authorised staff can reply and quote. Contact details can identify a person. We do not use enquiries for marketing. For access, correction or deletion requests, email',
-  analytics: 'Optional analytics stays off unless you allow it. Read our privacy policy for details.',
-  filesNote: 'Your enquiry is logged with Kingson when you send it. Drawings are not — there is no upload here. Attach your DXF, DWG, STEP or PDF to the WhatsApp or email message this page prepares and it reaches the same estimator.',
+  privacy: 'Your business, contact and job details are saved so Kingson can reply and quote. We do not use enquiries for marketing. For privacy requests, email',
+  analytics: 'Analytics is optional.',
+  filesNote: 'Your enquiry is logged when sent. Attach drawings or photos to the email or WhatsApp message prepared afterwards; files are not uploaded here.',
   actions: {
     review: 'Send my enquiry',
     whatsapp: 'Send on WhatsApp',
@@ -119,6 +119,7 @@ export const ENQUIRY = {
     company: 'The name of the business or organisation, so we know who we are quoting.',
     contact: 'A business phone number or email address, so we can come back to you.',
     contactFormat: 'That does not look like a full phone number or email address.',
+    description: 'Briefly describe the work so the estimator can prepare your quotation.',
     service: 'Pick the closest one — "not sure yet" is fine.',
     summary: 'A few things are missing.',
     summaryFormat: 'Check the phone number or email address.'

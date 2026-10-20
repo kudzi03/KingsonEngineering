@@ -96,6 +96,8 @@ const CONFIRMED = [
   ['25-tonne',          'returned document §6 — the same figure, set as a compound adjective'],
   ['same working day',  'returned document §7 — enquiry acknowledged, not struck out'],
   ['two working days',  'returned document §7 — site visit arranged, not struck out'],
+  ['2 working days',    'owner request, 20 October 2026 — site visit arranged where needed'],
+  ['5 working days',    'owner request, 20 October 2026 — written quotation within five working days'],
   ['six to ten weeks',  'returned document §7 — portal frame programme, not struck out'],
   ['6–10 weeks',        'returned document §7 — the same programme, in figures'],
   ['3 – 5 days',        'returned document §4 — flashing lead time on a stock gauge'],
