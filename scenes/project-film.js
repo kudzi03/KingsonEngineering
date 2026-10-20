@@ -1,40 +1,53 @@
-// Native dialog provides focus containment and makes the background inert.
-// Real local films remain ordinary downloadable links when JS is unavailable.
+// Project footage runs silently in its existing image frame. Only visible
+// players request media; stills cover loading, blocked autoplay and preferences.
 export function mountProjectFilms() {
-  const dialog = document.querySelector('[data-film-dialog]');
-  if (!dialog?.showModal) return;
-  const player = dialog.querySelector('[data-film-player]');
-  let trigger = null;
-  document.querySelectorAll('[data-film]').forEach(link => link.addEventListener('click', event => {
-    event.preventDefault();
-    trigger = link;
-    dialog.querySelector('[data-film-title-out]').textContent = link.dataset.filmTitle;
-    dialog.querySelector('[data-film-description-out]').textContent = link.dataset.filmDescription;
-    player.src = link.href;
-    player.poster = link.dataset.filmPoster;
-    dialog.showModal();
-    document.documentElement.classList.add('film-open');
-    document.dispatchEvent(new Event('project-film-change'));
-    dialog.querySelector('[data-film-close]').focus();
-    player.play().catch(() => {});
-  }));
-  const closeButtons = [...dialog.querySelectorAll('[data-film-close]')];
-  closeButtons.forEach(button => button.addEventListener('click', () => dialog.close()));
-  // Keep boundary Tab presses inside the page even when browser-native media
-  // controls use a closed shadow tree. Intermediate video controls stay native.
-  dialog.addEventListener('keydown', event => {
-    if (event.key !== 'Tab') return;
-    const first = closeButtons[0], last = closeButtons[closeButtons.length-1];
-    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  const videos = [...document.querySelectorAll('[data-project-video]')];
+  if (!videos.length) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const connection = navigator.connection;
+  const restricted = () => reduce.matches || connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || '');
+  const players = videos.map(video => {
+    const frame = video.closest('.project-media');
+    const sources = video.dataset.projectSources.split(' ');
+    const posters = video.dataset.projectPosters.split(' ');
+    let visible = false, index = 0, failed = false;
+    const sync = () => {
+      if (!visible || document.hidden || restricted() || failed) {
+        video.pause();
+        if (restricted() || failed) frame.classList.remove('project-playing');
+        return;
+      }
+      if (video.getAttribute('src') !== sources[index]) {
+        frame.classList.remove('project-playing');
+        video.poster = posters[index];
+        video.src = sources[index];
+        video.load();
+      }
+      video.muted = true;
+      video.play().catch(() => frame.classList.remove('project-playing'));
+    };
+    video.addEventListener('playing', () => frame.classList.add('project-playing'));
+    video.addEventListener('error', () => { failed = true; sync(); });
+    // The first roof frame cycles both supplied angles without an extra CTA.
+    video.addEventListener('ended', () => {
+      if (sources.length > 1) index = (index + 1) % sources.length;
+      sync();
+    });
+    // WebKit can rewind a native loop but leave the player paused.
+    video.addEventListener('seeked', () => {
+      if (video.loop && video.paused && video.currentTime < .1) sync();
+    });
+    return { frame, sync, visibility: value => { visible = value; sync(); } };
   });
-  dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
-  dialog.addEventListener('close', () => {
-    player.pause();
-    player.removeAttribute('src');
-    player.load();
-    document.documentElement.classList.remove('film-open');
-    document.dispatchEvent(new Event('project-film-change'));
-    trigger?.focus({preventScroll:true});
-  });
+  const syncAll = () => players.forEach(player => player.sync());
+  document.addEventListener('visibilitychange', syncAll);
+  reduce.addEventListener('change', syncAll);
+  connection?.addEventListener('change', syncAll);
+  if ('IntersectionObserver' in window) {
+    const byFrame = new Map(players.map(player => [player.frame,player]));
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => byFrame.get(entry.target).visibility(entry.isIntersecting));
+    }, {threshold:0,rootMargin:'-88px 0px 0px'});
+    players.forEach(player => observer.observe(player.frame));
+  }
 }

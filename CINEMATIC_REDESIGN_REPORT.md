@@ -1,7 +1,8 @@
 # Kingson Engineering — cinematic redesign review
 
-Date: 20 October 2026. Branch: `codex/cinematic-project-redesign`.
-This is a preview for approval. Do not merge or promote it to production yet.
+Date: 20 October 2026. The original redesign was approved and deployed.
+The inline-playback follow-up uses `codex/inline-project-videos`; see the final
+section for the current media presentation, which supersedes the popup player.
 
 ## Source audit and repository baseline
 
@@ -268,3 +269,23 @@ not changed.
 - Updated browser checks for the email actions and media checks for automatic
   playback without a visible toggle. No DNS, DMARC or email-service settings
   were changed.
+
+## Inline project playback — owner-requested follow-up
+
+Removed every Watch film/another-view action and the film popup, its focus
+handling and unused styles. The project imagery now becomes silent footage
+inside the same frames: A and B cycle in the trusses frame; C and the workshop
+walkthrough loop in their own frames. The workshop footage takes the place of
+the previous small film thumbnail; its original photograph remains the still
+fallback. Original media exports are unchanged.
+
+Only a frame entering the viewport loads and plays its footage. Off-screen or
+hidden-tab footage pauses, and reduced motion, Save-Data, slow 2G, autoplay
+rejection and media errors retain the photographs. There are no film buttons
+or playback overlays. Service links, photo-detail zoom, enquiry forms and all
+four contact actions remain intact. DNS, DMARC and mail settings are unchanged.
+
+The media suite checks all three frames at the required desktop/mobile sizes,
+both roof-angle transitions, native loops, visibility/preference changes and
+loading/failure fallbacks. The page suite covers the six routes plus 404,
+accessibility, navigation and intercepted enquiry submissions.

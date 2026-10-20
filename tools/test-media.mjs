@@ -10,6 +10,7 @@ const base = 'http://127.0.0.1:4173';
 const out = process.env.KINGSON_QA_OUTPUT || join(tmpdir(),'kingson-cinematic-review');
 await mkdir(out,{recursive:true});
 const useWebKit = process.env.KINGSON_BROWSER === 'webkit';
+const failuresOnly = process.argv.includes('--failures-only');
 const browser = useWebKit ? await webkit.launch({headless:true}) : await chromium.launch({channel:process.env.KINGSON_BROWSER || 'msedge',headless:true});
 const results = [], errors = [];
 const pageAt = async (width=1440,height=900,options={}) => {
@@ -19,18 +20,29 @@ const pageAt = async (width=1440,height=900,options={}) => {
   return page;
 };
 const state = page => page.locator('[data-hero-video]').evaluate(v=>({src:v.currentSrc,paused:v.paused,time:v.currentTime,width:v.videoWidth,height:v.videoHeight,loop:v.loop,muted:v.muted,inline:v.playsInline,duration:v.duration,opacity:getComputedStyle(v).opacity}));
+// Render a deferred section before centering its media. Jumping directly to an
+// absolute video can use content-visibility's estimated section geometry.
+const revealProject = project => project.evaluate(async v=>{
+  v.closest('section').scrollIntoView({block:'start',behavior:'instant'});
+  for(let attempt=0;attempt<6;attempt++) {
+    await new Promise(resolve=>setTimeout(resolve,150));
+    v.closest('.project-media').scrollIntoView({block:'center',behavior:'instant'});
+  }
+});
 const accessibility = async (page, fullPage = false) => {
   if (!process.env.KINGSON_AXE_PATH) return;
   await page.addScriptTag({path:process.env.KINGSON_AXE_PATH});
   // Media-state checks inspect the active UI. A separate complete-page pass
   // below visits deferred sections before evaluating their painted colours.
-  const violations=await page.evaluate(async full=>(await axe.run(full?document:(document.querySelector('[data-film-dialog][open]')||document.querySelector('.hero')),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}})).violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({html:n.html,summary:n.failureSummary}))})),fullPage);
+  const violations=await page.evaluate(async full=>(await axe.run(full?document:document.querySelector('.hero'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}})).violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({html:n.html,summary:n.failureSummary}))})),fullPage);
   assert.deepEqual(violations,[],'Media state accessibility');
 };
 try {
-  for (const [width,height] of [[1440,900],[1920,1080],[390,844]]) {
+  for (const [width,height] of (failuresOnly ? [] : [[1440,900],[1920,1080],[390,844]])) {
     const page = await pageAt(width,height);
     await page.goto(base,{waitUntil:'networkidle'});
+    assert.equal(await page.locator('[data-film],.film-link,[data-film-dialog]').count(),0,'No film buttons or popup player');
+    assert.equal(await page.locator('[data-project-video][src]').count(),0,'Project media deferred below the hero');
     await page.waitForFunction(()=>document.querySelector('[data-hero-video]').currentTime>.1);
     const s = await state(page);
     assert.ok(s.loop && s.muted && s.inline && !s.paused && s.width>0);
@@ -54,15 +66,45 @@ try {
     await page.locator('#work').scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>document.querySelector('[data-hero-video]').paused);
     assert.ok(await page.locator('.hd').evaluate(e=>getComputedStyle(e).color!=='rgb(255, 255, 255)'));
+    const projects = await page.locator('[data-project-video]').all();
+    assert.equal(projects.length,3);
+    for (const [i,project] of projects.entries()) {
+      await revealProject(project);
+      await project.evaluate(v=>new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Project autoplay timed out: '+JSON.stringify({src:v.currentSrc,time:v.currentTime,paused:v.paused,ready:v.readyState,network:v.networkState,error:v.error?.message,rect:v.getBoundingClientRect().toJSON()}))),15000);const check=()=>{if(v.currentTime>.1&&!v.paused){clearTimeout(timer);resolve();}else setTimeout(check,100);};check();}));
+      const media=await project.evaluate(v=>({muted:v.muted,inline:v.playsInline,controls:v.controls,aspect:v.videoWidth/v.videoHeight}));
+      assert.ok(media.muted&&media.inline&&!media.controls);
+      assert.ok(Math.abs(media.aspect-(i===0?512/808:512/910))<.02);
+      if (i===0) {
+        // Exercise both actual transitions, including the return to A.
+        for (const file of ['roof-b.mp4','roof-a.mp4']) {
+          await project.evaluate(v=>{v.currentTime=v.duration-.35;});
+          await page.waitForFunction(file=>{const v=document.querySelector('[data-project-video]');return v.currentSrc.endsWith(file)&&v.currentTime>.1&&!v.paused;},file,{polling:100});
+        }
+      } else {
+        await project.evaluate(v=>{v.currentTime=v.duration-.35;});
+        await page.waitForFunction(i=>{const v=document.querySelectorAll('[data-project-video]')[i];return v.currentTime>.1&&v.currentTime<1&&!v.paused;},i,{polling:100}).catch(async error=>{throw new Error(`${width}px project ${i} loop: ${JSON.stringify(await project.evaluate(v=>({time:v.currentTime,paused:v.paused,seeking:v.seeking,src:v.currentSrc,rect:v.getBoundingClientRect().toJSON()})))}`,{cause:error});});
+      }
+      await page.screenshot({path:join(out,`inline-${width}-${i}.png`)});
+    }
+    await page.locator('#enquiry').scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>[...document.querySelectorAll('[data-project-video]')].every(v=>v.paused),undefined,{polling:100});
+    await revealProject(projects[0]);
+    await page.waitForFunction(()=>!document.querySelector('[data-project-video]').paused,undefined,{polling:100});
+    await page.emulateMedia({reducedMotion:'reduce'});
+    await page.waitForFunction(()=>[...document.querySelectorAll('[data-project-video]')].every(v=>v.paused),undefined,{polling:100});
+    assert.equal(await page.locator('.project-playing').count(),0);
+    results.push({width,inlineFrames:3,sourceFilms:4,playlistCycles:true,nativeLoops:true,offscreenPauseResume:true,reducedMotion:true,noFilmButtons:true});
     results.push({viewportWidth:width,viewportHeight:height,autoplay:true,loop:true,noFilmToggle:true,reducedMotionChange:true,offscreenPause:true,video:s});
     await page.close();
   }
-  for (const condition of ['reduce','save-data','slow-2g','still']) {
+  for (const condition of (failuresOnly ? [] : ['reduce','save-data','slow-2g','still'])) {
     const page = await pageAt(390,844,{reducedMotion:condition==='reduce'?'reduce':'no-preference'});
     if (condition==='save-data' || condition==='slow-2g') await page.addInitScript(c=>Object.defineProperty(navigator,'connection',{value:{saveData:c==='save-data',effectiveType:c==='slow-2g'?'slow-2g':'4g',addEventListener(){}}}),condition);
     const requests=[];
     page.on('request',r=>{if(r.url().includes('/assets/video/'))requests.push(r.url());});
     await page.goto(base+(condition==='still'?'/?hero=still':''),{waitUntil:'networkidle'});
+    if(condition!=='still')for(const project of await page.locator('[data-project-video]').all())await revealProject(project);
+    await page.waitForTimeout(200);
     assert.equal((await state(page)).src,'',condition+': no video source');
     assert.deepEqual(requests,[],condition+': no automatic video download');
     assert.ok(await page.locator('.mh-poster img').evaluate(i=>i.naturalWidth>0));
@@ -72,41 +114,41 @@ try {
   for (const failure of ['blocked','network']) {
     const page = await pageAt();
     if (failure==='blocked') await page.addInitScript(()=>{HTMLMediaElement.prototype.play=function(){return Promise.reject(new DOMException('Autoplay blocked','NotAllowedError'));};});
-    else await page.route('**/assets/video/roof-hero-*',r=>r.abort());
+    else {
+      // Windows WebKit's native media fetches bypass Playwright routing.
+      // Request real nonexistent files so both engines exercise HTTP failure.
+      await page.route(base+'/',async route=>{
+        const response=await route.fetch();
+        const body=(await response.text()).replaceAll('/assets/video/','/assets/video/unavailable-');
+        await route.fulfill({response,body});
+      });
+      await page.route('**/assets/site.min.js*',async route=>{
+        const response=await route.fetch();
+        await route.fulfill({response,body:(await response.text()).replaceAll('/assets/video/roof-hero-','/assets/video/unavailable-roof-hero-')});
+      });
+    }
     await page.goto(base,{waitUntil:'networkidle'});
     await page.waitForTimeout(300);
+    if(failure==='network')await page.waitForFunction(()=>!!document.querySelector('[data-hero-video]').error,undefined,{polling:100});
     assert.equal(await page.locator('.hero').evaluate(h=>h.classList.contains('film-playing')),false);
     assert.ok(await page.locator('.mh-poster img').evaluate(i=>i.naturalWidth>0));
     assert.equal(await page.locator('[data-hero-toggle]').count(),0);
+    for(const [i,project] of (await page.locator('[data-project-video]').all()).entries()) {
+      await revealProject(project);
+      await page.waitForFunction(i=>{const frame=document.querySelectorAll('[data-project-video]')[i].closest('.project-media');return !frame.classList.contains('project-playing')&&frame.querySelector('img').naturalWidth>0;},i,{polling:100,timeout:10000}).catch(async error=>{throw new Error(`${failure} project ${i}: ${JSON.stringify(await project.evaluate(v=>({playing:v.closest('.project-media').classList.contains('project-playing'),poster:v.closest('.project-media').querySelector('img').currentSrc,posterWidth:v.closest('.project-media').querySelector('img').naturalWidth,rect:v.getBoundingClientRect().toJSON()})))}`,{cause:error});});
+    }
     results.push({failure,poster:true});
     await page.close();
   }
-  const page = await pageAt(390,844,{reducedMotion:'reduce'});
-  await page.goto(base,{waitUntil:'networkidle'});
-  for (const link of await page.locator('[data-film]').all()) {
-    await link.click();
-    await page.locator('[data-film-dialog][open]').waitFor();
-    await page.waitForFunction(()=>document.querySelector('[data-film-player]').readyState>=2);
-    await accessibility(page);
-    const aspect=await page.locator('[data-film-player]').evaluate(v=>v.videoWidth/v.videoHeight);
-    const href=await link.getAttribute('href');
-    const expected=href.includes('roof-b')?512/860:href.includes('roof-a')?512/808:512/910;
-    assert.ok(Math.abs(aspect-expected)<0.02,'Film decodes with its intended aspect ratio');
-    await page.keyboard.press('Shift+Tab');
-    assert.ok(await page.locator('[data-film-dialog]').evaluate(d=>d.contains(document.activeElement)),'Film dialog focus containment');
-    await page.keyboard.press('Escape');
-    assert.equal(await page.locator('[data-film-dialog]').evaluate(d=>d.open),false);
-    assert.ok(await link.evaluate(l=>document.activeElement===l),'Focus restores to film link');
-    assert.equal(await page.locator('[data-film-player]').getAttribute('src'),null,'Closing releases the media');
-  }
+  if (!failuresOnly) {
   // Exercise VP9 fallback independently of the preferred H.264 path.
   const vp9 = await pageAt();
   await vp9.addInitScript(()=>{const original=HTMLMediaElement.prototype.canPlayType;HTMLMediaElement.prototype.canPlayType=function(type){return type.includes('mp4')?'':original.call(this,type);};});
   await vp9.goto(base,{waitUntil:'networkidle'});
   await vp9.waitForFunction(()=>document.querySelector('[data-hero-video]').currentTime>.1);
   assert.ok((await state(vp9)).src.endsWith('.webm'));
-  results.push({films:4,dialogKeyboard:true,focusRestored:true,h264:true,vp9:true});
-  await vp9.close();await page.close();
+  results.push({h264:true,vp9:true});
+  await vp9.close();
   const response = await fetch(base+'/assets/video/roof-c.mp4',{headers:{Range:'bytes=0-1023'}});
   assert.equal(response.status,206);assert.equal((await response.arrayBuffer()).byteLength,1024);
   results.push({httpByteRanges:true});
@@ -118,8 +160,12 @@ try {
     results.push({webKitCompletePageAccessibility:true});
     await full.close();
   }
+  }
   assert.deepEqual(errors,[]);
   console.log(JSON.stringify({passed:true,results},null,2));
+} catch (error) {
+  console.error(error);
+  throw error;
 } finally {
   await writeFile(join(out,'media-results.json'),JSON.stringify({results,errors},null,2));
   await browser.close();
