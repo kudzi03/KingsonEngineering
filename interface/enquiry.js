@@ -159,7 +159,10 @@ export function mountEnquiry() {
     }
 
     inFlight = false;
-    if (result.ok) { lastSaved = message; lastRef = result.ref || null; }
+    if (result.ok) {
+      lastSaved = message; lastRef = result.ref || null;
+      document.dispatchEvent(new Event('enquiry-saved'));
+    }
     if (submitBtn) submitBtn.disabled = false;
     if (label) label.textContent = was;
 

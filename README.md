@@ -1,5 +1,9 @@
 # Kingson Engineering
 
+Search, Analytics and public policy configuration is documented in
+`SEARCH_PRIVACY_SETUP.md`. Optional Analytics waits for consent; privacy,
+cookie and website-terms pages are linked in every public footer.
+
 The cinematic redesign was approved and deployed on 20 October 2026.
 Read `CINEMATIC_REDESIGN_REPORT.md` for reference analysis, asset provenance,
 video processing, validation and preview limitations. It supersedes the earlier

@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import { SERVICES } from '../content/services.js';
 import { publish } from '../content/company.js';
 import { SEO } from '../content/seo.js';
+import { POLICIES } from '../content/policies.js';
 import { hasProjects } from '../content/projects.js';
 import { SITE } from './layout.js';
 const read = name => readFileSync(new URL('../'+name, import.meta.url),'utf8');
@@ -12,7 +13,7 @@ const files=['index.html',...SERVICES.map(s=>s.slug+'.html')];
 const normalized = value => value.replace(/&amp;/g,'&').replace(/&nbsp;|\u00a0/g,' ').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
 const sitemap=read('sitemap.xml');
 const listed=[...sitemap.matchAll(/<loc>([^<]+)</g)].map(m=>m[1]);
-assert.deepEqual(listed,[SITE+'/',...SERVICES.map(s=>SITE+'/'+s.slug),...(hasProjects()?[SITE+'/projects']:[])],'Sitemap must contain only current indexable pages');
+assert.deepEqual(listed,[SITE+'/',...SERVICES.map(s=>SITE+'/'+s.slug),...(hasProjects()?[SITE+'/projects']:[]),...POLICIES.map(p=>SITE+'/'+p.slug)],'Sitemap must contain only current indexable pages');
 assert.ok(!listed.some(url=>url.endsWith('.html')||url.includes('/crm')||url.includes('vercel.app')));
 const titles=new Set(),descriptions=new Set();
 for(const file of files) {
@@ -54,6 +55,11 @@ for(const file of files) {
     }
   };walk(ld);
   assert.equal((html.match(/name="google-site-verification"/g)||[]).length,file==='index.html'&&SEO.googleSiteVerification?1:0);
+  assert.equal((html.match(/name="msvalidate\.01"/g)||[]).length,file==='index.html'&&SEO.bingSiteVerification?1:0);
+  if(file==='index.html') {
+    assert.ok(html.includes(`content="${SEO.googleSiteVerification}"`));
+    assert.ok(html.includes(`content="${SEO.bingSiteVerification}"`));
+  }
   console.log(`${file}: ${title}`);
 }
 assert.ok(/Disallow: \/crm/.test(read('robots.txt')));

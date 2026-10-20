@@ -20,6 +20,7 @@ import { NAV, ENQUIRY, CONTACT, CAPABILITIES } from '../content/copy.js';
 import { hasProjects } from '../content/projects.js';
 import { SERVICES } from '../content/services.js';
 import { SEO } from '../content/seo.js';
+import { ANALYTICS } from '../content/analytics.js';
 import { publish } from '../content/company.js';
 import { ASSETS, src, srcset, position, hasWide, wideSrc, wideSrcset } from '../content/assets.js';
 import { createHash } from 'node:crypto';
@@ -369,6 +370,7 @@ ${reach}
   <div class="ft-in">
 ${meta}
   </div>
+  <nav class="ft-policies wrap" aria-label="Privacy and website policies"><a href="/privacy-policy">Privacy policy</a><a href="/cookie-policy">Cookie policy</a><a href="/terms-of-use">Website terms</a><button type="button" data-cookie-settings>Cookie settings</button></nav>
   <p class="ft-mark" aria-hidden="true" data-mark="${esc(publish('name'))}"></p>
 </footer>`;
 }
@@ -398,6 +400,10 @@ export function chromeBottom() {
      already scrolled past. -->
 <nav class="bar" aria-label="Call, WhatsApp, email or get a price">${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}${quoteBtn(false, '#enquiry')}</nav>
 
+<aside class="consent-banner" data-privacy data-analytics-id="${esc(ANALYTICS.measurementId)}" aria-labelledby="privacy-choice-title" hidden>
+  <div><h2 id="privacy-choice-title">Your privacy choices</h2><p data-privacy-status>Analytics is optional.</p><p>We use optional Google Analytics cookies to understand visits. <a href="/cookie-policy">Cookie policy</a> · <a href="/privacy-policy">Privacy policy</a></p></div>
+  <div class="consent-actions"><button type="button" data-consent-choice="denied">Reject optional</button><button type="button" data-consent-choice="granted">Allow analytics</button></div>
+</aside>
 <script type="module" src="/assets/site.min.js?v=${BUILD}"></script>`;
 }
 
@@ -438,6 +444,7 @@ export function headHtml({ title, description, path, ogImage, ogAlt, preload, pr
 <meta name="description" content="${esc(description)}">
 <meta name="theme-color" content="#faf9f6">
 ${home && SEO.googleSiteVerification ? `<meta name="google-site-verification" content="${SEO.googleSiteVerification}">` : ''}
+${home && SEO.bingSiteVerification ? `<meta name="msvalidate.01" content="${SEO.bingSiteVerification}">` : ''}
 ${index ? `<link rel="canonical" href="${canonical}">` : '<meta name="robots" content="noindex">'}
 
 <meta property="og:type" content="${ogType}">
@@ -483,9 +490,6 @@ ${home ? `
      -->
 <script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')</script>
 <link rel="stylesheet" href="/assets/site.min.css?v=${BUILD}">
-<!-- Vercel Web Analytics: page views only, no cookies, no personal data.
-     Same origin, deferred, and nothing on the page depends on it. -->
-<script defer src="/_vercel/insights/script.js"></script>
 ${ld ? `
 <script type="application/ld+json">
 ${ld}
@@ -555,7 +559,7 @@ ${select('drawings', 'drawings', ENQUIRY.drawingOptions, null)}
 export function privacyNote() {
   const mail = publish('email');
   return `<p class="privacy-note">${esc(ENQUIRY.privacy)} ${mail
-    ? `<a href="mailto:${esc(mail)}">${esc(mail)}</a>.` : ''} ${esc(ENQUIRY.analytics)}</p>`;
+    ? `<a href="mailto:${esc(mail)}">${esc(mail)}</a>.` : ''} ${esc(ENQUIRY.analytics)} <a href="/privacy-policy">Privacy policy</a> · <a href="/cookie-policy">Cookie policy</a>.</p>`;
 }
 
 /* Beside the form: the other way in. Every value through publish(), so an

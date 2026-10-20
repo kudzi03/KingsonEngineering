@@ -80,8 +80,8 @@ export const ENQUIRY = {
   /* The privacy notice states only what the system does: what is collected,
      where it goes, who sees it, how to have it removed. Wording for Kingson
      to approve. */
-  privacy: 'Privacy: we ask about your business, not about you. What you send is saved in Kingson’s enquiry system (hosted by Supabase), seen only by Kingson staff, used to reply and quote, and never for marketing. To see or remove it, email',
-  analytics: 'Visits are counted without cookies and without identifying you.',
+  privacy: 'Privacy: your business, contact and job details are saved in Kingson’s enquiry system, hosted by Supabase, so authorised staff can reply and quote. Contact details can identify a person. We do not use enquiries for marketing. For access, correction or deletion requests, email',
+  analytics: 'Optional analytics stays off unless you allow it. Read our privacy policy for details.',
   filesNote: 'Your enquiry is logged with Kingson when you send it. Drawings are not — there is no upload here. Attach your DXF, DWG, STEP or PDF to the WhatsApp or email message this page prepares and it reaches the same estimator.',
   actions: {
     review: 'Send my enquiry',

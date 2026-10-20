@@ -113,6 +113,12 @@ const norm = (s) => s.toLowerCase()
   .trim();
 
 const ALLOWED = new Map(CONFIRMED.map(([text, why]) => [norm(text), why]));
+// Technical storage lifetimes, confined to the cookie policy. These are
+// implementation settings, not additional quotation/programme promises.
+const POLICY_STORAGE_DURATIONS = new Map([
+  ['180 days','interface/privacy.js: privacy-choice lifetime = 180*86400000'],
+  ['90 days','interface/privacy.js: GA cookie_expires = 90*86400']
+]);
 
 /* ── 3. values the returned document replaced ─────────────────────────────── */
 
@@ -176,6 +182,7 @@ for (const file of files) {
     for (const m of text.matchAll(re)) {
       const found = norm(m[0]);
       if (ALLOWED.has(found)) { allowedHits++; continue; }
+      if (rel === 'cookie-policy.html' && POLICY_STORAGE_DURATIONS.has(found)) { allowedHits++; continue; }
       const line = text.slice(0, m.index).split('\n').length;
       fail(`${rel}:${line}: asserts ${what} — "${m[0].trim()}" is not on the confirmed list`);
     }

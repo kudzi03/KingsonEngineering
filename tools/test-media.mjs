@@ -16,6 +16,7 @@ const results = [], errors = [];
 const pageAt = async (width=1440,height=900,options={}) => {
   const page = await browser.newPage({viewport:{width,height},...options});
   await page.route('**/*.supabase.co/**',route=>route.abort());
+  await page.addInitScript(()=>{try{localStorage.setItem('kingson_privacy_v1',JSON.stringify({version:1,analytics:'denied',expires:Date.now()+86400000}));}catch{}});
   page.on('pageerror',e=>errors.push(e.message));
   return page;
 };

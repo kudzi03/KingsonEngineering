@@ -22,6 +22,7 @@ import { mountParallax } from './scenes/parallax.js';
 import { mountCinema } from './scenes/cinema.js';
 import { mountHeroFilm } from './scenes/hero-film.js';
 import { mountProjectFilms } from './scenes/project-film.js';
+import { mountPrivacy } from './interface/privacy.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -86,6 +87,7 @@ mountParallax();
 mountCinema();
 mountProjectFilms();
 mountHeroFilm();
+mountPrivacy();
 
 
 /* ── the photograph viewer ──────────────────────────────────────────────── */

@@ -7,6 +7,7 @@ import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { SERVICES } from '../content/services.js';
+import { POLICIES } from '../content/policies.js';
 const playwright = await import(process.env.KINGSON_PLAYWRIGHT_PATH ? pathToFileURL(process.env.KINGSON_PLAYWRIGHT_PATH) : 'playwright');
 const { chromium } = playwright.default || playwright;
 const base = process.env.KINGSON_PREVIEW_URL || 'http://127.0.0.1:4173';
@@ -15,7 +16,7 @@ const out = process.env.KINGSON_QA_OUTPUT || join(tmpdir(), 'kingson-redesign-re
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch({ channel: process.env.KINGSON_BROWSER || 'msedge', headless: true });
 const results = { pages: [], interactions: [], errors: [] };
-const routes = ['/', ...SERVICES.map(s => '/' + s.slug), '/not-a-page'];
+const routes = ['/', ...SERVICES.map(s => '/' + s.slug), ...POLICIES.map(p=>'/'+p.slug), '/not-a-page'];
 const makePage = async (width, options = {}) => {
   const page = await browser.newPage({ viewport: { width, height: width === 390 ? 844 : width === 1920 ? 1080 : 900 }, reducedMotion:'reduce', ...options });
   page.on('pageerror', error => results.errors.push(error.message));
@@ -23,6 +24,7 @@ const makePage = async (width, options = {}) => {
   await page.route('**/*.supabase.co/**', route => route.abort());
   // Keep visual and accessibility checks deterministic, without third-party map UI.
   await page.route('https://www.google.com/maps/**', route => route.fulfill({ body:'', contentType:'text/html' }));
+  await page.addInitScript(()=>{try{localStorage.setItem('kingson_privacy_v1',JSON.stringify({version:1,analytics:'denied',expires:Date.now()+86400000}));}catch{}});
   return page;
 };
 try {
@@ -52,6 +54,7 @@ try {
     assert.deepEqual(structure.brokenImages,[],`${path}: broken images`);
     assert.deepEqual(structure.clippedProjectFrames,[],`${path}: project media clipped outside viewport`);
     for (const group of ['.bar','.menu-contact','.enq-aside-act']) {
+      if(group==='.enq-aside-act'&&POLICIES.some(p=>'/'+p.slug===path))continue;
       assert.equal(await page.locator(`${group} a[href="mailto:admin1@kingsonengineering.co.zw"]`).count(),1,`${path}: direct email alongside other contact actions`);
     }
     let violations = [];
