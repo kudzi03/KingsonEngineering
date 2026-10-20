@@ -10,6 +10,7 @@ const base = 'http://127.0.0.1:4173';
 const out = process.env.KINGSON_QA_OUTPUT || join(tmpdir(),'kingson-cinematic-review');
 await mkdir(out,{recursive:true});
 const useWebKit = process.env.KINGSON_BROWSER === 'webkit';
+const failuresOnly = process.argv.includes('--failures-only');
 const browser = useWebKit ? await webkit.launch({headless:true}) : await chromium.launch({channel:process.env.KINGSON_BROWSER || 'msedge',headless:true});
 const results = [], errors = [];
 const pageAt = async (width=1440,height=900,options={}) => {
@@ -37,7 +38,7 @@ const accessibility = async (page, fullPage = false) => {
   assert.deepEqual(violations,[],'Media state accessibility');
 };
 try {
-  for (const [width,height] of [[1440,900],[1920,1080],[390,844]]) {
+  for (const [width,height] of (failuresOnly ? [] : [[1440,900],[1920,1080],[390,844]])) {
     const page = await pageAt(width,height);
     await page.goto(base,{waitUntil:'networkidle'});
     assert.equal(await page.locator('[data-film],.film-link,[data-film-dialog]').count(),0,'No film buttons or popup player');
@@ -96,7 +97,7 @@ try {
     results.push({viewportWidth:width,viewportHeight:height,autoplay:true,loop:true,noFilmToggle:true,reducedMotionChange:true,offscreenPause:true,video:s});
     await page.close();
   }
-  for (const condition of ['reduce','save-data','slow-2g','still']) {
+  for (const condition of (failuresOnly ? [] : ['reduce','save-data','slow-2g','still'])) {
     const page = await pageAt(390,844,{reducedMotion:condition==='reduce'?'reduce':'no-preference'});
     if (condition==='save-data' || condition==='slow-2g') await page.addInitScript(c=>Object.defineProperty(navigator,'connection',{value:{saveData:c==='save-data',effectiveType:c==='slow-2g'?'slow-2g':'4g',addEventListener(){}}}),condition);
     const requests=[];
@@ -113,20 +114,33 @@ try {
   for (const failure of ['blocked','network']) {
     const page = await pageAt();
     if (failure==='blocked') await page.addInitScript(()=>{HTMLMediaElement.prototype.play=function(){return Promise.reject(new DOMException('Autoplay blocked','NotAllowedError'));};});
-    else await page.route('**/assets/video/*',r=>r.abort());
+    else {
+      // Windows WebKit's native media fetches bypass Playwright routing.
+      // Request real nonexistent files so both engines exercise HTTP failure.
+      await page.route(base+'/',async route=>{
+        const response=await route.fetch();
+        const body=(await response.text()).replaceAll('/assets/video/','/assets/video/unavailable-');
+        await route.fulfill({response,body});
+      });
+      await page.route('**/assets/site.min.js*',async route=>{
+        const response=await route.fetch();
+        await route.fulfill({response,body:(await response.text()).replaceAll('/assets/video/roof-hero-','/assets/video/unavailable-roof-hero-')});
+      });
+    }
     await page.goto(base,{waitUntil:'networkidle'});
     await page.waitForTimeout(300);
+    if(failure==='network')await page.waitForFunction(()=>!!document.querySelector('[data-hero-video]').error,undefined,{polling:100});
     assert.equal(await page.locator('.hero').evaluate(h=>h.classList.contains('film-playing')),false);
     assert.ok(await page.locator('.mh-poster img').evaluate(i=>i.naturalWidth>0));
     assert.equal(await page.locator('[data-hero-toggle]').count(),0);
-    for(const project of await page.locator('[data-project-video]').all()) {
+    for(const [i,project] of (await page.locator('[data-project-video]').all()).entries()) {
       await revealProject(project);
-      await page.waitForTimeout(200);
-      assert.ok(await project.evaluate(v=>!v.closest('.project-media').classList.contains('project-playing')&&v.closest('.project-media').querySelector('img').naturalWidth>0));
+      await page.waitForFunction(i=>{const frame=document.querySelectorAll('[data-project-video]')[i].closest('.project-media');return !frame.classList.contains('project-playing')&&frame.querySelector('img').naturalWidth>0;},i,{polling:100,timeout:10000}).catch(async error=>{throw new Error(`${failure} project ${i}: ${JSON.stringify(await project.evaluate(v=>({playing:v.closest('.project-media').classList.contains('project-playing'),poster:v.closest('.project-media').querySelector('img').currentSrc,posterWidth:v.closest('.project-media').querySelector('img').naturalWidth,rect:v.getBoundingClientRect().toJSON()})))}`,{cause:error});});
     }
     results.push({failure,poster:true});
     await page.close();
   }
+  if (!failuresOnly) {
   // Exercise VP9 fallback independently of the preferred H.264 path.
   const vp9 = await pageAt();
   await vp9.addInitScript(()=>{const original=HTMLMediaElement.prototype.canPlayType;HTMLMediaElement.prototype.canPlayType=function(type){return type.includes('mp4')?'':original.call(this,type);};});
@@ -145,6 +159,7 @@ try {
     await accessibility(full,true);
     results.push({webKitCompletePageAccessibility:true});
     await full.close();
+  }
   }
   assert.deepEqual(errors,[]);
   console.log(JSON.stringify({passed:true,results},null,2));
