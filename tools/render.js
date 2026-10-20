@@ -34,6 +34,8 @@ import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
 import { SERVICES } from '../content/services.js';
 import { cinematicHero, cinematicWork, projectVideo } from './cinematic.js';
+import { policyPages } from './policy-pages.js';
+import { POLICIES, POLICY_DATE } from '../content/policies.js';
 import { portfolioRoutes, PORTFOLIO } from './portfolio.js';
 import { hasProjects, publishable as publishableProjects, problems as projectProblems } from '../content/projects.js';
 import { pageGraph, serviceId } from './schema.js';
@@ -630,6 +632,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 ${sitemapImages}
   </url>
 ${sitemapServices}${sitemapProjects}
+${POLICIES.map(policy=>`  <url><loc>${SITE}/${policy.slug}</loc><lastmod>${POLICY_DATE}</lastmod></url>`).join('\n')}
 </urlset>
 `;
 
@@ -656,7 +659,7 @@ const smBefore = readFileSync(smFile, 'utf8');
    person who got a page that did not look like the site. It is not in the
    sitemap — that is built from SERVICES and the portfolio, not from this
    list — and it carries noindex. */
-const routes = [...allServicePages(), ...portfolioRoutes(), notFoundPage()]
+const routes = [...allServicePages(), ...portfolioRoutes(), ...policyPages(), notFoundPage()]
   .map((r) => ({ ...r, html: bindFigures(r.html) }));
 
 /* robots.txt names the sitemap by absolute URL, so it follows SITE too. */

@@ -56,7 +56,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; connect-src 'self' https://fgzwcxwmaohowryzdgui.supabase.co"
+          "value": "frame-ancestors 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; connect-src 'self' https://fgzwcxwmaohowryzdgui.supabase.co https://*.google-analytics.com https://*.analytics.google.com"
         }
       ]
     },
