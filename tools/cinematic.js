@@ -19,7 +19,7 @@ export function cinematicHero() {
   return `<div class="mh-media" aria-hidden="true">
     <picture class="mh-poster">
       <source media="(min-width:900px)" srcset="${wideSrcset('portalFrame').split(', ').map(s=>'/'+s).join(', ')}" sizes="100vw">
-      <img src="/${src('roofFilmA',512)}" srcset="${srcset('roofFilmA').split(', ').map(s=>'/'+s).join(', ')}" sizes="100vw" width="512" height="808" alt="" fetchpriority="high" decoding="async">
+      <img src="/${src('roofFilmA',512)}" srcset="${srcset('roofFilmA').split(', ').map(s=>'/'+s).join(', ')}" sizes="100vw" width="512" height="808" alt="Steel roof structure and purlins by Kingson Engineering." fetchpriority="high" decoding="async">
     </picture>
     <video class="mh-video" data-hero-video muted loop playsinline preload="none" poster="/${src('roofFilmA',512)}" tabindex="-1"></video>
   </div>
@@ -28,7 +28,7 @@ export function cinematicHero() {
     <p class="mh-eyebrow">${esc(publish('name'))} <span>${esc(HERO.eyebrow)}</span></p>
     <h1 class="display" id="hero-h">${HERO.title.split(/(?<=\.)\s+/).map(line=>`<span>${esc(line)}</span>`).join('')}</h1>
     <p class="mh-lede">${esc(HERO.lede).replace(/\n/g,'<br>')}</p>
-    <div class="hero-act mh-actions"><a class="btn" href="#enquiry"><span>Request a quote</span>${ICON_ARROW}</a><a class="btn-ghost" href="#work">Our projects <span aria-hidden="true">↓</span></a></div>${quoteSupport()}
+    <div class="hero-act mh-actions"><a class="btn" href="#enquiry"><span>Request a quote</span>${ICON_ARROW}</a><a class="btn-ghost" href="#work">Our projects <span aria-hidden="true">↓</span></a></div>${quoteSupport({preview:true})}
   </div>
   <div class="wrap mh-bottom">
     <p><span class="mh-live" aria-hidden="true"></span>On site with Kingson <span class="mh-divider">/</span> Roof steelwork</p>
