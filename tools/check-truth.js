@@ -203,8 +203,8 @@ for (const file of allPages) {
     fail(`${rel}: no focusable <main id="main"> landmark`);
   }
   if (!/<footer class="ft/.test(html)) fail(`${rel}: no site footer`);
-  if (!/<header class="hd">/.test(html)) fail(`${rel}: no site header`);
-  if (!/<html lang="en">/.test(html)) fail(`${rel}: no lang on <html>`);
+  if (!/<header class="hd(?:\s[^"]*)?">/.test(html)) fail(`${rel}: no site header`);
+  if (!/<html lang="en(?:-ZW)?">/.test(html)) fail(`${rel}: no English lang on <html>`);
 
   /* An aria-labelledby pointing at an id that does not exist is announced as
      nothing at all — worse than having left the attribute off. index.html
@@ -448,6 +448,13 @@ for (const url of listed) {
 
 try {
   const { execFileSync } = await import('node:child_process');
+  execFileSync(process.execPath, [root + 'tools/build-public.mjs', '--check'], { stdio: 'pipe' });
+} catch {
+  fail('Public CSS/JS assets are stale — run node tools/build-public.mjs, then node tools/render.js');
+}
+
+try {
+  const { execFileSync } = await import('node:child_process');
   execFileSync(process.execPath, [root + 'tools/render.js', '--check'], { stdio: 'pipe' });
 } catch {
   fail('index.html is out of date — run: node tools/render.js');
@@ -460,6 +467,13 @@ try {
   execFileSync(process.execPath, [root + 'tools/check-sharing.mjs'], { stdio: 'pipe' });
 } catch (error) {
   fail(`Sharing URL checks failed — run: node tools/check-sharing.mjs\n${error.stderr?.toString() || error.message}`);
+}
+
+try {
+  const { execFileSync } = await import('node:child_process');
+  execFileSync(process.execPath, [root + 'tools/check-search.mjs'], { stdio: 'pipe' });
+} catch (error) {
+  fail(`Search readiness checks failed — run: node tools/check-search.mjs\n${error.stderr?.toString() || error.message}`);
 }
 
 if (failures) {

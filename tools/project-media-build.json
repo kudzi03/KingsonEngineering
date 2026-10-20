@@ -1,0 +1,77 @@
+{
+  "cleanup": "hqdn3d=0.6:0.4:1.0:0.6,eq=contrast=1.025:saturation=0.97:brightness=0.003,unsharp=5:5:0.22:3:3:0",
+  "exports": [
+    {
+      "source": "roof-structure-project-a.mp4",
+      "source_sha256": "0f01ff302cc7cba1dcdba41a2aacf23548e973f8cd2e1062529659d3b1cf1e40",
+      "output": "assets/video/roof-a.mp4",
+      "start": 0,
+      "duration": 25.4,
+      "crop": "null",
+      "bytes": 6027479,
+      "poster_widths": [
+        440,
+        512
+      ]
+    },
+    {
+      "source": "roof-structure-project-b.mp4",
+      "source_sha256": "4001beb5d148d346562372c7580f7d79e3e3174c83ccb462f214511606a19512",
+      "output": "assets/video/roof-b.mp4",
+      "start": 0.3,
+      "duration": 15.0,
+      "crop": "crop=512:860:0:140",
+      "bytes": 3591483,
+      "poster_widths": [
+        440,
+        512
+      ]
+    },
+    {
+      "source": "roof-structure-project-c-ORIGINAL.mp4",
+      "source_sha256": "c3d883175019a688e8912c67991e10127f8f6f361c47b59fcfee9d4513a17a53",
+      "output": "assets/video/roof-c.mp4",
+      "start": 0,
+      "duration": 28.267,
+      "crop": "null",
+      "bytes": 8407755,
+      "poster_widths": [
+        440,
+        512
+      ]
+    },
+    {
+      "source": "workshop-walkthrough.mp4",
+      "source_sha256": "5e8199ba5a72da9e140a8ad65a6314151c5ecf3cff8fc9e834dad34eb041c317",
+      "output": "assets/video/workshop.mp4",
+      "start": 0,
+      "duration": 12,
+      "crop": "null",
+      "bytes": 4253163,
+      "poster_widths": [
+        440,
+        512
+      ]
+    },
+    {
+      "output": "assets/video/roof-hero-wide.mp4",
+      "native_size": "512:288",
+      "bytes": 668943,
+      "duration": 4.9
+    },
+    {
+      "output": "assets/video/roof-hero-portrait.mp4",
+      "native_size": "512:808",
+      "bytes": 2210420,
+      "duration": 6.8
+    },
+    {
+      "source": "architectural-glass-exterior.jpeg",
+      "source_sha256": "086d8ce6636eec9413c4c16e4a64a99d6dab456feb4f79508d8e70e86d4a7923"
+    },
+    {
+      "source": "architectural-atrium-interior.jpeg",
+      "source_sha256": "6977e7a29f68d8b3338be0e57c2c6109ddf1df2e9d7924897e87f51095fb2045"
+    }
+  ]
+}

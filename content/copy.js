@@ -17,7 +17,7 @@
    hand when a figure, a service or a photograph changes — a sitemap that
    claims a change every time the renderer runs teaches a crawler to ignore
    the field anyway. */
-export const UPDATED = '2026-09-14';
+export const UPDATED = '2026-10-20';
 
 export const EYEBROWS = {
   services: 'Six services',
@@ -39,8 +39,8 @@ export const EYEBROWS = {
 
 export const HERO = {
   eyebrow: 'Steelwork specialists · Tynwald, Harare',
-  title: 'Structural steelwork. Fabricated here.',
-  lede: 'Structural steel, roofing, fibre laser cutting and cranage — fabricated in our own workshop and erected with our own crane. Send drawings or a description; enquiries are acknowledged the same working day.',
+  title: 'Steelwork. Fabricated here.',
+  lede: 'Structural steel. Roofing. Precision fabrication.\nFrom our workshop to your site.',
   /* The four the lede names, set as the sheet's reference line. */
   disciplines: ['Structural steel', 'Roofing', 'Fibre laser', 'Cranage'],
   /* The photographs the first screen moves through, in the order of the
@@ -55,8 +55,8 @@ export const HERO = {
 
 export const SERVICES_BLOCK = {
   eyebrow: 'Six services',
-  title: 'What do you need made?',
-  lede: 'Pick the one closest to your job. Each goes to a page with the full specification.',
+  title: 'From drawing. To standing.',
+  lede: 'One workshop, connected capabilities. Explore the steelwork, roofing, fabrication and lifting services behind your next project.',
   go: 'See the detail'
 };
 
@@ -136,7 +136,7 @@ export const CAPABILITIES = [
             ['Tolerance', '± 0.1 mm']]
   },
   {
-    id: 'balustrades', photo: null, route: 'steel-fabrication',
+    id: 'balustrades', photo: 'architecturalGlass', route: 'steel-fabrication',
     lead: ['3 000 mm', 'maximum fold length'],
     plate: ['3 000 mm', 'maximum fold length'],
     title: 'Balustrades and roller shutter doors',

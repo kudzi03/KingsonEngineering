@@ -20,6 +20,8 @@ import { mountEnquiry } from './interface/enquiry.js';
 import { mountReveals } from './scenes/reveal.js';
 import { mountParallax } from './scenes/parallax.js';
 import { mountCinema } from './scenes/cinema.js';
+import { mountHeroFilm } from './scenes/hero-film.js';
+import { mountProjectFilms } from './scenes/project-film.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -39,41 +41,9 @@ window.addEventListener('orientationchange', setSvh);
    only motion is a slow settle done in CSS (and none at all under reduced
    motion). */
 
-const hero = $('.hero');
 
-/* ── the header over the hero ───────────────────────────────────────────────
-   The bar is dark and part of the scene while the hero is under it, and solid
-   from there down. The class is only ever ADDED by an observer that ran, so
-   with JavaScript off — or without IntersectionObserver — the header is the
-   solid bar it is on every other page, which is the readable default.
-
-   Still no scroll listener in this file. The root is the viewport inset by the
-   bar's own height, so the hero stops intersecting at exactly the moment its
-   last pixel passes under the bar.                                          */
-
-if (hero && 'IntersectionObserver' in window) {
-  const bar = $('.hd');
-  const over = (on) => document.documentElement.classList.toggle('hd-over', on);
-  const watch = () => {
-    const h = bar ? Math.round(bar.getBoundingClientRect().height) : 77;
-    const io = new IntersectionObserver(
-      ([e]) => over(e.isIntersecting),
-      { rootMargin: `-${h}px 0px 0px 0px`, threshold: 0 }
-    );
-    io.observe(hero);
-    return io;
-  };
-  let io = watch();
-  /* The bar is shorter on a phone. A rotation or a resize across that
-     breakpoint needs the margin rebuilt; nothing else does. */
-  let barH = bar ? bar.offsetHeight : 0;
-  addEventListener('resize', () => {
-    if (!bar || bar.offsetHeight === barH) return;
-    barH = bar.offsetHeight;
-    io.disconnect();
-    io = watch();
-  }, { passive: true });
-}
+/* The editorial header stays on its light ground at every scroll position.
+   No initial geometry read is needed to switch its appearance. */
 
 /* ── the phone action bar, out of the way of the hero ───────────────────────
    The bar carries Call, WhatsApp and Get a price at every scroll depth. The
@@ -114,32 +84,9 @@ mountParallax();
 
 /* The first screen's photographs. See scenes/cinema.js. */
 mountCinema();
+mountProjectFilms();
+mountHeroFilm();
 
-
-/* ── the sheet index ────────────────────────────────────────────────────────
-   Which sheet is under a line across the middle of the screen. One observer,
-   a zero-height root, no scroll listener. The ruler stays away while the
-   first sheet (the hero) is on that line, and takes the ground of the sheet
-   it is over so it reads on steel as well as on paper. */
-const si = $('.si');
-if (si && 'IntersectionObserver' in window) {
-  document.documentElement.classList.add('si-ready');
-  const links = new Map($$('a[data-sheet]', si).map((a) => [a.dataset.sheet, a]));
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (!e.isIntersecting) continue;
-      const a = links.get(e.target.id);
-      links.forEach((l) => l.removeAttribute('aria-current'));
-      si.classList.toggle('is-on', !!a);
-      if (!a) continue;
-      a.setAttribute('aria-current', 'location');
-      si.dataset.ground = e.target.matches('.on-dark, .sec-dark') ? 'dark' : 'light';
-    }
-  }, { rootMargin: '-50% 0px -50% 0px' });
-  /* The footer is not a sheet, and the ruler would sit on its logo. */
-  [hero, $('.ft'), ...[...links.keys()].map((id) => document.getElementById(id))]
-    .filter(Boolean).forEach((s) => io.observe(s));
-}
 
 /* ── the photograph viewer ──────────────────────────────────────────────── */
 

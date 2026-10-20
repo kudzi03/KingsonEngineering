@@ -27,7 +27,7 @@ export function mountCinema(root = document.querySelector('[data-cin]')) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
   let i = 0, timer = 0, visible = true;
-  let paused = reduce.matches;
+  let paused = reduce.matches || matchMedia('(max-width: 760px)').matches || !!navigator.connection?.saveData;
   root.style.setProperty('--cin-dur', DUR + 'ms');
 
   const load = (s) => {
@@ -80,7 +80,8 @@ export function mountCinema(root = document.querySelector('[data-cin]')) {
   }
 
   /* The second photograph after the page has loaded, never before. */
-  const start = () => { load(slides[1]); setPaused(paused); };
+  // A paused/reduced-motion hero never needs to download the next photograph.
+  const start = () => { if (!paused) load(slides[1]); setPaused(paused); };
   if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
 
   return { show, pause: () => setPaused(true) };

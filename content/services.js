@@ -74,7 +74,7 @@ export const SERVICES = [
     slug: 'roofing-and-trusses',
     nav: 'Roofing and trusses',
     serviceName: 'Roof steelwork and trusses',
-    title: 'Roof Trusses, IBR & Corrugated Sheeting, Harare | Kingson',
+    title: 'Roofing, Steel Trusses & Sheeting in Harare | Kingson',
     description: 'Roof trusses, purlins and sheeting for any span and height. IBR and corrugated, cut to 12 m, galvanised or pre-painted. Flashings folded to match.',
     h1: 'Roof steelwork, trusses and sheeting',
     eyebrow: 'Roofing',
@@ -136,7 +136,7 @@ export const SERVICES = [
     /* This page covers two confirmed services. The Service schema names both
        rather than pretending it is one. */
     alsoServes: ['General metal fabrication'],
-    title: 'Metal Fabrication, Balustrades & Roller Doors | Kingson',
+    title: 'Steel Fabrication in Harare, Zimbabwe | Kingson',
     description: 'Balustrades, handrails, roller shutter doors and general metal fabrication in Harare, folded to 3 000 mm in 0.4 – 3.0 mm steel or aluminium.',
     h1: 'Balustrades, roller shutter doors and general metal fabrication',
     eyebrow: 'Fabrication',
@@ -208,7 +208,7 @@ export const SERVICE_PAGE = {
      content/copy.js — and the sentence has to say the number it is looking at. */
   processLede: 'What we hold to on every job, this one included.',
   areaTitle: 'Where we work',
-  areaBody: 'The workshop is at No. 1262 Tynwald Industries, Harare, and it is open Monday to Saturday, 07:30 – 17:00. Erection and delivery are national, with transport priced per load.',
+  areaBody: 'Based at No. 1262 Tynwald Industries, Harare, Kingson fabricates in its workshop and performs erection and cranage at clients’ sites. Erection and delivery are national, with transport priced per load.',
   relatedTitle: 'Related services',
   faqTitle: 'Questions we get asked about this',
   ctaTitle: 'Send us the brief.',

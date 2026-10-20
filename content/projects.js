@@ -62,6 +62,9 @@
  * @property {Array<[string,string]>} [figures]  [label, value] — span, area,
  *                                   tonnage, eaves height. Only what is known.
  * @property {string[]} [highlights] one clause each: what made it worth doing
+ * @property {string} [status]      verified project status, e.g. 'In progress'
+ * @property {Array<{src:string,poster:string,caption:string,captions?:string}>} [videos]
+ *   Local short videos; poster is an asset key, captions is an optional VTT path.
  */
 
 /** Real jobs. Empty, truthfully, until the office fills in the form. */
@@ -69,6 +72,9 @@ export const PROJECTS = [];
 
 /* ── what the rest of the site may use ───────────────────────────────────── */
 
+import { ASSETS } from './assets.js';
+import { SERVICES } from './services.js';
+import { existsSync } from 'node:fs';
 const REQUIRED = ['id', 'title', 'hero', 'services'];
 
 /** Everything that may actually be shown to the public. */
@@ -106,6 +112,18 @@ export function problems() {
     }
     if (p.id && seen.has(p.id)) out.push(`two projects share the id ${p.id}`);
     if (p.id) seen.add(p.id);
+    if (p.id && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.id)) out.push(`project ${name} has an invalid id`);
+    for (const key of [p.hero, ...(p.gallery || [])].filter(Boolean)) {
+      if (!ASSETS[key]) out.push(`project ${name} refers to unknown image ${key}`);
+    }
+    for (const service of p.services || []) {
+      if (!SERVICES.some((s) => s.serviceName === service || s.alsoServes?.includes(service))) out.push(`project ${name} has unknown service ${service}`);
+    }
+    for (const video of p.videos || []) {
+      if (!/^assets\/video\/[a-zA-Z0-9_-]+\.mp4$/.test(video.src) || !existsSync(new URL('../' + video.src, import.meta.url))) out.push(`project ${name} has an invalid or missing local video`);
+      if (!ASSETS[video.poster] || !video.caption) out.push(`project ${name} video needs a real poster and caption`);
+      if (video.captions && (!/^assets\/video\/[a-zA-Z0-9_-]+\.vtt$/.test(video.captions) || !existsSync(new URL('../' + video.captions, import.meta.url)))) out.push(`project ${name} has invalid video captions`);
+    }
   }
   return out;
 }

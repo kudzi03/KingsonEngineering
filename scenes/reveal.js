@@ -44,7 +44,9 @@ const KINDS = ['plate', 'rise', 'settle', 'draw', 'swing', 'lift'];
 
 export function mountReveals(root = document) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  if (reduce.matches || !('IntersectionObserver' in window)) return null;
+  // Phones keep the complete static composition. Avoid measuring SVG paths and
+  // preparing off-screen animations on small or data-saving devices.
+  if (reduce.matches || !matchMedia('(min-width:900px)').matches || navigator.connection?.saveData || !('IntersectionObserver' in window)) return null;
 
   const nodes = [...root.querySelectorAll('[data-reveal]')]
     .filter((el) => KINDS.includes(el.dataset.reveal));

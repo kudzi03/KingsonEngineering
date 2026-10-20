@@ -19,6 +19,7 @@
 import { NAV, ENQUIRY, CONTACT, CAPABILITIES } from '../content/copy.js';
 import { hasProjects } from '../content/projects.js';
 import { SERVICES } from '../content/services.js';
+import { SEO } from '../content/seo.js';
 import { publish } from '../content/company.js';
 import { ASSETS, src, srcset, position, hasWide, wideSrc, wideSrcset } from '../content/assets.js';
 import { createHash } from 'node:crypto';
@@ -33,7 +34,7 @@ import { fileURLToPath } from 'node:url';
    a design change ships every visitor gets it. The hash only changes when the
    files do, so an unchanged deploy keeps its cache.                          */
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const STAMPED = ['assets/fonts.css', 'styles/tokens.css', 'styles/site.css', 'main.js',
+const STAMPED = ['assets/fonts.css', 'styles/tokens.css', 'styles/site.css', 'styles/editorial.css', 'styles/cinematic.css', 'assets/site.min.css', 'assets/site.min.js', 'main.js',
   ...['interface', 'scenes'].flatMap((d) =>
     readdirSync(ROOT + d).filter((f) => f.endsWith('.js')).sort().map((f) => `${d}/${f}`))];
 export const BUILD = createHash('sha256')
@@ -74,7 +75,7 @@ export const wa = () => (publish('whatsapp') ? `https://wa.me/${publish('whatsap
    to 144 KB, and the whole route from 1103 KB to 842 KB.                    */
 
 export function bleedPhoto(key, { eager = false, abs = false, cls = '',
-                                  decorative = false, attrs = '' } = {}) {
+                                  decorative = false, attrs = '', sizes = '100vw' } = {}) {
   const a = ASSETS[key];
   const u = (path) => (abs ? '/' + path : path);
   const set = (v) => v.split(', ').map((x) => u(x)).join(', ');
@@ -83,9 +84,9 @@ export function bleedPhoto(key, { eager = false, abs = false, cls = '',
   const alt = decorative ? '' : esc(a.alt);
   const style = decorative ? '' : ` style="object-position:${position(key)}"`;
   const img = `<img${cls ? ` class="${cls}"` : ''}${attrs ? ' ' + attrs : ''} src="${u(src(key, 1320))}" srcset="${set(srcset(key))}"
-             sizes="100vw" width="${a.w}" height="${a.h}" ${load}${style} alt="${alt}">`;
+             sizes="${sizes}" width="${a.w}" height="${a.h}" ${load}${style} alt="${alt}">`;
   if (!hasWide(key)) return img;
-  return `<picture><source media="(min-width: 900px)" sizes="100vw"
+  return `<picture><source media="(min-width: 900px)" sizes="${sizes}"
               srcset="${set(wideSrcset(key))}">${img}</picture>`;
 }
 
@@ -107,31 +108,33 @@ const defer = (html) => html
 export function cinemaHero({ id, eyebrow, meta = '', titleHtml, lede, slides,
                              captions, markup = '', abs = false, cls = '', quoteTo = '#enquiry' }) {
   const figs = slides.map((k, i) => {
-    const img = bleedPhoto(k, { eager: i === 0, abs });
+    const img = bleedPhoto(k, { eager: i === 0, abs, sizes: '(max-width: 760px) calc(100vw - 44px), 90.6vw' });
     return `    <figure class="cin-slide${i === 0 ? ' is-on' : ''}" data-i="${i}">${i === 0 ? img + markup : defer(img)}</figure>`;
   }).join('\n');
   const many = slides.length > 1;
   const ctl = many
     ? `  <div class="wrap cin-ctl">
     <ol class="cin-dots">
-${slides.map((k, i) => `      <li><button type="button" data-go="${i}"${i === 0 ? ' aria-current="true"' : ''} aria-label="Photograph ${i + 1} of ${slides.length}: ${esc(captions[k])}"><span class="cin-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><span class="cin-t" aria-hidden="true">${esc(captions[k])}</span><i aria-hidden="true"></i></button></li>`).join('\n')}
+${slides.map((k, i) => `      <li><button type="button" data-go="${i}"${i === 0 ? ' aria-current="true"' : ''} aria-label="${String(i + 1).padStart(2, '0')} ${esc(captions[k])}. Photograph ${i + 1} of ${slides.length}"><span class="cin-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span> <span class="cin-t" aria-hidden="true">${esc(captions[k])}</span><i aria-hidden="true"></i></button></li>`).join('\n')}
     </ol>
     <button type="button" class="cin-pause" data-pause aria-pressed="false" aria-label="Pause the photographs"><span aria-hidden="true"></span></button>
   </div>`
     : `  <div class="wrap cin-ctl"><p class="cin-cap"><span class="cin-n num">01</span><span class="cin-t">${esc(captions[slides[0]])}</span></p></div>`;
   return `
-  <div class="cin-slides"${many ? ' aria-live="off"' : ''}>
-${figs}
-  </div>
-  <div class="cin-shade" aria-hidden="true"></div>
   <div class="wrap cin-in">
     <p class="hero-eyebrow">${esc(eyebrow)}</p>
     <h1 class="display hero-title${cls}" id="${id}">${titleHtml}</h1>
     <div class="hero-foot">
       <p class="hero-lede">${esc(lede)}</p>
-      <div class="hero-act">${quoteBtn(false, quoteTo)}${callBtn(NAV.call, true)}${waBtn(true)}</div>
+      <div class="hero-act">${quoteBtn(false, quoteTo)}${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>
     </div>${meta ? `
     <p class="hero-meta">${meta}</p>` : ''}
+  </div>
+  <div class="cin-media">
+    <div class="cin-slides"${many ? ' aria-live="off"' : ''}>
+${figs}
+    </div>
+    <span class="cin-image-label" aria-hidden="true">KINGSON / ON SITE & IN THE WORKSHOP</span>
   </div>
 ${ctl}
 `;
@@ -158,6 +161,11 @@ export function waBtn(ghost) {
   if (!h) return '';
   return `<a class="${cls(ghost)}" href="${h}" target="_blank" rel="noopener">${ICON_WA}<span>${esc(NAV.whatsapp)}</span></a>`;
 }
+export function emailBtn(ghost) {
+  const address = publish('email');
+  if (!address) return '';
+  return `<a class="${cls(ghost)}" href="mailto:${esc(address)}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg><span>Email</span></a>`;
+}
 /* `to` lets a service page point its own CTA at its own form rather than
    bouncing the visitor back to the homepage to convert. */
 export function quoteBtn(ghost, to = '#enquiry') {
@@ -172,10 +180,10 @@ export function logo(kind, height, sizes, base = '', decorative = false, eager =
   /* A reverse mark in the header is the first thing painted, so it is not
      deferred there the way the footer's is. */
   const lazy = kind === 'reverse' && !eager ? ' loading="lazy" fetchpriority="low"' : '';
-  return `<img src="${base}assets/brand/${stem}-560.png"` +
+  return `<picture><source type="image/webp" srcset="${[240,320,560].map(w=>`${base}assets/brand/${stem}-${w}.webp ${w}w`).join(', ')}" sizes="${sizes}"><img src="${base}assets/brand/${stem}-560.png"` +
     ` srcset="${base}assets/brand/${stem}-320.png 320w, ${base}assets/brand/${stem}-560.png 560w"` +
     ` sizes="${sizes}" width="560" height="229" style="height:${height}"` +
-    ` alt="${esc(alt)}" decoding="async"${lazy}>`;
+    ` alt="${esc(alt)}" decoding="async"${lazy}></picture>`;
 }
 
 /* ── navigation ───────────────────────────────────────────────────────────────
@@ -199,6 +207,7 @@ export function logo(kind, height, sizes, base = '', decorative = false, eager =
 
 const NAV_ITEMS = (home) => [
   [home ? '#services' : '/#services', NAV.services],
+  [home ? '#work' : '/#work', 'Our projects'],
   /* Projects appears only once there is a project to show. The portfolio
      architecture is finished and the list is empty — see content/projects.js. */
   ...(hasProjects() ? [['/projects', 'Projects']] : []),
@@ -244,13 +253,13 @@ export function serviceChooser({ reveal = true } = {}) {
      plate carrying the figure instead. Decorative here (alt="", aria-hidden)
      because the row's own words already name the service; the same images
      carry full descriptions where they appear as content. */
-  const media = (c) => {
+  const media = (c, large) => {
     if (!c.photo) {
       return `<span class="cx-media cx-plate" aria-hidden="true"><b class="num">${esc(c.lead[0])}</b><span>${esc(c.lead[1])}</span></span>`;
     }
     const a = ASSETS[c.photo];
     return `<span class="cx-media" aria-hidden="true"><img src="/${src(c.photo, 720)}" srcset="${srcset(c.photo).split(', ').map((x) => '/' + x).join(', ')}"
-                 sizes="(max-width: 900px) 28vw, 180px"
+                 sizes="${large ? '(max-width: 760px) 90vw, 48vw' : '(max-width: 760px) 90vw, 150px'}"
                  width="${a.w}" height="${a.h}" loading="lazy" decoding="async"
                  style="object-position:${position(c.photo)}" alt=""></span>`;
   };
@@ -258,11 +267,11 @@ export function serviceChooser({ reveal = true } = {}) {
 ${CAPABILITIES.map((c, i) => `      <li class="cx-row">
         <a class="cx-hit" href="/${c.route}">
           <span class="cx-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
-          <span class="cx-name">${esc(c.title)}</span>
+          <h3 class="cx-name">${esc(c.title)}</h3>
           <span class="cx-lead"><b class="num">${esc(c.lead[0])}</b><span>${esc(c.lead[1])}</span></span>
           <span class="cx-body">${esc(c.body)}</span>
           <span class="cx-go" aria-hidden="true">${ICON_ARROW}</span>
-          ${media(c)}
+          ${media(c, i < 2)}
         </a>
       </li>`).join('\n')}
     </ol>`;
@@ -274,11 +283,13 @@ export function chromeTop({ home = false, current = '' } = {}) {
   /* One mark on every page. The home page's first sheet is the same light
      ground as the bar, so the reverse artwork it used to carry for a dark
      photographic hero has nothing left to do. */
-  const mark = '      ' + logo('reverse', '46px', '(max-width:760px) 116px, 134px', '', false, true);
+  const mark = home
+    ? `<span class="hd-home-reverse">${logo('reverse', '46px', '(max-width:760px) 116px, 134px', '', false, true)}</span><span class="hd-home-normal">${logo('normal', '46px', '(max-width:760px) 116px, 134px', '', false, true)}</span>`
+    : '      ' + logo('normal', '46px', '(max-width:760px) 116px, 134px', '', false, true);
 
   return `<a class="skip" href="#main">Skip to content</a>
 
-<header class="hd">
+<header class="hd${home ? ' hd-home' : ''}">
   <!-- How far down a seventeen-screen page you are. Driven entirely by CSS
        scroll-driven animation where the browser has it, so there is no scroll
        listener and no JavaScript in the path at all; browsers without it
@@ -307,7 +318,7 @@ ${headerNav(home, current)}
   <nav class="menu-list" aria-label="Sections">
 ${menuNav(home, current)}
   </nav>
-  <div class="menu-contact">${quoteBtn(false, '#enquiry')}${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}</div>
+  <div class="menu-contact">${quoteBtn(false, '#enquiry')}${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>
 </div>`;
 }
 
@@ -382,20 +393,23 @@ export function chromeBottom() {
 <!-- The phone action bar. WhatsApp belongs in it: it is how a Zimbabwean
      buyer actually opens a conversation, and before this it appeared twice on
      the home page with neither instance above the fold. The bar is the one
-     piece of the page that is reachable at every scroll depth, so the three
+     piece of the page that is reachable at every scroll depth, so the four
      ways to reach us all live here rather than only in a hero somebody has
      already scrolled past. -->
-<nav class="bar" aria-label="Call, WhatsApp or get a price">${callBtn(NAV.call, true)}${waBtn(true)}${quoteBtn(false, '#enquiry')}</nav>
+<nav class="bar" aria-label="Call, WhatsApp, email or get a price">${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}${quoteBtn(false, '#enquiry')}</nav>
 
-<script type="module" src="/main.js?v=${BUILD}"></script>`;
+<script type="module" src="/assets/site.min.js?v=${BUILD}"></script>`;
 }
 
 /* ── <head> ─────────────────────────────────────────────────────────────────── */
 
 const FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f1211'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-weight='700' font-size='30' fill='%23E21E25' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E";
 
-export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld,
+export function headHtml({ title, description, path, ogImage, ogAlt, preload, preloadMobile, ld,
                            ogType = 'website', home = false, index = true }) {
+  if (SEO.googleSiteVerification && !/^[a-zA-Z0-9_-]+$/.test(SEO.googleSiteVerification)) {
+    throw new Error('Use only the Google verification token in content/seo.js');
+  }
   const canonical = SITE + (path === '/' ? '/' : path);
   const img = ASSETS[ogImage];
   /* Link previews get a 1200x630 JPEG: WhatsApp — how most people here will
@@ -411,18 +425,19 @@ export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld
   const preLink = (k, wide, media) =>
     `<link rel="preload" as="image" href="/${wide ? wideSrc(k, 1320) : src(k, 1320)}"
       imagesrcset="${preSet(k, wide)}"
-      imagesizes="100vw"${media ? ` media="${media}"` : ''} fetchpriority="high">\n`;
+      imagesizes="${home ? '100vw' : '(max-width: 760px) calc(100vw - 44px), 90.6vw'}"${media ? ` media="${media}"` : ''} fetchpriority="high">\n`;
   const pre = !preload ? ''
     : hasWide(preload)
       ? preLink(preload, true, '(min-width: 900px)')
-        + preLink(preload, false, '(max-width: 899.98px)')
+        + preLink(preloadMobile || preload, false, '(max-width: 899.98px)')
       : preLink(preload, false, '');
 
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<meta name="theme-color" content="#0f1211">
+<meta name="theme-color" content="#faf9f6">
+${home && SEO.googleSiteVerification ? `<meta name="google-site-verification" content="${SEO.googleSiteVerification}">` : ''}
 ${index ? `<link rel="canonical" href="${canonical}">` : '<meta name="robots" content="noindex">'}
 
 <meta property="og:type" content="${ogType}">
@@ -466,12 +481,8 @@ ${home ? `
      visitor arrived at an anchor further down, and nothing at all happens with
      JavaScript off: the header is then the solid bar it is everywhere else.` : ''}
      -->
-<script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')${home ? `
-if(!location.hash&&!window.scrollY)document.documentElement.classList.add('hd-over')` : ''}</script>
-<link rel="stylesheet" href="/assets/fonts.css?v=${BUILD}">
-<script>if(document.fonts&&document.fonts.load&&!document.fonts.check('800 1em Archivo')){var h=document.documentElement;h.classList.add('fl');Promise.race([document.fonts.load('800 1em Archivo'),new Promise(function(r){setTimeout(r,2500)})]).then(function(){h.classList.remove('fl')},function(){h.classList.remove('fl')})}</script>
-<link rel="stylesheet" href="/styles/tokens.css?v=${BUILD}">
-<link rel="stylesheet" href="/styles/site.css?v=${BUILD}">
+<script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')</script>
+<link rel="stylesheet" href="/assets/site.min.css?v=${BUILD}">
 <!-- Vercel Web Analytics: page views only, no cookies, no personal data.
      Same origin, deferred, and nothing on the page depends on it. -->
 <script defer src="/_vercel/insights/script.js"></script>
@@ -555,7 +566,7 @@ export function enquiryAside() {
   const person = publish('contactPerson');
   return `      <p class="enq-aside-k">Rather talk it through?</p>
       <p class="enq-aside-t">${esc(CONTACT.lede)}</p>
-      <div class="enq-aside-act">${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}</div>
+      <div class="enq-aside-act">${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>
       <p class="enq-aside-meta">${hours ? `<span>Open <b>${esc(hours)}</b></span>` : ''}${person ? `<span>Ask for <b>${esc(person)}</b></span>` : ''}</p>`;
 }
 

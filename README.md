@@ -1,5 +1,20 @@
 # Kingson Engineering
 
+The cinematic redesign is on `codex/cinematic-project-redesign` for review.
+Read `CINEMATIC_REDESIGN_REPORT.md` for reference analysis, asset provenance,
+video processing, validation and preview limitations. It supersedes the earlier
+editorial visual direction in `REDESIGN_REPORT.md`; its search work remains.
+`SEARCH_CONSOLE_SETUP.md` covers verification. The current homepage design layer
+is `styles/cinematic.css`, on top of the shared editorial/service layouts.
+Do not merge or deploy to production before owner approval.
+
+To rebuild supplied media without altering originals, extract all three handoff
+ZIPs into one scratch folder and run `tools/build-project-media.py --input
+<scratch-folder> --ffmpeg <ffmpeg-binary>` with Python/Pillow. Run the public asset
+builder, renderer and publication gate after source changes. `tools/test-browser.mjs`
+checks the pages/forms; `tools/test-media.mjs` checks playback and fallbacks
+(set `KINGSON_BROWSER=webkit` for the WebKit engine).
+
 Public website for Kingson Engineering / Kingson Trading (Pvt) Ltd — steelwork
 specialists, No. 1262 Tynwald Industries, Harare, Zimbabwe.
 
@@ -32,6 +47,10 @@ node tools/render.js          rewrite index.html, the 5 service routes and
 node tools/render.js --check  fail if any of them has drifted
 node tools/check-truth.js     assert every gate over the shipped files
 node tools/check-sharing.mjs  check official-domain metadata and redirect configuration
+node tools/check-search.mjs   check metadata, structured data and indexing rules
+node tools/build-public.mjs   bundle changed browser JS/CSS (esbuild 0.28.2)
+node tools/build-public.mjs --check  verify committed bundles using Node only
+node tools/preview-server.mjs serve a local preview at http://127.0.0.1:4173
 python3 tools/build-images.py rebuild the webp derivatives from the source
                               photographs (only when a photograph changes)
 ```
@@ -43,6 +62,17 @@ one `<h1>`, a canonical link, a `<title>` of 20–62 characters and a meta
 description of 70–160, no two pages sharing either, a sitemap that lists every
 committed page and nothing else, and that every image file the HTML asks for is
 actually in the repository.
+
+The public pages now load `assets/site.min.css` and `assets/site.min.js`.
+Keep editing `styles/`, `main.js`, `interface/`, `scenes/` and the content files;
+do not hand-edit the bundles. After changing browser JS, CSS or runtime content
+(`content/assets.js`, `company.js`, `crm.js`, `runtime-copy.js`), run the public
+builder before the renderer. Use esbuild **0.28.2** on PATH, or set `ESBUILD` to
+that executable (the same convention as the CRM builder). For example, an
+outside-repository tool install can be created with
+`npm install --prefix <tool-directory> esbuild@0.28.2`; point `ESBUILD` at its
+platform executable. Serving/deploying the committed output needs no esbuild or
+package installation. The publication gate checks both source and artifact hashes.
 
 ---
 

@@ -25,7 +25,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
-  UPDATED, EYEBROWS, HERO, STRIP, CAPABILITIES, SPECS, PROCESS,
+  UPDATED, EYEBROWS, STRIP, CAPABILITIES, SPECS, PROCESS,
   WORK, ENQUIRY, FAQ, CONTACT, NAV, SERVICES_BLOCK, homeFaq
 } from '../content/copy.js';
 import { ASSETS, PAGE_IMAGES, BAND_IMAGE, src, srcset, position } from '../content/assets.js';
@@ -33,13 +33,14 @@ import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
 import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
 import { SERVICES } from '../content/services.js';
+import { cinematicHero, cinematicWork, filmLink, filmDialog } from './cinematic.js';
 import { portfolioRoutes, PORTFOLIO } from './portfolio.js';
 import { hasProjects, publishable as publishableProjects, problems as projectProblems } from '../content/projects.js';
 import { pageGraph, serviceId } from './schema.js';
 import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryForm, enquiryAside, cinemaHero, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
+  enquiryForm, enquiryAside, callBtn, waBtn, emailBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
   ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote
 } from './layout.js';
 
@@ -81,35 +82,10 @@ const head = (key, title, lede, id) =>
   `    <h2 class="display"${id ? ` id="${id}"` : ''} data-reveal="rise"><span>${esc(title)}</span></h2>\n` +
   (lede ? `    <p>${esc(lede)}</p>` : '');
 
-/* The sheet index: a ruler down the left edge of a wide screen, one tick per
-   sheet, the current one named. Real links, so it is also a way to move. */
-const sheets = SHEETS.map(([id, n, name]) =>
-  `    <a href="#${id}" data-sheet="${id}"><span class="si-n">${n}</span><span class="si-t">${esc(name)}</span></a>`).join('\n');
-
 /* ── hero and the strip under it ─────────────────────────────────────────── */
 
-/* The headline is set one sentence to a line, each line in its own mask so it
-   can rise from behind the line above. The full stops are the accent: the
-   text is exactly HERO.title, so the h1 reads the same to anything that is
-   not looking at it. */
-const heroLines = HERO.title.split(/(?<=\.)\s+/).map((s) =>
-  `<span class="ln"><span>${esc(s).replace(/\.$/, '<span class="pt">.</span>')}</span></span>`).join(' ');
-
-/* Red-pencil markup, registered to the portal-frame photograph: each SVG's
-   viewBox is the pixel size of the file its <picture> arm serves, and
-   xMidYMid slice is object-fit: cover centred, so the callouts stay on the
-   same steel at every viewport. Decorative; the alt text names the frame. */
-const MARKUP = `<svg class="hero-mark hero-mark-wide" viewBox="0 0 1319 742" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-    <g><circle cx="698" cy="145" r="6"/><path d="M698 145 L740 97 H836" pathLength="1"/><text x="744" y="90"><tspan class="mk-k">B</tspan> Rafter</text></g>
-    <g><circle cx="446" cy="191" r="6"/><path d="M446 191 L400 125 H290" pathLength="1"/><text x="294" y="118"><tspan class="mk-k">C</tspan> Purlins</text></g>
-  </svg><svg class="hero-mark hero-mark-tall" viewBox="0 0 1320 888" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-    <g><circle cx="700" cy="182" r="7"/><path d="M700 182 L664 140 H586" pathLength="1"/><text x="590" y="131"><tspan class="mk-k">B</tspan> Rafter</text></g>
-  </svg>`;
-
-const hero = cinemaHero({
-  id: 'hero-h', eyebrow: HERO.eyebrow, lede: HERO.lede, titleHtml: heroLines,
-  slides: HERO.slides, captions: WORK.captions, markup: MARKUP
-});
+// The full-viewport opening uses real roof footage, with a first-paint still.
+const hero = cinematicHero();
 
 const strip = STRIP.map(([label, fig, value]) =>
   `    <li><span class="strip-k">${esc(label)}</span><span class="strip-f">${esc(fig)}</span><span class="strip-v">${esc(value)}</span></li>`
@@ -199,7 +175,7 @@ const photo = (key, { sizes, w, cls = '', eager = false }) => {
    stay reachable from wherever it appears — not only from a gallery. */
 const zoomable = (key, inner) =>
   `<button type="button" class="zoom" data-open="${key}"
-              aria-label="${esc(ASSETS[key].alt)} Select to view full size.">${inner}<span class="zoom-cue" aria-hidden="true">${ICON_EXPAND}</span></button>`;
+              aria-label="${esc(WORK.captions[key] || ASSETS[key].alt)}. Select to view full size.">${inner}<span class="zoom-cue" aria-hidden="true">${ICON_EXPAND}</span></button>`;
 
 const figures = (rows, cls = 'ch-figures') => `      <dl class="${cls}">
 ${rows.map(([k, v]) => `        <div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('\n')}
@@ -372,6 +348,8 @@ const chooser = serviceChooser();
 
 const chapters = CHAPTERS.map(chapter).join('\n\n');
 
+const evidence = cinematicWork();
+
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
 const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
@@ -384,6 +362,7 @@ const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
       <p class="ws-lede">${esc(WORKSHOP.body)}</p>
 ${figures(WORKSHOP.figures, 'ch-figures ws-figures')}
       <div class="ws-act">${quoteBtn()}</div>
+      <div class="ws-film"><img src="/${src('workshopFilm',440)}" width="512" height="910" loading="lazy" alt="${esc(ASSETS.workshopFilm.alt)}"><div><span class="work-type">Tynwald, Harare</span>${filmLink('workshop','Inside the workshop')}<p>Step inside the place where it takes shape.</p></div></div>
     </div>`;
 
 /* ── the crane, full bleed ───────────────────────────────────────────────────
@@ -496,7 +475,7 @@ const faq = homeFaq().map((it, i) => `      <details class="faq-item" id="faq-${
    Same numbers as everywhere else, so nothing new is being claimed. */
 const faqask = `    <p class="faq-ask-k">Not answered here?</p>
     <p class="faq-ask-t">Ask the workshop directly. Enquiries are acknowledged the same working day.</p>
-    <div class="faq-ask-act">${callBtn(NAV.call, true)}${waBtn(true)}</div>`;
+    <div class="faq-ask-act">${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>`;
 
 /* ── contact ─────────────────────────────────────────────────────────────────
    Ordered by how a customer actually reaches Kingson, and built by asking for
@@ -527,76 +506,14 @@ const foot = [
    with their answers. Every value comes through publish(), so an unverified
    one is absent from the graph rather than guessed into it.                  */
 
-const hoursSpec = publish('hoursSpec');
-const BIZ = SITE + '#business';
-
-const graph = [
-  {
-    '@type': 'LocalBusiness', '@id': BIZ,
-    name: publish('name'),
-    ...(publish('legalName') ? { legalName: publish('legalName') } : {}),
-    ...(publish('tagline') ? { slogan: publish('tagline') } : {}),
-    description: HERO.lede,
-    url: SITE,
-    image: SITE + src('portalFrame'),
-    logo: SITE + 'assets/brand/kingson-logo-560.png',
-    ...(publish('phone') ? { telephone: publish('phone') } : {}),
-    ...(publish('email') ? { email: publish('email') } : {}),
-    ...(publish('address') ? {
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: publish('address').replace(/,\s*Harare$/, ''),
-        addressLocality: 'Harare', addressCountry: 'ZW'
-      }
-    } : {}),
-    ...(hoursSpec ? {
-      openingHoursSpecification: [{
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: hoursSpec.days, opens: hoursSpec.opens, closes: hoursSpec.closes
-      }]
-    } : {}),
-    ...(publish('contactPerson') ? {
-      contactPoint: {
-        '@type': 'ContactPoint', contactType: 'sales',
-        name: publish('contactPerson'),
-        ...(publish('phone') ? { telephone: publish('phone') } : {}),
-        ...(publish('email') ? { email: publish('email') } : {}),
-        availableLanguage: 'en'
-      }
-    } : {}),
-    areaServed: { '@type': 'Country', name: 'Zimbabwe' },
-    ...(publish('facebook') ? { sameAs: [publish('facebook')] } : {})
-  },
-  ...CAPABILITIES.map((c) => ({
-    '@type': 'Service', '@id': `${SITE}#${c.id}`,
-    name: c.title, serviceType: c.title, description: c.body,
-    provider: { '@id': BIZ },
-    areaServed: { '@type': 'Country', name: 'Zimbabwe' },
-    additionalProperty: c.facts.map(([k, v]) => ({
-      '@type': 'PropertyValue', name: k, value: v
-    }))
-  })),
-  {
-    '@type': 'FAQPage', '@id': SITE + '#faq',
-    /* The seven the page shows, not the seventeen that exist. A FAQPage that
-       declares answers the page does not display is the structured-data
-       version of lying about content. */
-    mainEntity: homeFaq().map((it) => ({
-      '@type': 'Question', name: it.q,
-      acceptedAnswer: { '@type': 'Answer', text: it.a }
-    }))
-  }
-];
-
-const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }, null, 2);
-
+/* Public entity graphs are generated only by tools/schema.js. */
 
 /* ── the homepage's <head> ───────────────────────────────────────────────────
    Through the same function the service routes use, so a metadata change
    cannot reach five pages and miss the sixth. */
 
-const HOME_TITLE = 'Steel Fabrication, Roofing & Cranage in Harare | Kingson';
-const HOME_DESC = 'Steelwork specialists in Tynwald, Harare. Structural steel, roof trusses and sheeting, fibre laser cutting to \u00b1 0.1 mm, and a 25-tonne mobile crane.';
+const HOME_TITLE = 'Steelwork & Fabrication in Harare | Kingson Engineering';
+const HOME_DESC = 'Structural steelwork, roofing, fabrication and fibre laser cutting up to 20 mm in Harare, Zimbabwe. Own 25-tonne crane. Send drawings for a quotation.';
 
 const homeHead = headHtml({
   home: true,
@@ -605,6 +522,7 @@ const homeHead = headHtml({
   path: '/',
   ogImage: 'portalFrame',
   preload: 'portalFrame',
+  preloadMobile: 'roofFilmA',
   ld: pageGraph({
     path: '/', name: HOME_TITLE, description: HOME_DESC,
     image: 'portalFrame', faq: homeFaq()
@@ -618,10 +536,10 @@ const BLOCKS = {
   head: homeHead,
   chrometop: chromeTop({ home: true }),
   sitefooter: siteFooter(),
-  chromebottom: chromeBottom(),
+  chromebottom: chromeBottom() + filmDialog(),
 
   /* the homepage's own composition */
-  hero, strip, chapters, workshop, specs, sheets, crane, enqbg,
+  hero, strip, chapters, workshop, specs, crane, enqbg, evidence,
   steps, gantt, procClose, form, faq, faqask, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),
