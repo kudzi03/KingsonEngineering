@@ -82,7 +82,7 @@ export function bleedPhoto(key, { eager = false, abs = false, cls = '',
   const set = (v) => v.split(', ').map((x) => u(x)).join(', ');
   const load = eager ? 'fetchpriority="high" decoding="async"'
                      : 'loading="lazy" decoding="async"';
-  const alt = decorative ? '' : esc(a.alt);
+  const alt = esc(a.alt);
   const style = decorative ? '' : ` style="object-position:${position(key)}"`;
   const img = `<img${cls ? ` class="${cls}"` : ''}${attrs ? ' ' + attrs : ''} src="${u(src(key, 1320))}" srcset="${set(srcset(key))}"
              sizes="${sizes}" width="${a.w}" height="${a.h}" ${load}${style} alt="${alt}">`;
@@ -175,17 +175,20 @@ export function quoteBtn(ghost, to = '#enquiry') {
 }
 
 // Native disclosures keep the quoting checklist close without obscuring the work.
-export function quoteBrief({ slug, open = false } = {}) {
+export function quoteBrief({ slug, open = false, preview = false } = {}) {
   const service = SERVICES.find(s => s.slug === slug);
-  const items = service?.send || [
-    'DXF or DWG preferred; STEP and PDF also accepted. No drawings? Send site photos or a sketch.',
-    'Material, thickness and quantity, if known.',
-    'Site or town, approximate span and height, or opening dimensions.'
+  const contact = 'Your name and best contact number / WhatsApp.';
+  const items = service ? [...service.send, contact] : [
+    'Drawings if you have them — DXF, DWG, STEP or PDF preferred.',
+    'Material and thickness, or a description of the work.',
+    'Approximate span, height or quantity.',
+    'Site photos or measurements if there are no drawings.',
+    contact
   ];
-  return `<details class="quote-brief"${open ? ' open' : ''}><summary>What we need from you</summary><ul>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul><p>Attach drawings or photos by email or WhatsApp. This form does not upload files.</p></details>`;
+  return `<details class="quote-brief"${open ? ' open' : ''}><summary>What we need from you${preview ? '<span class="quote-brief-preview">Drawings, material, dimensions and contact details.</span>' : ''}</summary><p>To give you an accurate price quickly, please send:</p><ul>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul><p>You can send everything by WhatsApp or email — no file upload is needed on this page.</p></details>`;
 }
-export function quoteSupport({ slug, open = false } = {}) {
-  return `<div class="quote-support">${quoteBrief({slug,open})}<nav class="contact-options" aria-label="Talk to Kingson">${callBtn(NAV.call,true)}${waBtn(true)}${emailBtn(true)}</nav></div>`;
+export function quoteSupport({ slug, open = false, preview = false } = {}) {
+  return `<div class="quote-support">${quoteBrief({slug,open,preview})}<nav class="contact-options" aria-label="Talk to Kingson">${callBtn(NAV.call,true)}${waBtn(true)}${emailBtn(true)}</nav></div>`;
 }
 export function processCards(slug) {
   const steps = slug ? processFor(slug) : PROCESS.steps;
@@ -196,7 +199,7 @@ export function processCards(slug) {
 
 export function logo(kind, height, sizes, base = '', decorative = false, eager = false) {
   const stem = kind === 'reverse' ? 'kingson-logo-reverse' : 'kingson-logo';
-  const alt = decorative ? '' : `${publish('name')} — ${publish('tagline')}`;
+  const alt = `${publish('name')} — ${publish('tagline')}`;
   /* A reverse mark in the header is the first thing painted, so it is not
      deferred there the way the footer's is. */
   const lazy = kind === 'reverse' && !eager ? ' loading="lazy" fetchpriority="low"' : '';
@@ -270,9 +273,8 @@ export function serviceChooser({ reveal = true } = {}) {
   const r = reveal ? ' data-reveal="lift" data-reveal-stagger="60"' : '';
   /* Four of the six have a photograph Kingson supplied of that work. The other
      two have none, and they do not borrow one: their media is a plain steel
-     plate carrying the figure instead. Decorative here (alt="", aria-hidden)
-     because the row's own words already name the service; the same images
-     carry full descriptions where they appear as content. */
+     plate carrying the figure instead. The row's own words name the service,
+     so repeated media stays aria-hidden while retaining its factual alt. */
   const media = (c, large) => {
     if (!c.photo) {
       return `<span class="cx-media cx-plate" aria-hidden="true"><b class="num">${esc(c.lead[0])}</b><span>${esc(c.lead[1])}</span></span>`;
@@ -281,7 +283,7 @@ export function serviceChooser({ reveal = true } = {}) {
     return `<span class="cx-media" aria-hidden="true"><img src="/${src(c.photo, 720)}" srcset="${srcset(c.photo).split(', ').map((x) => '/' + x).join(', ')}"
                  sizes="${large ? '(max-width: 760px) 90vw, 48vw' : '(max-width: 760px) 90vw, 150px'}"
                  width="${a.w}" height="${a.h}" loading="lazy" decoding="async"
-                 style="object-position:${position(c.photo)}" alt=""></span>`;
+                 style="object-position:${position(c.photo)}" alt="${esc(a.alt)}"></span>`;
   };
   return `    <ol class="cx"${r}>
 ${CAPABILITIES.map((c, i) => `      <li class="cx-row">
@@ -407,7 +409,7 @@ export function chromeBottom() {
        part of the shared chrome. It is inert and off screen so nobody saw it,
        which is exactly why it survived this long. The viewer overwrites the
        src the moment a photograph is opened; the pixel costs no request. -->
-  <div class="viewer-body"><img data-viewer-img alt=""
+  <div class="viewer-body"><img data-viewer-img alt="Selected Kingson Engineering project photograph"
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></div>
   <div class="viewer-foot"><span data-viewer-alt class="viewer-caption"></span></div>
 </div>
