@@ -245,10 +245,26 @@ that earlier foundation; this report supersedes its visual direction and scores.
 
 The official-domain metadata and old-host redirects are preserved. No domain,
 DNS, Vercel production settings, CRM schema, business mail or unrelated
-functionality was changed. Approve the preview before merging or deploying.
+functionality was changed during preparation. The owner approved deployment
+on 20 October 2026, together with the adjustments below.
 
 No manual Vercel dashboard change is required for the redesign. Keep the official
 `www.kingsonengineering.co.zw` domain and the existing host-scoped redirects.
 The old Vercel hostname already redirects to the official domain. A protected
 Vercel preview may require the owner's Vercel login; protection settings were
-not changed. Production deployment remains a separate approval step.
+not changed.
+
+## Approved final adjustments — 20 October 2026
+
+- Removed the visible background-film play/pause button and its manual-toggle
+  code. The hero plays and loops automatically; reduced-motion, data-saving,
+  off-screen suspension and autoplay-failure posters remain in place. Full
+  project films retain their native controls.
+- Added a direct Email action to `admin1@kingsonengineering.co.zw` beside Call
+  and WhatsApp in the mobile bar, menu, enquiry sidebar, FAQ contact actions
+  and service-page hero actions. This opens the visitor's email application.
+- Rebalanced the mobile bar into four equal contact targets and regenerated
+  the public HTML and versioned CSS/JavaScript bundles.
+- Updated browser checks for the email actions and media checks for automatic
+  playback without a visible toggle. No DNS, DMARC or email-service settings
+  were changed.

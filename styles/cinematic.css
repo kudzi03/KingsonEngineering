@@ -44,8 +44,6 @@ html.hero-passed .hd-home-normal { display: block; }
 .mh-live { width: 5px; height: 5px; background: #ff5159; }
 .mh-divider { color: #cbd4d8; margin: 0 5px; }
 .mh-scroll { min-height: 44px; display: inline-flex; align-items: center; gap: 20px; }
-.mh-motion { color: #fff; border: 1px solid #ffffff90; background: #111b2260; padding: 0 15px; display: flex; align-items: center; gap: 25px; height: 44px; font-size: 11px; cursor: pointer; }
-.mh-motion:hover { background: #fff; color: #182326; }
 .motion-hero + .strip { border-bottom: 1px solid var(--line); padding-block: 27px; }
 .strip-f { font-weight: 500; }
 .selected-work { background: var(--bg); padding-block: clamp(72px,8vw,140px); }
@@ -167,7 +165,6 @@ html.film-open { overflow: hidden; }
   .mh-bottom p { display: block; max-width: 20ch; line-height: 1.8; }
   .mh-bottom .mh-live { display: inline-block; margin-right: 7px; }
   .mh-divider { display: none; }
-  .mh-motion { gap: 20px; flex-shrink: 0; }
   .strip { display: none; }
   .work-intro { gap: 26px; margin-bottom: 38px; }
   .work-intro h2 { font-size: clamp(46px,12vw,68px); }

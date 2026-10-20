@@ -39,7 +39,6 @@ export function cinematicHero() {
   <div class="wrap mh-bottom">
     <p><span class="mh-live" aria-hidden="true"></span>On site with Kingson <span class="mh-divider">/</span> Roof steelwork</p>
     <a class="mh-scroll" href="#work">Explore the work <span aria-hidden="true">↓</span></a>
-    <button class="mh-motion" type="button" data-hero-toggle hidden><span data-hero-toggle-text>Play film</span><span data-hero-toggle-icon aria-hidden="true">▶</span></button>
   </div>`;
 }
 

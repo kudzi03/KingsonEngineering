@@ -126,7 +126,7 @@ ${slides.map((k, i) => `      <li><button type="button" data-go="${i}"${i === 0 
     <h1 class="display hero-title${cls}" id="${id}">${titleHtml}</h1>
     <div class="hero-foot">
       <p class="hero-lede">${esc(lede)}</p>
-      <div class="hero-act">${quoteBtn(false, quoteTo)}${callBtn(NAV.call, true)}${waBtn(true)}</div>
+      <div class="hero-act">${quoteBtn(false, quoteTo)}${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>
     </div>${meta ? `
     <p class="hero-meta">${meta}</p>` : ''}
   </div>
@@ -160,6 +160,11 @@ export function waBtn(ghost) {
   const h = wa();
   if (!h) return '';
   return `<a class="${cls(ghost)}" href="${h}" target="_blank" rel="noopener">${ICON_WA}<span>${esc(NAV.whatsapp)}</span></a>`;
+}
+export function emailBtn(ghost) {
+  const address = publish('email');
+  if (!address) return '';
+  return `<a class="${cls(ghost)}" href="mailto:${esc(address)}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg><span>Email</span></a>`;
 }
 /* `to` lets a service page point its own CTA at its own form rather than
    bouncing the visitor back to the homepage to convert. */
@@ -313,7 +318,7 @@ ${headerNav(home, current)}
   <nav class="menu-list" aria-label="Sections">
 ${menuNav(home, current)}
   </nav>
-  <div class="menu-contact">${quoteBtn(false, '#enquiry')}${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}</div>
+  <div class="menu-contact">${quoteBtn(false, '#enquiry')}${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>
 </div>`;
 }
 
@@ -388,10 +393,10 @@ export function chromeBottom() {
 <!-- The phone action bar. WhatsApp belongs in it: it is how a Zimbabwean
      buyer actually opens a conversation, and before this it appeared twice on
      the home page with neither instance above the fold. The bar is the one
-     piece of the page that is reachable at every scroll depth, so the three
+     piece of the page that is reachable at every scroll depth, so the four
      ways to reach us all live here rather than only in a hero somebody has
      already scrolled past. -->
-<nav class="bar" aria-label="Call, WhatsApp or get a price">${callBtn(NAV.call, true)}${waBtn(true)}${quoteBtn(false, '#enquiry')}</nav>
+<nav class="bar" aria-label="Call, WhatsApp, email or get a price">${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}${quoteBtn(false, '#enquiry')}</nav>
 
 <script type="module" src="/assets/site.min.js?v=${BUILD}"></script>`;
 }
@@ -561,7 +566,7 @@ export function enquiryAside() {
   const person = publish('contactPerson');
   return `      <p class="enq-aside-k">Rather talk it through?</p>
       <p class="enq-aside-t">${esc(CONTACT.lede)}</p>
-      <div class="enq-aside-act">${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}</div>
+      <div class="enq-aside-act">${callBtn(publish('phone') || NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>
       <p class="enq-aside-meta">${hours ? `<span>Open <b>${esc(hours)}</b></span>` : ''}${person ? `<span>Ask for <b>${esc(person)}</b></span>` : ''}</p>`;
 }
 

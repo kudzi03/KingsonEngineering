@@ -51,6 +51,9 @@ try {
     assert.equal(structure.h1s,1);
     assert.deepEqual(structure.brokenImages,[],`${path}: broken images`);
     assert.deepEqual(structure.clippedProjectFrames,[],`${path}: project media clipped outside viewport`);
+    for (const group of ['.bar','.menu-contact','.enq-aside-act']) {
+      assert.equal(await page.locator(`${group} a[href="mailto:admin1@kingsonengineering.co.zw"]`).count(),1,`${path}: direct email alongside other contact actions`);
+    }
     let violations = [];
     if (process.env.KINGSON_AXE_PATH) {
       await page.addScriptTag({path:process.env.KINGSON_AXE_PATH});

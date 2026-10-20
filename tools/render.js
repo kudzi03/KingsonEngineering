@@ -40,7 +40,7 @@ import { pageGraph, serviceId } from './schema.js';
 import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryForm, enquiryAside, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
+  enquiryForm, enquiryAside, callBtn, waBtn, emailBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
   ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote
 } from './layout.js';
 
@@ -475,7 +475,7 @@ const faq = homeFaq().map((it, i) => `      <details class="faq-item" id="faq-${
    Same numbers as everywhere else, so nothing new is being claimed. */
 const faqask = `    <p class="faq-ask-k">Not answered here?</p>
     <p class="faq-ask-t">Ask the workshop directly. Enquiries are acknowledged the same working day.</p>
-    <div class="faq-ask-act">${callBtn(NAV.call, true)}${waBtn(true)}</div>`;
+    <div class="faq-ask-act">${callBtn(NAV.call, true)}${waBtn(true)}${emailBtn(true)}</div>`;
 
 /* ── contact ─────────────────────────────────────────────────────────────────
    Ordered by how a customer actually reaches Kingson, and built by asking for

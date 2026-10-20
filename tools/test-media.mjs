@@ -40,11 +40,9 @@ try {
     assert.ok(s.src.includes(width<900?'portrait':'wide'));
     // Seek near the end, then observe an actual wrap to the opening.
     await page.locator('[data-hero-video]').evaluate(v=>{v.currentTime=v.duration-.35;});
-    await page.waitForFunction(()=>{const v=document.querySelector('[data-hero-video]');return v.currentTime>.1 && v.currentTime<1 && !v.paused;});
-    await page.locator('[data-hero-toggle]').click();
-    await page.waitForFunction(()=>document.querySelector('[data-hero-video]').paused,undefined,{timeout:2000});
-    await page.locator('[data-hero-toggle]').click();
-    await page.waitForFunction(()=>!document.querySelector('[data-hero-video]').paused);
+    // Poll media time independently of WebKit's animation-frame scheduling.
+    await page.waitForFunction(()=>{const v=document.querySelector('[data-hero-video]');return v.currentTime>.1 && v.currentTime<1 && !v.paused;},undefined,{polling:100}).catch(async error=>{throw new Error(`${width}px loop: ${JSON.stringify(await state(page))}`,{cause:error});});
+    assert.equal(await page.locator('[data-hero-toggle],.mh-motion').count(),0,'No visible background film control');
     await accessibility(page);
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.waitForFunction(()=>document.querySelector('[data-hero-video]').paused,undefined,{timeout:2000});
@@ -56,7 +54,7 @@ try {
     await page.locator('#work').scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>document.querySelector('[data-hero-video]').paused);
     assert.ok(await page.locator('.hd').evaluate(e=>getComputedStyle(e).color!=='rgb(255, 255, 255)'));
-    results.push({viewportWidth:width,viewportHeight:height,autoplay:true,loop:true,pauseResume:true,reducedMotionChange:true,offscreenPause:true,video:s});
+    results.push({viewportWidth:width,viewportHeight:height,autoplay:true,loop:true,noFilmToggle:true,reducedMotionChange:true,offscreenPause:true,video:s});
     await page.close();
   }
   for (const condition of ['reduce','save-data','slow-2g','still']) {
@@ -79,7 +77,7 @@ try {
     await page.waitForTimeout(300);
     assert.equal(await page.locator('.hero').evaluate(h=>h.classList.contains('film-playing')),false);
     assert.ok(await page.locator('.mh-poster img').evaluate(i=>i.naturalWidth>0));
-    assert.equal(await page.locator('[data-hero-toggle-text]').textContent(),'Play film');
+    assert.equal(await page.locator('[data-hero-toggle]').count(),0);
     results.push({failure,poster:true});
     await page.close();
   }
