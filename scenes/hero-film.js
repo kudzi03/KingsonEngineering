@@ -29,7 +29,7 @@ export function mountHeroFilm() {
   };
   const sync = () => {
     if (!ready) return;
-    if (document.hidden || !inView || document.documentElement.classList.contains('film-open') || restricted()) {
+    if (document.hidden || !inView || restricted()) {
       video.pause();
       return;
     }
@@ -54,9 +54,6 @@ export function mountHeroFilm() {
     document.documentElement.classList.toggle('hero-passed', !inView);
     sync();
   }, {threshold:0,rootMargin:'-94px 0px 0px'}).observe(hero);
-  // Opening another film suspends the background; closing resumes through the
-  // same visibility and reduced-motion guards.
-  document.addEventListener('project-film-change', sync);
   if (document.readyState === 'complete') sync();
   else window.addEventListener('load', () => { ready = true; sync(); }, {once:true});
 }

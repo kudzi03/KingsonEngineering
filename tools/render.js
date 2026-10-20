@@ -33,7 +33,7 @@ import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
 import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
 import { SERVICES } from '../content/services.js';
-import { cinematicHero, cinematicWork, filmLink, filmDialog } from './cinematic.js';
+import { cinematicHero, cinematicWork, projectVideo } from './cinematic.js';
 import { portfolioRoutes, PORTFOLIO } from './portfolio.js';
 import { hasProjects, publishable as publishableProjects, problems as projectProblems } from '../content/projects.js';
 import { pageGraph, serviceId } from './schema.js';
@@ -352,8 +352,8 @@ const evidence = cinematicWork();
 
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
-const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
-      ${zoomable(WORKSHOP.photo, photo(WORKSHOP.photo, { sizes: '(max-width:900px) 100vw, 52vw', w: 1100 }))}
+const workshop = `    <div class="ws-img project-media" data-reveal="settle">
+      ${projectVideo('workshop','(max-width:900px) 100vw, 52vw',WORKSHOP.photo)}
     </div>
     <div class="ws-copy">
       <p class="eyebrow"><span class="sn">${sheetNo('workshop')}</span>${esc(WORKSHOP.eyebrow)}</p>
@@ -362,7 +362,6 @@ const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
       <p class="ws-lede">${esc(WORKSHOP.body)}</p>
 ${figures(WORKSHOP.figures, 'ch-figures ws-figures')}
       <div class="ws-act">${quoteBtn()}</div>
-      <div class="ws-film"><img src="/${src('workshopFilm',440)}" width="512" height="910" loading="lazy" alt="${esc(ASSETS.workshopFilm.alt)}"><div><span class="work-type">Tynwald, Harare</span>${filmLink('workshop','Inside the workshop')}<p>Step inside the place where it takes shape.</p></div></div>
     </div>`;
 
 /* ── the crane, full bleed ───────────────────────────────────────────────────
@@ -536,7 +535,7 @@ const BLOCKS = {
   head: homeHead,
   chrometop: chromeTop({ home: true }),
   sitefooter: siteFooter(),
-  chromebottom: chromeBottom() + filmDialog(),
+  chromebottom: chromeBottom(),
 
   /* the homepage's own composition */
   hero, strip, chapters, workshop, specs, crane, enqbg, evidence,

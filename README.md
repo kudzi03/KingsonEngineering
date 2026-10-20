@@ -1,12 +1,13 @@
 # Kingson Engineering
 
-The cinematic redesign is on `codex/cinematic-project-redesign` for review.
+The cinematic redesign was approved and deployed on 20 October 2026.
 Read `CINEMATIC_REDESIGN_REPORT.md` for reference analysis, asset provenance,
 video processing, validation and preview limitations. It supersedes the earlier
 editorial visual direction in `REDESIGN_REPORT.md`; its search work remains.
 `SEARCH_CONSOLE_SETUP.md` covers verification. The current homepage design layer
 is `styles/cinematic.css`, on top of the shared editorial/service layouts.
-Do not merge or deploy to production before owner approval.
+Project films now play silently inside the project and workshop frames, with
+automatic looping, a two-angle roof sequence and still-image fallbacks.
 
 To rebuild supplied media without altering originals, extract all three handoff
 ZIPs into one scratch folder and run `tools/build-project-media.py --input
