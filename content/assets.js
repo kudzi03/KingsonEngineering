@@ -2,7 +2,8 @@
    content/assets.js — the photographs, described
    ═══════════════════════════════════════════════════════════════════════════
 
-   Thirteen photographs. Every one was supplied by Kingson and shows Kingson's
+   Nineteen photographs and film posters. All were supplied by Kingson or
+   extracted from its supplied films, and show Kingson's
    own workshop, plant or site work. `focal` is a normalised source coordinate: the
    point a `cover` crop keeps in frame when the container's ratio does not
    match the photograph's.
@@ -21,6 +22,36 @@
 const V = (slug, widths) => widths.map((w) => `assets/img/${slug}-${w}.webp ${w}w`).join(', ');
 
 export const ASSETS = {
+  roofFilmA: {
+    slug: 'roof-a-poster', w: 512, h: 808, widths: [440, 512],
+    focal: [0.5, 0.42], status: 'observed_photo',
+    alt: 'Steel roof trusses and purlins carrying pale sheeting, seen from inside a structure under construction.'
+  },
+  roofFilmB: {
+    slug: 'roof-b-poster', w: 512, h: 860, widths: [440, 512],
+    focal: [0.5, 0.4], status: 'observed_photo',
+    alt: 'An upward view across roof trusses and sheeting towards the open edge of the structure.'
+  },
+  roofFilmC: {
+    slug: 'roof-c-poster', w: 512, h: 910, widths: [440, 512],
+    focal: [0.5, 0.4], status: 'observed_photo',
+    alt: 'Blue-painted steel roof members receding along a partially sheeted structure, with open bays against the sky.'
+  },
+  workshopFilm: {
+    slug: 'workshop-poster', w: 512, h: 910, widths: [440, 512],
+    focal: [0.5, 0.5], status: 'observed_photo',
+    alt: 'The Kingson workshop seen through its open roller door, with equipment and stacked steel beneath the roof.'
+  },
+  architecturalGlass: {
+    slug: 'architectural-glass-exterior', w: 1536, h: 1152, widths: [440, 720, 1100, 1536],
+    focal: [0.65, 0.55], status: 'observed_photo',
+    alt: 'A glass balustrade on a tiled staircase, with dark metal clamps and sunlight crossing the steps.'
+  },
+  architecturalAtrium: {
+    slug: 'architectural-atrium-interior', w: 1536, h: 1152, widths: [440, 720, 1100, 1536],
+    focal: [0.6, 0.55], status: 'observed_photo',
+    alt: 'Glass balustrade panels with dark metal fixings overlooking an atrium with tiled walls and tall windows.'
+  },
   portalFrame: {
     slug: 'portal-frame', w: 1320, h: 888, widths: [440, 720, 900, 1100, 1320],
     wide: { w: 1319, h: 742, widths: [900, 1319] },
@@ -195,8 +226,9 @@ export function position(key) {
 
    In the order the page reads, after BAND_IMAGE which opens chapter 01.     */
 export const PAGE_IMAGES = [
+  'roofFilmA', 'roofFilmB', 'roofFilmC', 'workshopFilm', 'architecturalGlass', 'architecturalAtrium',
   'portalFrame', 'laserSparks', 'crane', 'weldingBay', 'roofTrusses',
-  'weldingHands', 'roofFrame',
+  'weldingHands',
   'laserCutting', 'nestingStation', 'laserFloor', 'gantry'
 ];
 

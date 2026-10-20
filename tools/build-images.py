@@ -146,6 +146,13 @@ def main():
     if missing:
         raise SystemExit('no focal anchor in content/assets.js for: %s' % ', '.join(missing))
     manifest, total = {}, 0
+    # The handoff media has its own builder and scratch inputs. Rebuilding the
+    # root photographs must not erase those already-built manifest entries.
+    manifest_path = os.path.join(OUT_DIR, 'manifest.json')
+    if os.path.exists(manifest_path):
+        with open(manifest_path) as existing:
+            manifest = {slug: entry for slug, entry in json.load(existing).items()
+                        if entry.get('source', '').startswith('handoff/')}
 
     for src, slug, box in JOBS:
         if not os.path.exists(src):

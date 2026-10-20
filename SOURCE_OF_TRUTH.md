@@ -186,6 +186,16 @@ project, not a customer-facing contact. **Do not put these on the website.**
 
 ## H · PHOTOGRAPHY AUDIT
 
+**20 October 2026 media handoff:** the owner supplied workshop footage, roofing
+clips A/B/C and `architectural-glass-exterior.jpeg` plus
+`architectural-atrium-interior.jpeg` as actual Kingson project material. The two
+photographs provide balustrade imagery; the earlier gap below is superseded on
+that point. The existing supplied welding photographs also show fabrication in
+progress. Captions may describe visible work, but no client, project name,
+location, date, dimensions or completion status is inferred from these assets.
+The supplied design-reference film and its contact sheet are not Kingson work
+and must never be published as project assets. See `CINEMATIC_REDESIGN_REPORT.md`.
+
 ### Kingson's own work — usable (9 photographs)
 
 | Asset | Subject | Uses |

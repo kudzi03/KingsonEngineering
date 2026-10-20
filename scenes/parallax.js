@@ -31,7 +31,7 @@ const MIN_WIDTH = 900;
 
 export function mountParallax(root = document) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  if (reduce.matches || window.innerWidth < MIN_WIDTH) return null;
+  if (reduce.matches || !matchMedia(`(min-width:${MIN_WIDTH}px)`).matches) return null;
   if (!('IntersectionObserver' in window)) return null;
 
   const nodes = [...root.querySelectorAll('[data-parallax]')];

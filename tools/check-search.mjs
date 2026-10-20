@@ -17,7 +17,7 @@ assert.ok(!listed.some(url=>url.endsWith('.html')||url.includes('/crm')||url.inc
 const titles=new Set(),descriptions=new Set();
 for(const file of files) {
   const html=read(file);
-  const body=normalized(html.split('<body>')[1]);
+  const body=normalized(html.split(/<body\b[^>]*>/)[1]);
   assert.ok(!/<meta name="robots" content="[^"]*noindex/.test(html),`${file}: accidentally noindex`);
   const title=normalized(html.match(/<title>([^<]+)</)[1]);
   const description=normalized(html.match(/name="description" content="([^"]+)"/)[1]);

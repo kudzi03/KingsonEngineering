@@ -17,7 +17,7 @@ const browser = await chromium.launch({ channel: process.env.KINGSON_BROWSER || 
 const results = { pages: [], interactions: [], errors: [] };
 const routes = ['/', ...SERVICES.map(s => '/' + s.slug), '/not-a-page'];
 const makePage = async (width, options = {}) => {
-  const page = await browser.newPage({ viewport: { width, height: 950 }, reducedMotion:'reduce', ...options });
+  const page = await browser.newPage({ viewport: { width, height: width === 390 ? 844 : width === 1920 ? 1080 : 900 }, reducedMotion:'reduce', ...options });
   page.on('pageerror', error => results.errors.push(error.message));
   // No test can accidentally write to Kingson's CRM or trigger notifications.
   await page.route('**/*.supabase.co/**', route => route.abort());
@@ -26,7 +26,7 @@ const makePage = async (width, options = {}) => {
   return page;
 };
 try {
-  for (const width of [390, 1440]) for (const path of routes) {
+  for (const width of [390, 1440, 1920]) for (const path of routes) {
     const page = await makePage(width);
     const response = await page.goto(base + path, {waitUntil:'networkidle'});
     assert.equal(response.status(), path === '/not-a-page' ? 404 : 200);
@@ -45,10 +45,12 @@ try {
       h1s: document.querySelectorAll('h1').length,
       brokenImages: [...document.images].filter(i => !i.closest('[data-i]:not(.is-on)') && i.complete && !i.naturalWidth).map(i => i.currentSrc),
       targets: [...document.querySelectorAll('a,button,input,select,textarea,summary')].filter(e => e.checkVisibility() && !e.closest('[inert]')).filter(e => {const r=e.getBoundingClientRect();return r.width < 24 || r.height < 24;}).map(e=>e.outerHTML.slice(0,150))
+      , clippedProjectFrames: [...document.querySelectorAll('.work-image,.work-details .zoom')].filter(e=>{const r=e.getBoundingClientRect();return r.left < -1 || r.right > innerWidth+1;}).map(e=>e.className)
     }));
     assert.ok(structure.width <= width + 1, `${width} ${path}: horizontal overflow`);
     assert.equal(structure.h1s,1);
     assert.deepEqual(structure.brokenImages,[],`${path}: broken images`);
+    assert.deepEqual(structure.clippedProjectFrames,[],`${path}: project media clipped outside viewport`);
     let violations = [];
     if (process.env.KINGSON_AXE_PATH) {
       await page.addScriptTag({path:process.env.KINGSON_AXE_PATH});

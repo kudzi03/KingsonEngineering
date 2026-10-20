@@ -21,6 +21,12 @@ export const WORK = {
   title: 'Recent work',
   lede: 'Photographs from our own jobs and workshop.',
   captions: {
+    roofFilmA: 'Roof trusses and sheeting',
+    roofFilmB: 'Another roof steelwork view',
+    roofFilmC: 'Blue-painted roof structure',
+    workshopFilm: 'Inside the Kingson workshop',
+    architecturalGlass: 'Glass balustrade and stair detail',
+    architecturalAtrium: 'Glass balustrade overlooking an atrium',
     portalFrame:    'Portal frame under erection',
     roofTrusses:    'Long-span trusses and purlins',
     roofFrame:      'Roof structure from inside',

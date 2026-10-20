@@ -1,10 +1,19 @@
 # Kingson Engineering
 
-The editorial redesign is on `codex/premium-editorial-redesign` for review.
-Read `REDESIGN_REPORT.md` for Phase A (visual design), Phase B (search readiness),
-validation and launch constraints. `SEARCH_CONSOLE_SETUP.md` covers verification.
-The current design layer is `styles/editorial.css`; the older visual audit below
-documents the preceding designs, not new performance measurements.
+The cinematic redesign is on `codex/cinematic-project-redesign` for review.
+Read `CINEMATIC_REDESIGN_REPORT.md` for reference analysis, asset provenance,
+video processing, validation and preview limitations. It supersedes the earlier
+editorial visual direction in `REDESIGN_REPORT.md`; its search work remains.
+`SEARCH_CONSOLE_SETUP.md` covers verification. The current homepage design layer
+is `styles/cinematic.css`, on top of the shared editorial/service layouts.
+Do not merge or deploy to production before owner approval.
+
+To rebuild supplied media without altering originals, extract all three handoff
+ZIPs into one scratch folder and run `tools/build-project-media.py --input
+<scratch-folder> --ffmpeg <ffmpeg-binary>` with Python/Pillow. Run the public asset
+builder, renderer and publication gate after source changes. `tools/test-browser.mjs`
+checks the pages/forms; `tools/test-media.mjs` checks playback and fallbacks
+(set `KINGSON_BROWSER=webkit` for the WebKit engine).
 
 Public website for Kingson Engineering / Kingson Trading (Pvt) Ltd — steelwork
 specialists, No. 1262 Tynwald Industries, Harare, Zimbabwe.

@@ -14,10 +14,34 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://www.kingsonengineering.co.zw/</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
 
+    <image:image>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-a-poster-512.webp</image:loc>
+      <image:title>Roof trusses and sheeting</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-b-poster-512.webp</image:loc>
+      <image:title>Another roof steelwork view</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-c-poster-512.webp</image:loc>
+      <image:title>Blue-painted roof structure</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/workshop-poster-512.webp</image:loc>
+      <image:title>Inside the Kingson workshop</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/architectural-glass-exterior-1536.webp</image:loc>
+      <image:title>Glass balustrade and stair detail</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/architectural-atrium-interior-1536.webp</image:loc>
+      <image:title>Glass balustrade overlooking an atrium</image:title>
+    </image:image>
     <image:image>
       <image:loc>https://www.kingsonengineering.co.zw/assets/img/portal-frame-1320.webp</image:loc>
       <image:title>Portal frame under erection</image:title>
@@ -43,10 +67,6 @@
       <image:title>Grating welded up on the workshop floor</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-frame-1320.webp</image:loc>
-      <image:title>Roof structure from inside</image:title>
-    </image:image>
-    <image:image>
       <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-cutting-1440.webp</image:loc>
       <image:title>Cutting sheet on the DXTECH laser</image:title>
     </image:image>
@@ -65,7 +85,7 @@
   </url>
   <url>
     <loc>https://www.kingsonengineering.co.zw/structural-steel-harare</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 
@@ -80,7 +100,7 @@
   </url>
   <url>
     <loc>https://www.kingsonengineering.co.zw/roofing-and-trusses</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 
@@ -95,7 +115,7 @@
   </url>
   <url>
     <loc>https://www.kingsonengineering.co.zw/fibre-laser-cutting-harare</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 
@@ -130,7 +150,7 @@
   </url>
   <url>
     <loc>https://www.kingsonengineering.co.zw/steel-fabrication</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 
@@ -141,7 +161,7 @@
   </url>
   <url>
     <loc>https://www.kingsonengineering.co.zw/mobile-cranage-harare</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 

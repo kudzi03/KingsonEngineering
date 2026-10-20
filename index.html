@@ -35,10 +35,10 @@
 <link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="/assets/img/portal-frame-wide-1319.webp"
       imagesrcset="/assets/img/portal-frame-wide-900.webp 900w, /assets/img/portal-frame-wide-1319.webp 1319w"
-      imagesizes="(max-width: 760px) calc(100vw - 44px), 90.6vw" media="(min-width: 900px)" fetchpriority="high">
-<link rel="preload" as="image" href="/assets/img/portal-frame-1320.webp"
-      imagesrcset="/assets/img/portal-frame-440.webp 440w, /assets/img/portal-frame-720.webp 720w, /assets/img/portal-frame-900.webp 900w, /assets/img/portal-frame-1100.webp 1100w, /assets/img/portal-frame-1320.webp 1320w"
-      imagesizes="(max-width: 760px) calc(100vw - 44px), 90.6vw" media="(max-width: 899.98px)" fetchpriority="high">
+      imagesizes="100vw" media="(min-width: 900px)" fetchpriority="high">
+<link rel="preload" as="image" href="/assets/img/roof-a-poster-512.webp"
+      imagesrcset="/assets/img/roof-a-poster-440.webp 440w, /assets/img/roof-a-poster-512.webp 512w"
+      imagesizes="100vw" media="(max-width: 899.98px)" fetchpriority="high">
 <!-- --svh is set before first paint so a phone's address bar collapsing
      mid-scroll cannot resize a full-height scene under the reader. From
      main.js it arrived after layout and cost a measured 0.021 CLS.
@@ -58,7 +58,7 @@
      JavaScript off: the header is then the solid bar it is everywhere else.
      -->
 <script>document.documentElement.style.setProperty('--svh',(window.innerHeight/100)+'px')</script>
-<link rel="stylesheet" href="/assets/site.min.css?v=ef107c36db">
+<link rel="stylesheet" href="/assets/site.min.css?v=0eb7de115e">
 <!-- Vercel Web Analytics: page views only, no cookies, no personal data.
      Same origin, deferred, and nothing on the page depends on it. -->
 <script defer src="/_vercel/insights/script.js"></script>
@@ -182,7 +182,7 @@
       "@id": "https://www.kingsonengineering.co.zw/#website",
       "url": "https://www.kingsonengineering.co.zw/",
       "name": "Kingson Engineering",
-      "description": "Structural steel, roofing, fibre laser cutting and cranage — fabricated in our own workshop and erected with our own crane. Send drawings or a description; enquiries are acknowledged the same working day.",
+      "description": "Structural steel. Roofing. Precision fabrication.\nFrom our workshop to your site.",
       "publisher": {
         "@id": "https://www.kingsonengineering.co.zw/#organization"
       },
@@ -211,7 +211,7 @@
         "caption": "A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays."
       },
       "inLanguage": "en-ZW",
-      "dateModified": "2026-10-19",
+      "dateModified": "2026-10-20",
       "mainEntity": [
         {
           "@type": "Question",
@@ -404,11 +404,11 @@
 </script>
 <!--/head--></head>
 
-<body>
+<body class="site-home">
 <!--chrometop-->
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="hd">
+<header class="hd hd-home">
   <!-- How far down a seventeen-screen page you are. Driven entirely by CSS
        scroll-driven animation where the browser has it, so there is no scroll
        listener and no JavaScript in the path at all; browsers without it
@@ -417,11 +417,11 @@
   <div class="hd-progress" aria-hidden="true"><i></i></div>
   <div class="hd-in">
     <a class="hd-mark" href="#top" aria-label="Kingson Engineering, home">
-      <picture><source type="image/webp" srcset="assets/brand/kingson-logo-160.webp 160w, assets/brand/kingson-logo-240.webp 240w, assets/brand/kingson-logo-320.webp 320w, assets/brand/kingson-logo-560.webp 560w" sizes="(max-width:760px) 116px, 134px"><img src="assets/brand/kingson-logo-560.png" srcset="assets/brand/kingson-logo-320.png 320w, assets/brand/kingson-logo-560.png 560w" sizes="(max-width:760px) 116px, 134px" width="560" height="229" style="height:46px" alt="Kingson Engineering — Steelwork Specialists" decoding="async"></picture>
+<span class="hd-home-reverse"><picture><source type="image/webp" srcset="assets/brand/kingson-logo-reverse-240.webp 240w, assets/brand/kingson-logo-reverse-320.webp 320w, assets/brand/kingson-logo-reverse-560.webp 560w" sizes="(max-width:760px) 116px, 134px"><img src="assets/brand/kingson-logo-reverse-560.png" srcset="assets/brand/kingson-logo-reverse-320.png 320w, assets/brand/kingson-logo-reverse-560.png 560w" sizes="(max-width:760px) 116px, 134px" width="560" height="229" style="height:46px" alt="Kingson Engineering — Steelwork Specialists" decoding="async"></picture></span><span class="hd-home-normal"><picture><source type="image/webp" srcset="assets/brand/kingson-logo-240.webp 240w, assets/brand/kingson-logo-320.webp 320w, assets/brand/kingson-logo-560.webp 560w" sizes="(max-width:760px) 116px, 134px"><img src="assets/brand/kingson-logo-560.png" srcset="assets/brand/kingson-logo-320.png 320w, assets/brand/kingson-logo-560.png 560w" sizes="(max-width:760px) 116px, 134px" width="560" height="229" style="height:46px" alt="Kingson Engineering — Steelwork Specialists" decoding="async"></picture></span>
     </a>
     <nav class="hd-nav" aria-label="Primary">
       <a href="#services">What we do</a>
-      <a href="#work">Our work</a>
+      <a href="#work">Our projects</a>
       <a href="#specs">Specifications</a>
       <a href="#how">How it works</a>
       <a href="#contact">Contact</a>
@@ -435,7 +435,7 @@
 
 <div class="menu on-dark" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" inert>
   <div class="menu-top">
-    <span class="menu-logo"><picture><source type="image/webp" srcset="assets/brand/kingson-logo-reverse-160.webp 160w, assets/brand/kingson-logo-reverse-240.webp 240w, assets/brand/kingson-logo-reverse-320.webp 320w, assets/brand/kingson-logo-reverse-560.webp 560w" sizes="116px"><img src="assets/brand/kingson-logo-reverse-560.png" srcset="assets/brand/kingson-logo-reverse-320.png 320w, assets/brand/kingson-logo-reverse-560.png 560w" sizes="116px" width="560" height="229" style="height:40px" alt="" decoding="async" loading="lazy" fetchpriority="low"></picture></span>
+    <span class="menu-logo"><picture><source type="image/webp" srcset="assets/brand/kingson-logo-reverse-240.webp 240w, assets/brand/kingson-logo-reverse-320.webp 320w, assets/brand/kingson-logo-reverse-560.webp 560w" sizes="116px"><img src="assets/brand/kingson-logo-reverse-560.png" srcset="assets/brand/kingson-logo-reverse-320.png 320w, assets/brand/kingson-logo-reverse-560.png 560w" sizes="116px" width="560" height="229" style="height:40px" alt="" decoding="async" loading="lazy" fetchpriority="low"></picture></span>
     <button type="button" class="menu-close" data-menu-close aria-label="Close menu">Close</button>
   </div>
   <nav class="menu-list" aria-label="Sections">
@@ -445,7 +445,7 @@
     <a href="/fibre-laser-cutting-harare" class="menu-sub">Fibre laser cutting</a>
     <a href="/steel-fabrication" class="menu-sub">Fabrication</a>
     <a href="/mobile-cranage-harare" class="menu-sub">Mobile cranage</a>
-    <a href="#work">Our work</a>
+    <a href="#work">Our projects</a>
     <a href="#specs">Specifications</a>
     <a href="#how">How it works</a>
     <a href="#contact">Contact</a>
@@ -456,64 +456,32 @@
 
 <main id="main" tabindex="-1">
 <span id="top"></span>
-<nav class="si" aria-label="Sections of this page"><!--sheets-->
-    <a href="#services" data-sheet="services"><span class="si-n">01</span><span class="si-t">Capabilities</span></a>
-    <a href="#cut" data-sheet="cut"><span class="si-n">02</span><span class="si-t">Fibre laser</span></a>
-    <a href="#workshop" data-sheet="workshop"><span class="si-n">03</span><span class="si-t">Workshop</span></a>
-    <a href="#crane" data-sheet="crane"><span class="si-n">04</span><span class="si-t">Cranage</span></a>
-    <a href="#specs" data-sheet="specs"><span class="si-n">05</span><span class="si-t">Specifications</span></a>
-    <a href="#how" data-sheet="how"><span class="si-n">06</span><span class="si-t">Programme</span></a>
-    <a href="#enquiry" data-sheet="enquiry"><span class="si-n">07</span><span class="si-t">Get a price</span></a>
-    <a href="#faq" data-sheet="faq"><span class="si-n">08</span><span class="si-t">Questions</span></a>
-    <a href="#contact" data-sheet="contact"><span class="si-n">09</span><span class="si-t">Contact</span></a>
-<!--/sheets--></nav>
+
 
 <!-- ═══════════════ HERO ═══════════════
      One screen: who this is, what they make, and the two actions. Under it, a
      strip of four things we hold to — not statistics, not
      achievements: the facts a buyer needs in the first five seconds. -->
-<section class="hero cin" aria-labelledby="hero-h" data-cin><!--hero-->
-
-  <div class="wrap cin-in">
-    <p class="hero-eyebrow">Steelwork specialists · Tynwald, Harare</p>
-    <h1 class="display hero-title" id="hero-h"><span class="ln"><span>Structural steelwork<span class="pt">.</span></span></span> <span class="ln"><span>Fabricated here<span class="pt">.</span></span></span></h1>
-    <div class="hero-foot">
-      <p class="hero-lede">Structural steel, roofing, fibre laser cutting and cranage — fabricated in our own workshop and erected with our own crane. Send drawings or a description; enquiries are acknowledged the same working day.</p>
-      <div class="hero-act"><a class="btn" href="#enquiry"><span>Get a price</span></a><a class="btn-ghost" href="tel:+263772262869"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg><span>Call</span></a><a class="btn-ghost" href="https://wa.me/263772262869" target="_blank" rel="noopener"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.5.1-.6.8-.7 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/></svg><span>WhatsApp</span></a></div>
-    </div>
+<section class="hero motion-hero on-dark" aria-labelledby="hero-h"><!--hero-->
+<div class="mh-media" aria-hidden="true">
+    <picture class="mh-poster">
+      <source media="(min-width:900px)" srcset="/assets/img/portal-frame-wide-900.webp 900w, /assets/img/portal-frame-wide-1319.webp 1319w" sizes="100vw">
+      <img src="/assets/img/roof-a-poster-512.webp" srcset="/assets/img/roof-a-poster-440.webp 440w, /assets/img/roof-a-poster-512.webp 512w" sizes="100vw" width="512" height="808" alt="" fetchpriority="high" decoding="async">
+    </picture>
+    <video class="mh-video" data-hero-video muted loop playsinline preload="none" poster="/assets/img/roof-a-poster-512.webp" tabindex="-1"></video>
   </div>
-  <div class="cin-media">
-    <div class="cin-slides" aria-live="off">
-    <figure class="cin-slide is-on" data-i="0"><picture><source media="(min-width: 900px)" sizes="(max-width: 760px) calc(100vw - 44px), 90.6vw"
-              srcset="assets/img/portal-frame-wide-900.webp 900w, assets/img/portal-frame-wide-1319.webp 1319w"><img src="assets/img/portal-frame-1320.webp" srcset="assets/img/portal-frame-440.webp 440w, assets/img/portal-frame-720.webp 720w, assets/img/portal-frame-900.webp 900w, assets/img/portal-frame-1100.webp 1100w, assets/img/portal-frame-1320.webp 1320w"
-             sizes="(max-width: 760px) calc(100vw - 44px), 90.6vw" width="1320" height="888" fetchpriority="high" decoding="async" style="object-position:54.0% 47.0%" alt="A steel portal frame under erection on open ground: columns, rafters and purlins in place, a mobile crane working inside the frame and cladding already fixed to the far bays."></picture><svg class="hero-mark hero-mark-wide" viewBox="0 0 1319 742" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-    <g><circle cx="698" cy="145" r="6"/><path d="M698 145 L740 97 H836" pathLength="1"/><text x="744" y="90"><tspan class="mk-k">B</tspan> Rafter</text></g>
-    <g><circle cx="446" cy="191" r="6"/><path d="M446 191 L400 125 H290" pathLength="1"/><text x="294" y="118"><tspan class="mk-k">C</tspan> Purlins</text></g>
-  </svg><svg class="hero-mark hero-mark-tall" viewBox="0 0 1320 888" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-    <g><circle cx="700" cy="182" r="7"/><path d="M700 182 L664 140 H586" pathLength="1"/><text x="590" y="131"><tspan class="mk-k">B</tspan> Rafter</text></g>
-  </svg></figure>
-    <figure class="cin-slide" data-i="1"><picture><source media="(min-width: 900px)" sizes="(max-width: 760px) calc(100vw - 44px), 90.6vw"
-              data-srcset="assets/img/laser-sparks-wide-900.webp 900w, assets/img/laser-sparks-wide-1320.webp 1320w"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/laser-sparks-1440.webp" data-srcset="assets/img/laser-sparks-440.webp 440w, assets/img/laser-sparks-720.webp 720w, assets/img/laser-sparks-900.webp 900w, assets/img/laser-sparks-1100.webp 1100w, assets/img/laser-sparks-1440.webp 1440w"
-             sizes="(max-width: 760px) calc(100vw - 44px), 90.6vw" width="1440" height="2560" loading="lazy" decoding="async" style="object-position:38.0% 43.0%" alt="The cutting head of the DXTECH fibre laser close up, sparks off the nozzle and the cut line running out across the sheet."></picture></figure>
-    <figure class="cin-slide" data-i="2"><picture><source media="(min-width: 900px)" sizes="(max-width: 760px) calc(100vw - 44px), 90.6vw"
-              data-srcset="assets/img/crane-wide-900.webp 900w, assets/img/crane-wide-1319.webp 1319w"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/crane-1320.webp" data-srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-900.webp 900w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
-             sizes="(max-width: 760px) calc(100vw - 44px), 90.6vw" width="1320" height="1757" loading="lazy" decoding="async" style="object-position:50.0% 60.0%" alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body."></picture></figure>
-    <figure class="cin-slide" data-i="3"><picture><source media="(min-width: 900px)" sizes="(max-width: 760px) calc(100vw - 44px), 90.6vw"
-              data-srcset="assets/img/welding-bay-wide-900.webp 900w, assets/img/welding-bay-wide-1320.webp 1320w"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/welding-bay-1920.webp" data-srcset="assets/img/welding-bay-440.webp 440w, assets/img/welding-bay-720.webp 720w, assets/img/welding-bay-900.webp 900w, assets/img/welding-bay-1100.webp 1100w, assets/img/welding-bay-1920.webp 1920w"
-             sizes="(max-width: 760px) calc(100vw - 44px), 90.6vw" width="1920" height="2560" loading="lazy" decoding="async" style="object-position:68.0% 62.0%" alt="Two Kingson Engineering workers welding a steel grating panel on the floor of the Harare workshop, seen from low down with the workshop roof trusses and sheeting above them."></picture></figure>
-    </div>
-    <span class="cin-image-label" aria-hidden="true">KINGSON / ON SITE & IN THE WORKSHOP</span>
+  <div class="mh-shade" aria-hidden="true"></div>
+  <div class="wrap mh-content">
+    <p class="mh-eyebrow">Kingson Engineering <span>Steelwork specialists · Tynwald, Harare</span></p>
+    <h1 class="display" id="hero-h"><span>Steelwork.</span><span>Fabricated here.</span></h1>
+    <p class="mh-lede">Structural steel. Roofing. Precision fabrication.<br>From our workshop to your site.</p>
+    <div class="hero-act mh-actions"><a class="btn" href="#enquiry"><span>Request a quote</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn-ghost" href="#work">Our projects <span aria-hidden="true">↓</span></a></div>
   </div>
-  <div class="wrap cin-ctl">
-    <ol class="cin-dots">
-      <li><button type="button" data-go="0" aria-current="true" aria-label="01 Portal frame under erection. Photograph 1 of 4"><span class="cin-n num" aria-hidden="true">01</span> <span class="cin-t" aria-hidden="true">Portal frame under erection</span><i aria-hidden="true"></i></button></li>
-      <li><button type="button" data-go="1" aria-label="02 The head cutting, sparks off the nozzle. Photograph 2 of 4"><span class="cin-n num" aria-hidden="true">02</span> <span class="cin-t" aria-hidden="true">The head cutting, sparks off the nozzle</span><i aria-hidden="true"></i></button></li>
-      <li><button type="button" data-go="2" aria-label="03 Our telescopic mobile crane. Photograph 3 of 4"><span class="cin-n num" aria-hidden="true">03</span> <span class="cin-t" aria-hidden="true">Our telescopic mobile crane</span><i aria-hidden="true"></i></button></li>
-      <li><button type="button" data-go="3" aria-label="04 Welding in the fabrication bay. Photograph 4 of 4"><span class="cin-n num" aria-hidden="true">04</span> <span class="cin-t" aria-hidden="true">Welding in the fabrication bay</span><i aria-hidden="true"></i></button></li>
-    </ol>
-    <button type="button" class="cin-pause" data-pause aria-pressed="false" aria-label="Pause the photographs"><span aria-hidden="true"></span></button>
+  <div class="wrap mh-bottom">
+    <p><span class="mh-live" aria-hidden="true"></span>On site with Kingson <span class="mh-divider">/</span> Roof steelwork</p>
+    <a class="mh-scroll" href="#work">Explore the work <span aria-hidden="true">↓</span></a>
+    <button class="mh-motion" type="button" data-hero-toggle hidden><span data-hero-toggle-text>Play film</span><span data-hero-toggle-icon aria-hidden="true">▶</span></button>
   </div>
-
 <!--/hero--></section>
 <div class="strip gl on-dark"><ul class="strip-in"><!--strip-->
     <li><span class="strip-k">Fibre laser</span><span class="strip-f">±0.1 mm</span><span class="strip-v">DXTECH · 3 000 × 1 500 mm bed</span></li>
@@ -521,6 +489,34 @@
     <li><span class="strip-k">Workshop</span><span class="strip-f">Harare</span><span class="strip-v">No. 1262 Tynwald Industries</span></li>
     <li><span class="strip-k">Open</span><span class="strip-f">Mon–Sat</span><span class="strip-v">07:30 – 17:00 · enquiries acknowledged the same working day</span></li>
 <!--/strip--></ul></div>
+
+<!--evidence-->
+<section class="selected-work" id="work" aria-labelledby="work-h">
+    <div class="wrap">
+      <div class="work-intro">
+        <div><p class="eyebrow">Selected work</p><h2 class="display" id="work-h">The structure.<br>The detail.</h2></div>
+        <div class="work-intro-copy"><p>Steelwork takes shape in the workshop. It comes into its own on site. A closer look at Kingson’s roof structures and architectural details.</p><a class="text-link" href="/structural-steel-harare">Explore structural steelwork <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </div>
+      <div class="work-roofs">
+        <figure class="work-a" data-reveal="settle">
+          <div class="work-image"><img src="/assets/img/roof-a-poster-512.webp" srcset="/assets/img/roof-a-poster-440.webp 440w, /assets/img/roof-a-poster-512.webp 512w" sizes="(max-width:760px) 100vw, 59vw" width="512" height="808" alt="Steel roof trusses and purlins carrying pale sheeting, seen from inside a structure under construction." style="object-position:50.0% 42.0%" loading="lazy" decoding="async"><a class="film-link " href="/assets/video/roof-a.mp4" data-film data-film-poster="/assets/img/roof-a-poster-512.webp" data-film-title="Roof trusses &amp; sheeting" data-film-description="A silent pan across roof trusses, purlins and sheeting inside a structure under construction."><span class="film-play" aria-hidden="true">▶</span><span>Watch film</span><span class="sr-only">: Roof trusses &amp; sheeting</span></a></div>
+          <figcaption><div><span class="work-type">Roof steelwork</span><h3>Trusses & sheeting.</h3></div><a class="work-arrow" href="/roofing-and-trusses" aria-label="Explore roof steelwork and trusses">↗</a></figcaption>
+          <p class="work-sub">An expansive view from inside the structure. <a class="film-link film-inline" href="/assets/video/roof-b.mp4" data-film data-film-poster="/assets/img/roof-b-poster-512.webp" data-film-title="Another view of the roof steelwork" data-film-description="A silent upward view of roof trusses and sheeting, moving towards the open edge of the structure."><span class="film-play" aria-hidden="true">▶</span><span>Watch another roof view</span><span class="sr-only">: Another view of the roof steelwork</span></a></p>
+        </figure>
+        <figure class="work-c" data-reveal="settle">
+          <div class="work-image"><img src="/assets/img/roof-c-poster-512.webp" srcset="/assets/img/roof-c-poster-440.webp 440w, /assets/img/roof-c-poster-512.webp 512w" sizes="(max-width:760px) 100vw, 35vw" width="512" height="910" alt="Blue-painted steel roof members receding along a partially sheeted structure, with open bays against the sky." style="object-position:50.0% 40.0%" loading="lazy" decoding="async"><a class="film-link " href="/assets/video/roof-c.mp4" data-film data-film-poster="/assets/img/roof-c-poster-512.webp" data-film-title="Steel roof structure" data-film-description="A silent view along blue-painted rafters and purlins, with roof sheeting fixed over part of the structure and open bays beyond."><span class="film-play" aria-hidden="true">▶</span><span>Watch film</span><span class="sr-only">: Steel roof structure</span></a></div>
+          <figcaption><div><span class="work-type">On site</span><h3>Steel roof structure.</h3></div><a class="work-arrow" href="/structural-steel-harare" aria-label="Explore structural steelwork">↗</a></figcaption>
+          <p class="work-sub">Rafters, purlins and sheeting, seen from below.</p>
+        </figure>
+      </div>
+      <div class="work-details-head"><h3 class="display">Measured in the details.</h3><a class="text-link" href="/steel-fabrication">Balustrades & fabrication <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      <div class="work-details">
+        <figure data-reveal="settle"><button class="zoom" type="button" data-open="architecturalGlass" aria-label="View the glass balustrade and stair detail"><img src="/assets/img/architectural-glass-exterior-1100.webp" srcset="/assets/img/architectural-glass-exterior-440.webp 440w, /assets/img/architectural-glass-exterior-720.webp 720w, /assets/img/architectural-glass-exterior-1100.webp 1100w, /assets/img/architectural-glass-exterior-1536.webp 1536w" sizes="(max-width:760px) 100vw, 50vw" width="1536" height="1152" alt="A glass balustrade on a tiled staircase, with dark metal clamps and sunlight crossing the steps." style="object-position:65.0% 55.0%" loading="lazy" decoding="async"><span class="detail-zoom" aria-hidden="true">↗</span></button><figcaption>Glass balustrade / stair detail</figcaption></figure>
+        <figure data-reveal="settle"><button class="zoom" type="button" data-open="architecturalAtrium" aria-label="View the glass balustrade overlooking the atrium"><img src="/assets/img/architectural-atrium-interior-1100.webp" srcset="/assets/img/architectural-atrium-interior-440.webp 440w, /assets/img/architectural-atrium-interior-720.webp 720w, /assets/img/architectural-atrium-interior-1100.webp 1100w, /assets/img/architectural-atrium-interior-1536.webp 1536w" sizes="(max-width:760px) 100vw, 50vw" width="1536" height="1152" alt="Glass balustrade panels with dark metal fixings overlooking an atrium with tiled walls and tall windows." style="object-position:60.0% 55.0%" loading="lazy" decoding="async"><span class="detail-zoom" aria-hidden="true">↗</span></button><figcaption>Glass balustrade / atrium</figcaption></figure>
+      </div>
+    </div>
+  </section>
+<!--/evidence-->
 
 <!-- ═══════════════ CAPABILITY CHAPTERS ═══════════════
      Five compositions covering the six services. Each decides its
@@ -581,7 +577,10 @@
           <span class="cx-lead"><b class="num">3 000 mm</b><span>maximum fold length</span></span>
           <span class="cx-body">Balustrading, handrails and roller shutter doors, fabricated to your opening and finish.</span>
           <span class="cx-go" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          <span class="cx-media cx-plate" aria-hidden="true"><b class="num">3 000 mm</b><span>maximum fold length</span></span>
+          <span class="cx-media" aria-hidden="true"><img src="/assets/img/architectural-glass-exterior-720.webp" srcset="/assets/img/architectural-glass-exterior-440.webp 440w, /assets/img/architectural-glass-exterior-720.webp 720w, /assets/img/architectural-glass-exterior-1100.webp 1100w, /assets/img/architectural-glass-exterior-1536.webp 1536w"
+                 sizes="(max-width: 760px) 90vw, 150px"
+                 width="1536" height="1152" loading="lazy" decoding="async"
+                 style="object-position:65.0% 55.0%" alt=""></span>
         </a>
       </li>
       <li class="cx-row">
@@ -700,6 +699,7 @@
         <div><dt>Ask for</dt><dd>Mr Murandu</dd></div>
       </dl>
       <div class="ws-act"><a class="btn" href="#enquiry"><span>Get a price</span></a></div>
+      <div class="ws-film"><img src="/assets/img/workshop-poster-440.webp" width="512" height="910" loading="lazy" alt="The Kingson workshop seen through its open roller door, with equipment and stacked steel beneath the roof."><div><span class="work-type">Tynwald, Harare</span><a class="film-link " href="/assets/video/workshop.mp4" data-film data-film-poster="/assets/img/workshop-poster-512.webp" data-film-title="Inside the Kingson workshop" data-film-description="A silent walkthrough from the workshop entrance, past equipment and stacked steel, to the exterior yard."><span class="film-play" aria-hidden="true">▶</span><span>Inside the workshop</span><span class="sr-only">: Inside the Kingson workshop</span></a><p>Step inside the place where it takes shape.</p></div></div>
     </div>
 <!--/workshop-->
 </section>
@@ -790,44 +790,8 @@
   </div>
 </section>
 
-<!-- Evidence photographs are not presented as named, completed projects. -->
-<!--evidence-->
-  <section class="evidence" id="work" aria-labelledby="work-h">
-    <div class="wrap">
-      <div class="evidence-head">
-        <div><p class="eyebrow">On site & in the workshop</p><h2 class="display" id="work-h">The work.<br>The people.<br>The steel.</h2></div>
-        <p>Real photographs from Kingson’s workshop and site work. From the frame overhead to the weld that holds it together, see the work behind our services.</p>
-      </div>
-      <div class="evidence-grid">
-        <figure data-reveal="lift" style="--d:0ms">
-          <button type="button" class="zoom" data-open="roofFrame"
-              aria-label="Roof structure from inside. Select to view full size."><img src="assets/img/roof-frame-900.webp" srcset="assets/img/roof-frame-440.webp 440w, assets/img/roof-frame-720.webp 720w, assets/img/roof-frame-900.webp 900w, assets/img/roof-frame-1100.webp 1100w, assets/img/roof-frame-1320.webp 1320w"
-             sizes="(max-width:760px) 90vw, 35vw" width="1320" height="714"
-             loading="lazy" decoding="async"
-             style="object-position:50.0% 35.0%" alt="A white-painted roof structure seen from inside: trusses, purlins and corrugated sheeting with rooflights between the bays."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
-          <figcaption>Roof structure, seen from inside.<a href="/roofing-and-trusses">Roof steelwork &amp; trusses ↗</a></figcaption>
-        </figure>
-        <figure data-reveal="lift" style="--d:80ms">
-          <button type="button" class="zoom" data-open="weldingBay"
-              aria-label="Welding in the fabrication bay. Select to view full size."><img src="assets/img/welding-bay-900.webp" srcset="assets/img/welding-bay-440.webp 440w, assets/img/welding-bay-720.webp 720w, assets/img/welding-bay-900.webp 900w, assets/img/welding-bay-1100.webp 1100w, assets/img/welding-bay-1920.webp 1920w"
-             sizes="(max-width:760px) 90vw, 35vw" width="1920" height="2560"
-             loading="lazy" decoding="async"
-             style="object-position:68.0% 62.0%" alt="Two Kingson Engineering workers welding a steel grating panel on the floor of the Harare workshop, seen from low down with the workshop roof trusses and sheeting above them."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
-          <figcaption>Welding on the workshop floor.<a href="/steel-fabrication">Explore fabrication ↗</a></figcaption>
-        </figure>
-        <figure data-reveal="lift" style="--d:160ms">
-          <button type="button" class="zoom" data-open="crane"
-              aria-label="Our telescopic mobile crane. Select to view full size."><img src="assets/img/crane-900.webp" srcset="assets/img/crane-440.webp 440w, assets/img/crane-720.webp 720w, assets/img/crane-900.webp 900w, assets/img/crane-1100.webp 1100w, assets/img/crane-1320.webp 1320w"
-             sizes="(max-width:760px) 90vw, 35vw" width="1320" height="1757"
-             loading="lazy" decoding="async"
-             style="object-position:50.0% 60.0%" alt="A yellow telescopic mobile crane standing in a yard, boom raised, with lettering reading KINGSON and a phone number on the counterweight body."><span class="zoom-cue" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>
-          <figcaption>Kingson’s telescopic mobile crane.<a href="/mobile-cranage-harare">Mobile cranage ↗</a></figcaption>
-        </figure>
-      </div>
 
-    </div>
-  </section>
-<!--/evidence-->
+
 
 <!-- ═══════════════ HOW IT WORKS ═══════════════
      The five commitments from §7 of the returned document. Kingson was asked
@@ -1104,7 +1068,7 @@ Ready to send.
 <footer class="ft on-dark gl">
   <div class="ft-nav wrap">
     <div class="ft-col">
-      <span class="ft-logo"><picture><source type="image/webp" srcset="assets/brand/kingson-logo-reverse-160.webp 160w, assets/brand/kingson-logo-reverse-240.webp 240w, assets/brand/kingson-logo-reverse-320.webp 320w, assets/brand/kingson-logo-reverse-560.webp 560w" sizes="(max-width:760px) 132px, 152px"><img src="assets/brand/kingson-logo-reverse-560.png" srcset="assets/brand/kingson-logo-reverse-320.png 320w, assets/brand/kingson-logo-reverse-560.png 560w" sizes="(max-width:760px) 132px, 152px" width="560" height="229" style="height:52px" alt="Kingson Engineering — Steelwork Specialists" decoding="async" loading="lazy" fetchpriority="low"></picture></span>
+      <span class="ft-logo"><picture><source type="image/webp" srcset="assets/brand/kingson-logo-reverse-240.webp 240w, assets/brand/kingson-logo-reverse-320.webp 320w, assets/brand/kingson-logo-reverse-560.webp 560w" sizes="(max-width:760px) 132px, 152px"><img src="assets/brand/kingson-logo-reverse-560.png" srcset="assets/brand/kingson-logo-reverse-320.png 320w, assets/brand/kingson-logo-reverse-560.png 560w" sizes="(max-width:760px) 132px, 152px" width="560" height="229" style="height:52px" alt="Kingson Engineering — Steelwork Specialists" decoding="async" loading="lazy" fetchpriority="low"></picture></span>
     </div>
     <div class="ft-col">
       <h2>What we do</h2>
@@ -1160,7 +1124,11 @@ Ready to send.
      already scrolled past. -->
 <nav class="bar" aria-label="Call, WhatsApp or get a price"><a class="btn-ghost" href="tel:+263772262869"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 1.9.6 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z"/></svg><span>Call</span></a><a class="btn-ghost" href="https://wa.me/263772262869" target="_blank" rel="noopener"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.5.1-.6.8-.7 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.6-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/></svg><span>WhatsApp</span></a><a class="btn" href="#enquiry"><span>Get a price</span></a></nav>
 
-<script type="module" src="/assets/site.min.js?v=ef107c36db"></script>
+<script type="module" src="/assets/site.min.js?v=0eb7de115e"></script><dialog class="film-dialog" data-film-dialog aria-labelledby="film-title" aria-describedby="film-description">
+    <div class="film-dialog-head"><h2 id="film-title" data-film-title-out>Project film</h2><button type="button" data-film-close>Close <span aria-hidden="true">×</span></button></div>
+    <video controls playsinline preload="none" data-film-player aria-describedby="film-description"></video>
+    <div class="film-dialog-footer"><p id="film-description" data-film-description-out></p><button type="button" data-film-close>Back to the work <span aria-hidden="true">↗</span></button></div>
+  </dialog>
 <!--/chromebottom-->
 
 </body>

@@ -203,7 +203,7 @@ for (const file of allPages) {
     fail(`${rel}: no focusable <main id="main"> landmark`);
   }
   if (!/<footer class="ft/.test(html)) fail(`${rel}: no site footer`);
-  if (!/<header class="hd">/.test(html)) fail(`${rel}: no site header`);
+  if (!/<header class="hd(?:\s[^"]*)?">/.test(html)) fail(`${rel}: no site header`);
   if (!/<html lang="en(?:-ZW)?">/.test(html)) fail(`${rel}: no English lang on <html>`);
 
   /* An aria-labelledby pointing at an id that does not exist is announced as

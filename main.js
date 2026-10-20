@@ -20,6 +20,8 @@ import { mountEnquiry } from './interface/enquiry.js';
 import { mountReveals } from './scenes/reveal.js';
 import { mountParallax } from './scenes/parallax.js';
 import { mountCinema } from './scenes/cinema.js';
+import { mountHeroFilm } from './scenes/hero-film.js';
+import { mountProjectFilms } from './scenes/project-film.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -39,7 +41,6 @@ window.addEventListener('orientationchange', setSvh);
    only motion is a slow settle done in CSS (and none at all under reduced
    motion). */
 
-const hero = $('.hero');
 
 /* The editorial header stays on its light ground at every scroll position.
    No initial geometry read is needed to switch its appearance. */
@@ -83,32 +84,9 @@ mountParallax();
 
 /* The first screen's photographs. See scenes/cinema.js. */
 mountCinema();
+mountProjectFilms();
+mountHeroFilm();
 
-
-/* ── the sheet index ────────────────────────────────────────────────────────
-   Which sheet is under a line across the middle of the screen. One observer,
-   a zero-height root, no scroll listener. The ruler stays away while the
-   first sheet (the hero) is on that line, and takes the ground of the sheet
-   it is over so it reads on steel as well as on paper. */
-const si = $('.si');
-if (si && 'IntersectionObserver' in window) {
-  document.documentElement.classList.add('si-ready');
-  const links = new Map($$('a[data-sheet]', si).map((a) => [a.dataset.sheet, a]));
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (!e.isIntersecting) continue;
-      const a = links.get(e.target.id);
-      links.forEach((l) => l.removeAttribute('aria-current'));
-      si.classList.toggle('is-on', !!a);
-      if (!a) continue;
-      a.setAttribute('aria-current', 'location');
-      si.dataset.ground = e.target.matches('.on-dark, .sec-dark') ? 'dark' : 'light';
-    }
-  }, { rootMargin: '-50% 0px -50% 0px' });
-  /* The footer is not a sheet, and the ruler would sit on its logo. */
-  [hero, $('.ft'), ...[...links.keys()].map((id) => document.getElementById(id))]
-    .filter(Boolean).forEach((s) => io.observe(s));
-}
 
 /* ── the photograph viewer ──────────────────────────────────────────────── */
 

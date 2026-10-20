@@ -265,5 +265,69 @@
    1298
   ],
   "cropped": false
+ },
+ "roof-a-poster": {
+  "source": "handoff/assets/roof-structure-project-a.mp4",
+  "w": 512,
+  "h": 808,
+  "sizes": [
+   440,
+   512
+  ],
+  "cropped": false
+ },
+ "roof-b-poster": {
+  "source": "handoff/assets/roof-structure-project-b.mp4",
+  "w": 512,
+  "h": 860,
+  "sizes": [
+   440,
+   512
+  ],
+  "cropped": true
+ },
+ "roof-c-poster": {
+  "source": "handoff/assets/roof-structure-project-c-ORIGINAL.mp4",
+  "w": 512,
+  "h": 910,
+  "sizes": [
+   440,
+   512
+  ],
+  "cropped": false
+ },
+ "workshop-poster": {
+  "source": "handoff/assets/workshop-walkthrough.mp4",
+  "w": 512,
+  "h": 910,
+  "sizes": [
+   440,
+   512
+  ],
+  "cropped": false
+ },
+ "architectural-glass-exterior": {
+  "source": "handoff/assets/architectural-glass-exterior.jpeg",
+  "w": 1536,
+  "h": 1152,
+  "sizes": [
+   440,
+   720,
+   1100,
+   1536
+  ],
+  "cropped": false
+ },
+ "architectural-atrium-interior": {
+  "source": "handoff/assets/architectural-atrium-interior.jpeg",
+  "w": 1536,
+  "h": 1152,
+  "sizes": [
+   440,
+   720,
+   1100,
+   1536
+  ],
+  "cropped": false
  }
 }

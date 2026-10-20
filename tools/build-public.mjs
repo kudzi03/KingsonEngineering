@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const version = '0.28.2';
-const inputs = ['main.js','assets/fonts.css','styles/tokens.css','styles/site.css','styles/editorial.css','styles/public.css',
+const inputs = ['main.js','assets/fonts.css','styles/tokens.css','styles/site.css','styles/editorial.css','styles/cinematic.css','styles/public.css',
   'content/assets.js','content/company.js','content/crm.js','content/runtime-copy.js','tools/build-public.mjs',
   ...['interface','scenes'].flatMap(dir=>readdirSync(root+dir).filter(f=>f.endsWith('.js')).sort().map(f=>`${dir}/${f}`))];
 const sha = data => createHash('sha256').update(data).digest('hex');

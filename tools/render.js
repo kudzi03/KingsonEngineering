@@ -25,7 +25,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
-  UPDATED, EYEBROWS, HERO, STRIP, CAPABILITIES, SPECS, PROCESS,
+  UPDATED, EYEBROWS, STRIP, CAPABILITIES, SPECS, PROCESS,
   WORK, ENQUIRY, FAQ, CONTACT, NAV, SERVICES_BLOCK, homeFaq
 } from '../content/copy.js';
 import { ASSETS, PAGE_IMAGES, BAND_IMAGE, src, srcset, position } from '../content/assets.js';
@@ -33,14 +33,14 @@ import { CHAPTERS, WORKSHOP, coverage } from '../content/chapters.js';
 import { section, flashings } from '../scenes/profiles.js';
 import { publish } from '../content/company.js';
 import { SERVICES } from '../content/services.js';
-import { EVIDENCE } from '../content/editorial.js';
+import { cinematicHero, cinematicWork, filmLink, filmDialog } from './cinematic.js';
 import { portfolioRoutes, PORTFOLIO } from './portfolio.js';
 import { hasProjects, publishable as publishableProjects, problems as projectProblems } from '../content/projects.js';
 import { pageGraph, serviceId } from './schema.js';
 import { allServicePages, notFoundPage } from './pages.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
-  enquiryForm, enquiryAside, cinemaHero, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
+  enquiryForm, enquiryAside, callBtn, waBtn, quoteBtn, logo, bleedPhoto, serviceChooser,
   ICON_PHONE, ICON_WA, ICON_EXPAND, ICON_ARROW, bindFigures, privacyNote
 } from './layout.js';
 
@@ -82,35 +82,10 @@ const head = (key, title, lede, id) =>
   `    <h2 class="display"${id ? ` id="${id}"` : ''} data-reveal="rise"><span>${esc(title)}</span></h2>\n` +
   (lede ? `    <p>${esc(lede)}</p>` : '');
 
-/* The sheet index: a ruler down the left edge of a wide screen, one tick per
-   sheet, the current one named. Real links, so it is also a way to move. */
-const sheets = SHEETS.map(([id, n, name]) =>
-  `    <a href="#${id}" data-sheet="${id}"><span class="si-n">${n}</span><span class="si-t">${esc(name)}</span></a>`).join('\n');
-
 /* ── hero and the strip under it ─────────────────────────────────────────── */
 
-/* The headline is set one sentence to a line, each line in its own mask so it
-   can rise from behind the line above. The full stops are the accent: the
-   text is exactly HERO.title, so the h1 reads the same to anything that is
-   not looking at it. */
-const heroLines = HERO.title.split(/(?<=\.)\s+/).map((s) =>
-  `<span class="ln"><span>${esc(s).replace(/\.$/, '<span class="pt">.</span>')}</span></span>`).join(' ');
-
-/* Red-pencil markup, registered to the portal-frame photograph: each SVG's
-   viewBox is the pixel size of the file its <picture> arm serves, and
-   xMidYMid slice is object-fit: cover centred, so the callouts stay on the
-   same steel at every viewport. Decorative; the alt text names the frame. */
-const MARKUP = `<svg class="hero-mark hero-mark-wide" viewBox="0 0 1319 742" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-    <g><circle cx="698" cy="145" r="6"/><path d="M698 145 L740 97 H836" pathLength="1"/><text x="744" y="90"><tspan class="mk-k">B</tspan> Rafter</text></g>
-    <g><circle cx="446" cy="191" r="6"/><path d="M446 191 L400 125 H290" pathLength="1"/><text x="294" y="118"><tspan class="mk-k">C</tspan> Purlins</text></g>
-  </svg><svg class="hero-mark hero-mark-tall" viewBox="0 0 1320 888" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-    <g><circle cx="700" cy="182" r="7"/><path d="M700 182 L664 140 H586" pathLength="1"/><text x="590" y="131"><tspan class="mk-k">B</tspan> Rafter</text></g>
-  </svg>`;
-
-const hero = cinemaHero({
-  id: 'hero-h', eyebrow: HERO.eyebrow, lede: HERO.lede, titleHtml: heroLines,
-  slides: HERO.slides, captions: WORK.captions, markup: MARKUP
-});
+// The full-viewport opening uses real roof footage, with a first-paint still.
+const hero = cinematicHero();
 
 const strip = STRIP.map(([label, fig, value]) =>
   `    <li><span class="strip-k">${esc(label)}</span><span class="strip-f">${esc(fig)}</span><span class="strip-v">${esc(value)}</span></li>`
@@ -373,21 +348,7 @@ const chooser = serviceChooser();
 
 const chapters = CHAPTERS.map(chapter).join('\n\n');
 
-const evidence = `  <section class="evidence" id="work" aria-labelledby="work-h">
-    <div class="wrap">
-      <div class="evidence-head">
-        <div><p class="eyebrow">On site & in the workshop</p><h2 class="display" id="work-h">The work.<br>The people.<br>The steel.</h2></div>
-        <p>Real photographs from Kingson’s workshop and site work. From the frame overhead to the weld that holds it together, see the work behind our services.</p>
-      </div>
-      <div class="evidence-grid">
-${EVIDENCE.map((item, i) => `        <figure data-reveal="lift" style="--d:${i * 80}ms">
-          ${zoomable(item.image, photo(item.image, { sizes: '(max-width:760px) 90vw, 35vw', w: 900 }))}
-          <figcaption>${esc(item.caption)}<a href="/${item.route}">${esc(item.link)} ↗</a></figcaption>
-        </figure>`).join('\n')}
-      </div>
-${hasProjects() ? '      <p class="evidence-more"><a class="btn-ghost" href="/projects">Explore the project portfolio</a></p>' : ''}
-    </div>
-  </section>`;
+const evidence = cinematicWork();
 
 /* ── the workshop ───────────────────────────────────────────────────────────── */
 
@@ -401,6 +362,7 @@ const workshop = `    <div class="ws-img" data-parallax data-reveal="settle">
       <p class="ws-lede">${esc(WORKSHOP.body)}</p>
 ${figures(WORKSHOP.figures, 'ch-figures ws-figures')}
       <div class="ws-act">${quoteBtn()}</div>
+      <div class="ws-film"><img src="/${src('workshopFilm',440)}" width="512" height="910" loading="lazy" alt="${esc(ASSETS.workshopFilm.alt)}"><div><span class="work-type">Tynwald, Harare</span>${filmLink('workshop','Inside the workshop')}<p>Step inside the place where it takes shape.</p></div></div>
     </div>`;
 
 /* ── the crane, full bleed ───────────────────────────────────────────────────
@@ -560,6 +522,7 @@ const homeHead = headHtml({
   path: '/',
   ogImage: 'portalFrame',
   preload: 'portalFrame',
+  preloadMobile: 'roofFilmA',
   ld: pageGraph({
     path: '/', name: HOME_TITLE, description: HOME_DESC,
     image: 'portalFrame', faq: homeFaq()
@@ -573,10 +536,10 @@ const BLOCKS = {
   head: homeHead,
   chrometop: chromeTop({ home: true }),
   sitefooter: siteFooter(),
-  chromebottom: chromeBottom(),
+  chromebottom: chromeBottom() + filmDialog(),
 
   /* the homepage's own composition */
-  hero, strip, chapters, workshop, specs, sheets, crane, enqbg, evidence,
+  hero, strip, chapters, workshop, specs, crane, enqbg, evidence,
   steps, gantt, procClose, form, faq, faqask, contact,
   specshead: head('specs', SPECS.title, SPECS.lede),
   prochead:  head('process', PROCESS.title, PROCESS.lede),

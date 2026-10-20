@@ -34,7 +34,7 @@ import { fileURLToPath } from 'node:url';
    a design change ships every visitor gets it. The hash only changes when the
    files do, so an unchanged deploy keeps its cache.                          */
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const STAMPED = ['assets/fonts.css', 'styles/tokens.css', 'styles/site.css', 'styles/editorial.css', 'assets/site.min.css', 'assets/site.min.js', 'main.js',
+const STAMPED = ['assets/fonts.css', 'styles/tokens.css', 'styles/site.css', 'styles/editorial.css', 'styles/cinematic.css', 'assets/site.min.css', 'assets/site.min.js', 'main.js',
   ...['interface', 'scenes'].flatMap((d) =>
     readdirSync(ROOT + d).filter((f) => f.endsWith('.js')).sort().map((f) => `${d}/${f}`))];
 export const BUILD = createHash('sha256')
@@ -175,7 +175,7 @@ export function logo(kind, height, sizes, base = '', decorative = false, eager =
   /* A reverse mark in the header is the first thing painted, so it is not
      deferred there the way the footer's is. */
   const lazy = kind === 'reverse' && !eager ? ' loading="lazy" fetchpriority="low"' : '';
-  return `<picture><source type="image/webp" srcset="${[160,240,320,560].map(w=>`${base}assets/brand/${stem}-${w}.webp ${w}w`).join(', ')}" sizes="${sizes}"><img src="${base}assets/brand/${stem}-560.png"` +
+  return `<picture><source type="image/webp" srcset="${[240,320,560].map(w=>`${base}assets/brand/${stem}-${w}.webp ${w}w`).join(', ')}" sizes="${sizes}"><img src="${base}assets/brand/${stem}-560.png"` +
     ` srcset="${base}assets/brand/${stem}-320.png 320w, ${base}assets/brand/${stem}-560.png 560w"` +
     ` sizes="${sizes}" width="560" height="229" style="height:${height}"` +
     ` alt="${esc(alt)}" decoding="async"${lazy}></picture>`;
@@ -202,7 +202,7 @@ export function logo(kind, height, sizes, base = '', decorative = false, eager =
 
 const NAV_ITEMS = (home) => [
   [home ? '#services' : '/#services', NAV.services],
-  [home ? '#work' : '/#work', 'Our work'],
+  [home ? '#work' : '/#work', 'Our projects'],
   /* Projects appears only once there is a project to show. The portfolio
      architecture is finished and the list is empty — see content/projects.js. */
   ...(hasProjects() ? [['/projects', 'Projects']] : []),
@@ -278,11 +278,13 @@ export function chromeTop({ home = false, current = '' } = {}) {
   /* One mark on every page. The home page's first sheet is the same light
      ground as the bar, so the reverse artwork it used to carry for a dark
      photographic hero has nothing left to do. */
-  const mark = '      ' + logo('normal', '46px', '(max-width:760px) 116px, 134px', '', false, true);
+  const mark = home
+    ? `<span class="hd-home-reverse">${logo('reverse', '46px', '(max-width:760px) 116px, 134px', '', false, true)}</span><span class="hd-home-normal">${logo('normal', '46px', '(max-width:760px) 116px, 134px', '', false, true)}</span>`
+    : '      ' + logo('normal', '46px', '(max-width:760px) 116px, 134px', '', false, true);
 
   return `<a class="skip" href="#main">Skip to content</a>
 
-<header class="hd">
+<header class="hd${home ? ' hd-home' : ''}">
   <!-- How far down a seventeen-screen page you are. Driven entirely by CSS
        scroll-driven animation where the browser has it, so there is no scroll
        listener and no JavaScript in the path at all; browsers without it
@@ -398,7 +400,7 @@ export function chromeBottom() {
 
 const FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f1211'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-weight='700' font-size='30' fill='%23E21E25' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E";
 
-export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld,
+export function headHtml({ title, description, path, ogImage, ogAlt, preload, preloadMobile, ld,
                            ogType = 'website', home = false, index = true }) {
   if (SEO.googleSiteVerification && !/^[a-zA-Z0-9_-]+$/.test(SEO.googleSiteVerification)) {
     throw new Error('Use only the Google verification token in content/seo.js');
@@ -418,11 +420,11 @@ export function headHtml({ title, description, path, ogImage, ogAlt, preload, ld
   const preLink = (k, wide, media) =>
     `<link rel="preload" as="image" href="/${wide ? wideSrc(k, 1320) : src(k, 1320)}"
       imagesrcset="${preSet(k, wide)}"
-      imagesizes="(max-width: 760px) calc(100vw - 44px), 90.6vw"${media ? ` media="${media}"` : ''} fetchpriority="high">\n`;
+      imagesizes="${home ? '100vw' : '(max-width: 760px) calc(100vw - 44px), 90.6vw'}"${media ? ` media="${media}"` : ''} fetchpriority="high">\n`;
   const pre = !preload ? ''
     : hasWide(preload)
       ? preLink(preload, true, '(min-width: 900px)')
-        + preLink(preload, false, '(max-width: 899.98px)')
+        + preLink(preloadMobile || preload, false, '(max-width: 899.98px)')
       : preLink(preload, false, '');
 
   return `<meta charset="utf-8">
