@@ -94,7 +94,7 @@ mountPrivacy();
 
 const viewer = mountViewer();
 $$('[data-open]').forEach((b) =>
-  b.addEventListener('click', () => viewer.open(b.dataset.open)));
+  b.addEventListener('click', () => viewer.open(b.dataset.open, b)));
 
 /* ── the enquiry composer ───────────────────────────────────────────────── */
 

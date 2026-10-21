@@ -91,6 +91,11 @@ html.hero-passed .hd-home-normal { display: block; }
 .ws .ws-place b, .ws .eyebrow .sn { color: #ff7b80; }
 .ws .ch-figures dd { color: #f4f6f7; }
 .ws .ch-figures > div { border-color: #4b5b62; }
+/* Keep the image viewer's hit area inside the crane section. Only its photo
+   needs extra height and movement for parallax, not the interactive button. */
+.band-img { inset: 0; overflow: hidden; }
+.band-img .zoom { overflow: hidden; }
+.band-photo { position: absolute; inset: -5% 0; }
 .spec { background: #ecf0ef; }
 .cut-tol .ch-big { color: #fff; }
 .band-ch .band-title, .band-ch .band-lede { color: #fff; }

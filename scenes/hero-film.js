@@ -36,9 +36,10 @@ export function mountHeroFilm() {
   };
   video.addEventListener('playing', () => { hero.classList.add('film-playing'); });
   // Some WebKit media backends rewind a looping MP4 but remain paused after
-  // the seek. Resume only through the same visibility/preference/intent guard.
+  // the seek. Decoder timestamps can land past the first tenth of a second.
+  // Resume only through the same visibility/preference/intent guard.
   video.addEventListener('seeked', () => {
-    if (video.loop && video.paused && video.currentTime < .1) sync();
+    if (video.loop && video.paused) sync();
   });
   video.addEventListener('error', () => { hero.classList.remove('film-playing'); });
   document.addEventListener('visibilitychange', sync);

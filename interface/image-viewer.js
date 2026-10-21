@@ -20,10 +20,12 @@ export function mountViewer({ onOpen, onClose } = {}) {
   const closeBtn = dialog.querySelector('[data-viewer-close]');
   let restoreTo = null;
 
-  function open(key) {
+  function open(key, trigger = document.activeElement) {
     const a = ASSETS[key];
     if (!a) return;
-    restoreTo = document.activeElement;
+    // Safari does not always focus a button on pointer click. Keep the actual
+    // opener so closing the dialog still returns keyboard focus to it.
+    restoreTo = trigger;
     img.src = src(key);
     img.alt = a.alt;
     caption.textContent = WORK.captions[key] || '';

@@ -33,9 +33,10 @@ export function mountProjectFilms() {
       if (sources.length > 1) index = (index + 1) % sources.length;
       sync();
     });
-    // WebKit can rewind a native loop but leave the player paused.
+    // WebKit can rewind a native loop but leave the player paused at a decoder
+    // timestamp past zero. The normal guards still decide whether to resume.
     video.addEventListener('seeked', () => {
-      if (video.loop && video.paused && video.currentTime < .1) sync();
+      if (video.loop && video.paused) sync();
     });
     return { frame, sync, visibility: value => { visible = value; sync(); } };
   });
