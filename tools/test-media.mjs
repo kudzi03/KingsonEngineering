@@ -39,6 +39,31 @@ const accessibility = async (page, fullPage = false) => {
   assert.deepEqual(violations,[],'Media state accessibility');
 };
 try {
+  if (!failuresOnly) {
+    // An eager image must not hold hero playback behind window.load. Do not
+    // send pointer, scroll or keyboard input before checking autoplay.
+    const startup = await pageAt(1920,1080,{reducedMotion:'no-preference'});
+    let releaseImage;
+    const imageGate = new Promise(resolve => { releaseImage = resolve; });
+    let heldImages = 0;
+    await startup.route('**/assets/brand/kingson-logo*.webp',async route=>{
+      heldImages++;
+      await imageGate;
+      await route.continue();
+    });
+    try {
+      await startup.goto(base,{waitUntil:'domcontentloaded'});
+      await startup.waitForFunction(()=>document.querySelector('[data-hero-video]').currentTime>.1,undefined,{timeout:15000,polling:100});
+      assert.ok(heldImages>0,'The unrelated eager image is still pending');
+      assert.equal(await startup.evaluate(()=>document.readyState),'interactive','Video starts before window.load');
+      assert.equal((await state(startup)).paused,false);
+      results.push({heroStartsBeforeWindowLoad:true,noUserInput:true,delayedEagerImages:heldImages});
+    } finally {
+      releaseImage();
+      await startup.waitForLoadState('load');
+      await startup.close();
+    }
+  }
   for (const [width,height] of (failuresOnly ? [] : [[1440,900],[1920,1080],[390,844]])) {
     const page = await pageAt(width,height);
     await page.goto(base,{waitUntil:'networkidle'});
