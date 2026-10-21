@@ -8,7 +8,7 @@ export function mountHeroFilm() {
   const wide = matchMedia('(min-width:900px)');
   const connection = navigator.connection;
   const stillReview = new URLSearchParams(location.search).get('hero') === 'still';
-  let inView = true, ready = document.readyState === 'complete';
+  let inView = !('IntersectionObserver' in window);
   const restricted = () => reduce.matches || connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || '') || stillReview;
   const load = () => {
     const shape = wide.matches ? 'wide' : 'portrait';
@@ -28,7 +28,6 @@ export function mountHeroFilm() {
     video.play().catch(() => { hero.classList.remove('film-playing'); });
   };
   const sync = () => {
-    if (!ready) return;
     if (document.hidden || !inView || restricted()) {
       video.pause();
       return;
@@ -37,9 +36,10 @@ export function mountHeroFilm() {
   };
   video.addEventListener('playing', () => { hero.classList.add('film-playing'); });
   // Some WebKit media backends rewind a looping MP4 but remain paused after
-  // the seek. Resume only through the same visibility/preference/intent guard.
+  // the seek. Decoder timestamps can land past the first tenth of a second.
+  // Resume only through the same visibility/preference/intent guard.
   video.addEventListener('seeked', () => {
-    if (video.loop && video.paused && video.currentTime < .1) sync();
+    if (video.loop && video.paused) sync();
   });
   video.addEventListener('error', () => { hero.classList.remove('film-playing'); });
   document.addEventListener('visibilitychange', sync);
@@ -54,6 +54,7 @@ export function mountHeroFilm() {
     document.documentElement.classList.toggle('hero-passed', !inView);
     sync();
   }, {threshold:0,rootMargin:'-94px 0px 0px'}).observe(hero);
-  if (document.readyState === 'complete') sync();
-  else window.addEventListener('load', () => { ready = true; sync(); }, {once:true});
+  // Start when the hero is visible, without waiting for unrelated page assets.
+  // The initial observer callback also respects direct links below the hero.
+  if (!('IntersectionObserver' in window)) sync();
 }

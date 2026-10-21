@@ -370,8 +370,8 @@ ${figures(WORKSHOP.figures, 'ch-figures ws-figures')}
    The one machine that has to say "this is physically large", given the
    whole screen. Every word and figure is the cranage entry in CAPABILITIES. */
 const CRANE = CAPABILITIES.find((c) => c.id === 'cranage');
-const crane = `    <div class="band-img" data-parallax>
-      ${zoomable('crane', bleedPhoto('crane'))}
+const crane = `    <div class="band-img">
+      ${zoomable('crane', `<span class="band-photo" data-parallax>${bleedPhoto('crane')}</span>`)}
     </div>
     <div class="wrap band-in">
       <p class="eyebrow"><span class="sn">${sheetNo('crane')}</span>${esc(CRANE.title)}</p>

@@ -21,6 +21,11 @@ const pageAt = async (width=1440,height=900,options={}) => {
   return page;
 };
 const state = page => page.locator('[data-hero-video]').evaluate(v=>({src:v.currentSrc,paused:v.paused,time:v.currentTime,width:v.videoWidth,height:v.videoHeight,loop:v.loop,muted:v.muted,inline:v.playsInline,duration:v.duration,opacity:getComputedStyle(v).opacity}));
+const seekWhilePaused = video => video.evaluate(v=>new Promise(resolve=>{
+  v.pause();
+  v.addEventListener('seeked',()=>resolve(),{once:true});
+  v.currentTime=Math.abs(v.currentTime-.25)<.05?.4:.25;
+}));
 // Render a deferred section before centering its media. Jumping directly to an
 // absolute video can use content-visibility's estimated section geometry.
 const revealProject = project => project.evaluate(async v=>{
@@ -39,6 +44,31 @@ const accessibility = async (page, fullPage = false) => {
   assert.deepEqual(violations,[],'Media state accessibility');
 };
 try {
+  if (!failuresOnly) {
+    // An eager image must not hold hero playback behind window.load. Do not
+    // send pointer, scroll or keyboard input before checking autoplay.
+    const startup = await pageAt(1920,1080,{reducedMotion:'no-preference'});
+    let releaseImage;
+    const imageGate = new Promise(resolve => { releaseImage = resolve; });
+    let heldImages = 0;
+    await startup.route('**/assets/brand/kingson-logo*.webp',async route=>{
+      heldImages++;
+      await imageGate;
+      await route.continue();
+    });
+    try {
+      await startup.goto(base,{waitUntil:'domcontentloaded'});
+      await startup.waitForFunction(()=>document.querySelector('[data-hero-video]').currentTime>.1,undefined,{timeout:15000,polling:100});
+      assert.ok(heldImages>0,'The unrelated eager image is still pending');
+      assert.equal(await startup.evaluate(()=>document.readyState),'interactive','Video starts before window.load');
+      assert.equal((await state(startup)).paused,false);
+      results.push({heroStartsBeforeWindowLoad:true,noUserInput:true,delayedEagerImages:heldImages});
+    } finally {
+      releaseImage();
+      await startup.waitForLoadState('load');
+      await startup.close();
+    }
+  }
   for (const [width,height] of (failuresOnly ? [] : [[1440,900],[1920,1080],[390,844]])) {
     const page = await pageAt(width,height);
     await page.goto(base,{waitUntil:'networkidle'});
@@ -55,11 +85,15 @@ try {
     await page.locator('[data-hero-video]').evaluate(v=>{v.currentTime=v.duration-.35;});
     // Poll media time independently of WebKit's animation-frame scheduling.
     await page.waitForFunction(()=>{const v=document.querySelector('[data-hero-video]');return v.currentTime>.1 && v.currentTime<1 && !v.paused;},undefined,{polling:100}).catch(async error=>{throw new Error(`${width}px loop: ${JSON.stringify(await state(page))}`,{cause:error});});
+    await seekWhilePaused(page.locator('[data-hero-video]'));
+    await page.waitForFunction(()=>!document.querySelector('[data-hero-video]').paused,undefined,{polling:100,timeout:3000});
     assert.equal(await page.locator('[data-hero-toggle],.mh-motion').count(),0,'No visible background film control');
     await accessibility(page);
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.waitForFunction(()=>document.querySelector('[data-hero-video]').paused,undefined,{timeout:2000});
     assert.equal(await page.locator('.hero').evaluate(h=>h.classList.contains('film-playing')),false);
+    await seekWhilePaused(page.locator('[data-hero-video]'));
+    assert.equal((await state(page)).paused,true,'Seek recovery respects reduced motion');
     await page.emulateMedia({reducedMotion:'no-preference'});
     await page.waitForFunction(()=>!document.querySelector('[data-hero-video]').paused);
     await page.waitForFunction(()=>getComputedStyle(document.querySelector('[data-hero-video]')).opacity==='1');
@@ -84,16 +118,22 @@ try {
       } else {
         await project.evaluate(v=>{v.currentTime=v.duration-.35;});
         await page.waitForFunction(i=>{const v=document.querySelectorAll('[data-project-video]')[i];return v.currentTime>.1&&v.currentTime<1&&!v.paused;},i,{polling:100}).catch(async error=>{throw new Error(`${width}px project ${i} loop: ${JSON.stringify(await project.evaluate(v=>({time:v.currentTime,paused:v.paused,seeking:v.seeking,src:v.currentSrc,rect:v.getBoundingClientRect().toJSON()})))}`,{cause:error});});
+        await seekWhilePaused(project);
+        await page.waitForFunction(i=>!document.querySelectorAll('[data-project-video]')[i].paused,i,{polling:100,timeout:3000});
       }
       await page.screenshot({path:join(out,`inline-${width}-${i}.png`)});
     }
     await page.locator('#enquiry').scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>[...document.querySelectorAll('[data-project-video]')].every(v=>v.paused),undefined,{polling:100});
-    await revealProject(projects[0]);
-    await page.waitForFunction(()=>!document.querySelector('[data-project-video]').paused,undefined,{polling:100});
+    await seekWhilePaused(projects[1]);
+    assert.equal(await projects[1].evaluate(v=>v.paused),true,'Seek recovery respects offscreen pause');
+    await revealProject(projects[1]);
+    await page.waitForFunction(()=>!document.querySelectorAll('[data-project-video]')[1].paused,undefined,{polling:100});
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.waitForFunction(()=>[...document.querySelectorAll('[data-project-video]')].every(v=>v.paused),undefined,{polling:100});
     assert.equal(await page.locator('.project-playing').count(),0);
+    await seekWhilePaused(projects[1]);
+    assert.equal(await projects[1].evaluate(v=>v.paused),true,'Project seek recovery respects reduced motion');
     results.push({width,inlineFrames:3,sourceFilms:4,playlistCycles:true,nativeLoops:true,offscreenPauseResume:true,reducedMotion:true,noFilmButtons:true});
     results.push({viewportWidth:width,viewportHeight:height,autoplay:true,loop:true,noFilmToggle:true,reducedMotionChange:true,offscreenPause:true,video:s});
     await page.close();
