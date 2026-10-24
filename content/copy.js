@@ -250,7 +250,7 @@ export const STRIP = [
   ['Fibre laser',  '±0.1 mm',  'DXTECH · 3 000 × 1 500 mm bed'],
   ['Cranage',      '25 t',     'Our own telescopic mobile crane'],
   ['Workshop',     'Harare',   'No. 1262 Tynwald Industries'],
-  ['Open',         'Mon–Sat',  '07:30 – 17:00 · enquiries acknowledged the same working day']
+  ['Open',         'Mon–Fri',  '07:30 – 17:00 · enquiries acknowledged the same working day']
 ];
 
 
@@ -299,11 +299,11 @@ export const FAQ = {
     { q: 'Can you make flashings to match?',
       a: 'Yes — ridge, barge and valley are standard, and custom folding runs to 3 000 mm in 0.4 to 3.0 mm mild steel, galvanised, stainless or aluminium. Three to five days on a stock gauge.' },
     { q: 'Where is the workshop?',
-      a: 'No. 1262 Tynwald Industries, Harare. Open Monday to Saturday, 07:30 to 17:00.' },
+      a: 'No. 1262 Tynwald Industries, Harare. Open Monday to Friday, 07:30 to 17:00.' },
     { home: true, q: 'How do I get a price?',
       a: 'Send drawings or a description by WhatsApp on +263 772 262 869, or email admin1@kingsonengineering.co.zw. Technical drawings can go to technical@kingsonengineering.co.zw. Enquiries are acknowledged the same working day.' },
     { home: true, q: 'Where is Kingson Engineering based?',
-      a: 'Kingson Engineering trades as Kingson Trading (Pvt) Ltd and works from one workshop at No. 1262 Tynwald Industries, Harare, Zimbabwe. It is open Monday to Saturday, 07:30 to 17:00, and enquiries reach Mr Murandu.' },
+      a: 'Kingson Engineering trades as Kingson Trading (Pvt) Ltd and works from one workshop at No. 1262 Tynwald Industries, Harare, Zimbabwe. It is open Monday to Friday, 07:30 to 17:00, and enquiries reach Mr Murandu.' },
     { home: true, q: 'What areas do you cover?',
       a: 'Harare, and nationally across Zimbabwe. Erection is covered nationally and delivery outside Harare is priced per load.' },
     { home: true, q: 'Can I get a price without drawings?',

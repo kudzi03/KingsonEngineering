@@ -100,7 +100,7 @@ export const WORKSHOP = {
   city: 'Harare',
   title: 'This is where the work happens.',
   body: 'Based in Tynwald, Harare, working at clients’ sites across Zimbabwe. The laser, the folder and the fabrication bays are under one roof at No. 1262 Tynwald Industries. Steelwork is fabricated here, with erection and cranage carried out on site.',
-  figures: [['Open', 'Monday to Saturday, 07:30 – 17:00'],
+  figures: [['Open', 'Monday to Friday, 07:30 – 17:00'],
             ['Ask for', 'Mr Murandu']],
   /* This section's headline is "This is where the work happens." It used to
      be set beside `laserMachine` — an empty machine in an empty room — which
