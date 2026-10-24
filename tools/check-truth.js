@@ -129,10 +129,10 @@ const RETIRED = [
     'struck out in §1 and replaced by admin1@kingsonengineering.co.zw'],
   ['18GoTdrLBD',
     'the printed Facebook share URL, struck out in §1 and not yet legibly replaced'],
-  [/\bmon(?:day)?\s*[-–—]\s*fri(?:day)?\b/i,
-    'the old site guessed Monday to Friday; §1 says Monday to Saturday'],
-  [/\bmonday to friday\b/i,
-    'the old site guessed Monday to Friday; §1 says Monday to Saturday']
+  [/\bmon(?:day)?\s*[-–—]\s*sat(?:urday)?\b/i,
+    'owner correction, 24 October 2026: working days are Monday to Friday'],
+  [/\bmonday to saturday\b/i,
+    'owner correction, 24 October 2026: working days are Monday to Friday']
 ];
 
 /* ── walk the served tree ────────────────────────────────────────────────── */

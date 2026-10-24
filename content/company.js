@@ -60,17 +60,17 @@ const FIELDS = {
     evidence: 'Returned document §1, ticked.'
   },
   hours: {
-    /* The draft said nothing; the previous live site guessed Mon–Fri. Wrong. */
-    value: 'Monday to Saturday, 07:30 – 17:00', status: 'owner_verified',
-    evidence: 'Returned document §1, handwritten: "Monday - Saturday 0730hrs - 1700hrs".'
+    /* The owner's later correction supersedes the returned document. */
+    value: 'Monday to Friday, 07:30 – 17:00', status: 'user_context',
+    evidence: 'Owner correction, 24 October 2026: working days are Monday to Friday, not Saturday. Opening and closing times unchanged.'
   },
   hoursSpec: {
-    /* The same handwritten entry as `hours`, expressed for structured data.
+    /* The same owner correction as `hours`, expressed for structured data.
        Not a second fact — one fact in two shapes. */
-    value: { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    value: { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
              opens: '07:30', closes: '17:00' },
-    status: 'owner_verified',
-    evidence: 'Returned document §1, the same handwritten entry as `hours`.'
+    status: 'user_context',
+    evidence: 'Owner correction, 24 October 2026, structured representation of `hours`.'
   },
   contactPerson: {
     value: 'Mr Murandu', status: 'owner_verified',

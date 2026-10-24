@@ -3,13 +3,17 @@
 **Primary factual source:** the returned *Information required* document
 (dated 1 September 2026), completed and signed off by Kingson.
 Where anything else in this repository disagrees with it, **the returned
-document wins.**
+document wins, except where a later explicit owner correction supersedes it.**
 
 Secondary source: the Kingson logo artwork supplied 12 September 2026.
 
 Later correction: Kingson's service note of 27 September 2026 (see §B). It
 renames two services and sets the headline for four; it overrides the returned
 document on those points only.
+
+Owner correction, 24 October 2026: working days are **Monday to Friday**, not
+Saturday. This supersedes the original business-hours entry; opening hours remain
+07:30–17:00.
 
 Everything on the public site must trace to a row in this file. Nothing else
 gets published.
@@ -28,15 +32,15 @@ gets published.
 | Office landline | +263 242 304 341 | ticked |
 | Enquiry email 1 | admin1@kingsonengineering.co.zw | **handwritten correction** |
 | Enquiry email 2 | technical@kingsonengineering.co.zw | **handwritten correction** |
-| Business hours | Monday – Saturday, 07:30 – 17:00 | handwritten, was blank |
+| Business hours | Monday – Friday, 07:30 – 17:00 | owner correction, 24 October 2026 |
 | Enquiries reach | Mr Murandu, 0772 262 869 | handwritten, was blank |
 
 ### Corrections this forces on the live site
 
 1. **`kingsonnkm@gmail.com` is struck out and must not be published.** Kingson
    has its own domain. The two `@kingsonengineering.co.zw` addresses replace it.
-2. **Hours are Monday–Saturday, not Monday–Friday.** The site currently
-   publishes Mon–Fri. That is wrong.
+2. **Hours are Monday–Friday, 07:30–17:00.** The owner's correction of
+   24 October 2026 supersedes the original Monday–Saturday document entry.
 3. The enquiry form's email handoff must target `admin1@`, with `technical@`
    offered for drawings and specifications.
 
@@ -242,7 +246,7 @@ steelwork, and currently unrepresented.
 | Old claim | Verdict |
 |---|---|
 | Four services | **Incomplete** — six are confirmed |
-| Mon–Fri 07:30–17:00 | **Wrong** — Monday to Saturday |
+| Mon–Sat 07:30–17:00 | **Wrong** — owner corrected this to Monday to Friday on 24 October 2026 |
 | `kingsonnkm@gmail.com` published | **Withdrawn** — struck out by Kingson |
 | Facebook link published | **Withdrawn** — replacement URL unreadable |
 | No technical specifications anywhere | **Superseded** — a full confirmed set now exists |
