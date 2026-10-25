@@ -146,10 +146,15 @@ export function addDays(isoDate, n) {
   return d.toISOString().slice(0, 10);
 }
 
-/** The next day that is not a Sunday — Kingson works Monday to Saturday. */
+/** Count working days, excluding both Saturday and Sunday. */
 export function nextWorkingDay(from = today(), n = 1) {
-  let d = addDays(from, n);
-  if (new Date(d + 'T00:00:00Z').getUTCDay() === 0) d = addDays(d, 1);
+  let d = from;
+  let remaining = Math.max(0, Math.trunc(Number(n) || 0));
+  while (remaining > 0) {
+    d = addDays(d, 1);
+    const day = new Date(d + 'T00:00:00Z').getUTCDay();
+    if (day !== 0 && day !== 6) remaining--;
+  }
   return d;
 }
 

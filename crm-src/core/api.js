@@ -17,6 +17,8 @@ import { db, storage, eq, order, q } from './supabase.js';
 import { FILES_BUCKET } from './config.js';
 import { OPEN_STAGES } from './model.js';
 import { withDemo, showDemo } from './demo.js';
+import { uploadCheckedFile } from './supabase.js';
+import { validateFile } from './file-validation.js';
 
 /* Columns pulled with an opportunity everywhere it is shown as a row. The
    view already flattens company, contact and owner, so a board of sixty cards
@@ -266,24 +268,9 @@ export const api = {
   /** Attach an uploaded file to one quotation version (it stays on the enquiry too). */
   linkFileToQuote: (fileId, quoteId) => db.update('files', eq('id', fileId), { quote_id: quoteId }).then((r) => r[0]),
 
-  async uploadFile(file, link, uploadedBy) {
-    /* A path that cannot collide and cannot be guessed, keeping the original
-       name for the download and for the list. */
-    const safe = file.name.replace(/[^\w.\-]+/g, '_').slice(-80);
-    const path = `${Object.keys(link)[0].replace('_id', '')}/${Object.values(link)[0]}/${Date.now()}-${safe}`;
-    await storage.upload(FILES_BUCKET, path, file);
-    try {
-      return await db.insert('files', {
-        bucket: FILES_BUCKET, path, name: file.name,
-        mime: file.type || null, size_bytes: file.size,
-        uploaded_by: uploadedBy || null, ...link
-      }).then((r) => r[0]);
-    } catch (e) {
-      /* The bytes landed but the index row did not. Leaving the object behind
-         would be a file nobody can find and nobody can delete. */
-      try { await storage.remove(FILES_BUCKET, [path]); } catch { /* nothing more to try */ }
-      throw e;
-    }
+  async uploadFile(file, link) {
+    await validateFile(file);
+    return uploadCheckedFile(file, link);
   },
 
   downloadUrl: (path) => storage.signedUrl(FILES_BUCKET, path, 120),

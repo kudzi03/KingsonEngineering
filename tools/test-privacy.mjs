@@ -10,7 +10,7 @@ import {ANALYTICS} from '../content/analytics.js';
 import {POLICIES} from '../content/policies.js';
 const pw=await import(process.env.KINGSON_PLAYWRIGHT_PATH?pathToFileURL(process.env.KINGSON_PLAYWRIGHT_PATH):'playwright');
 const browser=process.env.KINGSON_BROWSER==='webkit'?await pw.webkit.launch({headless:true}):await pw.chromium.launch({channel:process.env.KINGSON_BROWSER||'msedge',headless:true});
-const origin='https://www.kingsonengineering.co.zw',base='http://127.0.0.1:4173';
+const origin='https://www.kingsonengineering.co.zw',base=process.env.KINGSON_PREVIEW_URL||'http://127.0.0.1:4173';
 const out=process.env.KINGSON_QA_OUTPUT||join(tmpdir(),'kingson-privacy-review');await mkdir(out,{recursive:true});
 const results=[],errors=[];
 async function fixture(width,blockedStorage=false){
@@ -59,7 +59,13 @@ try{
       const violations=await page.evaluate(async()=>(await axe.run(document.querySelector('[data-privacy]'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}})).violations);
       assert.deepEqual(violations,[],'Consent interface accessibility');
     }
-    await page.locator('[data-consent-choice="granted"]').click();
+    try { await page.locator('[data-consent-choice="granted"]').click(); }
+    catch(error) {
+      await page.screenshot({path:join(out,`privacy-failure-${width}.png`)});
+      console.error('Consent diagnostic',await page.evaluate(()=>({hidden:document.querySelector('[data-privacy]').hidden,
+        saved:localStorage.getItem('kingson_privacy_v1'),active:document.activeElement?.outerHTML})));
+      throw error;
+    }
     await page.waitForFunction(()=>window.__qaGoogleTagLoaded);
     assert.equal(external.filter(url=>url.includes('googletagmanager.com')).length,1);
     const config=(await queue(page)).find(item=>item[0]==='config')[2];

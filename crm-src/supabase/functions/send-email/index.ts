@@ -9,13 +9,13 @@
 
    Secrets (see _shared/mail.ts): RESEND_API_KEY or SMTP_URL, and MAIL_FROM.
    ALLOWED_ORIGINS — comma-separated origins allowed to call this from a
-   browser, e.g. "https://crm.kingsonengineering.co.zw,https://kingson-engineering.vercel.app".
+   browser, e.g. "https://crm.kingsonengineering.co.zw,https://www.kingsonengineering.co.zw".
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { TEMPLATES, type Mail } from '../_shared/templates.ts';
 import { send, isEmail } from '../_shared/mail.ts';
 
-const ORIGINS = (Deno.env.get('ALLOWED_ORIGINS') ?? 'https://kingson-engineering.vercel.app')
+const ORIGINS = (Deno.env.get('ALLOWED_ORIGINS') ?? 'https://www.kingsonengineering.co.zw')
   .split(',').map((s) => s.trim()).filter(Boolean);
 
 function cors(req: Request) {

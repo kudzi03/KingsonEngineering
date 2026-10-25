@@ -721,6 +721,7 @@ body.is-modal { overflow: hidden; }
   border-radius: var(--r); padding: 9px 12px; font-size: var(--t-small); line-height: 1.45;
 }
 .signin-card .btn { width: 100%; }
+  .mfa-secret { overflow-wrap: anywhere; user-select: all; font-size: 14px; }
 .signin-foot { font-size: var(--t-micro); color: var(--fg-faint); text-align: center; line-height: 1.5; }
 
 /* ── the rail's foot ──────────────────────────────────────────────────────── */

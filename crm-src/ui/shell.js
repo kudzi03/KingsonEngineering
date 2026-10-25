@@ -141,8 +141,8 @@ export const resetHtml = ({ error = '' } = {}) => `
         <button type="button" class="signin-link" data-back>Back to sign in</button>` : `
       <div class="field">
         <label for="np-1">New password</label>
-        <input class="inp" id="np-1" type="password" autocomplete="new-password" minlength="8" required>
-        <p class="field-hint">At least 8 characters. A short sentence is easier to remember than a code.</p>
+        <input class="inp" id="np-1" type="password" autocomplete="new-password" minlength="14" required>
+        <p class="field-hint">At least 14 characters. A short sentence is easier to remember than a code.</p>
       </div>
       <div class="field">
         <label for="np-2">The same again</label>

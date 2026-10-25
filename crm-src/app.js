@@ -11,7 +11,9 @@
    the chrome; a view owns nothing outside `#view`.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-import { restore, login, logout, currentUser, isSignedIn, requestPasswordReset, updatePassword, takeRecoveryFromUrl } from './core/auth.js';
+import { restore, login, finishLogin, logout, currentUser, isSignedIn, requestPasswordReset, updatePassword, takeRecoveryFromUrl } from './core/auth.js';
+import { getSession, sessionTimedOut, recordActivity, db } from './core/supabase.js';
+import { mfaGate } from './ui/mfa.js';
 import { api } from './core/api.js';
 import { isOverdue } from './core/model.js';
 import { showDemo } from './core/demo.js';
@@ -158,6 +160,12 @@ async function softRender() {
 /* ── sign-in ──────────────────────────────────────────────────────────────── */
 
 function showLogin(message = '') {
+  renderToken++;
+  viewEl.replaceChildren();
+  railEl.replaceChildren();
+  barEl.replaceChildren();
+  document.querySelectorAll('.modal').forEach((el) => el.remove());
+  document.body.classList.remove('is-modal');
   app.hidden = true;
   gate.hidden = false;
   gate.innerHTML = loginHtml(message);
@@ -182,11 +190,7 @@ function showLogin(message = '') {
     btn.textContent = 'Signing in…';
     try {
       await login(email, password);
-      gate.hidden = true;
-      gate.innerHTML = '';
-      app.hidden = false;
-      await refreshOverdue();
-      await render();
+      await unlock();
     } catch (ex) {
       err.textContent = ex?.status === 400
         ? 'That email address and password do not match an account.'
@@ -197,6 +201,24 @@ function showLogin(message = '') {
       form.querySelector('#si-password').select();
     }
   });
+}
+
+async function unlock() {
+  app.hidden = true;
+  gate.hidden = false;
+  return mfaGate(gate, async () => {
+    try {
+      await finishLogin();
+      gate.hidden = true;
+      gate.replaceChildren();
+      app.hidden = false;
+      await refreshOverdue();
+      await render();
+    } catch (e) {
+      await logout();
+      showLogin(e.message || 'Access could not be verified. Sign in again.');
+    }
+  }, async () => { await logout(); showLogin(); });
 }
 
 /* ── the mobile rail ──────────────────────────────────────────────────────── */
@@ -326,21 +348,15 @@ function showReset(outcome) {
     const a = form.querySelector('#np-1').value;
     const b = form.querySelector('#np-2').value;
     err.hidden = true;
-    if (a.length < 8) { err.textContent = 'Use at least 8 characters.'; err.hidden = false; return; }
+    if (a.length < 14) { err.textContent = 'Use at least 14 characters.'; err.hidden = false; return; }
     if (a !== b) { err.textContent = 'The two passwords are not the same.'; err.hidden = false; return; }
     btn.disabled = true;
     btn.textContent = 'Saving…';
     try {
       await updatePassword(a);
-      const me = await restore();
-      if (!me) throw new Error('Your password was changed, but this account cannot use the CRM. Ask an administrator.');
-      gate.hidden = true;
-      gate.innerHTML = '';
-      app.hidden = false;
-      location.hash = '#/';
-      await refreshOverdue();
-      await render();
-      toast('Password changed. You are signed in.');
+      history.replaceState(null, '', location.pathname + '#/');
+      route = parseHash();
+      await unlock();
     } catch (ex) {
       err.textContent = ex?.status === 401
         ? 'The link has expired. Ask for a new one.'
@@ -362,9 +378,38 @@ addEventListener('hashchange', () => {
 
 /* A session that expires in another tab should not leave this one showing a
    dashboard it can no longer refresh. */
-addEventListener('storage', (e) => {
-  if (e.key === 'kingson-crm/session/v1' && !e.newValue) showLogin('Signed out in another tab.');
+addEventListener('crm-session-ended', () => {
+  viewEl.replaceChildren();
+  railEl.replaceChildren();
+  barEl.replaceChildren();
+  showLogin('Session ended. Sign in again.');
 });
+
+let activeSinceHeartbeat = false;
+for (const event of ['pointerdown', 'keydown', 'touchstart', 'scroll']) {
+  addEventListener(event, (e) => {
+    if (e.isTrusted && !document.hidden) { recordActivity(); activeSinceHeartbeat = true; }
+  }, { passive: true });
+}
+let heartbeatRunning = false;
+setInterval(async () => {
+  if (!isSignedIn() || heartbeatRunning) return;
+  heartbeatRunning = true;
+  try {
+    if (sessionTimedOut()) {
+      await logout();
+      dispatchEvent(new Event('crm-session-ended'));
+    } else if (activeSinceHeartbeat && !document.hidden) {
+      activeSinceHeartbeat = false;
+      await db.rpc('touch_crm_session');
+    }
+  } catch (e) {
+    if (e.status === 401 || e.status === 403) {
+      await logout();
+      dispatchEvent(new Event('crm-session-ended'));
+    }
+  } finally { heartbeatRunning = false; }
+}, 60_000);
 
 /* ── boot ─────────────────────────────────────────────────────────────────── */
 
@@ -374,12 +419,11 @@ addEventListener('storage', (e) => {
      address. Handle them before anything else reads the hash as a route. */
   const recovery = takeRecoveryFromUrl();
   if (recovery) return showReset(recovery);
-  const me = await restore();
-  if (!me) return showLogin();
-  gate.hidden = true;
-  app.hidden = false;
-  await refreshOverdue();
-  await render();
+  // Restore tokens only; the MFA gate precedes the profile and every data query.
+  const { loadSession } = await import('./core/supabase.js');
+  loadSession();
+  if (!getSession()) return showLogin();
+  await unlock();
 })().catch((e) => {
   console.error('[kingson] boot failed', e);
   showLogin('Something went wrong starting the application. Reload the page.');

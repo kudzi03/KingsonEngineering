@@ -56,7 +56,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; connect-src 'self' https://fgzwcxwmaohowryzdgui.supabase.co https://*.google-analytics.com https://*.analytics.google.com"
+          "value": "default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-78QXs4inm2kBdNhWQil6XPMOKogEFgQxUZNA/o+2Xzs=' 'sha256-9hDRaYN9MZ2fznvfoeyidKLR803Ezd6zBdvTG/WdJgA=' 'sha256-A49tMI0TYSZ44F0KIU1LJwQdrL9aDmibsmYoTvoni8I=' 'sha256-NxKmBFJ62BWZ6d+JMkgPPUkLhTVqRSRfoF12ltOTIg8=' 'sha256-P4MK15HrhweE+8GY2tVCT+SRjbtfdJNY5i+J8CF/B3w=' 'sha256-YE/VULf35VVOv6XH1NH99hhPsy3aApwrnFHZW8r/1II=' 'sha256-bNh8go4F9Pz8aKbpSjXhnlF4U+XLh8r14DdB7xyzDJk=' 'sha256-ec4NwNqYfSJtnSH41YYwAF1P5UyqyEw0EXFYWuRyqYk=' 'sha256-opRJNulobioDH1E3CnSE8A33VO+uwVL/DP+20RO6MHw=' 'sha256-yfVpABBppTi9RdUIypaE0Q4lwFTRA9OD1c/W8sN2ADA='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.analytics.google.com; media-src 'self'; frame-src https://www.google.com; frame-ancestors 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; connect-src 'self' https://fgzwcxwmaohowryzdgui.supabase.co https://*.google-analytics.com https://*.analytics.google.com"
         }
       ]
     },
@@ -69,11 +69,15 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+          "value": "no-store"
         },
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://fgzwcxwmaohowryzdgui.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
         }
       ]
     },
@@ -86,11 +90,15 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+          "value": "no-store"
         },
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://fgzwcxwmaohowryzdgui.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
         }
       ]
     },

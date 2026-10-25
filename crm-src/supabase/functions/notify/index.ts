@@ -89,7 +89,7 @@ async function settings() {
 }
 
 const crmBase = (s: { crm_url?: string | null }) =>
-  (s.crm_url || Deno.env.get('CRM_URL') || 'https://kingson-engineering.vercel.app/crm').replace(/\/+$/, '');
+  (s.crm_url || Deno.env.get('CRM_URL') || 'https://www.kingsonengineering.co.zw/crm').replace(/\/+$/, '');
 
 /* ── building each message ───────────────────────────────────────────────── */
 

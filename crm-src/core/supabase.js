@@ -22,6 +22,18 @@
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
 
 const STORE_KEY = 'kingson-crm/session/v1';
+export const IDLE_MS = 30 * 60 * 1000;
+const MAX_SESSION_MS = 8 * 60 * 60 * 1000;
+let lastActivity = Date.now();
+const signoutChannel = typeof BroadcastChannel === 'function' ? new BroadcastChannel('kingson-crm/signout') : null;
+signoutChannel?.unref?.(); // Node-only test runtime; browsers have no unref method.
+signoutChannel?.addEventListener('message', () => {
+  setSession(null);
+  dispatchEvent(new Event('crm-session-ended'));
+});
+export const recordActivity = () => { lastActivity = Date.now(); };
+export const sessionTimedOut = () => Boolean(session &&
+  (Date.now() - lastActivity >= IDLE_MS || Date.now() - session.started_at >= MAX_SESSION_MS));
 
 let session = null;      // { access_token, refresh_token, expires_at, user }
 let refreshing = null;   // in-flight refresh, so ten parallel 401s cause one
@@ -30,8 +42,11 @@ let refreshing = null;   // in-flight refresh, so ten parallel 401s cause one
 
 export function loadSession() {
   try {
-    const raw = localStorage.getItem(STORE_KEY);
+    // Never migrate a persistently stored bearer token into the new session.
+    localStorage.removeItem(STORE_KEY);
+    const raw = sessionStorage.getItem(STORE_KEY);
     session = raw ? JSON.parse(raw) : null;
+    if (session && (!session.started_at || Date.now() - session.started_at >= MAX_SESSION_MS)) setSession(null);
   } catch { session = null; }
   return session;
 }
@@ -39,10 +54,11 @@ export function loadSession() {
 export function getSession() { return session; }
 
 export function setSession(s) {
+  reads.clear();
   session = s;
   try {
-    if (s) localStorage.setItem(STORE_KEY, JSON.stringify(s));
-    else localStorage.removeItem(STORE_KEY);
+    if (s) sessionStorage.setItem(STORE_KEY, JSON.stringify(s));
+    else sessionStorage.removeItem(STORE_KEY);
   } catch { /* private mode: the session lives for this tab only */ }
   return s;
 }
@@ -54,7 +70,8 @@ const stamp = (r) => ({
   access_token: r.access_token,
   refresh_token: r.refresh_token,
   expires_at: Date.now() + ((r.expires_in || 3600) - 60) * 1000,
-  user: r.user || null
+  user: r.user || null,
+  started_at: session?.started_at || Date.now()
 });
 
 const expired = () => !session || !session.expires_at || Date.now() >= session.expires_at;
@@ -81,7 +98,7 @@ function humanise(status, body) {
 
   /* GoTrue's password rules and link failures, in words. */
   if (code === 'weak_password' || /password should be|weak password/i.test(msg))
-    return 'That password is too weak. Use at least 8 characters, mixing letters and numbers.';
+    return 'That password is too weak. Use at least 14 characters and avoid reused or compromised passwords.';
   if (code === 'same_password') return 'That is the password you already have. Choose a different one.';
   if (code === 'over_email_send_rate_limit' || status === 429)
     return 'Too many attempts. Wait a few minutes and try again.';
@@ -115,6 +132,7 @@ async function gotrue(path, { method = 'POST', body, token } = {}) {
   try {
     res = await fetch(`${SUPABASE_URL}/auth/v1${path}`, {
       method,
+      signal: AbortSignal.timeout(15000),
       headers: {
         apikey: SUPABASE_KEY,
         'Content-Type': 'application/json',
@@ -132,13 +150,16 @@ async function gotrue(path, { method = 'POST', body, token } = {}) {
 }
 
 export async function signIn(email, password) {
+  setSession(null);
   const r = await gotrue('/token?grant_type=password', { body: { email: email.trim(), password } });
+  recordActivity();
   return setSession(stamp(r));
 }
 
 export async function signOut() {
   const s = session;
   setSession(null);
+  signoutChannel?.postMessage('signed-out');
   if (s?.access_token) {
     try { await gotrue('/logout', { token: s.access_token }); } catch { /* local sign-out stands */ }
   }
@@ -150,7 +171,7 @@ export async function signOut() {
    → Authentication → URL Configuration → Redirect URLs, or GoTrue falls back
    to the Site URL. GoTrue answers 200 whether or not the address has an
    account, so this cannot be used to find out who works at Kingson. */
-export const resetRedirect = () => `${location.origin}${location.pathname.replace(/[^/]*$/, '')}?reset=1`;
+export const resetRedirect = () => `${location.origin}${location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '') || '/crm'}?reset=1`;
 
 export async function requestPasswordReset(email) {
   return gotrue(`/recover?redirect_to=${encodeURIComponent(resetRedirect())}`,
@@ -181,9 +202,50 @@ export function takeRecoveryFromUrl() {
 }
 
 /** Set a new password for the signed-in user (or the recovery session). */
-export async function updatePassword(password) {
+export async function updatePassword(password, currentPassword) {
   if (session && expired()) { try { await refresh(); } catch { /* the 401 below explains */ } }
-  return gotrue('/user', { method: 'PUT', token: session?.access_token, body: { password } });
+  const out = await gotrue('/user', { method: 'PUT', token: session?.access_token,
+    body: { password, ...(currentPassword ? { current_password: currentPassword } : {}) } });
+  // Revoke refresh sessions on other devices; database guards also check session_id.
+  await gotrue('/logout?scope=others', { token: session?.access_token });
+  return out;
+}
+
+export async function authUser() {
+  if (session && expired()) await refresh();
+  return gotrue('/user', { method: 'GET', token: session?.access_token });
+}
+
+export const enrollTotp = () => gotrue('/factors', { token: session?.access_token,
+  body: { factor_type: 'totp', friendly_name: 'Kingson authenticator' } });
+export const removeFactor = (id) => gotrue(`/factors/${encodeURIComponent(id)}`,
+  { method: 'DELETE', token: session?.access_token });
+export async function verifyTotp(id, code) {
+  const path = `/factors/${encodeURIComponent(id)}`;
+  const challenge = await gotrue(`${path}/challenge`, { token: session?.access_token, body: {} });
+  const r = await gotrue(`${path}/verify`, { token: session?.access_token,
+    body: { challenge_id: challenge.id, code } });
+  return setSession(stamp(r));
+}
+
+// Password proof must not replace an MFA session with a weaker password-only one.
+export const checkCurrentPassword = (email, password) => gotrue('/token?grant_type=password',
+  { body: { email, password } });
+
+export async function uploadCheckedFile(file, link) {
+  if (sessionTimedOut()) throw new ApiError('Session ended. Sign in again.', { status:401 });
+  if (expired()) await refresh();
+  const form = new FormData();
+  form.append('file', file);
+  form.append('link_type', Object.keys(link)[0]);
+  form.append('link_id', Object.values(link)[0]);
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/crm-upload`, {
+    method:'POST', headers:{apikey:SUPABASE_KEY, Authorization:`Bearer ${session.access_token}`}, body:form
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new ApiError(data.error || 'The file could not be uploaded.', { status:res.status });
+  reads.clear();
+  return data;
 }
 
 async function refresh() {
@@ -237,6 +299,11 @@ async function request(path, { method = 'GET', body, headers = {}, retry = true 
 }
 
 async function send(path, { method = 'GET', body, headers = {}, retry = true } = {}) {
+  if (sessionTimedOut()) {
+    await signOut();
+    dispatchEvent(new Event('crm-session-ended'));
+    throw new ApiError('Session ended after inactivity. Sign in again.', { status: 401 });
+  }
   if (session && expired()) {
     try { await refresh(); } catch { /* fall through; the 401 below is the truth */ }
   }
@@ -245,6 +312,7 @@ async function send(path, { method = 'GET', body, headers = {}, retry = true } =
   try {
     res = await fetch(`${SUPABASE_URL}${path}`, {
       method,
+      signal: AbortSignal.timeout(15000),
       headers: {
         apikey: SUPABASE_KEY,
         'Content-Type': 'application/json',
@@ -340,7 +408,7 @@ export const storage = {
   /* The bucket is private, so a download is a short-lived signed URL minted
      for this member of staff. A path on its own opens nothing. */
   async signedUrl(bucket, path, seconds = 120) {
-    const r = await request(`/storage/v1/object/sign/${bucket}/${encodeURI(path)}`,
+    const r = await request(`/storage/v1/object/sign/${bucket}/${path.split('/').map(encodeURIComponent).join('/')}`,
       { method: 'POST', body: { expiresIn: seconds } });
     return `${SUPABASE_URL}/storage/v1${r.signedURL || r.signedUrl}`;
   },

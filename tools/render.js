@@ -654,3 +654,7 @@ if (process.argv.includes('--check')) {
   for (const r of routes) console.log(`  /${r.file.replace(/\.html$/, '')}`);
   console.log(`sitemap.xml rendered — ${(sitemap.match(/<loc>/g) || []).length} URLs.`);
 }
+
+// Keep CSP hashes in step with generated inline scripts and structured data.
+const { updateSecurityHeaders } = await import('./security-headers.mjs');
+updateSecurityHeaders(process.argv.includes('--check'));

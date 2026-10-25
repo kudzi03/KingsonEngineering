@@ -20,6 +20,7 @@ import { card, empty, avatar, tableWrap } from '../ui/components.js';
 import { icon } from '../ui/icons.js';
 import { toast } from '../ui/form.js';
 import { showDemo, setShowDemo } from '../core/demo.js';
+import { collectBackup, encryptBackup, verifyBackup } from '../core/backup.js';
 
 const DAY = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MODE = {
@@ -99,7 +100,8 @@ export async function render(_arg, { me }) {
   const howTo = card('Adding somebody', `
     <p class="scope">New accounts are created in the Supabase dashboard under
       <strong>Authentication → Users</strong>. A profile row appears here automatically the
-      moment the account is created, as Staff. Change the role above if they need it.</p>
+      moment the account is created, as inactive Staff. Verify the person, then activate their account here.
+      Change the role above only if they need administrator access.</p>
     <p class="scope">Deactivating somebody keeps everything they did — their calls, their
       quotations, their site visits — and stops them signing in. Deleting the account would
       take the history with it, which is why this screen does not offer it.</p>`);
@@ -127,7 +129,20 @@ export async function render(_arg, { me }) {
       'Everything submitted on the website form lands here and in Enquiries.', { tone: 'quiet' }),
     { tight: true, note: `${pluralise(enquiries.length, 'submission')} · the last sixty` });
 
-  return `${demoCard()}${rules}${outboxCard(outbox)}${users}${howTo}${log}`;
+  const health = await db.rpc('crm_security_health').catch(() => null);
+  const security = card('Security and continuity', `
+    <p class="scope">${health ? `Two-step sign-in enforcement: <strong>${health.mfa_enforced ? 'On' : 'Awaiting coordinated release'}</strong>.
+      Active accounts without an authenticator: ${Number(health.accounts_without_mfa)}.
+      Enquiries without a CRM record: ${Number(health.unconverted_enquiries)}.` : 'Security status could not be verified. Ask the account owner to check the backend.'}</p>
+    <p class="field-hint">Review staff access monthly. Deactivate leavers immediately. Automatic email delivery is handled separately.</p>
+    <form data-backup-form class="settings-grid">
+      <div class="field"><label for="backup-password">Unique backup passphrase</label>
+        <input class="inp" id="backup-password" type="password" autocomplete="off" minlength="16" required>
+        <p class="field-hint">At least 16 characters. Keep it securely: a lost passphrase cannot be recovered.</p></div>
+      <div class="field"><button class="btn" type="submit">Download encrypted application backup</button></div>
+    </form>
+    <p class="field-hint">Includes CRM records and indexed files, verified before download. Excludes authentication credentials and secrets. Keep an off-device copy. This export is sequential; use an operator database backup for a transactional disaster-recovery snapshot.</p>`);
+  return `${demoCard()}${rules}${security}${outboxCard(outbox)}${users}${howTo}${log}`;
 }
 
 function rulesCard(me) {
@@ -202,7 +217,7 @@ function notifyCard(me) {
       <div class="field">
         <label for="crm-url">CRM address in emails</label>
         <input class="inp" id="crm-url" type="url" data-set="crm_url" data-type="url"
-          value="${esc(settings.crm_url || '')}" placeholder="https://kingson-engineering.vercel.app/crm/" ${off}>
+          value="${esc(settings.crm_url || '')}" placeholder="https://www.kingsonengineering.co.zw/crm/" ${off}>
         <p class="field-hint">Links in alerts and the digest open this address.</p>
       </div>
     </div>
@@ -261,6 +276,26 @@ function settingPatch(el) {
 }
 
 export function mount(root, rerender, { me }) {
+  root.querySelector('[data-backup-form]')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (me?.role !== 'admin') return;
+    const form = event.currentTarget, input = form.querySelector('input'), button = form.querySelector('button');
+    const password = input.value;
+    input.value = '';
+    button.disabled = true;
+    button.textContent = 'Collecting and verifying…';
+    try {
+      const archive = await encryptBackup(await collectBackup(), password);
+      await verifyBackup(archive, password);
+      const url = URL.createObjectURL(new Blob([JSON.stringify(archive)], {type:'application/json'}));
+      const link = document.createElement('a');
+      link.href = url; link.download = `kingson-crm-${new Date().toISOString().slice(0,10)}.encrypted.json`;
+      document.body.append(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      toast('Encrypted application backup downloaded. Keep it and the passphrase separately.');
+    } catch (e) { toast(e.message || 'Backup failed. No incomplete export was saved.', 'bad'); }
+    finally { button.disabled = false; button.textContent = 'Download encrypted application backup'; }
+  });
   root.addEventListener('change', async (e) => {
     if (e.target.closest('[data-demo]')) {
       setShowDemo(e.target.checked);

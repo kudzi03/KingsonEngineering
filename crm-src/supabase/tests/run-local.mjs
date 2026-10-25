@@ -340,5 +340,9 @@ ok(e2 === null, 'migration b runs a second time without error', e2);
 ok(JSON.stringify(mid) === JSON.stringify(await counts()) && (await one(`select count(*) n from pg_policies`)).n === pol,
    'and changes nothing the second time');
 
+if (process.env.CRM_HARDENING === '1') {
+  const { runSecurity } = await import('./security.mjs');
+  await runSecurity({db,q,one,ok,err,read,ADMIN,STAFF,GONE});
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

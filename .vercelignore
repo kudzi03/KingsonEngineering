@@ -30,3 +30,5 @@ crm-src
 assets/img/material-*
 tools
 .gitattributes
+.github
+*.encrypted.json

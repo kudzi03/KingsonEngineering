@@ -26,7 +26,7 @@ const OFFICE = {
   phone:   '+263 772 262 869',
   office:  '+263 242 304 341',
   email:   'admin1@kingsonengineering.co.zw',
-  site:    'https://kingson-engineering.vercel.app'
+  site:    'https://www.kingsonengineering.co.zw'
 };
 
 /* One frame for all three, so a change to the footer cannot reach two emails
@@ -73,7 +73,7 @@ export function acknowledgement(v: {
     '',
     `Reference: ${v.ref}${what ? `\nAbout: ${what}` : ''}`,
     '',
-    `Kingson Engineering will review it during working hours (Monday to Saturday, 07:30 – 17:00). Please quote the reference if you get in touch about it.`,
+    `Kingson Engineering will review it during working hours (Monday to Friday, 07:30 – 17:00). Please quote the reference if you get in touch about it.`,
     '',
     `Drawings (DXF, DWG, STEP or PDF) can be sent by replying to this email.`,
     '',
@@ -89,7 +89,7 @@ export function acknowledgement(v: {
       p(`Good day${v.name ? ' ' + esc(v.name) : ''},`) +
       p('Thank you. Your enquiry has been received.') +
       p(`Reference: <strong>${esc(v.ref)}</strong>${what ? `<br>About: ${esc(what)}` : ''}`) +
-      p('Kingson Engineering will review it during working hours (Monday to Saturday, 07:30 – 17:00). Please quote the reference if you get in touch about it.') +
+      p('Kingson Engineering will review it during working hours (Monday to Friday, 07:30 – 17:00). Please quote the reference if you get in touch about it.') +
       p('Drawings (DXF, DWG, STEP or PDF) can be sent by replying to this email.'))
   };
 }

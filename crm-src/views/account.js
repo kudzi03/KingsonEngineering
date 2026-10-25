@@ -29,11 +29,11 @@ export async function render(_arg, { me }) {
     card('Change password', `
       <form class="settings-grid" data-pw-form novalidate>
         ${field('pw-current', 'Current password', pw('pw-current', 'current-password'))}
-        ${field('pw-new', 'New password', pw('pw-new', 'new-password'), { hint: 'At least 8 characters.' })}
+        ${field('pw-new', 'New password', pw('pw-new', 'new-password'), { hint: 'At least 14 characters. Use a unique passphrase.' })}
         ${field('pw-again', 'New password again', pw('pw-again', 'new-password'))}
         <div class="field"><button type="submit" class="btn">Change password</button></div>
       </form>`,
-    { note: 'Other devices stay signed in until their session ends' });
+    { note: 'Changing your password signs out other devices. Two-step sign-in is required. Sessions end after 30 minutes idle or eight hours.' });
 }
 
 export function mount(root) {
@@ -43,7 +43,7 @@ export function mount(root) {
     clearErrors(form);
     const v = Object.fromEntries(new FormData(form));      // untrimmed: a password is exact
     if (!v['pw-current']) return setFieldError(form, 'pw-current', 'Enter your current password.');
-    if (v['pw-new'].length < 8) return setFieldError(form, 'pw-new', 'Use at least 8 characters.');
+    if (v['pw-new'].length < 14) return setFieldError(form, 'pw-new', 'Use at least 14 characters.');
     if (v['pw-new'] !== v['pw-again']) return setFieldError(form, 'pw-again', 'The two new passwords do not match.');
     if (v['pw-new'] === v['pw-current']) return setFieldError(form, 'pw-new', 'Choose a password you have not used here.');
 

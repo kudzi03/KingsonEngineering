@@ -8,15 +8,22 @@ import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const port = Number(process.env.PORT || 4173);
+const deploymentHeaders=JSON.parse(await readFile(resolve(root,'vercel.json'),'utf8')).headers;
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.mjs':'text/javascript', '.css':'text/css', '.webp':'image/webp', '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2', '.xml':'application/xml', '.txt':'text/plain', '.vtt':'text/vtt', '.mp4':'video/mp4', '.webm':'video/webm' };
 createServer(async (req,res) => {
   try {
     const path = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+    for(const rule of deploymentHeaders) {
+      if(!rule.has && new RegExp('^'+rule.source+'$').test(path)) {
+        for(const header of rule.headers) res.setHeader(header.key,header.value);
+      }
+    }
     if (path.startsWith('/_vercel/')) { res.writeHead(200, {'Content-Type':'text/javascript'}).end(''); return; }
     if (/^\/(?:\.git|\.claude|tools|crm-src)(?:\/|$)/.test(path) || path.endsWith('.md')) { res.writeHead(404).end(); return; }
     let file = resolve(root, '.' + path);
     if (file !== resolve(root) && !file.startsWith(resolve(root) + sep)) { res.writeHead(403).end(); return; }
     if (path === '/') file = resolve(root, 'index.html');
+    else if (path === '/crm' || path === '/crm/') file = resolve(root, 'crm/index.html');
     else if (!extname(path)) file += '.html';
     let code = 200;
     try { if (!(await stat(file)).isFile()) throw Error(); }

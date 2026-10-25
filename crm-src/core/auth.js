@@ -13,7 +13,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { loadSession, getSession, setSession, signIn, signOut, db,
-         requestPasswordReset, updatePassword, takeRecoveryFromUrl } from './supabase.js';
+         requestPasswordReset, updatePassword, takeRecoveryFromUrl, checkCurrentPassword } from './supabase.js';
 import { assertStagesMatchDatabase } from './model.js';
 
 let me = null;               // the profile row for the signed-in user
@@ -81,7 +81,14 @@ export async function restore() {
 }
 
 export async function login(email, password) {
+  me = null;
   await signIn(email, password);
+  // The MFA gate completes before any CRM data is read.
+  return null;
+}
+
+export async function finishLogin() {
+  await db.rpc('touch_crm_session');
   await loadProfile();
   announce();
   /* One integrity check per sign-in rather than per page: if the pipeline in
@@ -109,12 +116,12 @@ export async function changePassword(current, next) {
   const email = currentEmail();
   if (!email) throw new Error('Sign out and back in, then try again.');
   try {
-    await signIn(email, current);
+    await checkCurrentPassword(email, current);
   } catch (e) {
     if (e?.status === 400) throw Object.assign(new Error('Your current password is not right.'), { field: 'pw-current' });
     throw e;
   }
-  await updatePassword(next);
+  await updatePassword(next, current);
 }
 
 export { signIn, signOut, requestPasswordReset, updatePassword, takeRecoveryFromUrl };
