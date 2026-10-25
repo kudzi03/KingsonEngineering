@@ -1,5 +1,14 @@
 param([string]$OperatorHome = (Join-Path $env:USERPROFILE '.kingson-crm-operator'))
 $ErrorActionPreference = 'Stop'
+# Check access before asking the owner to enter a private passphrase twice.
+foreach ($name in @('crm-operator.mjs', 'crm-operator-archive.mjs', 'crm-operator-scan.mjs', 'config.json', 'backup-key.dpapi')) {
+  $stream = $null
+  try { $stream = [IO.File]::OpenRead((Join-Path $OperatorHome $name)) }
+  catch { throw "Cannot read the backup setup file '$name'. No passphrase has been requested. Ask for the folder permissions to be checked." }
+  finally { if ($null -ne $stream) { $stream.Dispose() } }
+}
+& 'C:\Program Files\nodejs\node.exe' --check (Join-Path $OperatorHome 'crm-operator.mjs')
+if ($LASTEXITCODE -ne 0) { throw 'The recovery worker check failed. No passphrase has been requested.' }
 $secure = Read-Host 'Choose a unique recovery passphrase (20+ characters). Keep it outside this PC and OneDrive' -AsSecureString
 $confirm = Read-Host 'Enter that recovery passphrase again' -AsSecureString
 $first = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
