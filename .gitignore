@@ -1,4 +1,6 @@
 crm-src/supabase/.temp/
+supabase/.temp/
+*.kingson.enc
 *.encrypted.json
 *.backup
 *.dump

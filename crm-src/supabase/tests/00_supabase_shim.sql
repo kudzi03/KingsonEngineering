@@ -22,7 +22,8 @@ grant execute on function auth.uid(), auth.role() to public;
 
 create table storage.buckets (id text primary key, name text, public boolean,
                               file_size_limit bigint, allowed_mime_types text[]);
-create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text, name text);
+create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text, name text,
+  updated_at timestamptz not null default now());
 create table vault.decrypted_secrets (name text, decrypted_secret text);
 
 create extension if not exists pg_trgm with schema extensions;

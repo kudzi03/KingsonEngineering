@@ -134,6 +134,10 @@ export async function render(_arg, { me }) {
     <p class="scope">${health ? `Two-step sign-in enforcement: <strong>${health.mfa_enforced ? 'On' : 'Awaiting coordinated release'}</strong>.
       Active accounts without an authenticator: ${Number(health.accounts_without_mfa)}.
       Enquiries without a CRM record: ${Number(health.unconverted_enquiries)}.` : 'Security status could not be verified. Ask the account owner to check the backend.'}</p>
+    ${health ? `<p class="field-hint">Files awaiting a successful scan: ${Number(health.files_pending || 0)}. Blocked files: ${Number(health.files_blocked || 0)}.<br>
+      Latest scanner check: ${health.latest_scan ? `${esc(stamp(health.latest_scan.at))} — ${health.latest_scan.status === 'verified' ? 'passed' : 'attention required'}` : 'not recorded'}.<br>
+      Latest operator backup: ${health.latest_backup ? `${esc(stamp(health.latest_backup.at))} — ${health.latest_backup.status === 'verified' ? 'encrypted and restore-tested' : 'attention required'}` : 'not recorded'}.<br>
+      Scanning and daily operator backups require the owner’s computer to be on and signed in. OneDrive cloud sync must also be working.</p>` : ''}
     <p class="field-hint">Review staff access monthly. Deactivate leavers immediately. Automatic email delivery is handled separately.</p>
     <form data-backup-form class="settings-grid">
       <div class="field"><label for="backup-password">Unique backup passphrase</label>

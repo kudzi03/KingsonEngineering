@@ -76,4 +76,22 @@ export async function runSecurity({db,q,one,ok,err,read,ADMIN,STAFF,GONE}) {
   await db.exec('select private.run_crm_security_maintenance()');
   ok((await one('select count(*) n from private.crm_health_checks')).n===1,'maintenance records aggregate health without sending email');
   ok(Boolean(await err(()=>staff(()=>q('select * from private.crm_health_checks')))),'staff cannot read private maintenance telemetry');
+  await db.exec(read('../migrations/20261025093716_crm_file_quarantine.sql'));
+  await db.exec(read('../migrations/20261025095024_bind_scan_to_object_version.sql'));
+  await db.exec('alter table storage.objects enable row level security; grant select on storage.objects to authenticated');
+  const file=(await staff(()=>one("insert into public.files(path,name,opportunity_id,uploaded_by) values('opportunity/fixture/random-drawing.pdf','drawing.pdf',$1,$2) returning id",[created.opportunity_id,STAFF]))).id;
+  await db.exec("insert into storage.objects(bucket_id,name) values('kingson-files','opportunity/fixture/random-drawing.pdf')");
+  ok((await staff(()=>q('select * from storage.objects'))).length===0,'pending bytes cannot be read or signed by staff');
+  ok(Boolean(await err(()=>staff(()=>q("update public.files set scan_status='clean' where id=$1",[file])))),'browser cannot approve its own scan');
+  await q("update public.files set scan_status='clean',scan_sha256=repeat('a',64),scanned_at=now(),scan_engine='local test',scan_storage_updated_at=(select updated_at from storage.objects limit 1) where id=$1",[file]);
+  ok((await staff(()=>q('select * from storage.objects'))).length===1,'worker-approved bytes can be read with correct path matching');
+  await db.exec("update storage.objects set updated_at=now()+interval '1 second'");
+  ok((await staff(()=>q('select * from storage.objects'))).length===0,'a privileged overwrite invalidates the previous scan approval');
+  await q("update public.files set scan_status='blocked' where id=$1",[file]);
+  ok((await staff(()=>q('select * from storage.objects'))).length===0,'blocked bytes remain inaccessible');
+  ok(Boolean(await err(()=>staff(()=>q("update public.files set path='elsewhere.pdf' where id=$1",[file])))),'browser cannot swap the bytes behind a scan result');
+  await db.exec(read('../migrations/20261025100115_expose_crm_continuity_health.sql'));
+  ok(Boolean(await err(()=>staff(()=>q('select public.crm_security_health()')))),'staff cannot read administrator security telemetry');
+  const health=(await admin(()=>one('select public.crm_security_health() health'))).health;
+  ok(health.files_blocked===1 && health.latest_backup===null,'administrator sees true scan and backup status');
 }

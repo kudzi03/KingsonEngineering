@@ -29,9 +29,9 @@ const size = (b) => {
 export const filesCard = (files) => card('Files', files.length ? `
   <ul class="mini files">
     ${files.map((f) => `<li>
-      <button type="button" class="mini-btn" data-file="${esc(f.path)}" data-name="${esc(f.name)}">
+      <button type="button" class="mini-btn" data-file="${esc(f.path)}" data-name="${esc(f.name)}"${f.scan_status !== 'clean' ? ' disabled' : ''}>
         <span class="mini-main">${icon.file(13)}${esc(f.name)}</span>
-        <span class="mini-sub">${esc(size(f.size_bytes))} · ${esc(date(f.created_at))}${f.profiles?.initials ? ' · ' + esc(f.profiles.initials) : ''}</span>
+        <span class="mini-sub">${esc(size(f.size_bytes))} · ${esc(date(f.created_at))}${f.profiles?.initials ? ' · ' + esc(f.profiles.initials) : ''} · ${f.scan_status === 'clean' ? 'Scanned' : f.scan_status === 'blocked' ? 'Blocked by antivirus' : f.scan_status === 'error' ? 'Scan unavailable — contact the administrator' : 'Awaiting security scan'}</span>
       </button>
       <span class="mini-side">${icon.download(15)}</span>
     </li>`).join('')}
@@ -72,7 +72,7 @@ export function mountFiles(root, link, me, onDone) {
         kind: 'file', body: `File added: ${file.name}`, actor_id: me?.id || null
       });
       void row;
-      toast('Uploaded.');
+      toast('Uploaded. The file stays private until its security scan completes.');
       after(onDone);
     } catch (err) {
       toast(err.message || 'That file could not be uploaded.', 'bad');
