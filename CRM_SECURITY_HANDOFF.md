@@ -26,7 +26,9 @@ When true, the server additionally requires a verified MFA factor, an AAL2 token
 
 Do not turn this on before releasing and verifying the new client. Do not silently reset or enroll anyone's authenticator on their behalf.
 
-## Prepared client and hosting changes (not released to the public site)
+## Client and hosting release
+
+Production deployment was authorized by the owner on 27 October 2026 for the prepared free-service changes. The release includes the latest public-site main branch. The release confirmation below must be checked before treating the client as live. Email dispatch and the paid compromised-password feature remain excluded.
 
 - Mandatory TOTP enrollment/challenge before loading customer data; no inline execution of Auth's QR SVG; supports choosing among existing verified authenticators.
 - Tokens move from persistent localStorage to per-tab sessionStorage. Old localStorage tokens are discarded rather than migrated. Cross-tab sign-out broadcasts; sign-out clears cached reads and rendered customer data.
@@ -79,5 +81,12 @@ Do not disable MFA as a routine rollback. Prefer rolling forward with the verifi
 For recurring checks inspect `cron.job` / `cron.job_run_details`, the latest `private.crm_health_checks` aggregate, and security advisors. Ignore pending notifications while email_mode=manual; alert on conversion failures, missing RLS, failed maintenance or a regression from the verified rollout state. Do not treat this document's expected state as proof: query live settings.
 
 Operator state: `%USERPROFILE%/.kingson-crm-operator/last-run.json` (aggregate only), `recovery-status.json`, Windows task result and `private.crm_worker_runs`. Local ciphertext copies: `%USERPROFILE%/.kingson-crm-operator/backups`. OneDrive ciphertext copies: `C:/Users/pagiw/OneDrive/Kingson Engineering CRM Backups`. No plaintext database archive or raw key is placed in OneDrive. Downloaded bytes/restore-test files are temporarily staged in the restricted local operator directory and removed after the run.
+
+## 27 October release checks
+
+- Local database regression suite: 123 passed, 0 failed. Data/encryption/upload-validation tests passed. Chromium and WebKit CRM checks passed at 1440×900 and 390×844, including MFA gating, session cleanup, password changes and encrypted export/decryption with synthetic records.
+- Generated public HTML, sharing/canonical checks, content checks and CRM build passed after merging the latest remote main. Browser tests use intercepted backend requests; they do not establish real-user enrollment or live authenticated upload/recovery acceptance.
+- Live settings remain Monday–Friday, official CRM URL and manual email. Both active accounts still lack verified authenticators. Server enforcement remains false pending real-user enrollment and coordinated activation; client release alone does not close that requirement.
+- Scheduled operator recovered: last-run success at 2026-10-27T13:34:13.508Z, launcher exit 0 and Windows task result 0. Last verified backup was 26 October. An earlier intermittent CLI/backup-check failure is not diagnosed or claimed fixed; continue monitoring. Actual OneDrive cloud sync, independent uptime, platform disaster recovery and an approved customer-retention policy remain outstanding.
 
 The Codex heartbeat now checks worker errors, stale backups, pending/blocked scans and recovery escrow as well as existing health checks. It remains local monitoring and sends no customer email.
