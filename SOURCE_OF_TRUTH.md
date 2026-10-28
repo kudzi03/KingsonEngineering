@@ -118,7 +118,7 @@ Every row below was ticked. These are publishable as fact.
 | Specification | Confirmed value |
 |---|---|
 | Machine | DXTECH |
-| Bed size | 3 000 × 1 500 mm |
+| Cutting thickness | 0.4–20 mm — owner-supplied 28 October handoff; bed dimensions withdrawn |
 | Mild steel | 20 mm on oxygen |
 | Stainless steel | 10 mm on nitrogen |
 | Aluminium | 8 mm on nitrogen |
@@ -131,7 +131,7 @@ Every row below was ticked. These are publishable as fact.
 |---|---|
 | Crane type | telescopic mobile |
 | Lifting capacity | 25 tonnes (handwritten) |
-| Number of cranes | 1 (handwritten) |
+| Hiab crane | 9 tonnes — owner-supplied 28 October handoff |
 | Erection area | Harare and nationally |
 
 ---
@@ -146,7 +146,7 @@ struck out.** All five are ticked and therefore publishable.
 | Enquiry acknowledged | same working day |
 | Written quotation | within 5 working days — owner clarification, 20 October 2026; supersedes “within the week” |
 | Site visit arranged | within two working days |
-| Portal frame programme | six to ten weeks |
+| Portal frame programme | approximately 4–6 weeks, depending on size — owner-supplied 28 October handoff |
 | Delivery outside Harare | nationally, transport priced per load |
 
 These also set the honest boundary for automated follow-up: an acknowledgement
@@ -270,3 +270,6 @@ supplied and none of it may appear:
 - service areas beyond "Harare and nationally"
 
 `tools/check-truth.js` enforces this over the built HTML.
+
+## Owner corrections — 28 October 2026
+The owner-supplied `Kingson-Engineering-Fixes.zip` handoff supersedes earlier entries: fibre laser cutting 0.4–20 mm thickness; omit crossed-out bed dimension; 25-tonne mobile crane and 9-tonne Hiab crane; project timeframe approximately 4–6 weeks depending on size. Related services: roof sheeting, roller shutter doors, frameless balustrades and general metalwork. Retain “Start with drawings, site photos or a brief description.” and enlarge text.

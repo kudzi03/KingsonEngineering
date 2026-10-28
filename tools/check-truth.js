@@ -92,14 +92,15 @@ const CLAIMS = [
    is a citation, not a convenience: adding one without being able to fill in
    the source is the failure this file exists to prevent. */
 const CONFIRMED = [
+  ['4–6 weeks', 'Owner-supplied Kingson-Engineering-Fixes.zip handoff, 28 October 2026 — depending on size'],
+  ['9 tonnes', 'Owner-supplied Kingson-Engineering-Fixes.zip handoff, 28 October 2026 — Hiab crane'],
+  ['9-tonne', 'Owner-supplied Kingson-Engineering-Fixes.zip handoff, 28 October 2026 — Hiab crane'],
   ['25 tonnes',         'returned document §6 — lifting capacity, ticked'],
   ['25-tonne',          'returned document §6 — the same figure, set as a compound adjective'],
   ['same working day',  'returned document §7 — enquiry acknowledged, not struck out'],
   ['two working days',  'returned document §7 — site visit arranged, not struck out'],
   ['2 working days',    'owner request, 20 October 2026 — site visit arranged where needed'],
   ['5 working days',    'owner request, 20 October 2026 — written quotation within five working days'],
-  ['six to ten weeks',  'returned document §7 — portal frame programme, not struck out'],
-  ['6–10 weeks',        'returned document §7 — the same programme, in figures'],
   ['3 – 5 days',        'returned document §4 — flashing lead time on a stock gauge'],
   ['three to five days', 'returned document §4 — the same lead time, written out']
 ];
@@ -125,6 +126,10 @@ const POLICY_STORAGE_DURATIONS = new Map([
 /* ── 3. values the returned document replaced ─────────────────────────────── */
 
 const RETIRED = [
+  [/\b(?:6\s*[-–—]\s*10|six to ten)\s+weeks\b/i,
+    'owner-supplied 28 October handoff replaces the programme with approximately 4–6 weeks, depending on size'],
+  [/3\s*000\s*[×x]\s*1\s*500\s*mm/i,
+    'owner-supplied 28 October handoff withdraws laser bed-size wording'],
   ['kingsonnkm@gmail.com',
     'struck out in §1 and replaced by admin1@kingsonengineering.co.zw'],
   ['18GoTdrLBD',

@@ -5,14 +5,14 @@
 .hd-contacts a svg { width: 19px; height: 19px; }
 .hd-contacts a:hover { background: #8882; }
 .quote-support { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px 28px; margin-top: 28px; padding-top: 18px; border-top: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 24%, transparent); }
-.quote-brief { flex: 1 1 260px; max-width: 620px; font-size: 14px; line-height: 1.65; }
+.quote-brief { flex: 1 1 260px; max-width: 620px; font-size: 16px; line-height: 1.65; }
 .quote-brief summary { cursor: pointer; min-height: 44px; display: list-item; padding: 10px 0; font-weight: 650; color: inherit; }
-.quote-brief-preview { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; line-height: 1.5; }
+.quote-brief-preview { display: block; margin-top: 4px; font-size: 16px; font-weight: 400; line-height: 1.5; }
 .quote-brief ul { margin: 10px 0 12px; padding-left: 20px; list-style: disc; }
 .quote-brief li { margin: 6px 0; }
-.quote-brief p { font-size: 12px; line-height: 1.6; margin-top: 12px; color: inherit; }
+.quote-brief p { font-size: 16px; line-height: 1.6; margin-top: 12px; color: inherit; }
 .contact-options { display: flex; flex-wrap: wrap; gap: 4px; }
-.contact-options a { padding: 8px 10px; min-height: 44px; min-width: 44px; font-size: 13px; border-color: transparent; color: inherit; }
+.contact-options a { padding: 8px 10px; min-height: 44px; min-width: 44px; font-size: 16px; border-color: transparent; color: inherit; }
 .contact-options a:hover { border-color: currentColor; color: inherit; }
 .mh-content .quote-support { max-width: 640px; margin-top: 22px; color: #fff; }
 .mh-content .quote-brief { flex-basis: 250px; max-width: 360px; text-align: left; }
@@ -22,22 +22,22 @@
 .ws-act .quote-support { width: 100%; }
 .proc-close .quote-support { flex-basis: 100%; }
 .enq-aside .quote-brief { margin-top: 28px; max-width: 100%; }
-.enq-aside .quote-brief p { font-size: 13px; }
+.enq-aside .quote-brief p { font-size: 16px; }
 .gantt { display: block; margin-top: 0; }
 .steps, .steps.steps-gantt { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
 .steps::before { display: none; }
 .steps .step, .steps.steps-gantt .step { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding: 26px 22px 28px; border: 1px solid var(--line); border-top: 3px solid var(--accent); background: var(--bg-soft); }
-.steps .step-n, .steps.steps-gantt .step-n { position: static; width: auto; height: auto; border: 0; border-radius: 0; background: transparent; color: var(--fg-muted); font-size: 12px; line-height: 1; letter-spacing: .12em; }
+.steps .step-n, .steps.steps-gantt .step-n { position: static; width: auto; height: auto; border: 0; border-radius: 0; background: transparent; color: var(--fg-muted); font-size: 16px; line-height: 1; letter-spacing: .12em; }
 .steps .step .step-body { padding: 0; }
-.steps .step h3 { font-size: 16px; line-height: 1.4; margin-bottom: 12px; }
-.steps .step p { font-size: 13px; line-height: 1.65; }
+.steps .step h3 { font-size: 18px; line-height: 1.4; margin-bottom: 12px; }
+.steps .step p { font-size: 16px; line-height: 1.65; }
 .steps .step .step-commitment { font-family: Archivo, sans-serif; font-size: clamp(22px, 2.1vw, 32px); line-height: 1.12; letter-spacing: -.025em; color: var(--fg); margin: 0 0 16px; }
 .sp-proc .steps { grid-template-columns: 1fr; }
 .sp-proc .steps .step { flex-direction: row; padding: 22px; }
 .sp-proc .steps .step-n { flex: none; margin-top: 5px; }
 .sp-proc .step .step-commitment { font-size: 27px; }
 .form-extra { border-block: 1px solid var(--line); margin: 22px 0; padding: 0 0 4px; }
-.form-extra summary { cursor: pointer; padding: 16px 0; min-height: 48px; font-size: 13px; font-weight: 650; }
+.form-extra summary { cursor: pointer; padding: 16px 0; min-height: 48px; font-size: 16px; font-weight: 650; }
 .form-extra[open] summary { margin-bottom: 14px; }
 .form-extra .field { margin-bottom: 20px; }
 @media (max-width: 1100px) {
@@ -49,7 +49,7 @@
   .hd-in, .hd-home .hd-in { gap: 6px; padding-inline: 16px; }
   .hd-mark img { max-width: 112px; height: auto !important; }
   .hd-contacts a { width: 44px; padding: 6px; }
-  .hd-menu { font-size: 11px; gap: 5px; min-width: 54px; }
+  .hd-menu { font-size: 16px; gap: 5px; min-width: 54px; }
   .hd-menu-bars, .hd-menu-bars::before, .hd-menu-bars::after { width: 14px; }
   .steps, .steps.steps-gantt { grid-template-columns: 1fr; gap: 12px; }
   .steps .step, .steps.steps-gantt .step { flex-direction: row; padding: 22px 18px; gap: 18px; }
@@ -68,3 +68,8 @@
 @media (max-width: 360px) {
   .hd .hd-mark img { max-width: 80px; height: auto !important; }
 }
+
+/* Owner readability correction, 28 October 2026. */
+body { font-size: 18px; }
+.proc-close > p { font-size: clamp(22px, 2.2vw, 28px); line-height: 1.5; }
+.sp-intro, .cin-body, .ch-body { font-size: 18px; line-height: 1.7; }

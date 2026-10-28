@@ -114,7 +114,7 @@ export const CAPABILITIES = [
     title: 'Structural steelwork',
     body: 'Portal frames, columns, rafters and purlins — fabricated here in our own workshop and erected on site with our own crane.',
     ask: 'Send drawings, or the span, height and bay spacing.',
-    facts: [['Programme', 'six to ten weeks'],
+    facts: [['Programme', 'approximately 4–6 weeks, depending on size'],
             ['Erection', 'Harare and nationally']]
   },
   {
@@ -128,11 +128,11 @@ export const CAPABILITIES = [
   },
   {
     id: 'cutting', photo: 'laserFloor', route: 'fibre-laser-cutting-harare',
-    lead: ['20 mm', 'maximum cutting thickness'],
+    lead: ['0.4–20 mm', 'cutting thickness'],
     title: 'Fibre laser cutting',
-    body: 'Plate and sheet up to 20 mm thick, cut on a DXTECH fibre laser straight from your file. Mild steel, stainless, aluminium and galvanised sheet.',
+    body: 'Plate and sheet from 0.4 to 20 mm thick, cut on a DXTECH fibre laser straight from your file. Mild steel, stainless, aluminium and galvanised sheet.',
     ask: 'Send a DXF, DWG, STEP or PDF with the material and thickness.',
-    facts: [['Bed size', '3 000 × 1 500 mm'],
+    facts: [['Cutting thickness', '0.4–20 mm'],
             ['Tolerance', '± 0.1 mm']]
   },
   {
@@ -140,7 +140,7 @@ export const CAPABILITIES = [
     lead: ['3 000 mm', 'maximum fold length'],
     plate: ['3 000 mm', 'maximum fold length'],
     title: 'Balustrades and roller shutter doors',
-    body: 'Balustrading, handrails and roller shutter doors, fabricated to your opening and finish.',
+    body: 'Frameless balustrades, handrails and roller shutter doors, fabricated to your opening and finish.',
     ask: 'Send the opening dimensions and a photograph of the site, or a sketch.',
     facts: [['Material', '0.4 – 3.0 mm sheet'],
             ['Also in', 'galvanised, stainless, aluminium']]
@@ -152,16 +152,16 @@ export const CAPABILITIES = [
     title: 'General metal fabrication',
     body: 'Sheet, plate and section work in mild steel, galvanised, stainless and aluminium — cut, folded and fabricated to drawing.',
     ask: 'Send a drawing with the material and thickness you need.',
-    facts: [['Laser bed', '3 000 × 1 500 mm'],
+    facts: [['Laser cutting', '0.4–20 mm'],
             ['Folding', 'to 3 000 mm']]
   },
   {
     id: 'cranage', photo: 'crane', route: 'mobile-cranage-harare',
     lead: ['25 t', 'telescopic mobile crane'],
     title: 'Mobile cranage',
-    body: 'Our 25-tonne telescopic mobile crane, for lifting and placing steel — on our jobs or yours.',
+    body: 'Our 25-tonne mobile crane and 9-tonne Hiab crane, for lifting and placing steel — on our jobs or yours.',
     ask: 'Tell us the load, the site access and the date.',
-    facts: [['Capacity', '25 tonnes'],
+    facts: [['Mobile crane / Hiab', '25 tonnes / 9 tonnes'],
             ['Area', 'Harare and nationally']]
   }
 ];
@@ -178,7 +178,7 @@ export const PROCESS = {
     { n: '01', title: 'Enquiry acknowledged', commitment: 'Same working day', body: 'Your enquiry is acknowledged by the office.' },
     { n: '02', title: 'Written quotation', commitment: 'Within 5 working days', body: 'A written price for the work you have described.' },
     { n: '03', title: 'Site visit arranged', commitment: 'Within 2 working days', body: 'Where the job needs a visit.' },
-    { n: '04', title: 'Portal frame programme', commitment: '6–10 weeks from order', body: 'For portal frame work. Other services are programmed in your quotation.', only: 'structural-steel-harare' }
+    { n: '04', title: 'Portal frame programme', commitment: 'Approximately 4–6 weeks, depending on size', body: 'For portal frame work. Other services are programmed in your quotation.', only: 'structural-steel-harare' }
   ],
   close: 'Start with drawings, site photos or a brief description.',
   closeAction: 'Send us the brief'
@@ -222,7 +222,7 @@ export const SPECS = {
     ]},
     { id: 'laser', title: 'Fibre laser', rows: [
       ['Machine', 'DXTECH'],
-      ['Bed size', '3 000 × 1 500 mm'],
+      ['Cutting thickness', '0.4–20 mm'],
       ['Mild steel', '20 mm on oxygen'],
       ['Stainless steel', '10 mm on nitrogen'],
       ['Aluminium', '8 mm on nitrogen'],
@@ -231,9 +231,8 @@ export const SPECS = {
       ['File formats accepted', 'DXF, DWG, STEP, PDF']
     ]},
     { id: 'cranage', title: 'Cranage and erection', rows: [
-      ['Crane type', 'telescopic mobile'],
-      ['Lifting capacity', '25 tonnes'],
-      ['Cranes', 'one'],
+      ['Mobile crane', '25 tonnes'],
+      ['Hiab crane', '9 tonnes'],
       ['Erection area', 'Harare and nationally']
     ]}
   ]
@@ -247,7 +246,7 @@ export const SPECS = {
 /* Label, headline figure, detail. Every figure is one confirmed elsewhere on
    the site; the band only states them large. */
 export const STRIP = [
-  ['Fibre laser',  '±0.1 mm',  'DXTECH · 3 000 × 1 500 mm bed'],
+  ['Fibre laser',  '±0.1 mm',  'DXTECH · 0.4–20 mm cutting thickness'],
   ['Cranage',      '25 t',     'Our own telescopic mobile crane'],
   ['Workshop',     'Harare',   'No. 1262 Tynwald Industries'],
   ['Open',         'Mon–Fri',  '07:30 – 17:00 · enquiries acknowledged the same working day']
@@ -279,7 +278,7 @@ export const FAQ = {
   title: 'Questions we get asked',
   items: [
     { q: 'What thickness can you laser cut?',
-      a: 'On the DXTECH fibre laser: mild steel to 20 mm on oxygen, stainless to 10 mm on nitrogen, aluminium to 8 mm, and galvanised sheet to 4 mm. The bed is 3 000 × 1 500 mm and tolerance is ± 0.1 mm, repeating to ± 0.03 mm.' },
+      a: 'The DXTECH fibre laser cuts from 0.4 to 20 mm, depending on material: mild steel to 20 mm on oxygen, stainless to 10 mm on nitrogen, aluminium to 8 mm, and galvanised sheet to 4 mm. Tolerance is ± 0.1 mm, repeating to ± 0.03 mm.' },
     { q: 'What file formats do you accept for cutting?',
       a: 'DXF or DWG is preferred for cutting; STEP and PDF are also accepted. Include material, thickness and quantity. Attach drawings to your email or WhatsApp message — the website form does not upload files.' },
     { q: 'Can you cut stainless steel?',
@@ -287,11 +286,11 @@ export const FAQ = {
     { home: true, q: 'How long does a quotation take?',
       a: 'Enquiries are acknowledged the same working day, and a written quotation follows within 5 working days. Where the job needs someone on site first, the site visit is arranged within 2 working days.' },
     { home: true, q: 'How long does a steel structure take?',
-      a: 'A portal frame programme runs 6–10 weeks from order. A written quotation comes within 5 working days of your enquiry, and a site visit is arranged within 2 working days where the job needs one.' },
+      a: 'A portal frame programme runs approximately 4–6 weeks, depending on size. A written quotation comes within 5 working days of your enquiry, and a site visit is arranged within 2 working days where the job needs one.' },
     { q: 'Do you deliver outside Harare?',
       a: 'Yes — nationally, with transport priced per load. Erection is also covered nationally.' },
     { q: 'How big a lift can you do?',
-      a: 'Kingson runs one telescopic mobile crane with a 25-tonne lifting capacity, used both on our own erection work and hired for other jobs.' },
+      a: 'Kingson operates a 25-tonne mobile crane and a 9-tonne Hiab crane, used both on our own erection work and hired for other jobs.' },
     { q: 'What roof sheeting do you supply?',
       a: 'IBR at 686 mm cover width over five ribs, and corrugated at 762 mm over 10.5 corrugations. IBR is stocked in 0.47, 0.53 and 0.58 mm; corrugated in 0.4, 0.47 and 0.53 mm. Sheets are cut to 12 m and supplied galvanised or pre-painted.' },
     { q: 'What roof pitch do I need?',

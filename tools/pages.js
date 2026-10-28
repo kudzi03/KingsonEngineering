@@ -14,10 +14,10 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { PROCESS, processFor, SPECS, CONTACT, NAV, ENQUIRY, NOT_FOUND, SERVICES_BLOCK } from '../content/copy.js';
-import { SERVICES, SERVICE_PAGE, BY_SLUG } from '../content/services.js';
+import { SERVICES, SERVICE_PAGE } from '../content/services.js';
 import { ASSETS, src, srcset, position } from '../content/assets.js';
 import { publish } from '../content/company.js';
-import { section as profileSection, flashings, bed } from '../scenes/profiles.js';
+import { section as profileSection, flashings } from '../scenes/profiles.js';
 import { pageGraph, pickFaq, pickSpecs, serviceId } from './schema.js';
 import {
   SITE, esc, tel, wa, headHtml, chromeTop, chromeBottom, siteFooter,
@@ -99,14 +99,15 @@ const faqBlock = (items) => items.map((it, i) =>
         <p>${esc(it.a)}</p>
       </details>`).join('\n');
 
-const relatedBlock = (slugs) => `      <ul class="sp-related-list">
-${slugs.map((sl) => {
-    const r = BY_SLUG[sl];
-    return `        <li><a href="/${r.slug}">
-          <span class="sp-related-name">${esc(r.nav)}</span>
+const relatedBlock = () => `      <ul class="sp-related-list">
+${[['roofing-and-trusses', 'Roof sheeting'],
+   ['steel-fabrication#balustrades', 'Roller shutter doors'],
+   ['steel-fabrication#balustrades', 'Frameless balustrades'],
+   ['steel-fabrication#general', 'General metalwork']].map(([target, label]) =>
+    `        <li><a href="/${target}">
+          <span class="sp-related-name">${esc(label)}</span>
           <span class="sp-related-go">${ICON_ARROW}</span>
-        </a></li>`;
-  }).join('\n')}
+        </a></li>`).join('\n')}
       </ul>`;
 
 /* The service-specific drawing. Each of these is already generated from the
@@ -123,12 +124,6 @@ function drawing(s) {
         ${profileSection('corrugated')}
       </figure>
       <p class="pf-note">Both sections drawn to the same scale, from the cover widths and rib heights below.</p>
-    </div>`;
-  }
-  if (s.bed) {
-    return `    <div class="sp-draw sp-bed" data-reveal="draw">
-      ${bed()}
-      <p class="pf-note">The bed at 3 000 × 1 500 mm, drawn to scale. The parts shown are ordinary fabrication shapes, included to show what fits — they are not a Kingson job.</p>
     </div>`;
   }
   if (s.folds) {
@@ -318,7 +313,7 @@ ${enquiryBlock(s.serviceName, { title: SERVICE_PAGE.ctaTitle, lede: SERVICE_PAGE
   <section class="sp-related sec-alt gl">
     <div class="wrap">
       <h2 class="display" data-reveal="rise"><span>${esc(SERVICE_PAGE.relatedTitle)}</span></h2>
-${relatedBlock(s.related)}
+${relatedBlock()}
       <p class="sp-back"><a href="/#services">${esc(SERVICE_PAGE.backHome)}${ICON_ARROW}</a></p>
     </div>
   </section>
