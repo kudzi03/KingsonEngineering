@@ -306,8 +306,8 @@ export function chromeTop({ home = false, current = '' } = {}) {
      ground as the bar, so the reverse artwork it used to carry for a dark
      photographic hero has nothing left to do. */
   const mark = home
-    ? `<span class="hd-home-reverse">${logo('reverse', '46px', '(max-width:760px) 116px, 134px', '', false, true)}</span><span class="hd-home-normal">${logo('normal', '46px', '(max-width:760px) 116px, 134px', '', false, true)}</span>`
-    : '      ' + logo('normal', '46px', '(max-width:760px) 116px, 134px', '', false, true);
+    ? `<span class="hd-home-reverse">${logo('reverse', '90px', '(max-width:760px) 180px, 220px', '', false, true)}</span><span class="hd-home-normal">${logo('normal', '90px', '(max-width:760px) 180px, 220px', '', false, true)}</span>`
+    : '      ' + logo('normal', '90px', '(max-width:760px) 180px, 220px', '', false, true);
 
   return `<a class="skip" href="#main">Skip to content</a>
 

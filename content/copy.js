@@ -178,7 +178,7 @@ export const PROCESS = {
     { n: '01', title: 'Enquiry acknowledged', commitment: 'Same working day', body: 'Your enquiry is acknowledged by the office.' },
     { n: '02', title: 'Written quotation', commitment: 'Within 5 working days', body: 'A written price for the work you have described.' },
     { n: '03', title: 'Site visit arranged', commitment: 'Within 2 working days', body: 'Where the job needs a visit.' },
-    { n: '04', title: 'Portal frame programme', commitment: 'Approximately 4–6 weeks, depending on size', body: 'For portal frame work. Other services are programmed in your quotation.', only: 'structural-steel-harare' }
+    { n: '04', title: 'Project timeframe', commitment: 'Approximately 4–6 weeks, depending on size', body: 'Your project programme is confirmed in your quotation.' }
   ],
   close: 'Start with drawings, site photos or a brief description.',
   closeAction: 'Send us the brief'
@@ -246,8 +246,8 @@ export const SPECS = {
 /* Label, headline figure, detail. Every figure is one confirmed elsewhere on
    the site; the band only states them large. */
 export const STRIP = [
-  ['Fibre laser',  '±0.1 mm',  'DXTECH · 0.4–20 mm cutting thickness'],
-  ['Cranage',      '25 t',     'Our own telescopic mobile crane'],
+  ['Fibre laser cutting', '±0.1 mm', 'DXTECH · 0.4–20 mm cutting thickness'],
+  ['Mobile cranage', '25 t', '25-tonne mobile crane · 9-tonne Hiab crane'],
   ['Workshop',     'Harare',   'No. 1262 Tynwald Industries'],
   ['Open',         'Mon–Fri',  '07:30 – 17:00 · enquiries acknowledged the same working day']
 ];

@@ -73,3 +73,76 @@
 body { font-size: 18px; }
 .proc-close > p { font-size: clamp(22px, 2.2vw, 28px); line-height: 1.5; }
 .sp-intro, .cin-body, .ch-body { font-size: 18px; line-height: 1.7; }
+
+/* Readability preview: close the gap between body copy and display headings. */
+:root { --reading-size: clamp(20px, 1.7vw, 28px); --t-ui: 20px; --t-small: 18px; --t-label: 18px; --hd-h: 112px; }
+body { font-size: var(--reading-size); }
+.proc-close > p, .quote-brief, .quote-brief-preview, .quote-brief p,
+.enq-aside .quote-brief p, .steps .step p:not(.step-commitment),
+.cin .hero-lede, .sp-intro, .sp-lede, .sp-send li, .sp-parts p,
+.cin-body, .ch-body, .ch-lede, .ws-lede, .band-lede,
+.work-intro-copy p, .work-sub, .work-details figcaption,
+.sec-head p:not(.eyebrow), .faq-item > p, .spec-rows dt, .spec-rows dd,
+.cx-body, .cx-row:nth-child(-n+2) .cx-body, .strip-v,
+.enq-aside-t, .enq-aside-meta, .privacy-note, .files-note,
+.policy-body p, .policy-body li { font-size: var(--reading-size); line-height: 1.55; }
+.eyebrow, .strip-k, .cx-lead span, .ws-place, .work-details .eyebrow,
+.mh-eyebrow, .mh-eyebrow span, .mh-bottom, .cin-image-label,
+.field label, .form-extra summary, .sp-rail, .ft-col, .ft-bottom { font-size: 18px; line-height: 1.5; }
+.btn, .btn-ghost, .contact-options a, .text-link, .ch-more a,
+.hd-act .btn, .hd-menu, .hd-nav a, html.hd-over .hd-nav a,
+.hd-home .hd-nav a, .motion-hero .mh-actions .btn,
+.motion-hero .mh-actions .btn-ghost { font-size: 18px; }
+.steps .step h3 { font-size: var(--reading-size); line-height: 1.4; }
+.steps .step .step-commitment, .sp-proc .step .step-commitment { font-size: clamp(25px, 2vw, 32px); line-height: 1.25; }
+.steps, .steps.steps-gantt { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.sp-proc .steps { grid-template-columns: 1fr; }
+.mh-content h1 { font-size: clamp(42px, 4.5vw, 76px); line-height: 1.08; }
+.mh-lede { font-size: var(--reading-size); line-height: 1.5; }
+.sec-head h2, .work-intro h2, .ch-title, .ws-copy h2,
+.cin .hero-title.sp-title { font-size: clamp(34px, 3.4vw, 56px); line-height: 1.12; }
+.strip-f { font-size: clamp(34px, 3vw, 48px); }
+.band-fig, .cut-tol .ch-big { font-size: clamp(54px, 6vw, 96px); }
+.hd .hd-mark img, .hd-home .hd-mark img { width: 220px; max-width: none; height: auto !important; }
+.hd-in, .hd-home .hd-in { min-height: 112px; gap: 20px; }
+.hd-home .hd-nav, .hd-nav { gap: 18px; }
+.ft-logo img, .menu-logo img { width: 220px; height: auto !important; }
+.hero.motion-hero { height: auto; min-height: 100svh; max-height: none; }
+.mh-content { padding-top: 160px; padding-bottom: 140px; }
+.mh-content .quote-support { max-width: 1040px; margin-inline: auto; }
+.mh-content .quote-brief { flex-basis: 420px; max-width: 640px; }
+.work-type, .cx-n, .cx-media.cx-plate span,
+.ch-strip .zoom > span:not(.zoom-cue), .steps .step-n,
+.spec-group > summary, .ct-list dt, .ct-map figcaption,
+.policy-date, .policy-nav a, .ft-policies a, .ft-policies button,
+.consent-banner p, .consent-actions button, .evidence-grid figcaption,
+.pj-video figcaption { font-size: 18px; line-height: 1.5; }
+.map-choice p, .policy-page article p, .policy-intro { font-size: var(--reading-size); line-height: 1.6; }
+.policy-heading h1 { font-size: clamp(34px, 3.4vw, 56px); }
+.consent-actions { flex-wrap: wrap; }
+.consent-actions button { flex: 1 1 145px; white-space: normal; }
+@media (max-width: 1250px) {
+  .hd-nav, .hd-act { display: none; }
+  .hd-menu { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; }
+}
+@media (max-width: 760px) {
+  :root { --reading-size: 20px; --hd-h: 142px; }
+  .hd-in, .hd-home .hd-in { display: grid; grid-template-columns: 1fr auto; gap: 0 12px; min-height: 142px; padding-block: 8px; }
+  .hd .hd-mark img, .hd-home .hd-mark img { width: 180px; max-width: none; height: auto !important; }
+  .hd-mark { grid-column: 1; grid-row: 1; }
+  .hd-menu { grid-column: 2; grid-row: 1; }
+  .hd-contacts { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; }
+  .hd-contacts a { width: auto; gap: 7px; font-size: 16px; padding: 6px; }
+  .hd-contacts a span { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; }
+  .mh-content { padding-top: 182px; padding-bottom: 130px; }
+  .mh-content .quote-brief { flex-basis: 100%; }
+  .mh-content h1 { font-size: clamp(34px, 9vw, 48px); }
+  .mh-content h1 > span { white-space: normal; }
+  .motion-hero .mh-actions { flex-wrap: wrap; }
+  .motion-hero .mh-actions .btn, .motion-hero .mh-actions .btn-ghost { padding-inline: 14px; font-size: 16px; }
+  .steps, .steps.steps-gantt { grid-template-columns: 1fr; }
+  .steps .step { gap: 12px; }
+  .bar a { font-size: 14px; }
+  .work-intro h2, .sec-head h2 { font-size: 36px; }
+  .work-intro-copy { display: block; }
+}
