@@ -21,7 +21,9 @@ enroll_enabled = true
 verify_enabled = true
 
 [auth.email]
-enable_signup = false
+# This controls the email provider, including EXISTING users' password login.
+# Public registration stays disabled by [auth].enable_signup = false above.
+enable_signup = true
 enable_confirmations = true
 secure_password_change = true
 max_frequency = "60s"

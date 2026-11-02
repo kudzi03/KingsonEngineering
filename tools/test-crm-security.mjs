@@ -1,4 +1,5 @@
 // Browser tests use synthetic accounts and intercept EVERY backend request.
+import './check-crm-auth-config.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
