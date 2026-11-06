@@ -246,7 +246,7 @@ export const SPECS = {
 /* Label, headline figure, detail. Every figure is one confirmed elsewhere on
    the site; the band only states them large. */
 export const STRIP = [
-  ['Fibre laser cutting', '±0.1 mm', 'DXTECH · 0.4–20 mm cutting thickness'],
+  ['Fibre laser cutting', '0.4–20 mm', 'Cutting thickness · depends on material'],
   ['Mobile cranage', '25 t', '25-tonne mobile crane · 9-tonne Hiab crane'],
   ['Workshop',     'Harare',   'No. 1262 Tynwald Industries'],
   ['Open',         'Mon–Fri',  '07:30 – 17:00 · enquiries acknowledged the same working day']
