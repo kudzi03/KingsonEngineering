@@ -12,16 +12,16 @@ const picture = (key, sizes, eager = false) => {
 export function projectVideo(id, sizes, fallback) {
   const films = id === 'a' ? ['roof-a','roof-b'] : [id === 'workshop' ? 'workshop' : 'roof-c'];
   const posters = films.map(file => file === 'workshop' ? 'workshopFilm' : 'roofFilm'+file.at(-1).toUpperCase());
-  return `${picture(fallback || posters[0],sizes)}<video class="project-video" data-project-video data-project-sources="${films.map(file=>`/assets/video/${file}.mp4`).join(' ')}" data-project-posters="${posters.map(key=>'/'+src(key,512)).join(' ')}" muted ${films.length===1?'loop ':''}playsinline preload="none" poster="/${src(posters[0],512)}" tabindex="-1" aria-hidden="true"></video>`;
+  return `${picture(fallback || posters[0],sizes)}<video class="project-video" data-project-video data-project-sources="${films.map(file=>`/assets/video/${file}.mp4`).join(' ')}" data-project-posters="${posters.map(key=>'/'+src(key,1080)).join(' ')}" muted ${films.length===1?'loop ':''}playsinline preload="none" poster="/${src(posters[0],1080)}" tabindex="-1" aria-hidden="true"></video>`;
 }
 
 export function cinematicHero() {
   return `<div class="mh-media" aria-hidden="true">
     <picture class="mh-poster">
       <source media="(min-width:900px)" srcset="${wideSrcset('portalFrame').split(', ').map(s=>'/'+s).join(', ')}" sizes="100vw">
-      <img src="/${src('roofFilmA',512)}" srcset="${srcset('roofFilmA').split(', ').map(s=>'/'+s).join(', ')}" sizes="100vw" width="512" height="808" alt="Steel roof structure and purlins by Kingson Engineering." fetchpriority="high" decoding="async">
+      <img src="/${src('roofFilmA',512)}" srcset="${srcset('roofFilmA').split(', ').map(s=>'/'+s).join(', ')}" sizes="100vw" width="${ASSETS.roofFilmA.w}" height="${ASSETS.roofFilmA.h}" alt="Steel roof structure and purlins by Kingson Engineering." fetchpriority="high" decoding="async">
     </picture>
-    <video class="mh-video" data-hero-video muted loop playsinline preload="none" poster="/${src('roofFilmA',512)}" tabindex="-1"></video>
+    <video class="mh-video" data-hero-video muted loop playsinline preload="none" poster="/${src('roofFilmA',1080)}" tabindex="-1"></video>
   </div>
   <div class="mh-shade" aria-hidden="true"></div>
   <div class="wrap mh-content">

@@ -58,14 +58,20 @@ except ImportError:
     raise SystemExit('This script needs Pillow:  pip install pillow')
 
 OUT_DIR = 'assets/img'
-WIDTHS = [440, 720, 900, 1100]
+WIDTHS = [440, 720, 900, 1100, 1600, 2200]
 QUALITY = 78
+# Topaz (High Fidelity V2, via Higgsfield) upscales of the same photographs:
+# the same frame at roughly 2x, sharpened, nothing added. When one exists it is
+# the master; crop boxes below are in ORIGINAL pixels and are scaled to it.
+# Full-bleed scenes on a 2x laptop want ~2600 px; nothing ships wider.
+HD_DIR = 'source-hd'
+MAX_W = 2560
 
 # The photographs that carry a full-bleed scene or a full-width band. Nothing
 # else gets a wide cut: a 52vw frame is not a band, and a 16:9 file squeezed
 # into it would lose its sides.
 WIDE_AR = 16 / 9
-WIDE_WIDTHS = [900, 1320]
+WIDE_WIDTHS = [900, 1320, 1920, 2560]
 WIDE_SLUGS = ['portal-frame', 'roof-trusses', 'roof-frame', 'laser-floor',
               'gantry', 'crane', 'welding-bay', 'laser-cutting', 'laser-sparks']
 # Where a wide cut is composed differently from the photograph's own focal
@@ -151,8 +157,9 @@ def main():
     manifest_path = os.path.join(OUT_DIR, 'manifest.json')
     if os.path.exists(manifest_path):
         with open(manifest_path, encoding='utf-8') as existing:
+            ours = {slug for _, slug, _ in JOBS}
             manifest = {slug: entry for slug, entry in json.load(existing).items()
-                        if entry.get('source', '').startswith('handoff/')}
+                        if slug not in ours}
 
     for src, slug, box in JOBS:
         if not os.path.exists(src):
@@ -160,8 +167,17 @@ def main():
             continue
 
         im = ImageOps.exif_transpose(Image.open(src)).convert('RGB')
+        hd = os.path.join(HD_DIR, os.path.splitext(src)[0] + '.jpg')
+        if os.path.exists(hd):
+            big = ImageOps.exif_transpose(Image.open(hd)).convert('RGB')
+            k = big.size[0] / im.size[0]
+            if box:
+                box = tuple(round(v * k) for v in box)
+            im, src = big, hd
         if box:
             im = im.crop(box)
+        if im.size[0] > MAX_W:
+            im = im.resize((MAX_W, round(im.size[1] * MAX_W / im.size[0])), Image.LANCZOS)
         w0, h0 = im.size
 
         # never upscale, and always include the native width

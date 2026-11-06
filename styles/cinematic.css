@@ -177,3 +177,45 @@ html.hero-passed .hd-home-normal { display: block; }
   .project-video { transition: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+/* ── Immersion, scrubbed by the scroll position itself ─────────────────────
+   CSS scroll-driven animations: the browser maps scroll position to progress on
+   the compositor. No scroll listener, nothing intercepted, the page scrolls at
+   the speed the OS says. Browsers without animation-timeline (Firefox today)
+   and Reduce Motion get the page exactly as it was. Type is never animated
+   here: only photographs, film and the shade over them.
+
+   · Hero: as it leaves, the film pushes in (camera dolly) and the copy lifts
+     away ahead of it, so the page reads as moving THROUGH the scene.
+   · Photographs: open from a slightly inset frame to full bleed while their
+     picture settles from 1.12 to 1.0. Uses the `scale` property and
+     `clip-path` only, so it composes with the hover zoom, the parallax
+     transform and the reveal transforms rather than fighting them. Anything
+     already carrying a `plate` reveal (its own clip-path) is left alone. */
+.mh-shade {
+  background:
+    radial-gradient(ellipse 62% 52% at 50% 50%, rgba(9,16,20,.48), rgba(9,16,20,0) 72%),
+    linear-gradient(180deg, rgba(9,16,20,.62) 0%, rgba(9,16,20,.30) 30%, rgba(9,16,20,.30) 62%, rgba(9,16,20,.80) 100%);
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion:no-preference) {
+    .hero.motion-hero { view-timeline: --hero block; }
+    .mh-media { animation: hero-dolly linear both; animation-timeline: --hero; animation-range: exit 0% exit 100%; }
+    .mh-shade { animation: hero-dim linear both; animation-timeline: --hero; animation-range: exit 0% exit 90%; }
+    .mh-content { animation: hero-arrive 850ms cubic-bezier(.2,.65,.3,1) both, hero-lift linear both;
+                  animation-timeline: auto, --hero; animation-range: normal, exit 0% exit 75%; }
+    @keyframes hero-dolly { to { scale: 1.14; } }
+    @keyframes hero-dim { to { background-color: rgba(9,16,20,.6); } }
+    /* filter:opacity, not opacity: it composes with hero-arrive's fade-in. */
+    @keyframes hero-lift { 60% { filter: opacity(0); } to { translate: 0 -12vh; filter: opacity(0); } }
+
+    :is(.work-image, .work-details .zoom, .cx-media:not(.cx-plate), .ws-img, .band-img, .cut-scene-img):not([data-reveal="plate"]) {
+      animation: frame-open linear both; animation-timeline: view(); animation-range: entry 0% cover 38%;
+    }
+    :is(.work-image, .cx-media, .ws-img) > img, .work-details .zoom img, :is(.band-photo, .cut-scene-img) img {
+      animation: frame-settle linear both; animation-timeline: view(); animation-range: entry 0% cover 60%;
+    }
+    @keyframes frame-open { from { clip-path: inset(7% 5% 7% 5%); } to { clip-path: inset(0); } }
+    @keyframes frame-settle { from { scale: 1.12; } to { scale: 1; } }
+  }
+}

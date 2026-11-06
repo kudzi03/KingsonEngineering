@@ -61,7 +61,17 @@ node tools/build-public.mjs --check  verify committed bundles using Node only
 node tools/preview-server.mjs serve a local preview at http://127.0.0.1:4173
 python3 tools/build-images.py rebuild the webp derivatives from the source
                               photographs (only when a photograph changes)
+python3 tools/build-hd-media.py --input <dir> --ffmpeg <bin>
+                              re-encode the Topaz-upscaled films, posters and
+                              architectural photographs
 ```
+
+**HD masters.** `source-hd/` holds Topaz (High Fidelity V2, via Higgsfield)
+upscales of the root photographs — the same frames at about 2x, sharpened,
+nothing added. `build-images.py` prefers them when present. The films were
+supplied at 512 px wide; the shipped ones are Topaz Video upscales (1080 px
+portrait, 1920 px wide hero). Neither is generated imagery: both still show
+only Kingson's own work.
 
 Run `check-truth.js` before every push. It also runs `render.js --check`, so a
 pass means the files you tested are the files you are shipping. Beyond the

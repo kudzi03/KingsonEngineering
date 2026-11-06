@@ -34,3 +34,6 @@ tools
 *.encrypted.json
 *.kingson.enc
 supabase
+
+# Topaz HD masters of the root photographs: build input, not the site.
+source-hd

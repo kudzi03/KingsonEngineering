@@ -19,67 +19,67 @@
     <priority>1.0</priority>
 
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-a-poster-512.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-a-poster-1080.webp</image:loc>
       <image:title>Roof trusses and sheeting</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-b-poster-512.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-b-poster-1080.webp</image:loc>
       <image:title>Another roof steelwork view</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-c-poster-512.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-c-poster-1080.webp</image:loc>
       <image:title>Blue-painted roof structure</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/workshop-poster-512.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/workshop-poster-1080.webp</image:loc>
       <image:title>Inside the Kingson workshop</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/architectural-glass-exterior-1536.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/architectural-glass-exterior-2560.webp</image:loc>
       <image:title>Glass balustrade and stair detail</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/architectural-atrium-interior-1536.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/architectural-atrium-interior-2560.webp</image:loc>
       <image:title>Glass balustrade overlooking an atrium</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/portal-frame-1320.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/portal-frame-2560.webp</image:loc>
       <image:title>Portal frame under erection</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-sparks-1440.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-sparks-2160.webp</image:loc>
       <image:title>The head cutting, sparks off the nozzle</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/crane-1320.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/crane-2560.webp</image:loc>
       <image:title>Our telescopic mobile crane</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/welding-bay-1920.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/welding-bay-2560.webp</image:loc>
       <image:title>Welding in the fabrication bay</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-trusses-1320.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-trusses-2560.webp</image:loc>
       <image:title>Long-span trusses and purlins</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/welding-hands-1920.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/welding-hands-2560.webp</image:loc>
       <image:title>Grating welded up on the workshop floor</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-cutting-1440.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-cutting-2160.webp</image:loc>
       <image:title>Cutting sheet on the DXTECH laser</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/nesting-station-1350.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/nesting-station-2560.webp</image:loc>
       <image:title>Nesting at the control station</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-floor-1350.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-floor-2560.webp</image:loc>
       <image:title>The DXTECH laser on the workshop floor</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/gantry-1350.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/gantry-2560.webp</image:loc>
       <image:title>Gantry and cable chain over the bed</image:title>
     </image:image>
   </url>
@@ -90,11 +90,11 @@
     <priority>0.8</priority>
 
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/portal-frame-1320.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/portal-frame-2560.webp</image:loc>
       <image:title>Portal frame under erection</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-frame-1320.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-frame-2560.webp</image:loc>
       <image:title>Roof structure from inside</image:title>
     </image:image>
   </url>
@@ -105,11 +105,11 @@
     <priority>0.8</priority>
 
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-trusses-1320.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-trusses-2560.webp</image:loc>
       <image:title>Long-span trusses and purlins</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-frame-1320.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/roof-frame-2560.webp</image:loc>
       <image:title>Roof structure from inside</image:title>
     </image:image>
   </url>
@@ -120,31 +120,31 @@
     <priority>0.8</priority>
 
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-cutting-1440.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-cutting-2160.webp</image:loc>
       <image:title>Cutting sheet on the DXTECH laser</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-machine-1536.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-machine-2560.webp</image:loc>
       <image:title>The machine from the loading side</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-floor-1350.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-floor-2560.webp</image:loc>
       <image:title>The DXTECH laser on the workshop floor</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/gantry-1350.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/gantry-2560.webp</image:loc>
       <image:title>Gantry and cable chain over the bed</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-sparks-1440.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/laser-sparks-2160.webp</image:loc>
       <image:title>The head cutting, sparks off the nozzle</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/nesting-station-1350.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/nesting-station-2560.webp</image:loc>
       <image:title>Nesting at the control station</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/cutting-head-1350.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/cutting-head-2560.webp</image:loc>
       <image:title>Plate loaded on the laser bed</image:title>
     </image:image>
   </url>
@@ -155,7 +155,7 @@
     <priority>0.8</priority>
 
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/welding-bay-1920.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/welding-bay-2560.webp</image:loc>
       <image:title>Welding in the fabrication bay</image:title>
     </image:image>
   </url>
@@ -166,7 +166,7 @@
     <priority>0.8</priority>
 
     <image:image>
-      <image:loc>https://www.kingsonengineering.co.zw/assets/img/crane-1320.webp</image:loc>
+      <image:loc>https://www.kingsonengineering.co.zw/assets/img/crane-2560.webp</image:loc>
       <image:title>Our telescopic mobile crane</image:title>
     </image:image>
   </url>

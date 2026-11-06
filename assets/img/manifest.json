@@ -1,242 +1,356 @@
 {
+ "roof-a-poster": {
+  "source": "topaz/roof-a.mp4",
+  "w": 1080,
+  "h": 1704,
+  "sizes": [
+   440,
+   720,
+   1080
+  ],
+  "cropped": false
+ },
+ "roof-b-poster": {
+  "source": "topaz/roof-b.mp4",
+  "w": 1080,
+  "h": 1814,
+  "sizes": [
+   440,
+   720,
+   1080
+  ],
+  "cropped": false
+ },
+ "roof-c-poster": {
+  "source": "topaz/roof-c.mp4",
+  "w": 1080,
+  "h": 1918,
+  "sizes": [
+   440,
+   720,
+   1080
+  ],
+  "cropped": false
+ },
+ "workshop-poster": {
+  "source": "topaz/workshop.mp4",
+  "w": 1080,
+  "h": 1918,
+  "sizes": [
+   440,
+   720,
+   1080
+  ],
+  "cropped": false
+ },
+ "architectural-glass-exterior": {
+  "source": "source-hd/architectural-glass-exterior.jpg",
+  "w": 2560,
+  "h": 1920,
+  "sizes": [
+   440,
+   720,
+   1100,
+   1600,
+   2200,
+   2560
+  ],
+  "cropped": false
+ },
+ "architectural-atrium-interior": {
+  "source": "source-hd/architectural-atrium-interior.jpg",
+  "w": 2560,
+  "h": 1920,
+  "sizes": [
+   440,
+   720,
+   1100,
+   1600,
+   2200,
+   2560
+  ],
+  "cropped": false
+ },
  "portal-frame": {
-  "source": "portalframe.jpeg",
-  "w": 1320,
-  "h": 888,
+  "source": "source-hd\\portalframe.jpg",
+  "w": 2560,
+  "h": 1722,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1320
+   1600,
+   2200,
+   2560
   ],
   "cropped": true,
   "wide": {
-   "w": 1319,
-   "h": 742,
+   "w": 2560,
+   "h": 1440,
    "sizes": [
     900,
-    1319
+    1320,
+    1920,
+    2560
    ]
   }
  },
  "crane": {
-  "source": "craneyard.jpeg",
-  "w": 1320,
-  "h": 1757,
+  "source": "source-hd\\craneyard.jpg",
+  "w": 2560,
+  "h": 3408,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1320
+   1600,
+   2200,
+   2560
   ],
   "cropped": true,
   "wide": {
-   "w": 1319,
-   "h": 742,
+   "w": 2560,
+   "h": 1440,
    "sizes": [
     900,
-    1319
+    1320,
+    1920,
+    2560
    ]
   }
  },
  "laser-machine": {
-  "source": "laser.jpeg",
-  "w": 1536,
-  "h": 2048,
+  "source": "source-hd\\laser.jpg",
+  "w": 2560,
+  "h": 3413,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1536
+   1600,
+   2200,
+   2560
   ],
   "cropped": false
  },
  "laser-floor": {
-  "source": "workshop.jpeg",
-  "w": 1350,
-  "h": 1800,
+  "source": "source-hd\\workshop.jpg",
+  "w": 2560,
+  "h": 3413,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1350
+   1600,
+   2200,
+   2560
   ],
   "cropped": false,
   "wide": {
-   "w": 1349,
-   "h": 759,
+   "w": 2560,
+   "h": 1440,
    "sizes": [
     900,
-    1320
+    1320,
+    1920,
+    2560
    ]
   }
  },
  "nesting-station": {
-  "source": "nesting.jpeg",
-  "w": 1350,
-  "h": 1800,
+  "source": "source-hd\\nesting.jpg",
+  "w": 2560,
+  "h": 3413,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1350
+   1600,
+   2200,
+   2560
   ],
   "cropped": false
  },
  "gantry": {
-  "source": "gantry.jpeg",
-  "w": 1350,
-  "h": 1794,
+  "source": "source-hd\\gantry.jpg",
+  "w": 2560,
+  "h": 3402,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1350
+   1600,
+   2200,
+   2560
   ],
   "cropped": true,
   "wide": {
-   "w": 1349,
-   "h": 759,
+   "w": 2560,
+   "h": 1440,
    "sizes": [
     900,
-    1320
+    1320,
+    1920,
+    2560
    ]
   }
  },
  "cutting-head": {
-  "source": "cuttinghead.jpeg",
-  "w": 1350,
-  "h": 1800,
+  "source": "source-hd\\cuttinghead.jpg",
+  "w": 2560,
+  "h": 3413,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1350
+   1600,
+   2200,
+   2560
   ],
   "cropped": false
  },
  "roof-frame": {
-  "source": "warehouse.jpeg",
-  "w": 1320,
-  "h": 714,
+  "source": "source-hd\\warehouse.jpg",
+  "w": 2560,
+  "h": 1385,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1320
+   1600,
+   2200,
+   2560
   ],
   "cropped": true,
   "wide": {
-   "w": 1269,
-   "h": 714,
+   "w": 2462,
+   "h": 1385,
    "sizes": [
     900,
-    1269
+    1320,
+    1920,
+    2462
    ]
   }
  },
  "roof-trusses": {
-  "source": "trusses.jpeg",
-  "w": 1320,
-  "h": 792,
+  "source": "source-hd\\trusses.jpg",
+  "w": 2560,
+  "h": 1536,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1320
+   1600,
+   2200,
+   2560
   ],
   "cropped": true,
   "wide": {
-   "w": 1319,
-   "h": 742,
+   "w": 2560,
+   "h": 1440,
    "sizes": [
     900,
-    1319
+    1320,
+    1920,
+    2560
    ]
   }
  },
  "welding-bay": {
-  "source": "weldingbay.jpeg",
-  "w": 1920,
-  "h": 2560,
+  "source": "source-hd\\weldingbay.jpg",
+  "w": 2560,
+  "h": 3413,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1920
+   1600,
+   2200,
+   2560
   ],
   "cropped": false,
   "wide": {
-   "w": 1920,
-   "h": 1080,
+   "w": 2560,
+   "h": 1440,
    "sizes": [
     900,
-    1320
+    1320,
+    1920,
+    2560
    ]
   }
  },
  "welding-hands": {
-  "source": "weldinghands.jpeg",
-  "w": 1920,
-  "h": 2560,
+  "source": "source-hd\\weldinghands.jpg",
+  "w": 2560,
+  "h": 3413,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1920
+   1600,
+   2200,
+   2560
   ],
   "cropped": false
  },
  "laser-cutting": {
-  "source": "lasercutting.jpeg",
-  "w": 1440,
-  "h": 2560,
+  "source": "source-hd\\lasercutting.jpg",
+  "w": 2160,
+  "h": 3840,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1440
+   1600,
+   2160
   ],
   "cropped": false,
   "wide": {
-   "w": 1440,
-   "h": 810,
+   "w": 2160,
+   "h": 1215,
    "sizes": [
     900,
-    1320
+    1320,
+    1920,
+    2160
    ]
   }
  },
  "laser-sparks": {
-  "source": "lasersparks.jpeg",
-  "w": 1440,
-  "h": 2560,
+  "source": "source-hd\\lasersparks.jpg",
+  "w": 2160,
+  "h": 3840,
   "sizes": [
    440,
    720,
    900,
    1100,
-   1440
+   1600,
+   2160
   ],
   "cropped": false,
   "wide": {
-   "w": 1440,
-   "h": 810,
+   "w": 2160,
+   "h": 1215,
    "sizes": [
     900,
-    1320
+    1320,
+    1920,
+    2160
    ]
   }
  },
@@ -263,70 +377,6 @@
    900,
    1100,
    1298
-  ],
-  "cropped": false
- },
- "roof-a-poster": {
-  "source": "handoff/assets/roof-structure-project-a.mp4",
-  "w": 512,
-  "h": 808,
-  "sizes": [
-   440,
-   512
-  ],
-  "cropped": false
- },
- "roof-b-poster": {
-  "source": "handoff/assets/roof-structure-project-b.mp4",
-  "w": 512,
-  "h": 860,
-  "sizes": [
-   440,
-   512
-  ],
-  "cropped": true
- },
- "roof-c-poster": {
-  "source": "handoff/assets/roof-structure-project-c-ORIGINAL.mp4",
-  "w": 512,
-  "h": 910,
-  "sizes": [
-   440,
-   512
-  ],
-  "cropped": false
- },
- "workshop-poster": {
-  "source": "handoff/assets/workshop-walkthrough.mp4",
-  "w": 512,
-  "h": 910,
-  "sizes": [
-   440,
-   512
-  ],
-  "cropped": false
- },
- "architectural-glass-exterior": {
-  "source": "handoff/assets/architectural-glass-exterior.jpeg",
-  "w": 1536,
-  "h": 1152,
-  "sizes": [
-   440,
-   720,
-   1100,
-   1536
-  ],
-  "cropped": false
- },
- "architectural-atrium-interior": {
-  "source": "handoff/assets/architectural-atrium-interior.jpeg",
-  "w": 1536,
-  "h": 1152,
-  "sizes": [
-   440,
-   720,
-   1100,
-   1536
   ],
   "cropped": false
  }

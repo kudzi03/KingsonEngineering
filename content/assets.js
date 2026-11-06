@@ -23,58 +23,58 @@ const V = (slug, widths) => widths.map((w) => `assets/img/${slug}-${w}.webp ${w}
 
 export const ASSETS = {
   roofFilmA: {
-    slug: 'roof-a-poster', w: 512, h: 808, widths: [440, 512],
+    slug: 'roof-a-poster', w: 1080, h: 1704, widths: [440, 720, 1080],
     focal: [0.5, 0.42], status: 'observed_photo',
     alt: 'Kingson roof steelwork with trusses and purlins supporting pale sheeting, viewed from inside the structure.'
   },
   roofFilmB: {
-    slug: 'roof-b-poster', w: 512, h: 860, widths: [440, 512],
+    slug: 'roof-b-poster', w: 1080, h: 1814, widths: [440, 720, 1080],
     focal: [0.5, 0.4], status: 'observed_photo',
     alt: 'Kingson roof trusses and sheeting viewed upwards towards the open edge of the structure.'
   },
   roofFilmC: {
-    slug: 'roof-c-poster', w: 512, h: 910, widths: [440, 512],
+    slug: 'roof-c-poster', w: 1080, h: 1918, widths: [440, 720, 1080],
     focal: [0.5, 0.4], status: 'observed_photo',
     alt: 'Blue-painted Kingson roof members and purlins receding beneath partial sheeting, with open bays against the sky.'
   },
   workshopFilm: {
-    slug: 'workshop-poster', w: 512, h: 910, widths: [440, 512],
+    slug: 'workshop-poster', w: 1080, h: 1918, widths: [440, 720, 1080],
     focal: [0.5, 0.5], status: 'observed_photo',
     alt: 'The Kingson workshop seen through its open roller door, with equipment and stacked steel beneath the roof.'
   },
   architecturalGlass: {
-    slug: 'architectural-glass-exterior', w: 1536, h: 1152, widths: [440, 720, 1100, 1536],
+    slug: 'architectural-glass-exterior', w: 2560, h: 1920, widths: [440, 720, 1100, 1600, 2200, 2560],
     focal: [0.65, 0.55], status: 'observed_photo',
     alt: 'Glass balustrade on a tiled staircase with dark metal clamps, in Kingson Engineering’s supplied project photograph.'
   },
   architecturalAtrium: {
-    slug: 'architectural-atrium-interior', w: 1536, h: 1152, widths: [440, 720, 1100, 1536],
+    slug: 'architectural-atrium-interior', w: 2560, h: 1920, widths: [440, 720, 1100, 1600, 2200, 2560],
     focal: [0.6, 0.55], status: 'observed_photo',
     alt: 'Glass balustrade with dark metal fixings overlooking a tiled atrium and tall windows, in Kingson Engineering’s supplied project photograph.'
   },
   portalFrame: {
-    slug: 'portal-frame', w: 1320, h: 888, widths: [440, 720, 900, 1100, 1320],
-    wide: { w: 1319, h: 742, widths: [900, 1319] },
+    slug: 'portal-frame', w: 2560, h: 1722, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
+    wide: { w: 2560, h: 1440, widths: [900, 1320, 1920, 2560] },
     focal: [0.54, 0.47],
     alt: 'Kingson Engineering steel portal frame under erection, with columns, rafters and purlins in place and a mobile crane inside the structure.',
     status: 'observed_photo'
   },
   roofTrusses: {
-    slug: 'roof-trusses', w: 1320, h: 792, widths: [440, 720, 900, 1100, 1320],
-    wide: { w: 1319, h: 742, widths: [900, 1319] },
+    slug: 'roof-trusses', w: 2560, h: 1536, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
+    wide: { w: 2560, h: 1440, widths: [900, 1320, 1920, 2560] },
     focal: [0.54, 0.42],
     alt: 'The underside of a long-span roof: red-oxide steel trusses and purlins carrying sheeting, photographed looking up along the building.',
     status: 'observed_photo'
   },
   roofFrame: {
-    slug: 'roof-frame', w: 1320, h: 714, widths: [440, 720, 900, 1100, 1320],
-    wide: { w: 1269, h: 714, widths: [900, 1269] },
+    slug: 'roof-frame', w: 2560, h: 1385, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
+    wide: { w: 2462, h: 1385, widths: [900, 1320, 1920, 2462] },
     focal: [0.50, 0.35],
     alt: 'A white-painted roof structure seen from inside: trusses, purlins and corrugated sheeting with rooflights between the bays.',
     status: 'observed_photo'
   },
   cuttingHead: {
-    slug: 'cutting-head', w: 1350, h: 1800, widths: [440, 720, 900, 1100, 1350],
+    slug: 'cutting-head', w: 2560, h: 3413, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
     /* A wide crop centred lower than this loses the head itself and shows
        only bare plate and slats. Measured against the 16:9 service card. */
     focal: [0.60, 0.45],
@@ -82,34 +82,34 @@ export const ASSETS = {
     status: 'observed_photo'
   },
   laserMachine: {
-    slug: 'laser-machine', w: 1536, h: 2048, widths: [440, 720, 900, 1100, 1536],
+    slug: 'laser-machine', w: 2560, h: 3413, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
     focal: [0.50, 0.53],
     alt: 'Fibre laser cutting machine and control screen in Kingson Engineering’s Tynwald workshop, Harare.',
     status: 'observed_photo'
   },
   laserFloor: {
-    slug: 'laser-floor', w: 1350, h: 1800, widths: [440, 720, 900, 1100, 1350],
-    wide: { w: 1349, h: 759, widths: [900, 1320] },
+    slug: 'laser-floor', w: 2560, h: 3413, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
+    wide: { w: 2560, h: 1440, widths: [900, 1320, 1920, 2560] },
     focal: [0.45, 0.52],
     alt: 'DXTECH fibre laser at Kingson Engineering’s Tynwald workshop, with the cutting bed, cable chain, control screen and extraction duct visible.',
     status: 'observed_photo'
   },
   nestingStation: {
-    slug: 'nesting-station', w: 1350, h: 1800, widths: [440, 720, 900, 1100, 1350],
+    slug: 'nesting-station', w: 2560, h: 3413, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
     focal: [0.45, 0.48],
     alt: 'DXTECH laser control station showing nested cutting paths at Kingson Engineering’s Tynwald workshop, with the cutting head behind the monitor.',
     status: 'observed_photo'
   },
   gantry: {
-    slug: 'gantry', w: 1350, h: 1794, widths: [440, 720, 900, 1100, 1350],
-    wide: { w: 1349, h: 759, widths: [900, 1320] },
+    slug: 'gantry', w: 2560, h: 3402, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
+    wide: { w: 2560, h: 1440, widths: [900, 1320, 1920, 2560] },
     focal: [0.46, 0.55],
     alt: 'Fibre laser gantry and cable chain travelling above steel plate on the slatted cutting bed at Kingson Engineering’s Tynwald workshop.',
     status: 'observed_photo'
   },
   laserCutting: {
-    slug: 'laser-cutting', w: 1440, h: 2560, widths: [440, 720, 900, 1100, 1440],
-    wide: { w: 1440, h: 810, widths: [900, 1320] },
+    slug: 'laser-cutting', w: 2160, h: 3840, widths: [440, 720, 900, 1100, 1600, 2160],
+    wide: { w: 2160, h: 1215, widths: [900, 1320, 1920, 2160] },
     /* The spark burst, not the skylight. The brightest pixels in this frame are
        the window behind the gantry; anchoring on those would centre the crop on
        an empty wall and cut the one thing the photograph is here for. */
@@ -118,18 +118,18 @@ export const ASSETS = {
     status: 'observed_photo'
   },
   laserSparks: {
-    slug: 'laser-sparks', w: 1440, h: 2560, widths: [440, 720, 900, 1100, 1440],
+    slug: 'laser-sparks', w: 2160, h: 3840, widths: [440, 720, 900, 1100, 1600, 2160],
     /* The wide cut is anchored low (0.70, see WIDE_ANCHOR_Y in
        tools/build-images.py): on the first screen it is the sparks that
        matter, not the head. */
-    wide: { w: 1440, h: 810, widths: [900, 1320] },
+    wide: { w: 2160, h: 1215, widths: [900, 1320, 1920, 2160] },
     focal: [0.38, 0.43],
     alt: 'Close view of the DXTECH fibre laser cutting head and sparks along the cut line at Kingson Engineering’s Tynwald workshop.',
     status: 'observed_photo'
   },
   weldingBay: {
-    slug: 'welding-bay', w: 1920, h: 2560, widths: [440, 720, 900, 1100, 1920],
-    wide: { w: 1920, h: 1080, widths: [900, 1320] },
+    slug: 'welding-bay', w: 2560, h: 3413, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
+    wide: { w: 2560, h: 1440, widths: [900, 1320, 1920, 2560] },
     /* Low on the frame, because the two men and the arc are in the bottom
        third and the top third is roof. A wide cut anchored at the middle is a
        photograph of sheeting. */
@@ -138,7 +138,7 @@ export const ASSETS = {
     status: 'observed_photo'
   },
   weldingHands: {
-    slug: 'welding-hands', w: 1920, h: 2560, widths: [440, 720, 900, 1100, 1920],
+    slug: 'welding-hands', w: 2560, h: 3413, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
     /* Held high: the lettering on the overalls is near the top of the frame and
        the arc is at the middle, and this frame is only in the page because both
        are in it. */
@@ -147,8 +147,8 @@ export const ASSETS = {
     status: 'observed_photo'
   },
   crane: {
-    slug: 'crane', w: 1320, h: 1757, widths: [440, 720, 900, 1100, 1320],
-    wide: { w: 1319, h: 742, widths: [900, 1319] },
+    slug: 'crane', w: 2560, h: 3408, widths: [440, 720, 900, 1100, 1600, 2200, 2560],
+    wide: { w: 2560, h: 1440, widths: [900, 1320, 1920, 2560] },
     focal: [0.50, 0.60],
     alt: 'Kingson Engineering’s yellow telescopic mobile crane in a yard, with its boom raised and KINGSON lettering on the counterweight.',
     status: 'observed_photo'
