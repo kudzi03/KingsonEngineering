@@ -4,11 +4,11 @@
    ═══════════════════════════════════════════════════════════════════════════
 
    Website form  →  POST /api/enquiry (this file)  →  Google Sheets API
-                 →  the spreadsheet Kingson Engineering owns.
+                 →  Kingson Engineering's enquiry spreadsheet.
 
    The browser never talks to Google and never holds a Google credential. The
    service-account key lives only in Vercel environment variables, and the
-   service account can reach exactly one spreadsheet: the one Kingson shared
+   service account can reach exactly one spreadsheet: the one that was shared
    with it. See docs/ENQUIRIES_GOOGLE_SHEETS.md for setup, rotation and recovery.
 
    No npm dependencies: the Google access token is a JWT signed here with

@@ -4,7 +4,7 @@
 
    One POST, to /api/enquiry on the website's own domain. The serverless
    function there (api/enquiry.js) checks the enquiry again, writes one row to
-   the Google Sheet Kingson Engineering owns, and hands back a reference
+   Kingson Engineering's enquiry spreadsheet (a Google Sheet), and hands back a reference
    (KE-…) the visitor can quote.
 
    The browser holds no credential of any kind and never contacts Google. That
@@ -12,7 +12,7 @@
    `connect-src 'self'` for this call.
 
    Before November 2026 this file posted straight to the developer-hosted CRM
-   database. It no longer does: new public enquiries go to Kingson's own sheet.
+   database. It no longer does: new public enquiries go to the enquiry spreadsheet.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { ENQUIRY_ENDPOINT } from '../content/enquiry-endpoint.js';

@@ -13,7 +13,7 @@ export const POLICIES = [
       ]],
       ['Enquiries and correspondence',[
         'You can browse our public pages without submitting an enquiry. If you use the enquiry form, we receive the organisation name, contact email address or telephone number, and the service and project details you enter. Optional details can include a job location and a description of your organisation. Business contact details and free-text descriptions can identify a person and are treated as personal information.',
-        'We use this information to respond, prepare quotations, arrange work and keep related business records. Submitting the form sends the enquiry through this website’s server to a private Google Sheets spreadsheet owned by Kingson. Authorised Kingson staff use it for this purpose. The website does not upload drawings; drawings you choose to email or send through WhatsApp are handled through those channels.',
+        'We use this information to respond, prepare quotations, arrange work and keep related business records. Submitting the form sends the enquiry through this website’s server to a private Google Sheets spreadsheet kept for Kingson’s enquiries. Only people authorised to handle Kingson’s enquiries can open it. The website does not upload drawings; drawings you choose to email or send through WhatsApp are handled through those channels.',
         'Please provide only information needed for your enquiry. Do not send identity documents, payment-card information or sensitive personal details through this form. We do not use enquiry details for marketing or sell them.'
       ]],
       ['Website operation and service providers',[

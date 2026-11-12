@@ -16,8 +16,8 @@
    "copy your enquiry" plus a plain explanation — not a dead Send button.
 
    THE ENQUIRY IS ACTUALLY SENT. Pressing the button posts the enquiry to
-   /api/enquiry on this website, which writes one row to the Google Sheet
-   Kingson Engineering owns (see interface/send-enquiry.js and api/enquiry.js).
+   /api/enquiry on this website, which writes one row to Kingson
+   Engineering's enquiry spreadsheet (see interface/send-enquiry.js and api/enquiry.js).
    Only when that row is confirmed does this module say anything was sent.
 
    The WhatsApp, mail and copy handoffs are unchanged and still shown, on both

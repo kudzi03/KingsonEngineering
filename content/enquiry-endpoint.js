@@ -4,7 +4,7 @@
 
    The form posts to this path on the website's own domain. The serverless
    function behind it (api/enquiry.js) validates the enquiry and writes it to
-   the Google Sheet that Kingson Engineering owns.
+   Kingson Engineering's enquiry spreadsheet (a Google Sheet).
 
    There is deliberately nothing else in this file. No Google address, no key,
    no spreadsheet ID: those live in Vercel environment variables, on the
