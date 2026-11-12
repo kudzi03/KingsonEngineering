@@ -7,14 +7,15 @@ How the enquiry form works, how to set it up, how to run it and how to fix it.
 | Item | Status |
 |---|---|
 | Code (`api/enquiry.js`, form client, tests) | Done, on branch `claude/charming-euler-515w4y` |
-| Tests against a faked Google | Done. 17 of 17 pass |
-| Preview deployment on Vercel | Done. `GET /api/enquiry` answers 405 as designed |
-| Kingson-owned Google account, spreadsheet, service account | Pending. Kingson must create them |
+| Tests against a faked Google | Done. 19 of 19 pass |
+| Preview deployment on Vercel | Done for commit `537d3c5`. `GET /api/enquiry` answers 405 as designed |
+| Spreadsheet, service account and key | Pending. The developer creates them in the developer's Google account for now |
 | Environment variables in Vercel | Pending |
 | Test with real credentials | Pending. Not done |
-| Production deployment | Pending. Needs approval |
+| Production deployment | Pending. Not approved. It waits for the environment variables |
+| Move to the Google account Kingson names | Pending, at handover. See "Move the sheet to another Google account" in section 6 |
 
-The integration is built and tested against a faked Google only. It is not configured and not live. Until the three environment variables are set, the endpoint answers 503 and the form shows the WhatsApp and email handoff.
+The integration is built and tested against a faked Google only. It is not connected and not live. Until the three environment variables are set, the endpoint answers 503 and the form shows the WhatsApp and email hand-off.
 
 ## 1. Architecture
 
@@ -26,15 +27,15 @@ api/enquiry.js  (Vercel serverless function, Node)
    |  1. checks the request and the fields
    |  2. gets a Google access token with the service-account key
    |  3. looks for a recent duplicate
-   |  4. appends one row
+   |  4. appends one row (and the heading row, if the sheet is empty)
    v
 Google Sheets API v4
    v
-Spreadsheet owned by Kingson Engineering, tab "Enquiries"
+The enquiry spreadsheet: its first tab, unless GOOGLE_SHEET_TAB names another
 ```
 
 - The browser never contacts Google and holds no credential.
-- The service-account key exists only in Vercel environment variables.
+- The service-account key exists only in Vercel environment variables. A person creates it in the Google account that holds the sheet and pastes it into Vercel. It must never be sent through chat or email.
 - The service account can reach only spreadsheets that have been shared with it. Share one sheet and it can reach one sheet.
 - The function has no npm dependencies. It signs the token request with `node:crypto` and calls Google with the built-in `fetch`.
 
@@ -44,7 +45,7 @@ Files:
 |---|---|
 | `api/enquiry.js` | The serverless function |
 | `interface/send-enquiry.js` | The browser call |
-| `interface/enquiry.js` | The form: validation, messages, WhatsApp and email handoff |
+| `interface/enquiry.js` | The form: validation, messages, WhatsApp and email hand-off |
 | `content/enquiry-endpoint.js` | The path the form posts to (`/api/enquiry`) |
 | `content/runtime-copy.js` | Form labels, options and messages |
 | `tools/test-enquiry-api.mjs` | Tests |
@@ -141,7 +142,7 @@ The append is retried once, after 0.4 s, only when Google answers 429 or 5xx. A 
 
 ## 3. The spreadsheet
 
-One tab, named `Enquiries` unless `GOOGLE_SHEET_TAB` says otherwise. Row 1 holds these headings, in this order. The function appends below them and never edits existing rows.
+The function writes to the first tab of the spreadsheet, unless `GOOGLE_SHEET_TAB` names another tab. Row 1 holds these headings, in this order. If the sheet is completely empty, the function writes the heading row itself, together with the first enquiry. After that it only appends, and it never rewrites a row.
 
 | Column | Heading | Filled by |
 |---|---|---|
@@ -164,9 +165,15 @@ Do not insert, delete or reorder columns A to N. Add your own columns from O onw
 
 ## 4. First-time setup
 
-Kingson does this in accounts Kingson owns. Do not use a VelaBuilt or personal developer account. Google's screen labels change from time to time; the steps name what to look for.
+The steps, in order: create a blank spreadsheet, create the service account and key, share the sheet with the service-account address as Editor, set the Vercel variables, deploy, send a test enquiry.
+
+For now the developer does this in the developer's own Google account. Until handover, enquiry data (business contact details) is held in that account. At handover Kingson names the Google account it wants, and the setup is repeated there: see "Move the sheet to another Google account" in section 6.
+
+Google's screen labels change from time to time; the steps name what to look for.
 
 ### 4.1 Google account
+
+These points apply to the account Kingson names at handover.
 
 1. Use a Google account that belongs to Kingson Engineering. A Google Workspace user on the company domain is best. A dedicated free Google account also works.
 2. Turn on 2-Step Verification for that account.
@@ -174,14 +181,14 @@ Kingson does this in accounts Kingson owns. Do not use a VelaBuilt or personal d
 
 ### 4.2 Spreadsheet
 
-1. Create a new Google Sheets spreadsheet, for example "Kingson website enquiries".
-2. Rename the first tab to `Enquiries`.
-3. Type the 14 headings from section 3 into row 1, cells A1 to N1.
+1. Create a new blank Google Sheets spreadsheet, for example "Kingson website enquiries".
+2. Leave it empty. The function uses the first tab and writes the 14 headings from section 3 together with the first enquiry.
+3. Optional: type the 14 headings into row 1 by hand, cells A1 to N1. The function then leaves row 1 alone.
 4. Copy the spreadsheet ID. It is the long string between `/d/` and `/edit` in the address.
 
 ### 4.3 Google Cloud project and service account
 
-1. Open the Google Cloud console with the same Kingson account. Create a project, for example "kingson-website".
+1. Open the Google Cloud console with the account that holds the spreadsheet. Create a project, for example "kingson-website".
 2. In APIs and Services, open the Library, find "Google Sheets API" and enable it.
 3. In IAM and Admin, open Service Accounts. Create a service account, for example `enquiries`. Do not grant it any project role. Do not grant users access to it.
 4. Open the service account, go to Keys, add a key, choose JSON. A file downloads. This file is the secret.
@@ -206,7 +213,7 @@ In the Vercel project: Settings, Environment Variables. Add these for the Produc
 | `GOOGLE_SHEET_ID` | The spreadsheet ID |
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | The service account's email address |
 | `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | The `private_key` value from the JSON file, including the BEGIN and END lines. Mark it Sensitive |
-| `GOOGLE_SHEET_TAB` | Optional. Only if the tab is not called `Enquiries` |
+| `GOOGLE_SHEET_TAB` | Optional. Leave it unset to use the first tab. Set it only if the enquiries tab is not the first tab |
 
 The key may be pasted with real line breaks or with `\n` in place of each line break. Both work.
 
@@ -214,9 +221,9 @@ Add the same variables to the Preview environment only if you want preview deplo
 
 ### 4.6 Deploy and test
 
-1. Redeploy production. Environment variable changes apply only to new deployments.
+1. Deploy the branch that contains the function to production, with approval. If the function is already in production, redeploy. Environment variable changes apply only to new deployments.
 2. Open the live site, fill in the form with non-sensitive sample data, for example business name "TEST - please ignore", and send it.
-3. Confirm the page shows a `KE-` reference and that a row with the same reference appears in the sheet.
+3. Confirm the page shows a `KE-` reference and that a row with the same reference appears in the sheet. On an empty sheet the heading row appears with it.
 4. Send the same text again from a fresh page load. Confirm the same reference comes back and no second row appears.
 5. Delete the test row, or set its status to Spam.
 
@@ -230,7 +237,7 @@ Delete the downloaded JSON key file from the computer and empty the recycle bin.
 |---|---|
 | No link sharing | Keep general access Restricted. Share with named people only |
 | Fewest editors | Give staff who only read the sheet Viewer or Commenter access |
-| Protect the header row | Data, Protect sheets and ranges, row 1, only the owner can edit |
+| Protect the header row | Data, Protect sheets and ranges, row 1, only the owner can edit. Do this after the heading row exists, or the function cannot write it |
 | Protect columns A, B and N | Same menu. Show a warning or restrict to the owner. The service account must stay able to edit |
 | Status dropdown | Data, Data validation on column L: New, Contacted, Quoted, Won, Lost, Spam |
 | Email on new rows | Tools, Notification settings (or notification rules): notify when any changes are made. Each staff member sets this for their own account |
@@ -248,7 +255,7 @@ Share button. Add or remove named Google accounts. Remove people when they leave
 
 ### Export
 
-File, Download, then Microsoft Excel or CSV. Store exports where Kingson keeps other customer records. A CSV opened in Excel is safe from formula injection because of the leading apostrophe, which will be visible on affected cells.
+File, Download, then Microsoft Excel or CSV. Store exports where Kingson keeps other customer records. The leading apostrophe is there so that a CSV opened in Excel does not run an affected cell as a formula. The apostrophe is visible on those cells.
 
 ### Rotate the key
 
@@ -263,7 +270,23 @@ Do this at least once a year, when someone with access to the Vercel project lea
 
 ### Move to a new spreadsheet
 
-Create the new sheet with the same headings, share it with the service account, change `GOOGLE_SHEET_ID` in Vercel, redeploy, test.
+Create a new blank sheet in the same Google account, share it with the service account as Editor, change `GOOGLE_SHEET_ID` in Vercel, redeploy, test. The function writes the headings with the first enquiry.
+
+### Move the sheet to another Google account
+
+Use this at handover, when Kingson names the Google account it wants. Until it is done, enquiry data is held in the developer's Google account. The old sheet is not transferred: a new one is made and the old one is removed.
+
+1. In the new account, create a blank spreadsheet (section 4.2).
+2. In the new account, create a Google Cloud project, a service account and a key (section 4.3).
+3. Share the new sheet with the new service account's address as Editor (section 4.4).
+4. In Vercel, update the three variables: `GOOGLE_SHEET_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL` and `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`.
+5. Redeploy production.
+6. Send a test enquiry and confirm the row arrives in the new sheet.
+7. Copy the old rows from the old sheet into the new one, below the heading row, in the same columns A to N.
+8. In the old account's Google Cloud project, delete the old key.
+9. Delete the old sheet.
+
+Then apply the protections in section 5 to the new sheet, share it with the staff who need it, and delete every downloaded key file.
 
 ## 7. Troubleshooting
 
@@ -275,8 +298,8 @@ Start with the Vercel function log: Vercel project, Logs, filter for `/api/enqui
 | Response 502 | `not saved token 400` or `401` | The private key was pasted wrongly, belongs to another service account, or was deleted in Google Cloud | Paste the key again from the JSON file, or create a new key. Redeploy |
 | Response 502 | `not saved append 403` | The sheet is not shared with the service account as Editor, or the Sheets API is not enabled in the project | Share the sheet. Enable the API |
 | Response 502 | `not saved append 404` | Wrong `GOOGLE_SHEET_ID` | Correct it, redeploy |
-| Response 502 | `not saved append 400` | The tab name does not match `GOOGLE_SHEET_TAB` (default `Enquiries`) | Rename the tab or set the variable. Redeploy |
-| Response 502 | `not saved TimeoutError` or `append 5xx` | Google was slow or down | Usually clears by itself. The visitor was shown the handoff |
+| Response 502 | `not saved append 400` | `GOOGLE_SHEET_TAB` is set and no tab has that name | Correct the variable, or remove it to use the first tab. Redeploy |
+| Response 502 | `not saved TimeoutError` or `append 5xx` | Google was slow or down | Usually clears by itself. The visitor was shown the hand-off |
 | Response 429 | none | Rate limit reached | Wait 10 minutes. If it is abuse, add or tighten the Firewall rule |
 | Response 403 | none | The form was submitted from a page on another host, or a proxy removed the `Origin` header | Use the site's own domain |
 | Response 400 `rejected` | none | The hidden field was filled (often a browser extension) or the form was sent in under 2.5 seconds | Ask the visitor to retry, or to use WhatsApp or email |
@@ -289,15 +312,16 @@ Nothing a visitor types is discarded when saving fails. The page says the enquir
 
 If saving stays broken:
 
-1. Check the phone and the two mailboxes for enquiries sent by handoff.
+1. Check the phone and the two mailboxes for enquiries sent by hand-off.
 2. Fix the cause using section 7.
-3. If the cause is not found quickly, the form still works through the handoff. To make the form go straight to the handoff, set `ENQUIRY_ENDPOINT` to `''` in `content/enquiry-endpoint.js`, rebuild, render and deploy.
+3. If the cause is not found quickly, the form still works through the hand-off. To make the form go straight to the hand-off, set `ENQUIRY_ENDPOINT` to `''` in `content/enquiry-endpoint.js`, rebuild, render and deploy.
 4. If a deployment caused the fault, roll back in Vercel.
 
 ## 9. Retention and access
 
 These are recommendations for Kingson to decide. They are not legal advice.
 
+- Until the sheet is moved at handover, it is held in the developer's Google account.
 - Name one person who owns the spreadsheet and one deputy.
 - Review the share list every quarter.
 - Decide how long enquiries that did not become work are kept, and delete or archive older rows on a schedule. The website privacy policy says enquiries are kept as needed to respond, manage the relationship and meet record-keeping duties.
@@ -310,6 +334,6 @@ These are recommendations for Kingson to decide. They are not legal advice.
 node tools/test-enquiry-api.mjs
 ```
 
-The script replaces Google with an in-process fake and generates a throwaway key. Nothing leaves the machine. It covers validation, the column layout, formula injection, origin checks, body limits, duplicates, rate limits, retry, log content, the unconfigured state and token caching.
+The script replaces Google with an in-process fake and generates a throwaway key. Nothing leaves the machine. It has 19 tests. They cover validation, the column layout, the heading row on an empty sheet, a named tab, formula injection, origin checks, body limits, duplicates, rate limits, retry, log content, the unconfigured state and token caching.
 
 `node tools/preview-server.mjs` runs the real function at http://127.0.0.1:4173/api/enquiry. Without the Google variables it answers 503.

@@ -25,7 +25,7 @@ The site has no runtime dependencies, so there are no package updates to apply f
 | Part | Where the master is | Backup |
 |---|---|---|
 | Website code, pages, images, films | The Git repository | Any full clone. Keep at least one copy outside GitHub |
-| Enquiries | The Google Sheet | Google's own version history, plus the monthly export |
+| Enquiries | The Google Sheet. It is held in the developer's Google account until it is moved to the account Kingson names at handover | Google's own version history, plus the monthly export |
 | Configuration | Vercel: three or four environment variables, the domain settings | Record the variable names (not the values) and the domain list in the account register. The key can always be re-created in Google Cloud |
 | Original photographs and films | Root `*.jpeg`, `source-hd/`, root `*.zip` in the developer's repository | Must be copied to Kingson-owned storage. The clean Kingson repository should not carry the archives |
 | CRM data | Supabase project in VelaBuilt's organisation | Kingson holds no backup today. See section 5 |
@@ -52,7 +52,7 @@ Use this if the Vercel project is lost, or when moving to a Kingson-owned Vercel
 2. In Vercel, add a new project and import that repository.
 3. Framework preset: Other. Build command: none. Output directory: leave empty (the repository root). Install command: none.
 4. Add the environment variables from `.env.example` to Production. Use the real values.
-5. Deploy. Check the `*.vercel.app` address: pages load, `/api/enquiry` answers 405 to a browser visit, `/crm` loads.
+5. Deploy. Check the `*.vercel.app` address: pages load, `/api/enquiry` answers 405 to a browser visit, `/crm` answers 404 because the CRM is switched off.
 6. Add the domains `www.kingsonengineering.co.zw` and `kingsonengineering.co.zw`. Make `www` primary so the apex redirects to it.
 7. Point DNS at the new project using the records Vercel shows. Do this only in an agreed window. Wait for the certificate to be issued.
 8. Send a test enquiry on the live domain.
@@ -67,11 +67,15 @@ Use this if the Vercel project is lost, or when moving to a Kingson-owned Vercel
 ### Restore the enquiry sheet
 
 - A row or cell was changed by mistake: File, Version history, restore the earlier version, or copy the values back.
-- The sheet was deleted: restore it from Google Drive's bin within Google's retention period. If it is gone, create a new sheet with the same headings, share it with the service account, set the new `GOOGLE_SHEET_ID` in Vercel, redeploy, and import the latest export.
+- The sheet was deleted: restore it from Google Drive's bin within Google's retention period. If it is gone, create a new blank sheet, share it with the service account as Editor, set the new `GOOGLE_SHEET_ID` in Vercel, redeploy and send a test enquiry. The function writes the headings with it. Then import the latest export below the heading row.
 
 ### Restore the enquiry integration
 
 Follow the setup steps in `docs/ENQUIRIES_GOOGLE_SHEETS.md` again. The service account and key can be re-created at any time. Nothing else depends on the old key.
+
+### Move the enquiry sheet to another Google account
+
+At handover the sheet moves from the developer's Google account to the account Kingson names. Follow "Move the sheet to another Google account" in `docs/ENQUIRIES_GOOGLE_SHEETS.md`.
 
 ## 4. Troubleshooting the public site
 
@@ -86,19 +90,23 @@ Follow the setup steps in `docs/ENQUIRIES_GOOGLE_SHEETS.md` again. The service a
 | Form saves but nobody is told | Sheet notification settings | Each staff member turns on notifications in the sheet for their own account |
 | Analytics shows nothing | Did the visitor allow analytics? Is the host the production host? | Analytics only runs after consent on `www.kingsonengineering.co.zw`. Ad blockers also stop it |
 | Map does not appear | The visitor must press "Load Google map" | By design |
-| `/crm` does not load or sign-in fails | This is the CRM, not the website | The CRM depends on the Supabase project in VelaBuilt's organisation |
+| `/crm` answers 404 | The CRM is switched off | Expected once the working branch is deployed. To bring the CRM back, see the note at the top of `.vercelignore` |
 | `checks` workflow fails | Open the failed step in GitHub Actions | Run the same command locally. See "Common failures" in `README.md` |
 
 ## 5. The CRM's data
 
 Stated plainly:
 
+- The CRM is being switched off. On the working branch it is not deployed, so `/crm` answers 404 once that branch is deployed.
 - The CRM database, sign-in records and stored files are in a Supabase project in VelaBuilt's organisation, on the free plan. The free plan has no scheduled platform backups.
 - The only automated backup is a script on one Windows PC, described in `CRM_OPERATOR_BACKUPS.md`. On 12 November 2026 its runs were failing far more often than they succeeded.
 - Kingson holds no CRM backup, key or passphrase that this work could confirm.
-- The route available to a CRM administrator is the encrypted export in the CRM's Settings screen. No export was taken in this work.
+- One route for a CRM administrator is the encrypted export in the CRM's Settings screen. It works only while the CRM can be opened. No export was taken in this work.
+- Database, first step: end every saved sign-in, disable the unused staff account, and turn on the database-level two-factor rule (`require_mfa = true`). Submitted but not applied. It waits for the developer's confirmation.
+- Database, second step, after the new enquiry flow is live in production: close the anonymous enquiry entrance and pause the Supabase project. Pending.
+- Pausing keeps the data. It does not delete it. A paused free-plan project can be restored only for a limited time. Confirm the period in the Supabase dashboard.
 
-Before the CRM is relied on, changed or retired: a CRM administrator should take one encrypted export, confirm it opens, and store the file and its passphrase separately in Kingson's keeping.
+Still outstanding: an export of the six real enquiries for Kingson. Take it before the project is paused, confirm it opens, and give it to Kingson. If the file has a passphrase, Kingson keeps the passphrase separately from the file.
 
 ## 6. Monitoring
 

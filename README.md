@@ -12,9 +12,11 @@ This file describes the repository as it stands on 12 November 2026. Read `CHANG
 |---|---|
 | Production site | Serving commit `8abd92b` from `main`, deployed 6 November 2026 |
 | Enquiry form in production | Still posts to the developer-hosted CRM database (old flow) |
-| Enquiry form on branch `claude/charming-euler-515w4y` | Posts to `/api/enquiry`, which writes to a Google Sheet. Built and tested against a faked Google. **Not configured and not live.** |
-| Google account, spreadsheet and service account | Pending. Kingson must create them. See `docs/ENQUIRIES_GOOGLE_SHEETS.md` |
-| CRM at `/crm` | Deployed and unchanged by the November work |
+| Working branch `claude/charming-euler-515w4y` | Head is commit `a51a011` or later. Nothing on it has been deployed to production |
+| Enquiry form on the working branch | Posts to `/api/enquiry`, which writes to a Google Sheet. Built and tested against a faked Google. **Not connected and not live.** |
+| Spreadsheet, service account and key | Pending. The developer creates them in the developer's Google account for now. At handover they are created again in the Google account Kingson names. See `docs/ENQUIRIES_GOOGLE_SHEETS.md` |
+| CRM at `/crm` | Switched off. On the working branch `crm/` is not deployed, so `/crm` answers 404 once the branch is deployed. Production still serves it until then |
+| Production deployment of the working branch | Not approved and not done. It waits for the Google values in Vercel |
 
 ## What the site is
 
@@ -22,7 +24,7 @@ This file describes the repository as it stands on 12 November 2026. Read `CHANG
 - Plain HTML, CSS and JavaScript modules. No framework. No React, Three.js, WebGL or GSAP.
 - No `package.json` and no runtime dependencies. Vercel serves the committed files; there is no build step on the server.
 - One serverless function, `api/enquiry.js`, which receives the enquiry form. It uses only Node's built-in modules.
-- A separate internal application, the CRM, built into `crm/` and served at `/crm` on the same domain. Its database is a Supabase project. See "The CRM" below.
+- A separate internal application, the CRM, which is switched off. Its source (`crm-src/`) and its built files (`crm/`) stay in the repository. They are not deployed from the working branch. See "The CRM" below.
 
 ## Verified stack
 
@@ -60,7 +62,7 @@ This file describes the repository as it stands on 12 November 2026. Read `CHANG
 | `.github/workflows/checks.yml` | Runs the gates and endpoint tests on every push | Yes | No |
 | `tools/` | Build scripts, publication gates, tests, CRM operator tooling | Yes | No |
 | `docs/` | Operating guides | Yes | No |
-| `crm/` | The built CRM (four files) | No. Built by `tools/build-crm.sh` | Yes |
+| `crm/` | The built CRM (four files) | No. Built by `tools/build-crm.sh` | No. Listed in `.vercelignore` since the CRM was switched off |
 | `crm-src/` | CRM source, Supabase migrations and Edge Function source | Yes | No |
 | `source-hd/` | Upscaled masters of the photographs (build input) | No | No |
 | Root `*.jpeg` | Original photographs (build input). `structure.jpeg`, `crane.jpeg` and their `KE …` copies are stock-style collages, not Kingson's work | No | No |
@@ -68,7 +70,7 @@ This file describes the repository as it stands on 12 November 2026. Read `CHANG
 | `.claude/` | Developer tooling and reference packs. Not used by the site | No | No |
 | Root `*.md` | Documentation. See "Which documents are current" | Yes | No |
 
-"Deployed" follows `.vercelignore`. The unbundled sources (`content/`, `styles/`, `main.js`, `interface/`, `scenes/`) stopped deploying with the November 2026 change, because every page loads only the two bundles.
+"Deployed" follows `.vercelignore` on the working branch. The unbundled sources (`content/`, `styles/`, `main.js`, `interface/`, `scenes/`) stopped deploying with the November 2026 change, because every page loads only the two bundles. `crm/` stopped deploying when the CRM was switched off.
 
 ## The one rule
 
@@ -101,7 +103,7 @@ node tools/preview-server.mjs
 
 Open http://127.0.0.1:4173. Set `PORT` to use another port. The preview server applies the headers in `vercel.json` and serves clean URLs.
 
-The preview server also runs `api/enquiry.js`. Without the three `GOOGLE_*` variables it answers `503` and the form shows the WhatsApp and email handoff. That is the expected local behaviour. Do not export real Google credentials on a development machine unless you intend to write to the real sheet.
+The preview server also runs `api/enquiry.js`. Without the three `GOOGLE_*` variables it answers `503` and the form shows the WhatsApp and email hand-off. That is the expected local behaviour. Do not export real Google credentials on a development machine unless you intend to write to the real sheet.
 
 To install esbuild outside the repository:
 
@@ -213,7 +215,7 @@ For a project film, place an MP4 in `assets/video/` and add a `videos` entry wit
 
 ### Change the enquiry configuration
 
-- To change where the form posts, or to switch automatic saving off, edit `content/enquiry-endpoint.js`. An empty path sends visitors straight to the WhatsApp and email handoff.
+- To change where the form posts, or to switch automatic saving off, edit `content/enquiry-endpoint.js`. An empty path sends visitors straight to the WhatsApp and email hand-off.
 - To change the spreadsheet, the service account or the tab name, change the environment variables in Vercel and redeploy. No code change is needed.
 - To change validation, limits or columns, edit `api/enquiry.js` and `tools/test-enquiry-api.mjs` together. The service and drawing option lists in `api/enquiry.js` must match `content/runtime-copy.js`; a test fails if they differ.
 
@@ -228,6 +230,8 @@ The Vercel project is connected to the GitHub repository.
 - There is no build command. Vercel uploads the files `.vercelignore` allows and builds `api/enquiry.js` as a function.
 
 Before merging to `main`: all six checks pass, the endpoint tests pass, and you have looked at the preview deployment.
+
+Do not deploy the working branch to production until the three `GOOGLE_*` variables are set in Vercel. Without them the form cannot save automatically, and visitors get only the WhatsApp and email hand-off.
 
 After changing an environment variable in Vercel, redeploy. A running deployment keeps the values it was built with.
 
@@ -254,12 +258,17 @@ A rollback does not change environment variables or the spreadsheet.
 
 ## The CRM
 
-The CRM is a separate internal system for enquiries, quotations and projects. Staff sign in at `/crm`.
+The CRM is a separate internal system for enquiries, quotations and projects. It is switched off for now. The developer decided this on 12 November 2026: Kingson did not buy the CRM, so it will not be maintained. If Kingson wants it later, it can be brought back as separate work.
 
-- Source: `crm-src/`. Built into `crm/` by `ESBUILD=<path> bash tools/build-crm.sh`.
-- Database, sign-in and file storage: a Supabase project in an organisation controlled by VelaBuilt, not by Kingson.
-- It was not changed in the November 2026 work. The public form on the working branch no longer writes to it.
-- Open security and ownership items for the CRM are listed in the handover package (Security Audit Report). Decide the CRM's future before relying on it.
+- On the working branch `crm/` is listed in `.vercelignore` and is not deployed. `/crm` answers 404 once the branch is deployed. Until then production still serves the CRM at `/crm`.
+- The `/crm` Content-Security-Policy override was removed from `vercel.json`. No policy on the site names the CRM database host.
+- The source stays in the repository: `crm-src/`, built into `crm/` by `ESBUILD=<path> bash tools/build-crm.sh`. The local preview server still serves `/crm` from `crm/`.
+- To bring the CRM back, follow the note at the top of `.vercelignore`: remove its `/crm` line and restore the `/crm` Content-Security-Policy in `vercel.json` from Git history (commit `7da1d8f`).
+- Database, sign-in and file storage: a Supabase project in an organisation controlled by VelaBuilt, not by Kingson. The public form on the working branch no longer writes to it.
+- Database, first step: end every saved sign-in, disable the unused staff account, and turn on the database-level two-factor rule (`require_mfa = true`). Submitted but not applied. It waits for the developer's confirmation.
+- Database, second step, after the new enquiry flow is live in production: close the anonymous enquiry entrance and pause the Supabase project. Pending. Pausing keeps the data. A paused free-plan project can be restored only for a limited time, so an export of the six real enquiries for Kingson is still outstanding.
+- Whether to export the data to Kingson and later delete the project is still a decision for Kingson and VelaBuilt.
+- Open security and ownership items for the CRM are listed in the handover package (Security Audit Report).
 
 ## Documentation
 
