@@ -18,6 +18,7 @@ async function fixture(width,blockedStorage=false){
   const external=[];
   await context.route('**/*',async route=>{
     const url=new URL(route.request().url());
+    if(url.origin===origin&&url.pathname==='/api/enquiry')return route.fulfill({contentType:'application/json',body:'{"ok":true,"ref":"ENQ-PRIVACY-LOCAL"}'});
     if(url.origin===origin){
       const response=await fetch(base+url.pathname+url.search);
       const headers=Object.fromEntries(response.headers);for(const key of ['content-encoding','content-length','transfer-encoding','connection'])delete headers[key];
@@ -26,7 +27,6 @@ async function fixture(width,blockedStorage=false){
     external.push(url.href);
     if(url.hostname==='www.googletagmanager.com')return route.fulfill({contentType:'text/javascript',body:'window.__qaGoogleTagLoaded=true;'});
     if(url.hostname==='www.google.com'&&url.pathname.startsWith('/maps'))return route.fulfill({contentType:'text/html',body:'<p>Local map test</p>'});
-    if(url.hostname.endsWith('.supabase.co'))return route.fulfill({contentType:'application/json',body:'{"ref":"ENQ-PRIVACY-LOCAL"}'});
     return route.abort();
   });
   await context.addInitScript(blocked=>{

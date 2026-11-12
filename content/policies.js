@@ -1,5 +1,7 @@
 import { ANALYTICS } from './analytics.js';
-export const POLICY_DATE = '2026-10-20';
+/* The revision date shown on the policy pages. Set it to the day a changed
+   policy is actually published, not the day it was drafted. */
+export const POLICY_DATE = '2026-11-12';
 export const POLICIES = [
   {
     slug:'privacy-policy', title:'Privacy policy',
@@ -11,12 +13,12 @@ export const POLICIES = [
       ]],
       ['Enquiries and correspondence',[
         'You can browse our public pages without submitting an enquiry. If you use the enquiry form, we receive the organisation name, contact email address or telephone number, and the service and project details you enter. Optional details can include a job location and a description of your organisation. Business contact details and free-text descriptions can identify a person and are treated as personal information.',
-        'We use this information to respond, prepare quotations, arrange work and keep related business records. Submitting the form saves the enquiry in Kingson’s enquiry system, hosted by Supabase. Authorised Kingson staff use it for this purpose. The website does not upload drawings; drawings you choose to email or send through WhatsApp are handled through those channels.',
+        'We use this information to respond, prepare quotations, arrange work and keep related business records. Submitting the form sends the enquiry through this website’s server to a private Google Sheets spreadsheet owned by Kingson. Authorised Kingson staff use it for this purpose. The website does not upload drawings; drawings you choose to email or send through WhatsApp are handled through those channels.',
         'Please provide only information needed for your enquiry. Do not send identity documents, payment-card information or sensitive personal details through this form. We do not use enquiry details for marketing or sell them.'
       ]],
       ['Website operation and service providers',[
-        'Vercel hosts the website and Supabase hosts the enquiry system. These providers process technical information needed to deliver, secure and operate their services, which can include an IP address, request details and security logs. Some of this technical information can be personal data.',
-        'Our enquiry database is hosted in Supabase’s EU West region. Hosting, analytics, email and messaging providers may process information outside Zimbabwe. Their processing is subject to their applicable terms and safeguards. Access to enquiry records is restricted; no internet service can promise absolute security.'
+        'Vercel hosts the website and the server-side handler that receives the enquiry form. Google provides the spreadsheet in which new enquiries are recorded. Enquiries received before the spreadsheet was introduced are held in Kingson’s earlier enquiry system, hosted by Supabase. These providers process technical information needed to deliver, secure and operate their services, which can include an IP address, request details and security logs. Some of this technical information can be personal data.',
+        'Google and Vercel store and process data in data centres outside Zimbabwe; the earlier enquiry system is hosted in Supabase’s EU West region. Hosting, spreadsheet, analytics, email and messaging providers may therefore process information outside Zimbabwe. Their processing is subject to their applicable terms and safeguards. Access to enquiry records is restricted; no internet service can promise absolute security.'
       ]],
       ['Optional Google Analytics',[
         (ANALYTICS.measurementId ? 'We use Google Analytics 4 only if you choose Allow analytics.' : 'Google Analytics is currently disabled. If activated, it will load only if you choose Allow analytics.')+' It measures page visits and broad contact actions to help us understand the website. We block the Google tag until permission is given; rejecting optional analytics keeps it blocked.',

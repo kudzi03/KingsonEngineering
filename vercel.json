@@ -55,8 +55,16 @@
           "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
         },
         {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-2LWQQtsDkhm+rcSzNHT5om/zkcntoYlHl0A6TXCAf2Q=' 'sha256-4Ru1qQgAK/yntA8j19fCWxMmoJaDlOfqzwO3qe6cj3E=' 'sha256-5K8CdCVRF2U2sMbOBKJqfZDFZ4ZEQ6t0q7wS+Q3D2ug=' 'sha256-9hDRaYN9MZ2fznvfoeyidKLR803Ezd6zBdvTG/WdJgA=' 'sha256-P4MK15HrhweE+8GY2tVCT+SRjbtfdJNY5i+J8CF/B3w=' 'sha256-XJH4nrBKQCd6lktjjEOy1hbtXFNZ3fG80LJz1W1Ydgg=' 'sha256-YDwEkSzwGCoNjebNzan4K975x7S9mDLsavrh9rqAu8Q=' 'sha256-YE/VULf35VVOv6XH1NH99hhPsy3aApwrnFHZW8r/1II=' 'sha256-ZkdiipPbrTK+ARiGjzmbAvc3UDXHd4QRMEHcrHKabms=' 'sha256-opRJNulobioDH1E3CnSE8A33VO+uwVL/DP+20RO6MHw='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.analytics.google.com; media-src 'self'; frame-src https://www.google.com; frame-ancestors 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; connect-src 'self' https://fgzwcxwmaohowryzdgui.supabase.co https://*.google-analytics.com https://*.analytics.google.com"
+          "value": "default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-2LWQQtsDkhm+rcSzNHT5om/zkcntoYlHl0A6TXCAf2Q=' 'sha256-4Ru1qQgAK/yntA8j19fCWxMmoJaDlOfqzwO3qe6cj3E=' 'sha256-5K8CdCVRF2U2sMbOBKJqfZDFZ4ZEQ6t0q7wS+Q3D2ug=' 'sha256-9hDRaYN9MZ2fznvfoeyidKLR803Ezd6zBdvTG/WdJgA=' 'sha256-KRTs9PQZzWIC+dc4gCs+5A7cOc7rRpfL/0FQ2HmDUfU=' 'sha256-LNFwsA2IIn5BVHcvbqGqGaceKjjDH+ev8FI/f+XT58g=' 'sha256-PRiZ/SCmsPCrhZ2mhsbT5NpQWlxRjZ6N2G4DctPWSPI=' 'sha256-XJH4nrBKQCd6lktjjEOy1hbtXFNZ3fG80LJz1W1Ydgg=' 'sha256-YDwEkSzwGCoNjebNzan4K975x7S9mDLsavrh9rqAu8Q=' 'sha256-ZkdiipPbrTK+ARiGjzmbAvc3UDXHd4QRMEHcrHKabms='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.analytics.google.com; media-src 'self'; frame-src https://www.google.com; frame-ancestors 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com"
         }
       ]
     },

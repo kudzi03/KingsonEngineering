@@ -9,7 +9,7 @@ import { execFileSync } from 'node:child_process';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const version = '0.28.2';
 const inputs = ['main.js','assets/fonts.css','styles/tokens.css','styles/site.css','styles/editorial.css','styles/cinematic.css','styles/privacy.css','styles/quote-clarity.css','styles/public.css',
-  'content/assets.js','content/company.js','content/crm.js','content/runtime-copy.js','tools/build-public.mjs',
+  'content/assets.js','content/company.js','content/enquiry-endpoint.js','content/runtime-copy.js','tools/build-public.mjs',
   ...['interface','scenes'].flatMap(dir=>readdirSync(root+dir).filter(f=>f.endsWith('.js')).sort().map(f=>`${dir}/${f}`))];
 const sha = data => createHash('sha256').update(data).digest('hex');
 const sourceHash = sha(inputs.map(file=>file+'\0'+readFileSync(root+file,'utf8')).join('\0'));

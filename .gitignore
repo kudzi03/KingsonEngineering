@@ -4,3 +4,20 @@ supabase/.temp/
 *.encrypted.json
 *.backup
 *.dump
+
+# Secrets and local configuration. Real values live in Vercel environment
+# variables; only .env.example (placeholders) is committed.
+.env
+.env.*
+!.env.example
+.vercel
+
+# Tooling output
+node_modules
+__pycache__/
+*.pyc
+
+# The handover package holds the security audit. It is delivered to Kingson
+# directly and is not part of the website's source.
+KINGSON_ENGINEERING_HANDOVER/
+KINGSON_ENGINEERING_HANDOVER.zip

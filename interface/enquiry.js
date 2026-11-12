@@ -2,7 +2,7 @@
    interface/enquiry.js — the enquiry form
    ═══════════════════════════════════════════════════════════════════════════
 
-   The form validates locally, saves the enquiry to Kingson's database (see
+   The form validates locally, saves the enquiry to Kingson's enquiry sheet (see
    below), and composes the message an estimator would want to receive so the
    visitor can also hand it to an app they already have. No upload, no ticket
    number.
@@ -15,10 +15,10 @@
    verified recipient. If that ever stops being true, the honest state is
    "copy your enquiry" plus a plain explanation — not a dead Send button.
 
-   THE ENQUIRY IS NOW ACTUALLY SENT. Pressing the button writes the enquiry
-   into Kingson's database, where a trigger turns it into an opportunity, a
-   timeline entry and a dated follow-up task. Only when the database confirms
-   the row does this module say anything was sent.
+   THE ENQUIRY IS ACTUALLY SENT. Pressing the button posts the enquiry to
+   /api/enquiry on this website, which writes one row to the Google Sheet
+   Kingson Engineering owns (see interface/send-enquiry.js and api/enquiry.js).
+   Only when that row is confirmed does this module say anything was sent.
 
    The WhatsApp, mail and copy handoffs are unchanged and still shown, on both
    outcomes. They are the reason a failed save is never a lost enquiry: the
@@ -29,7 +29,7 @@
 import { ENQUIRY } from '../content/runtime-copy.js';
 import { hasVerifiedRecipient, recipients } from '../content/company.js';
 import { sendEnquiry } from './send-enquiry.js';
-import { canSubmit } from '../content/crm.js';
+import { canSubmit } from '../content/enquiry-endpoint.js';
 
 /* Field id → the label the composed message uses. Order is the message's
    order, which is the order an estimator reads in. */
@@ -103,7 +103,7 @@ export function mountEnquiry() {
   }
 
   let inFlight = false;
-  /* The text of the last enquiry the database confirmed. Pressing send again
+  /* The text of the last enquiry the server confirmed. Pressing send again
      on the same words shows the same confirmation instead of creating a
      second record; change anything and it is a new enquiry. */
   let lastSaved = null;

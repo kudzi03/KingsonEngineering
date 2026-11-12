@@ -9,7 +9,6 @@ crm-src
 # Plans, notes and the source-of-truth document are for whoever works on this,
 # not for whoever visits it.
 *.md
-!README.md
 
 # Skills, their reference material and their starter files. Tooling for
 # whoever works on this repository, and several of the starters are HTML —
@@ -37,3 +36,19 @@ supabase
 
 # Topaz HD masters of the root photographs: build input, not the site.
 source-hd
+
+# Editable browser sources. Every page loads the two bundles in assets/
+# (site.min.css, site.min.js) and nothing else, so the unbundled modules are
+# not needed on the server. api/ is NOT listed: that is the enquiry function.
+/main.js
+/content
+/interface
+/scenes
+/styles
+
+# Local configuration, the handover package and test output never deploy.
+.env
+.env.*
+KINGSON_ENGINEERING_HANDOVER
+KINGSON_ENGINEERING_HANDOVER.zip
+docs

@@ -1,4 +1,6 @@
 // Public pages share an origin with the CRM. Allow only our scripts and consent-gated GA.
+// The enquiry form posts to /api/enquiry on this origin, so public pages need no
+// third-party connect-src except Analytics. Only the /crm rule names the CRM database.
 // Inline scripts are authorized by their exact content, never by unsafe-inline.
 import {readFileSync,readdirSync,writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
@@ -16,7 +18,7 @@ export function updateSecurityHeaders(check=false) {
   const csp=["default-src 'self'","script-src 'self' https://www.googletagmanager.com "+[...hashes].sort().join(' '),
     "style-src 'self' 'unsafe-inline'","font-src 'self'","img-src 'self' data: https://*.google-analytics.com https://*.analytics.google.com",
     "media-src 'self'","frame-src https://www.google.com","frame-ancestors 'self'","form-action 'self'","base-uri 'self'","object-src 'none'",
-    "connect-src 'self' https://fgzwcxwmaohowryzdgui.supabase.co https://*.google-analytics.com https://*.analytics.google.com"].join('; ');
+    "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com"].join('; ');
   for(const entry of config.headers) {
     if(entry.source==='/(.*)' && !entry.has) entry.headers.find(h=>h.key==='Content-Security-Policy').value=csp;
     if(entry.source==='/crm' || entry.source==='/crm/(.*)') {

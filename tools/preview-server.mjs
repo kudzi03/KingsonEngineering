@@ -1,12 +1,16 @@
 #!/usr/bin/env node
-// Local review only. No database proxy, credentials or deployment action.
+// Local review only. No credentials or deployment action. /api/enquiry runs the
+// real function; it writes to Google Sheets only if you export the three
+// GOOGLE_* variables yourself, which a normal local preview never does.
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { resolve, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
+import { createRequire } from 'node:module';
 const root = fileURLToPath(new URL('../', import.meta.url));
+const enquiry = createRequire(import.meta.url)('../api/enquiry.js');
 const port = Number(process.env.PORT || 4173);
 const deploymentHeaders=JSON.parse(await readFile(resolve(root,'vercel.json'),'utf8')).headers;
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.mjs':'text/javascript', '.css':'text/css', '.webp':'image/webp', '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2', '.xml':'application/xml', '.txt':'text/plain', '.vtt':'text/vtt', '.mp4':'video/mp4', '.webm':'video/webm' };
@@ -18,6 +22,10 @@ createServer(async (req,res) => {
         for(const header of rule.headers) res.setHeader(header.key,header.value);
       }
     }
+    /* The enquiry function, exactly as Vercel runs it. Without the Google
+       environment variables it answers 503 and the form falls back to the
+       WhatsApp and email handoff — which is the behaviour to expect locally. */
+    if (path === '/api/enquiry') { await enquiry(req, res); return; }
     if (path.startsWith('/_vercel/')) { res.writeHead(200, {'Content-Type':'text/javascript'}).end(''); return; }
     if (/^\/(?:\.git|\.claude|tools|crm-src)(?:\/|$)/.test(path) || path.endsWith('.md')) { res.writeHead(404).end(); return; }
     let file = resolve(root, '.' + path);

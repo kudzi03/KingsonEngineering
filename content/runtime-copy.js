@@ -92,16 +92,16 @@ export const ENQUIRY = {
   choose: 'Choose one',
   draftTitle: 'Ready to send.',
 
-  /* The form now actually reaches Kingson: the enquiry is written into their
-     system and is on somebody's follow-up list. These three
-     lines are the only place on the site that claims anything was sent, and
-     they are only shown when the database has confirmed the row. */
+  /* The form actually reaches Kingson: the enquiry is written to Kingson's
+     own enquiry sheet. These three lines are the only place on the site that
+     claims anything was sent, and they are only shown when the server has
+     confirmed the row. */
   sending: 'Sending your enquiry…',
   /* The draft heading changes once the enquiry is already in: "ready to send"
      would be wrong there, because it has been. */
   draftAlsoTitle: 'Send it yourself as well, if you like.',
   sentTitle: 'Your enquiry has reached Kingson.',
-  /* Only shown when the database returned a reference for the row. */
+  /* Only shown when the server returned a reference for the row. */
   sentRef: 'Reference: {ref}. Quote it if you call or write about this enquiry.',
   sentBody: 'It is logged with the office, and Kingson acknowledges enquiries the same working day. If you would rather also send it yourself — on WhatsApp or by email — the message is below.',
   /* Shown when the save failed. It must not read like a dead end: the handoff

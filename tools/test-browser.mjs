@@ -20,8 +20,8 @@ const routes = ['/', ...SERVICES.map(s => '/' + s.slug), ...POLICIES.map(p=>'/'+
 const makePage = async (width, options = {}) => {
   const page = await browser.newPage({ viewport: { width, height: width === 390 ? 844 : width === 1920 ? 1080 : 900 }, reducedMotion:'reduce', ...options });
   page.on('pageerror', error => results.errors.push(error.message));
-  // No test can accidentally write to Kingson's CRM or trigger notifications.
-  await page.route('**/*.supabase.co/**', route => route.abort());
+  // No test can accidentally write to Kingson's enquiry sheet.
+  await page.route('**/api/enquiry', route => route.abort());
   // Keep visual and accessibility checks deterministic, without third-party map UI.
   await page.route('https://www.google.com/maps/**', route => route.fulfill({ body:'', contentType:'text/html' }));
   await page.addInitScript(()=>{try{localStorage.setItem('kingson_privacy_v1',JSON.stringify({version:1,analytics:'denied',expires:Date.now()+86400000}));}catch{}});
@@ -104,9 +104,9 @@ try {
   assert.equal(await page.locator('[aria-invalid="true"]').count(),3);
   assert.ok(await page.locator('[data-error-summary]').isVisible());
   const payloads=[];
-  await page.route('**/rest/v1/rpc/submit_enquiry', async route => {
+  await page.route('**/api/enquiry', async route => {
     payloads.push(route.request().postDataJSON());
-    await route.fulfill({contentType:'application/json',body:JSON.stringify({ref:'ENQ-LOCAL-TEST'})});
+    await route.fulfill({contentType:'application/json',body:JSON.stringify({ok:true,ref:'ENQ-LOCAL-TEST'})});
   });
   await page.locator('#f-company').fill('Local QA organisation');
   await page.locator('#f-contact').fill('qa@example.invalid');
@@ -117,23 +117,23 @@ try {
   await page.locator('[data-review]').click();
   await page.locator('[data-sent][data-state="ok"]').waitFor();
   assert.equal(payloads.length,1);
-  assert.equal(payloads[0].p.company,'Local QA organisation');
-  assert.equal(payloads[0].p.page,'/');
+  assert.equal(payloads[0].company,'Local QA organisation');
+  assert.equal(payloads[0].page,'/');
   assert.ok(await page.locator('[data-sent-body]').textContent().then(t=>t.includes('ENQ-LOCAL-TEST')));
   assert.ok((await page.locator('[data-draft-actions] a[href^="mailto:"]').getAttribute('href')).startsWith('mailto:technical@kingsonengineering.co.zw'));
   assert.ok((await page.locator('[data-draft-actions] a[href^="https://wa.me/"]').getAttribute('href')).includes('263772262869?text='));
   await page.locator('[data-review]').click();
   assert.equal(payloads.length,1,'Repeated identical submit must not duplicate a record');
-  await page.route('**/rest/v1/rpc/submit_enquiry', route=>route.fulfill({status:503,body:'Temporary local test failure'}));
+  await page.route('**/api/enquiry', route=>route.fulfill({status:503,body:'Temporary local test failure'}));
   await page.locator('#f-description').fill('Different local enquiry for the failure path.');
   await page.locator('[data-review]').click();
   await page.locator('[data-sent][data-state="failed"]').waitFor();
   assert.equal(await page.locator('[data-draft-actions] a').count(),2,'Handoff links survive a failed save');
   await page.goto(base+'/',{waitUntil:'networkidle'});
   const shortPayloads=[];
-  await page.route('**/rest/v1/rpc/submit_enquiry', async route=>{
+  await page.route('**/api/enquiry', async route=>{
     shortPayloads.push(route.request().postDataJSON());
-    await route.fulfill({contentType:'application/json',body:JSON.stringify({ref:'ENQ-LOCAL-SHORT'})});
+    await route.fulfill({contentType:'application/json',body:JSON.stringify({ok:true,ref:'ENQ-LOCAL-SHORT'})});
   });
   await page.locator('#f-company').fill('Short enquiry QA');
   await page.locator('#f-contact').fill('+263770000000');
@@ -141,10 +141,10 @@ try {
   await page.locator('[data-review]').click();
   await page.locator('[data-sent][data-state="ok"]').waitFor();
   assert.equal(shortPayloads.length,1,'The short form submits without expanding optional details');
-  assert.equal(shortPayloads[0].p.service,'Not sure yet');
-  assert.equal(shortPayloads[0].p.drawings,null);
-  assert.equal(shortPayloads[0].p.location,null);
-  results.interactions.push('Menu opens, traps and restores focus; Escape closes menu and image dialog; FAQ disclosure works; form validation, RPC payload, reference display, duplicate prevention, technical-email and WhatsApp handoffs, and failed-save fallbacks pass. All network writes intercepted.');
+  assert.equal(shortPayloads[0].service,'Not sure yet');
+  assert.equal(shortPayloads[0].drawings,'');
+  assert.equal(shortPayloads[0].location,'');
+  results.interactions.push('Menu opens, traps and restores focus; Escape closes menu and image dialog; FAQ disclosure works; form validation, /api/enquiry payload, reference display, duplicate prevention, technical-email and WhatsApp handoffs, and failed-save fallbacks pass. All network writes intercepted.');
   await page.close();
   const nojs = await makePage(390,{javaScriptEnabled:false});
   await nojs.goto(base+'/');

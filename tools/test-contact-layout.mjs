@@ -20,7 +20,7 @@ try {
   for(const [width,height] of [[1440,900],[1920,1080],[1280,720],[1024,768],[390,844],[320,640]]) {
     const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
     page.on('pageerror',e=>errors.push(e.message));
-    await page.route('**/*.supabase.co/**',r=>r.abort());
+    await page.route('**/api/enquiry',r=>r.abort());
     await page.addInitScript(()=>localStorage.setItem('kingson_privacy_v1',JSON.stringify({version:1,analytics:'denied',expires:Date.now()+86400000})));
     await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
     for(const section of ['.hero','#workshop']) {
