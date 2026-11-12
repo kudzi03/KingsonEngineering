@@ -1,0 +1,41 @@
+# Runs the publication gates and the enquiry endpoint tests on every push and
+# pull request. Node only: no packages are installed and no third-party action
+# is used, so there is nothing here to keep patched except the runner image.
+name: checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the commit
+        env:
+          TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          git init -q .
+          git remote add origin "https://x-access-token:${TOKEN}@github.com/${REPO}.git"
+          git fetch -q --depth 1 origin "${SHA}"
+          git checkout -q FETCH_HEAD
+          git remote remove origin
+      - name: Node version
+        run: node --version
+      - name: Generated pages match the content layer
+        run: node tools/render.js --check
+      - name: Publication gate
+        run: node tools/check-truth.js
+      - name: Search and sharing metadata
+        run: |
+          node tools/check-search.mjs
+          node tools/check-sharing.mjs
+      - name: Bundles match their sources
+        run: node tools/build-public.mjs --check
+      - name: Security headers match the pages
+        run: node tools/security-headers.mjs --check
+      - name: Enquiry endpoint tests
+        run: node tools/test-enquiry-api.mjs
