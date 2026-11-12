@@ -1,310 +1,286 @@
-# Kingson Engineering
+# Kingson Engineering website
 
-The unshipped quotation and image improvements are documented in
-`QUOTE_CLARITY_PREVIEW.md`. Review them locally before approving deployment.
+Public website for Kingson Engineering, the trading name of Kingson Trading (Pvt) Ltd, steelwork specialists at No. 1262 Tynwald Industries, Harare, Zimbabwe.
 
-Search, Analytics and public policy configuration is documented in
-`SEARCH_PRIVACY_SETUP.md`. Optional Analytics waits for consent; privacy,
-cookie and website-terms pages are linked in every public footer.
+Production address: **https://www.kingsonengineering.co.zw**
 
-The cinematic redesign was approved and deployed on 20 October 2026.
-Read `CINEMATIC_REDESIGN_REPORT.md` for reference analysis, asset provenance,
-video processing, validation and preview limitations. It supersedes the earlier
-editorial visual direction in `REDESIGN_REPORT.md`; its search work remains.
-`SEARCH_CONSOLE_SETUP.md` covers verification. The current homepage design layer
-is `styles/cinematic.css`, on top of the shared editorial/service layouts.
-Project films now play silently inside the project and workshop frames, with
-automatic looping, a two-angle roof sequence and still-image fallbacks.
+This file describes the repository as it stands on 12 November 2026. Read `CHANGELOG.md` for what changed most recently and `docs/` for the operating guides.
 
-To rebuild supplied media without altering originals, extract all three handoff
-ZIPs into one scratch folder and run `tools/build-project-media.py --input
-<scratch-folder> --ffmpeg <ffmpeg-binary>` with Python/Pillow. Run the public asset
-builder, renderer and publication gate after source changes. `tools/test-browser.mjs`
-checks the pages/forms; `tools/test-media.mjs` checks playback and fallbacks
-(set `KINGSON_BROWSER=webkit` for the WebKit engine).
+## Status on 12 November 2026
 
-Public website for Kingson Engineering / Kingson Trading (Pvt) Ltd — steelwork
-specialists, No. 1262 Tynwald Industries, Harare, Zimbabwe.
+| Item | Status |
+|---|---|
+| Production site | Serving commit `8abd92b` from `main`, deployed 6 November 2026 |
+| Enquiry form in production | Still posts to the developer-hosted CRM database (old flow) |
+| Enquiry form on branch `claude/charming-euler-515w4y` | Posts to `/api/enquiry`, which writes to a Google Sheet. Built and tested against a faked Google. **Not configured and not live.** |
+| Google account, spreadsheet and service account | Pending. Kingson must create them. See `docs/ENQUIRIES_GOOGLE_SHEETS.md` |
+| CRM at `/crm` | Deployed and unchanged by the November work |
 
-Static HTML, CSS and a handful of ES modules across six routes. No framework,
-no dependencies, no build step to serve. Edit, run the renderer, push; Vercel
-redeploys.
+## What the site is
 
-Start here: **`SOURCE_OF_TRUTH.md`** for what may be published and why,
-**`ARCHITECTURE.md`** for the stack decision and the enquiry-to-delivery system,
-**`IMPLEMENTATION_PLAN.md`** for what is built and what is next.
+- Ten static HTML pages: the home page, five service pages, three policy pages and a 404 page.
+- Plain HTML, CSS and JavaScript modules. No framework. No React, Three.js, WebGL or GSAP.
+- No `package.json` and no runtime dependencies. Vercel serves the committed files; there is no build step on the server.
+- One serverless function, `api/enquiry.js`, which receives the enquiry form. It uses only Node's built-in modules.
+- A separate internal application, the CRM, built into `crm/` and served at `/crm` on the same domain. Its database is a Supabase project. See "The CRM" below.
 
----
+## Verified stack
+
+| Layer | What is used | Where |
+|---|---|---|
+| Pages | Static HTML generated from content modules | `tools/render.js` writes `*.html` and `sitemap.xml` |
+| Styles | CSS, bundled to one file | `styles/` → `assets/site.min.css` |
+| Browser script | ES modules, bundled to one file | `main.js`, `interface/`, `scenes/` → `assets/site.min.js` |
+| Bundler | esbuild 0.28.2 (build time only) | `tools/build-public.mjs`, `tools/build-crm.sh` |
+| Enquiry endpoint | Vercel serverless function, Node, CommonJS | `api/enquiry.js` |
+| Enquiry storage | Google Sheets API v4 with a service account | Configured by environment variables |
+| Fonts | Archivo and Inter, SIL Open Font License 1.1, self-hosted | `assets/fonts/` |
+| Hosting | Vercel, Git-connected. Project Node setting 24.x | `vercel.json` |
+| Analytics | Google Analytics 4, loaded only after consent, only on the production host | `interface/privacy.js`, `content/analytics.js` |
+| Maps | Google Maps iframe, loaded only when the visitor clicks | `interface/privacy.js` |
+| Media tooling | Python 3 with Pillow, ffmpeg (only when a photograph or film changes) | `tools/build-*.py` |
+| Tests | Node scripts, Playwright (Chromium), axe-core | `tools/test-*.mjs`, `tools/check-*` |
+
+## Repository structure
+
+| Path | What it is | Edit by hand? | Deployed? |
+|---|---|---|---|
+| `index.html`, five service `*.html`, three policy `*.html`, `404.html` | The pages | No. Generated by `tools/render.js` | Yes |
+| `sitemap.xml`, `robots.txt` | Search files | No. Generated | Yes |
+| `content/` | Every business value, sentence, photograph reference and policy text | Yes | No |
+| `styles/` | CSS sources | Yes | No |
+| `main.js`, `interface/`, `scenes/` | Browser script sources | Yes | No |
+| `assets/site.min.css`, `assets/site.min.js` | The bundles the pages load | No. Built by `tools/build-public.mjs` | Yes |
+| `assets/img/`, `assets/video/`, `assets/brand/` | Served images, films and logos | No. Built by the Python tools | Yes |
+| `assets/fonts/` | Font files, `fonts.css` and the two OFL licence texts | No | Yes |
+| `api/enquiry.js` | The enquiry serverless function | Yes | Yes (as a function) |
+| `vercel.json` | Headers, CSP, redirects, clean URLs | CSP hashes are regenerated by `tools/security-headers.mjs`; the rest by hand | Read by Vercel |
+| `.vercelignore` | What Vercel must not upload | Yes | No |
+| `.env.example` | Environment variable names with placeholders | Yes | No |
+| `.github/workflows/checks.yml` | Runs the gates and endpoint tests on every push | Yes | No |
+| `tools/` | Build scripts, publication gates, tests, CRM operator tooling | Yes | No |
+| `docs/` | Operating guides | Yes | No |
+| `crm/` | The built CRM (four files) | No. Built by `tools/build-crm.sh` | Yes |
+| `crm-src/` | CRM source, Supabase migrations and Edge Function source | Yes | No |
+| `source-hd/` | Upscaled masters of the photographs (build input) | No | No |
+| Root `*.jpeg` | Original photographs (build input). `structure.jpeg`, `crane.jpeg` and their `KE …` copies are stock-style collages, not Kingson's work | No | No |
+| Root `*.zip` | Archives of supplied films and an earlier build | No | No |
+| `.claude/` | Developer tooling and reference packs. Not used by the site | No | No |
+| Root `*.md` | Documentation. See "Which documents are current" | Yes | No |
+
+"Deployed" follows `.vercelignore`. The unbundled sources (`content/`, `styles/`, `main.js`, `interface/`, `scenes/`) stopped deploying with the November 2026 change, because every page loads only the two bundles.
 
 ## The one rule
 
-Every figure on this site is ticked or handwritten on the *Information
-required* document Kingson completed and returned. Nothing else is a figure.
+Every figure on the site is ticked or handwritten on the "Information required" document Kingson completed, or was confirmed later by the owner. Nothing else is a figure.
 
-`tools/check-truth.js` enforces that over the shipped files. It fails on an
-unconfirmed capacity, lead time, certification, headcount, client list or
-project count, and it fails on values the returned document explicitly retired
-(the struck-out gmail address, the guessed Monday–Friday hours, the withdrawn
-Facebook URL). Confirmed figures pass because they are on an allowlist in that
-file, and **each allowlist entry cites the section of the document it came
-from**. Adding a figure means being able to say who confirmed it.
+`tools/check-truth.js` enforces this over the shipped files. It fails on an unconfirmed capacity, lead time, certification, headcount, client list or project count. Confirmed figures pass because they are on an allowlist in that file, and each allowlist entry cites where the figure was confirmed. Adding a figure means being able to say who confirmed it. `SOURCE_OF_TRUTH.md` records the source document.
 
+`content/company.js` gives each business value a `status`. Only `owner_verified` and `user_context` render. `publish()` returns `null` for anything else and every consumer handles `null`.
+
+## Prerequisites
+
+| Need | For | Notes |
+|---|---|---|
+| Git | Everything | |
+| Node.js 22 or later | Rendering, gates, tests, local preview | Tested here with 22.23.4. Vercel runs the function on its 24.x setting |
+| esbuild 0.28.2 | Rebuilding the bundles only | Not needed to serve, render or check. The build refuses any other version |
+| Python 3 with Pillow | Rebuilding images only | No `requirements.txt` exists; versions are not pinned |
+| ffmpeg | Rebuilding films only | |
+| Playwright with Chromium, axe-core | Browser tests only | Installed outside the repository |
+
+There is nothing to `npm install` for the site itself.
+
+## Clone and run locally
+
+```bash
+git clone <repository-url>
+cd KingsonEngineering
+node tools/preview-server.mjs
 ```
-node tools/render.js          rewrite index.html, the 5 service routes and
-                              sitemap.xml from content/
-node tools/render.js --check  fail if any of them has drifted
-node tools/check-truth.js     assert every gate over the shipped files
-node tools/check-sharing.mjs  check official-domain metadata and redirect configuration
-node tools/check-search.mjs   check metadata, structured data and indexing rules
-node tools/build-public.mjs   bundle changed browser JS/CSS (esbuild 0.28.2)
-node tools/build-public.mjs --check  verify committed bundles using Node only
-node tools/preview-server.mjs serve a local preview at http://127.0.0.1:4173
-python3 tools/build-images.py rebuild the webp derivatives from the source
-                              photographs (only when a photograph changes)
-python3 tools/build-hd-media.py --input <dir> --ffmpeg <bin>
-                              re-encode the Topaz-upscaled films, posters and
-                              architectural photographs
+
+Open http://127.0.0.1:4173. Set `PORT` to use another port. The preview server applies the headers in `vercel.json` and serves clean URLs.
+
+The preview server also runs `api/enquiry.js`. Without the three `GOOGLE_*` variables it answers `503` and the form shows the WhatsApp and email handoff. That is the expected local behaviour. Do not export real Google credentials on a development machine unless you intend to write to the real sheet.
+
+To install esbuild outside the repository:
+
+```bash
+npm install --prefix <tool-directory> esbuild@0.28.2
+export ESBUILD=<tool-directory>/node_modules/.bin/esbuild
 ```
 
-**HD masters.** `source-hd/` holds Topaz (High Fidelity V2, via Higgsfield)
-upscales of the root photographs — the same frames at about 2x, sharpened,
-nothing added. `build-images.py` prefers them when present. The films were
-supplied at 512 px wide; the shipped ones are Topaz Video upscales (1080 px
-portrait, 1920 px wide hero). Neither is generated imagery: both still show
-only Kingson's own work.
+## Change, build, check
 
-Run `check-truth.js` before every push. It also runs `render.js --check`, so a
-pass means the files you tested are the files you are shipping. Beyond the
-figures it asserts, per page: valid JSON-LD with no banned properties, exactly
-one `<h1>`, a canonical link, a `<title>` of 20–62 characters and a meta
-description of 70–160, no two pages sharing either, a sitemap that lists every
-committed page and nothing else, and that every image file the HTML asks for is
-actually in the repository.
+Run these in this order after any change.
 
-The public pages now load `assets/site.min.css` and `assets/site.min.js`.
-Keep editing `styles/`, `main.js`, `interface/`, `scenes/` and the content files;
-do not hand-edit the bundles. After changing browser JS, CSS or runtime content
-(`content/assets.js`, `company.js`, `crm.js`, `runtime-copy.js`), run the public
-builder before the renderer. Use esbuild **0.28.2** on PATH, or set `ESBUILD` to
-that executable (the same convention as the CRM builder). For example, an
-outside-repository tool install can be created with
-`npm install --prefix <tool-directory> esbuild@0.28.2`; point `ESBUILD` at its
-platform executable. Serving/deploying the committed output needs no esbuild or
-package installation. The publication gate checks both source and artifact hashes.
+```bash
+# 1. Only if you changed styles/, main.js, interface/, scenes/, assets/fonts.css,
+#    content/assets.js, content/company.js, content/enquiry-endpoint.js
+#    or content/runtime-copy.js:
+node tools/build-public.mjs
 
----
+# 2. Always, after a content or bundle change. Rewrites the ten pages and
+#    sitemap.xml, and refreshes the CSP script hashes in vercel.json:
+node tools/render.js
 
-## Six routes
+# 3. The six checks. All must exit 0:
+node tools/render.js --check
+node tools/check-truth.js
+node tools/check-search.mjs
+node tools/check-sharing.mjs
+node tools/build-public.mjs --check
+node tools/security-headers.mjs --check
 
-Vercel serves this project with `cleanUrls: true`, so a file at the repository
-root is served without its extension. That is the entire routing layer.
+# 4. The enquiry endpoint tests. Node only, Google is faked:
+node tools/test-enquiry-api.mjs
+```
 
-| file | served at |
-|---|---|
-| `index.html` | `/` |
-| `structural-steel-harare.html` | `/structural-steel-harare` |
-| `roofing-and-trusses.html` | `/roofing-and-trusses` |
-| `fibre-laser-cutting-harare.html` | `/fibre-laser-cutting-harare` |
-| `steel-fabrication.html` | `/steel-fabrication` |
-| `mobile-cranage-harare.html` | `/mobile-cranage-harare` |
+Commit the sources and the generated files together. `.github/workflows/checks.yml` runs steps 3 and 4 on every push and pull request.
 
-A service page is not a slice of the home page. It answers a different question
-— *can you do my job, and what do you need from me* — so it leads with the
-confirmed capability for that one service, says plainly what to send, shows the
-specification transcript for the groups that apply, and carries its own enquiry
-form with that service already selected.
+### Browser tests
 
-There are five, not seven. Balustrades and roller shutter doors, and general
-metal fabrication, have four confirmed
-figures between them and no photograph; separate pages would have been thin
-duplicates, so both live inside `/steel-fabrication` under their own headings.
-The reasoning is in the header comment of `content/services.js`.
+Start the preview server first, then:
 
-All six pages get their `<head>`, header, menu and footer from
-`tools/layout.js` and their structured data from `tools/schema.js`, so the
-chrome cannot drift between routes.
+```bash
+export KINGSON_PREVIEW_URL=http://127.0.0.1:4173
+export KINGSON_BROWSER=chromium
+export KINGSON_QA_OUTPUT=<folder-for-screenshots-and-results>
 
----
+# test-browser accepts the CommonJS entry point:
+KINGSON_PLAYWRIGHT_PATH=<playwright>/index.js node tools/test-browser.mjs
 
-## What is on the page
+# these three need the ESM entry point:
+export KINGSON_PLAYWRIGHT_PATH=<playwright>/index.mjs
+node tools/test-privacy.mjs
+node tools/test-contact-layout.mjs
+node tools/test-media.mjs
+```
 
-| Section | |
-|---|---|
-| **Hero** | Who this is, what they make, three actions, over Kingson's own portal-frame photograph — the first paint, with a slow CSS settle (none under reduced motion) |
-| **Strip** | Four confirmed facts — the machine, the crane, the workshop, the acknowledgement |
-| **01 Structure** | Full-bleed site photograph, copy in a masthead field |
-| **02 Form** | The IBR and corrugated sections **drawn to scale** from the confirmed figures, at one shared scale |
-| **03 Cut** | **±0.1 MM** beside the thickness table, over four portrait plates of the laser |
-| **04 Fabricate** | **3 000 MM** and the three confirmed flashings drawn in section. No photograph of this work exists |
-| **05 Lift** | **25 TONNES** beside the crane at full height |
-| **Workshop** | Tynwald Industries, Harare — place, not an About Us |
-| **Specifications** | All 29 confirmed figures in five `<details>` groups |
-| **Proof** | Three near-full-viewport bands of site work, labelled with confirmed facts only |
-| **How it works** | The five commitments Kingson confirmed in writing, as a rail |
-| **Send us the brief** | The structured enquiry, over the hero photograph — the arc closes where it opened |
-| **Questions** | Fifteen questions, every answer a confirmed fact, also emitted as `FAQPage` |
-| **Contact** | Both numbers, both email addresses, hours, address, named contact |
+Notes:
 
-On a phone a **Call / Get a price** bar is fixed to the bottom of every screen.
-
-**Nothing hijacks the scroll.** There is no scroll listener anywhere in this
-build. Reveals
-are driven by an IntersectionObserver that fires once per element. The version
-this replaced pinned a 620vh stage and scrubbed six scenes against scroll
-position: seven screens of animation before a visitor reached a single fact.
-
-### Six of nine photographs are 3:4 portrait
-
-That is the constraint the whole art direction is built around. Portraits stand
-upright at full height wherever the frame is upright — which is also their
-native format on a phone.
-
-Where a frame really is a wide band, the photograph is **art-directed rather
-than cropped by CSS**: `tools/build-images.py` writes a second derivative,
-`<slug>-wide-<width>.webp`, cut to 16:9 around the same band the page was
-already showing, and the frame becomes a `<picture>` — wide cut above 900px,
-uncut original below it. Same frame, same moment, composed for the shape it is
-shown in. It is also the single largest performance win in the build: the laser
-hero fell from 405 KB to 144 KB, `/fibre-laser-cutting-harare` from 1 103 KB to
-843 KB and the home page from 1 475 KB to 1 313 KB on a laptop.
-
-The crop anchor is **derived** from the `focal` coordinate already in
-`content/assets.js`, never written twice — a second copy would drift, and the
-drift would be invisible.
-
-### Two services have no photograph
-
-Kingson supplied none of a balustrade, a gate or a stainless job, so chapter 04
-is carried by the three confirmed flashing folds drawn in section — for a
-folder, arguably more useful than a photograph. The two stock-style collages in
-the repository (`structure.jpeg`, `crane.jpeg`) are not Kingson's work and must
-never be published as if they were; their derivatives have been deleted so they
-cannot be served by accident.
-
----
-
-## The content layer
-
-Three files hold everything a person would want to change:
-
-- `content/company.js` — every business value, each behind a publication gate
-- `content/copy.js` — every customer-facing string
-- `content/assets.js` — the photographs, their focal anchors and their alt text
-
-`company.js` gives each value a `status`. Only `owner_verified` and
-`user_context` render; `draft` and `unreadable` are held in the file and never
-reach the page. `publish()` returns `null` for those, and **every consumer
-handles null** — which is why the unreadable Facebook URL produces no link at
-all rather than a broken one, and why the enquiry form's handoff buttons would
-disappear rather than dead-end if a recipient were ever withdrawn.
-
-Each value also carries an `evidence` string naming where it was confirmed.
-
----
-
-## `index.html` and `sitemap.xml` are generated — do not hand-edit them
-
-The text is written **into** the HTML rather than rendered by JavaScript, so the
-page reads correctly with scripts off, in a search index, and in an answer
-engine that does not run scripts. The sitemap's image list is generated from the
-same asset map the page renders from, so it cannot drift.
-
-Change content → run `render.js` → commit the generated files with it.
-
-`main.js` wires the interactive pieces only: the header and phone-bar
-observers, the motion vocabulary, the parallax, the photograph viewer, the
-enquiry form (which saves to the CRM — see `interface/send-enquiry.js`) and the
-menu. Each is a
-module under `scenes/` or `interface/` and each is independently removable —
-with any of them absent the page is simply static, which is the state the
-stylesheet describes by default.
-
----
+- `KINGSON_BROWSER` defaults to `msedge`, which exists only on the original Windows machine. Set it to `chromium` elsewhere. `test-privacy`, `test-contact-layout` and `test-media` also accept `webkit` where the WebKit engine is installed; `test-browser` runs on Chromium only.
+- The tests intercept every request to `/api/enquiry`. They cannot write to the real sheet.
+- `tools/test-browser.mjs` can inject axe-core when `KINGSON_AXE_PATH` is set. The site's Content-Security-Policy blocks that injection, so the run fails. To scan for accessibility, load the pages in a Playwright context created with `bypassCSP: true` and inject axe-core there.
+- `tools/test-crm-*.mjs`, `tools/verify-crm-*.mjs` and `tools/check-crm-auth-config.mjs` test the CRM. They need extra tools (PGlite, the Supabase CLI) and were not run in the November 2026 work.
 
 ## Where to change what
 
-| You want to change | Edit |
+| You want to change | Edit | Then |
+|---|---|---|
+| A phone number, email, address, hours, or whether a value is published | `content/company.js` | build-public, render, checks |
+| Any sentence a visitor reads | `content/copy.js` | render, checks |
+| Form labels, form messages, gallery captions | `content/runtime-copy.js` | build-public, render, checks |
+| Privacy, cookie or terms text, and the revision date | `content/policies.js` | render, checks |
+| Which photographs, their order, crops and alt text | `content/assets.js` | build-public, render, checks |
+| Which chapter a service lives in | `content/chapters.js` | render, checks |
+| What a service page says, and which service pages exist | `content/services.js` | render, checks |
+| Case studies | `content/projects.js` | render, checks |
+| Analytics measurement ID | `content/analytics.js` | render, checks |
+| Search-engine verification tokens | `content/seo.js` | render, checks |
+| Colour, type scale, spacing | `styles/tokens.css` | build-public, render, checks |
+| Layout | `styles/site.css`, `styles/editorial.css`, `styles/cinematic.css` | build-public, render, checks |
+| The form, the viewer, the consent banner | `interface/`, `main.js` | build-public, render, checks |
+| Motion and films | `scenes/` | build-public, render, checks |
+| The shared head, header, footer, buttons, and the site origin (`SITE`) | `tools/layout.js` | render, checks |
+| Structured data | `tools/schema.js` | render, checks |
+| Where the form posts | `content/enquiry-endpoint.js` | build-public, render, checks |
+| What the server accepts and writes | `api/enquiry.js` | `node tools/test-enquiry-api.mjs` |
+| Headers, redirects | `vercel.json` (CSP is generated in `tools/security-headers.mjs`) | render, checks |
+| What counts as a confirmed figure | `tools/check-truth.js`, with a citation | checks |
+
+Never hand-edit a generated page, a bundle, or a file in `crm/`. The next build overwrites it.
+
+## Common tasks
+
+### Update contact information
+
+Edit the value in `content/company.js`. Keep the `status` and write where the new value was confirmed in `evidence`. Run build-public, render and the checks. If the phone number changes, also check `tools/check-truth.js`, which holds the allowlist of published values.
+
+### Add or replace a photograph
+
+1. Put the original in the repository root (JPEG). If an upscaled master exists, put it in `source-hd/` with the matching name.
+2. Add or edit its entry in `content/assets.js`: slug, focal point, dimensions and alt text. Alt text describes what is visible and nothing else.
+3. Run `python3 tools/build-images.py`. It writes the WebP derivatives and `assets/img/manifest.json`.
+4. If the photograph is a page's share image, rebuild the 1200 x 630 share images. This needs `playwright-core`, a Chrome or Chromium, and a local server on port 8210: run `node .claude/serve.mjs . 8210 &`, then `node tools/og-images.mjs [path-to-chrome]`. See the header of `tools/og-images.mjs`.
+5. Run build-public, render and the checks. `check-truth.js` fails if a page asks for an image file that is not in the repository.
+
+### Add a project gallery
+
+`content/projects.js` holds the finished portfolio structure and an empty list. The `/projects` page, its navigation link, its sitemap entry and its structured data appear automatically when the first publishable entry is added. Fill in `PROJECT_METADATA.md` for each job first. A project needs `id`, `title`, `hero` and at least one `service`. `internal: true` keeps a draft off the site. Nothing may be estimated.
+
+For a project film, place an MP4 in `assets/video/` and add a `videos` entry with `src`, `poster` and `caption`. To rebuild the supplied films, see the header of `tools/build-project-media.py` and `tools/build-hd-media.py` (`--input <folder> --ffmpeg <binary>`).
+
+### Change the enquiry configuration
+
+- To change where the form posts, or to switch automatic saving off, edit `content/enquiry-endpoint.js`. An empty path sends visitors straight to the WhatsApp and email handoff.
+- To change the spreadsheet, the service account or the tab name, change the environment variables in Vercel and redeploy. No code change is needed.
+- To change validation, limits or columns, edit `api/enquiry.js` and `tools/test-enquiry-api.mjs` together. The service and drawing option lists in `api/enquiry.js` must match `content/runtime-copy.js`; a test fails if they differ.
+
+Full guide: `docs/ENQUIRIES_GOOGLE_SHEETS.md`.
+
+## Deploy
+
+The Vercel project is connected to the GitHub repository.
+
+- A push to `main` deploys to production.
+- A push to any other branch creates a preview deployment. Previews are behind Vercel sign-in.
+- There is no build command. Vercel uploads the files `.vercelignore` allows and builds `api/enquiry.js` as a function.
+
+Before merging to `main`: all six checks pass, the endpoint tests pass, and you have looked at the preview deployment.
+
+After changing an environment variable in Vercel, redeploy. A running deployment keeps the values it was built with.
+
+## Roll back
+
+- Fastest: in Vercel, open Deployments, choose the last good production deployment and use Instant Rollback (or Promote to Production). Plan limits may apply to how far back you can go; confirm in the dashboard.
+- In Git: `git revert <bad-commit>` on `main` and push. Vercel deploys the reverted state.
+
+A rollback does not change environment variables or the spreadsheet.
+
+## Common failures
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `check-truth.js`: "Public CSS/JS assets are stale" | A bundle input changed and `build-public.mjs` was not run | Run build-public, then render |
+| `check-truth.js`: "index.html is out of date" | Content or bundles changed and `render.js` was not run | Run render |
+| `build-public.mjs`: "Use esbuild 0.28.2" | Wrong esbuild version on PATH | Point `ESBUILD` at 0.28.2 |
+| `security-headers.mjs --check` fails | An inline script changed and the CSP hashes are old | Run render |
+| Inline script blocked in the browser console | Same as above, deployed | Run render, commit `vercel.json`, deploy |
+| Browser test: "Cannot read properties of undefined (reading 'launch')" | `KINGSON_PLAYWRIGHT_PATH` points at `index.js` for a test that needs `index.mjs` | Use the ESM entry point |
+| Browser test cannot start the browser | `KINGSON_BROWSER` is unset and Edge is not installed | Set `KINGSON_BROWSER=chromium` |
+| Form shows "We could not log that automatically" | `/api/enquiry` returned an error | See the troubleshooting table in `docs/ENQUIRIES_GOOGLE_SHEETS.md` |
+| A changed file is still old on the live site | The push went to a branch, not `main`, or the deployment failed | Check Deployments in Vercel |
+
+## The CRM
+
+The CRM is a separate internal system for enquiries, quotations and projects. Staff sign in at `/crm`.
+
+- Source: `crm-src/`. Built into `crm/` by `ESBUILD=<path> bash tools/build-crm.sh`.
+- Database, sign-in and file storage: a Supabase project in an organisation controlled by VelaBuilt, not by Kingson.
+- It was not changed in the November 2026 work. The public form on the working branch no longer writes to it.
+- Open security and ownership items for the CRM are listed in the handover package (Security Audit Report). Decide the CRM's future before relying on it.
+
+## Documentation
+
+| File | Use |
 |---|---|
-| A phone number, email, address, hours — or whether it is published at all | `content/company.js` |
-| Any sentence a visitor reads | `content/copy.js` |
-| Which photographs, their order, their crops, their alt text | `content/assets.js` |
-| Colour, type scale, spacing, radius | `styles/tokens.css` |
-| Layout | `styles/site.css` |
-| The viewer, the form, the menu | `interface/`, `main.js` |
-| The hero's steel, the reveals, the drawn sections | `scenes/` |
-| Which chapter a service lives in | `content/chapters.js` |
-| What a service route says, and which routes exist | `content/services.js` |
-| The shared head, header, footer and buttons | `tools/layout.js` |
-| What the structured data asserts | `tools/schema.js` |
-| Case studies, when Kingson supplies any | `content/projects.js` |
-| What counts as a confirmed figure | `tools/check-truth.js` — **with a citation** |
+| `CHANGELOG.md` | What changed and when |
+| `docs/ENQUIRIES_GOOGLE_SHEETS.md` | Enquiry system: setup, operation, key rotation, troubleshooting |
+| `docs/SECURITY.md` | Headers, CSP, secrets policy, incident steps, accepted risks |
+| `docs/OPERATIONS.md` | Maintenance, backup and restore, troubleshooting, monitoring |
+| `SOURCE_OF_TRUTH.md` | What may be published and where each figure was confirmed |
+| `PROJECT_METADATA.md` | The form to fill in for each portfolio project |
 
----
+### Which documents are current
 
-## Design system
+Current: this file, `CHANGELOG.md`, `docs/`, `SOURCE_OF_TRUTH.md`, `PROJECT_METADATA.md`.
 
-From the reference build the owner chose (`pastel-pixie-lab.lovable.app`): a
-light Tailwind/shadcn theme — white page, `#fafafa` cards, `#0a0a0a` text,
-`#e4e4e7` borders, 0.75–1.5rem corners, pill buttons, centred dot-eyebrow
-section headers, and dark bookends.
+Historical records. They describe earlier states and may be wrong today. Do not follow their steps without checking:
 
-Deliberately **not** taken from it: the awards wall, the team posters, the
-polaroid line and the film-strip device. Those are storytelling for a film
-company. There is no data behind them here, and inventing awards or staff would
-break the rule above.
-
-Colour is Kingson's own, sampled from the supplied logo artwork rather than
-chosen: red `#E21E25`, green `#039647`, mark `#2B2A28`. Every derived step is
-measured, not eyeballed — `--red-ink` for small text on white (6.01:1),
-`--red-on-dark` for small text on the dark grounds (4.50:1).
-
-`assets/brand/kingson-logo-reverse*.png` is the same artwork with only the
-near-black drawn mark lightened, for the dark footer and the 404 page. The red
-and the green are untouched.
-
----
-
-## Photography
-
-Nine photographs, all Kingson's own, colour left alone — no grade, no vignette,
-no wash. One (`roof-frame`) carries the full-width band; the other eight are
-the gallery. Four also crop into a service card.
-
-Alt text describes what is visible and nothing else: never a client, a project,
-a capability or a capacity. Where a machine's own badge is legible in the frame
-the alt text says so, because that is what the picture shows.
-
-The delivered derivatives carried a black letterbox band of up to 0.6% at the
-bottom; it has been cropped out and `content/assets.js` carries the matching
-dimensions. **Do not regenerate them from the originals without re-cropping.**
-
----
-
-## Verified how
-
-Not by looking. Every claim below was measured in a headless browser against
-the running site:
-
-- **Contrast** — 31 text/ground pairs computed from rendered colours against
-  the WCAG threshold for their own size and weight. 0 below AA.
-- **Pointer targets** — every link, button and control measured. 0 below the
-  24px AA minimum on desktop; 0 below 44px on a phone.
-- **Every interaction** — empty submit (three errors, summary focused, draft
-  stays shut), fixing one field clearing only its own error, a complete
-  enquiry composing the right message and routing a drawings enquiry to
-  `technical@`, the viewer opening and closing on Escape, the menu trapping
-  focus.
-- **Images** — all 18 confirmed decoded, no failed requests, no console errors.
-- **Structure** — one `h1`, no skipped heading level, structured data parsed
-  and asserted to contain no empty values.
-- **Text over photography** — 25 strings sampled against the *rendered pixels*
-  behind them, not against a nominal background colour: 0 below AA.
-- **Progressive enhancement** — with JavaScript disabled the page still serves
-  6 241 characters, all five chapter headings, all 29 specification rows, all
-  10 FAQ answers, 7 phone links and 3 WhatsApp links, and nothing is hidden
-  waiting for a callback.
-- **Performance** — LCP 116ms desktop / 96ms phone, CLS 0.0000 on both,
-  611 KB / 501 KB initial transfer.
-
-See `CREATIVE_ELEVATION_PLAN.md` for the before-and-after numbers and the
-judgement calls behind them.
+- `HANDOVER.md` (September 2026 checkpoint; names the old Vercel address and an old working branch)
+- `DOMAIN_MIGRATION.md` (superseded on 19 October 2026 by `URL_SHARING_FIX.md`)
+- `ARCHITECTURE.md`, `IMPLEMENTATION_PLAN.md` (written when enquiries went to the CRM)
+- `REDESIGN_REPORT.md`, `CINEMATIC_REDESIGN_REPORT.md`, `CREATIVE_ELEVATION_PLAN.md`, `IMAGE_INTEGRATION_PLAN.md`, `QUOTE_CLARITY_PREVIEW.md`, `VIDEO_STARTUP_PREVIEW.md`, `URL_SHARING_FIX.md` (design and delivery reports)
+- `SEARCH_CONSOLE_SETUP.md`, `SEARCH_PRIVACY_SETUP.md` (October 2026; the Analytics settings they record were not re-verified in November)
+- `CRM_SECURITY_HANDOFF.md`, `CRM_OPERATOR_BACKUPS.md`, `crm-src/README.md` (CRM state in late October 2026)
