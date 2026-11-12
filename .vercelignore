@@ -1,5 +1,12 @@
+# The CRM is switched off (owner's decision, 12 November 2026). Its built
+# application in crm/ is no longer deployed, so /crm answers 404. The source
+# stays in the repository in case the CRM is wanted again: to bring it back,
+# remove the `/crm` line below and restore the /crm Content-Security-Policy
+# in vercel.json from Git history (commit 7da1d8f).
+/crm
+
 # The CRM's source. It is in the repository so it can be worked on, and it is
-# bundled into crm/ by tools/build-crm.sh — which is what actually ships.
+# bundled into crm/ by tools/build-crm.sh.
 #
 # Without this line Vercel would serve it too, and /crm-src/ would be a second
 # working copy of the application on the same host: outside the /crm/ header

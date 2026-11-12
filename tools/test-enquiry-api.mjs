@@ -40,13 +40,17 @@ globalThis.fetch = async (url, init = {}) => {
   assert.equal(init.headers.Authorization, 'Bearer fake-token');
   if (url.includes('values:batchGet')) {
     if (sheet.failRead) return json(500, {});
-    const col = (i) => ({ values: [sheet.rows.map((r) => r[i])] });
+    assert.ok(!decodeURIComponent(url).includes('!'), 'with no tab configured the first tab is addressed');
+    const all = sheet.header ? [sheet.header, ...sheet.rows] : sheet.rows;
+    const col = (i) => (all.length ? { values: [all.map((r) => r[i])] } : {});
     return json(200, { valueRanges: [col(0), col(1), col(13)] });
   }
   if (url.includes(':append')) {
     assert.ok(url.includes('valueInputOption=RAW'), 'values are written RAW, never parsed as formulas');
     if (sheet.failAppend > 0) { sheet.failAppend--; return json(503, { error: { message: 'SECRET-GOOGLE-DETAIL' } }); }
-    sheet.rows.push(JSON.parse(init.body).values[0]);
+    const incoming = JSON.parse(init.body).values;
+    if (incoming.length === 2) { assert.ok(!sheet.header, 'heading row is written once only'); sheet.header = incoming.shift(); }
+    sheet.rows.push(incoming[0]);
     return json(200, { updates: { updatedRows: 1 } });
   }
   throw new Error('unexpected fetch ' + url);
@@ -89,7 +93,7 @@ const realError = console.error;
 console.error = (...a) => errors.push(a.join(' '));
 const results = [];
 const test = async (name, fn) => {
-  internals.reset(); sheet.rows = []; sheet.calls = []; sheet.failAppend = 0; sheet.failToken = false; sheet.failRead = false; errors.length = 0;
+  internals.reset(); sheet.rows = []; sheet.header = null; sheet.calls = []; sheet.failAppend = 0; sheet.failToken = false; sheet.failRead = false; errors.length = 0;
   configure(true);
   try { await fn(); results.push(['PASS', name]); }
   catch (e) { results.push(['FAIL', name + ' — ' + e.message]); }
@@ -114,6 +118,27 @@ await test('a valid enquiry writes exactly one row with the documented columns',
   assert.deepEqual(row.slice(2, 13), ['Local QA Builders', '', 'qa@example.invalid', 'Fibre laser cutting', 'Msasa, Harare',
     'Yes — DXF or DWG', 'building contractor', 'Twelve 6 mm mild steel plates to drawing.\nLocal test only.', '/fibre-laser-cutting-harare', 'New', '']);
   assert.equal(r.headers['cache-control'], 'no-store');
+});
+
+await test('an empty sheet gets the heading row once, then plain rows', async () => {
+  await call({ body: good() });
+  assert.deepEqual(sheet.header, internals.COLUMNS);
+  await call({ body: good({ description: 'second enquiry' }) });
+  assert.equal(sheet.rows.length, 2);
+  assert.equal(sheet.rows[1][9], 'second enquiry');
+});
+
+await test('a named tab is addressed when GOOGLE_SHEET_TAB is set', async () => {
+  process.env.GOOGLE_SHEET_TAB = "Kingson's Enquiries";
+  const seen = [];
+  const real = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    const u = decodeURIComponent(String(url));
+    if (u.includes('sheets.googleapis.com')) { seen.push(u); if (u.includes('batchGet')) return new Response(JSON.stringify({ valueRanges: [{}, {}, {}] }), { status: 200 }); return new Response('{}', { status: 200 }); }
+    return real(url, init);
+  };
+  try { assert.equal((await call({ body: good() })).status, 200); } finally { globalThis.fetch = real; }
+  assert.ok(seen.every((u) => u.includes("'Kingson''s Enquiries'!")), 'tab name is quoted and escaped');
 });
 
 await test('a phone contact goes to the phone column; both are kept when both are given', async () => {

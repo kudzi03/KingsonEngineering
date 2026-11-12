@@ -19,7 +19,8 @@
      GOOGLE_SERVICE_ACCOUNT_EMAIL          …@….iam.gserviceaccount.com
      GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY    the PEM private key (\n escaped is fine)
    Optional:
-     GOOGLE_SHEET_TAB                      worksheet name, default "Enquiries"
+     GOOGLE_SHEET_TAB                      worksheet (tab) name. Leave unset to use the
+                                           first tab of the spreadsheet.
 
    What this function refuses, and why:
      · anything that is not a same-origin JSON POST (cross-site form posts and
@@ -56,8 +57,9 @@ const DRAWINGS = [
   'No drawings, just measurements', 'No — I need help working it out'
 ];
 
-/* Column order of the spreadsheet. Row 1 of the sheet carries these headings;
-   the function appends below them and never rewrites existing rows. */
+/* Column order of the spreadsheet. Row 1 of the sheet carries these headings.
+   If the sheet is completely empty the function writes the heading row itself
+   with the first enquiry; after that it only appends and never rewrites a row. */
 const COLUMNS = [
   'Submitted (Harare time)', 'Reference', 'Business name', 'Phone', 'Email',
   'Service requested', 'Site location', 'Drawings', 'About the organisation',
@@ -157,7 +159,7 @@ function config() {
   let key = (process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || '').trim();
   if (key.startsWith('"') && key.endsWith('"')) key = key.slice(1, -1);
   key = key.replace(/\\n/g, '\n');
-  const tab = (process.env.GOOGLE_SHEET_TAB || 'Enquiries').trim();
+  const tab = (process.env.GOOGLE_SHEET_TAB || '').trim();
   if (!sheetId || !email || !key.includes('PRIVATE KEY')) return null;
   return { sheetId, email, key, tab };
 }
@@ -189,7 +191,8 @@ async function accessToken(cfg) {
   return cachedToken.value;
 }
 
-const range = (cfg, a1) => encodeURIComponent(`'${cfg.tab.replace(/'/g, "''")}'!${a1}`);
+/* With no tab name the range addresses the first tab of the spreadsheet. */
+const range = (cfg, a1) => encodeURIComponent(cfg.tab ? `'${cfg.tab.replace(/'/g, "''")}'!${a1}` : a1);
 
 /* Harare is UTC+2 all year. Written as text, in a form that sorts correctly. */
 function harareStamp(date) {
@@ -201,27 +204,29 @@ const parseStamp = (s) => Date.parse(String(s).replace(' ', 'T') + ':00+02:00');
    retry after a timeout that had in fact succeeded — gets the first row's
    reference back instead of a second row. Best effort: if this read fails the
    enquiry is still written, because a duplicate is cheaper than a loss. */
-async function findDuplicate(cfg, token, fingerprint, now) {
+async function inspectSheet(cfg, token, fingerprint, now) {
   try {
     const url = `${SHEETS_URL}/${cfg.sheetId}/values:batchGet?majorDimension=COLUMNS` +
-      `&ranges=${range(cfg, 'A2:A')}&ranges=${range(cfg, 'B2:B')}&ranges=${range(cfg, 'N2:N')}`;
+      `&ranges=${range(cfg, 'A1:A')}&ranges=${range(cfg, 'B1:B')}&ranges=${range(cfg, 'N1:N')}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(3000) });
-    if (!res.ok) return null;
+    if (!res.ok) return { duplicate: null, empty: false };
     const [stamps, refs, ids] = (await res.json()).valueRanges.map((r) => (r.values && r.values[0]) || []);
-    for (let i = ids.length - 1; i >= Math.max(0, ids.length - 100); i--) {
-      if (ids[i] === fingerprint && now - parseStamp(stamps[i]) < 24 * 3600 * 1000) return refs[i] || null;
+    /* Nothing in column A at all: a brand-new sheet with no heading row yet. */
+    if (!stamps.length) return { duplicate: null, empty: true };
+    for (let i = ids.length - 1; i >= Math.max(1, ids.length - 100); i--) {
+      if (ids[i] === fingerprint && now - parseStamp(stamps[i]) < 24 * 3600 * 1000) return { duplicate: refs[i] || null, empty: false };
     }
   } catch { /* fall through to writing the row */ }
-  return null;
+  return { duplicate: null, empty: false };
 }
 
-async function appendRow(cfg, token, row) {
+async function appendRow(cfg, token, rows) {
   const url = `${SHEETS_URL}/${cfg.sheetId}/values/${range(cfg, 'A:N')}:append` +
     '?valueInputOption=RAW&insertDataOption=INSERT_ROWS';
   const send = () => fetch(url, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ values: [row] }),
+    body: JSON.stringify({ values: rows }),
     signal: AbortSignal.timeout(5000)
   });
   let res = await send();
@@ -333,17 +338,18 @@ async function handler(req, res) {
 
   try {
     const token = await accessToken(cfg);
-    const existing = await findDuplicate(cfg, token, fingerprint, now);
-    if (existing) return reply(res, 200, { ok: true, ref: existing, duplicate: true });
+    const sheet = await inspectSheet(cfg, token, fingerprint, now);
+    if (sheet.duplicate) return reply(res, 200, { ok: true, ref: sheet.duplicate, duplicate: true });
 
     const date = new Date(now);
     const ref = reference(date);
-    await appendRow(cfg, token, [
+    const row = [
       harareStamp(date), ref, inert(fields.company), phone, inert(email),
       inert(fields.service), inert(fields.location), inert(fields.drawings),
       inert(fields.orgdetails), inert(fields.description), fields.page,
       'New', '', fingerprint
-    ]);
+    ];
+    await appendRow(cfg, token, sheet.empty ? [COLUMNS, row] : [row]);
     return reply(res, 200, { ok: true, ref });
   } catch (err) {
     /* Stage and status only. Never the enquiry, never Google's response body. */
